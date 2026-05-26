@@ -1,0 +1,32 @@
+# macOS
+.DS_Store
+
+# Obsidian workspace state
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/cache/
+.obsidian/plugins/obsidian-git/data.json
+
+# Obsidian trash
+.trash/
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+
+# Secrets
+.env
+.env.*
+*.key
+*.pem
+*.p12
+*.jks
+
+# Logs
+*.log
+
+# Private notes
+_private/
+
+.idea
