@@ -29,7 +29,7 @@ jobs:
 
       - name: Build Quartz wiki
         env:
-          QUARTZ_BASE_DIR: /backend-engineer-playbook
+          QUARTZ_BASE_DIR: /backend-lab
         run: npm run wiki:build
 
       - name: Upload artifact

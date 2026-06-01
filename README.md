@@ -35,7 +35,7 @@ A practical backend lab for learning, organizing, and mastering backend engineer
 ## Structure
 
 ```text
-backend-engineer-playbook
+backend-lab
 ├── 00-home
 ├── 01-core
 ├── 02-practical-backend

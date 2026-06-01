@@ -7,7 +7,7 @@ configuration:
   analytics:
     provider: plausible
   locale: ko-KR
-  baseUrl: agent-jeong.github.io/backend-engineer-playbook
+  baseUrl: agent-jeong.github.io/backend-lab
   ignorePatterns:
     - _private
     - _templates
@@ -168,7 +168,7 @@ plugins:
     enabled: true
     options:
       links:
-        GitHub: https://github.com/agent-jeong/backend-engineer-playbook
+        GitHub: https://github.com/agent-jeong/backend-lab
   - source: github:quartz-community/spacer
     enabled: true
     options: {}

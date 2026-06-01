@@ -1,5 +1,5 @@
 {
-  "name": "backend-engineer-playbook",
+  "name": "backend-lab",
   "private": true,
   "scripts": {
     "wiki:prepare": "bash site/scripts/prepare-content.sh",
