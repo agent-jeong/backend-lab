@@ -1,6 +1,6 @@
-# Backend Engineer Playbook
+# Backend Lab
 
-A practical backend engineering playbook for learning, organizing, and mastering backend engineering knowledge.
+A practical backend lab for learning, organizing, and mastering backend engineering knowledge.
 
 이 저장소는 백엔드 개발자가 알아야 할 핵심 개념, 실무 문제 해결 패턴, 면접 답변, AI 활용 방식을 체계적으로 정리하는 기술 위키입니다.
 
