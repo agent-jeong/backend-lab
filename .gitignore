@@ -30,3 +30,8 @@
 _private/
 
 .idea
+
+# Quartz local build workspace
+.quartz-work/
+public/
+node_modules/

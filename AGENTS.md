@@ -31,8 +31,8 @@ This repository may later become public, so every committed document must be saf
 - Use `kebab-case` for file and folder names.
 - Use `.md` for documents.
 - Keep topic index files close to their existing folders, for example:
-  - `100-core/java/java.md`
-  - `200-practical-backend/performance/performance.md`
+  - `01-core/java/java.md`
+  - `02-practical-backend/performance/performance.md`
 - Do not rename existing files or folders unless there is a clear reason.
 - Avoid spaces, uppercase naming, and mixed naming styles in new paths.
 - Keep `_private` separate from public notes.

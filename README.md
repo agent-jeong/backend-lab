@@ -36,13 +36,13 @@ A practical backend lab for learning, organizing, and mastering backend engineer
 
 ```text
 backend-engineer-playbook
-├── 000-home
-├── 100-core
-├── 200-practical-backend
-├── 300-case-studies
-├── 400-interview
-├── 500-ai-workflows
-├── 900-archive
+├── 00-home
+├── 01-core
+├── 02-practical-backend
+├── 03-case-studies
+├── 04-interview
+├── 05-ai-workflows
+├── 99-archive
 ├── _templates
 ├── _assets
 └── _private
@@ -52,13 +52,13 @@ backend-engineer-playbook
 
 | Directory | Purpose |
 |---|---|
-| `000-home` | 전체 인덱스, 학습 원칙, 숙련도 관리 |
-| `100-core` | Java, Spring, JPA, DB, Redis, Network, OS 기본기 |
-| `200-practical-backend` | 성능, 트랜잭션, 동시성, 배치, 보안, 아키텍처, 관측성, CI/CD |
-| `300-case-studies` | 공개 가능한 실무 사례 정리 |
-| `400-interview` | 면접 질문과 답변 |
-| `500-ai-workflows` | AI 활용 프롬프트와 개발 루틴 |
-| `900-archive` | 오래된 문서 보관 |
+| `00-home` | 전체 인덱스, 학습 원칙, 숙련도 관리 |
+| `01-core` | Java, Spring, JPA, DB, Redis, Network, OS 기본기 |
+| `02-practical-backend` | 성능, 트랜잭션, 동시성, 배치, 보안, 아키텍처, 관측성, CI/CD |
+| `03-case-studies` | 공개 가능한 실무 사례 정리 |
+| `04-interview` | 면접 질문과 답변 |
+| `05-ai-workflows` | AI 활용 프롬프트와 개발 루틴 |
+| `99-archive` | 오래된 문서 보관 |
 | `_templates` | 문서 템플릿 |
 | `_assets` | 이미지, 다이어그램 등 첨부 파일 |
 | `_private` | Git에 올리지 않는 개인/회사 경험 원본 메모 |

@@ -1,0 +1,13 @@
+{
+  "name": "backend-engineer-playbook",
+  "private": true,
+  "scripts": {
+    "wiki:prepare": "bash site/scripts/prepare-content.sh",
+    "wiki:build": "bash site/scripts/build.sh",
+    "wiki:dev": "bash site/scripts/dev.sh"
+  },
+  "engines": {
+    "node": ">=22",
+    "npm": ">=10.9.2"
+  }
+}

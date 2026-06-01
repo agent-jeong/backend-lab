@@ -1,0 +1,35 @@
+import { loadQuartzConfig, loadQuartzLayout } from "./quartz/plugins/loader/config-loader"
+import * as ExternalPlugin from "./.quartz/plugins"
+
+ExternalPlugin.Explorer({
+  filterFn: (node) => {
+    const hidden = new Set(["tags"])
+    const segment = node.slugSegment ?? ""
+    return !hidden.has(segment)
+  },
+  mapFn: (node) => {
+    const labels: Record<string, string> = {
+      "00-home": "00 Home",
+      "01-core": "01 Core",
+      "02-practical-backend": "02 Practical Backend",
+      "03-case-studies": "03 Case Studies",
+      "04-interview": "04 Interview",
+      "05-ai-workflows": "05 AI Workflows",
+    }
+
+    const segment = node.slugSegment ?? ""
+    const label = labels[segment]
+
+    if (label) {
+      node.displayName = label
+    }
+
+    return node
+  },
+  order: ["filter", "sort", "map"],
+})
+
+const config = await loadQuartzConfig()
+
+export default config
+export const layout = await loadQuartzLayout()
