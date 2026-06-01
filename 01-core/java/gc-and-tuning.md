@@ -135,17 +135,33 @@ GC 로그에서 확인할 것:
 - `MaxGCPauseMillis`를 너무 낮게 설정해서 GC가 과도하게 자주 발생한다.
 - 운영 환경에서 GC 알고리즘을 변경할 때 충분한 테스트 없이 적용한다.
 
-## 면접 답변 1분 버전
+## 핵심 요약
 
-GC는 JVM이 참조되지 않는 객체의 메모리를 자동으로 회수하는 메커니즘입니다. Heap은 Young과 Old Generation으로 나뉘고, 대부분의 객체는 Young에서 Minor GC로 빠르게 회수됩니다. Old Generation이 가득 차면 Full GC가 발생하는데, 이때 Stop-the-World로 인해 응답 지연이 생길 수 있습니다. Java 9부터 기본인 G1 GC는 Heap을 region으로 나누어 가비지가 많은 영역부터 수집하며, STW 목표 시간을 설정할 수 있습니다. 실무에서 GC 튜닝은 대부분 STW 시간을 줄이는 것이 목표이고, 튜닝 전에 애플리케이션 코드의 과도한 객체 생성을 줄이는 것이 먼저입니다. 운영에서는 GC 로그를 반드시 남겨야 장애 시 원인 분석이 가능합니다.
+GC는 JVM이 참조되지 않는 객체의 메모리를 자동으로 회수하는 메커니즘입니다.
+Heap은 Young과 Old Generation으로 나뉘고, 대부분의 객체는 Young에서 Minor GC로 빠르게 회수됩니다.
+Old Generation이 가득 차면 Full GC가 발생하는데, 이때 Stop-the-World로 인해 응답 지연이 생길 수 있습니다.
+
+Java 9부터 기본인 G1 GC는 Heap을 region으로 나누어 가비지가 많은 영역부터 수집하며, STW 목표 시간을 설정할 수 있습니다.
+
+실무에서 GC 튜닝은 대부분 STW 시간을 줄이는 것이 목표이고, 튜닝 전에 애플리케이션 코드의 과도한 객체 생성을 줄이는 것이 먼저입니다.
+운영에서는 GC 로그를 반드시 남겨야 장애 시 원인 분석이 가능합니다.
 
 ## 꼬리 질문
 
-- Minor GC와 Full GC의 차이는?
-- Stop-the-World가 서비스에 미치는 영향은?
-- G1 GC와 ZGC의 차이는?
-- GC 튜닝 전에 먼저 해야 할 것은?
-- GC 로그에서 어떤 항목을 확인하는가?
+> [!question]- Minor GC와 Full GC의 차이는?
+> Minor GC는 Young Generation만 수집하며 빠릅니다. Full GC는 전체 Heap을 수집하며 STW 시간이 길어 서비스 응답 지연의 주요 원인이 됩니다.
+
+> [!question]- Stop-the-World가 서비스에 미치는 영향은?
+> GC 실행 중 모든 애플리케이션 스레드가 멈춥니다. Full GC의 STW가 수 초에 달하면 요청 타임아웃이나 헬스체크 실패가 발생할 수 있습니다.
+
+> [!question]- G1 GC와 ZGC의 차이는?
+> G1은 STW 목표 시간을 설정할 수 있는 범용 GC입니다. ZGC는 STW를 1ms 이하로 유지하며 대용량 heap과 지연 민감 서비스에 적합합니다.
+
+> [!question]- GC 튜닝 전에 먼저 해야 할 것은?
+> 애플리케이션 코드에서 과도한 객체 생성을 줄이는 것이 먼저입니다. 불필요한 String 연결, 반복문 안의 객체 생성 등을 점검합니다.
+
+> [!question]- GC 로그에서 어떤 항목을 확인하는가?
+> GC 빈도, STW pause 시간, Full GC 발생 여부, GC 후 heap 사용량 추이를 확인합니다. GC 후에도 메모리가 줄지 않으면 누수를 의심합니다.
 
 ## 관련 문서
 

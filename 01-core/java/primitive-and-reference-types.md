@@ -79,15 +79,25 @@ if ("ACTIVE".equals(status)) {
 }
 ```
 
-## 면접 답변 1분 버전
+## 핵심 요약
 
-Java의 primitive type은 값 자체를 다루는 기본 타입이고, reference type은 객체를 참조하는 타입입니다. primitive type은 `null`이 될 수 없고 `==`로 값을 비교합니다. 반면 reference type은 `null`이 될 수 있으며, `==`는 같은 객체인지 비교하고 `equals()`는 객체의 의미상 동등성을 비교할 때 사용합니다. 실무에서는 문자열이나 wrapper type을 `==`로 비교하거나, wrapper type의 `null`을 고려하지 않아 `NullPointerException`이 나는 경우가 많기 때문에 타입 선택과 비교 방식을 명확히 구분해야 합니다.
+Java의 primitive type은 값 자체를 다루는 기본 타입이고, reference type은 객체를 참조하는 타입입니다.
+primitive type은 `null`이 될 수 없고 `==`로 값을 비교합니다.
+
+반면 reference type은 `null`이 될 수 있으며, `==`는 같은 객체인지 비교하고 `equals()`는 객체의 의미상 동등성을 비교할 때 사용합니다.
+
+실무에서는 문자열이나 wrapper type을 `==`로 비교하거나, wrapper type의 `null`을 고려하지 않아 `NullPointerException`이 나는 경우가 많기 때문에 타입 선택과 비교 방식을 명확히 구분해야 합니다.
 
 ## 꼬리 질문
 
-- `int`와 `Integer`는 언제 각각 사용해야 하는가?
-- `String` 비교에서 `==`가 아니라 `equals()`를 써야 하는 이유는 무엇인가?
-- auto boxing과 auto unboxing은 어떤 문제를 만들 수 있는가?
+> [!question]- `int`와 `Integer`는 언제 각각 사용해야 하는가?
+> 값이 반드시 있어야 하면 `int`, 값이 없을 수 있거나 DB NULL을 표현해야 하면 `Integer`를 사용합니다. 컬렉션의 제네릭 타입에는 `Integer`만 가능합니다.
+
+> [!question]- `String` 비교에서 `==`가 아니라 `equals()`를 써야 하는 이유는 무엇인가?
+> `==`는 같은 객체 참조인지 비교합니다. `new String("java")`처럼 생성하면 내용이 같아도 다른 객체이므로 `==`가 false를 반환합니다.
+
+> [!question]- auto boxing과 auto unboxing은 어떤 문제를 만들 수 있는가?
+> wrapper type이 null일 때 unboxing하면 `NullPointerException`이 발생합니다. 또한 반복문에서 불필요한 boxing이 반복되면 성능에 영향을 줄 수 있습니다.
 
 ## 관련 문서
 

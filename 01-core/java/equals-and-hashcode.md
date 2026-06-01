@@ -171,17 +171,32 @@ boolean exists = keys.contains(key); // 기대와 다르게 false 가능
 
 hash 기반 컬렉션에 넣은 뒤 `hashCode()` 계산에 쓰이는 값이 바뀌면, 객체가 저장된 bucket과 다시 찾는 bucket이 달라질 수 있다.
 
-## 면접 답변 1분 버전
+## 핵심 요약
 
-`equals()`는 두 객체가 의미상 같은지 판단하는 메서드이고, `hashCode()`는 `HashMap`, `HashSet` 같은 hash 기반 컬렉션에서 객체를 빠르게 찾기 위해 사용하는 값입니다. 중요한 규칙은 `equals()`가 true인 두 객체는 반드시 같은 `hashCode()`를 가져야 한다는 점입니다. 그렇지 않으면 같은 값처럼 보이는 객체를 `HashSet`에서 찾지 못하거나, `HashMap` key로 조회하지 못하는 문제가 생길 수 있습니다. 실무에서는 값 객체나 Map key는 변경 불가능한 필드를 기준으로 동등성을 정의하는 것이 안전합니다. 반면 JPA Entity는 id 할당 시점, 프록시, 연관관계 때문에 모든 필드를 기준으로 자동 생성하면 위험할 수 있어서 id나 비즈니스 key 기준을 팀 규칙에 맞게 정해야 합니다.
+`equals()`는 두 객체가 의미상 같은지 판단하는 메서드이고, `hashCode()`는 `HashMap`, `HashSet` 같은 hash 기반 컬렉션에서 객체를 빠르게 찾기 위해 사용하는 값입니다.
+
+중요한 규칙은 `equals()`가 true인 두 객체는 반드시 같은 `hashCode()`를 가져야 한다는 점입니다.
+그렇지 않으면 같은 값처럼 보이는 객체를 `HashSet`에서 찾지 못하거나, `HashMap` key로 조회하지 못하는 문제가 생길 수 있습니다.
+
+실무에서는 값 객체나 Map key는 변경 불가능한 필드를 기준으로 동등성을 정의하는 것이 안전합니다.
+반면 JPA Entity는 id 할당 시점, 프록시, 연관관계 때문에 모든 필드를 기준으로 자동 생성하면 위험할 수 있어서 id나 비즈니스 key 기준을 팀 규칙에 맞게 정해야 합니다.
 
 ## 꼬리 질문
 
-- `equals()`가 true이면 `hashCode()`도 반드시 같아야 하는 이유는 무엇인가?
-- `hashCode()`가 같으면 `equals()`도 true인가?
-- mutable 객체를 `HashMap` key로 쓰면 어떤 문제가 생기는가?
-- JPA Entity에 Lombok `@Data`를 쓰면 왜 위험할 수 있는가?
-- `record`의 `equals/hashCode`는 어떤 기준으로 생성되는가?
+> [!question]- `equals()`가 true이면 `hashCode()`도 반드시 같아야 하는 이유는 무엇인가?
+> hash 기반 컬렉션은 `hashCode()`로 bucket을 먼저 찾습니다. hashCode가 다르면 다른 bucket을 보기 때문에 equals가 true여도 찾을 수 없습니다.
+
+> [!question]- `hashCode()`가 같으면 `equals()`도 true인가?
+> 아닙니다. hash 충돌은 정상적인 상황입니다. 같은 bucket에 다른 객체가 들어갈 수 있으며, `equals()`로 최종 판단합니다.
+
+> [!question]- mutable 객체를 `HashMap` key로 쓰면 어떤 문제가 생기는가?
+> 저장 후 key 필드를 변경하면 hashCode가 달라져 기존 bucket에서 찾을 수 없습니다. `get()`이 null을 반환하고, 제거도 안 됩니다.
+
+> [!question]- JPA Entity에 Lombok `@Data`를 쓰면 왜 위험할 수 있는가?
+> 모든 필드가 equals/hashCode에 포함되어 lazy 로딩 트리거, 순환 참조, 저장 전 id null 문제가 생깁니다.
+
+> [!question]- `record`의 `equals/hashCode`는 어떤 기준으로 생성되는가?
+> 선언된 모든 컴포넌트(필드) 기반으로 자동 생성됩니다. 특정 필드만 제외하려면 직접 재정의해야 합니다.
 
 ## 관련 문서
 

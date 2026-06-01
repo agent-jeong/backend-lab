@@ -236,17 +236,34 @@ Set<User> users = new TreeSet<>(Comparator.comparing(User::getId));
 | 정렬 + 중복 제거 동시 | `TreeSet` + `Comparator` |
 | 순서 유지 + 중복 제거 | `LinkedHashSet` |
 
-## 면접 답변 1분 버전
+## 핵심 요약
 
-컬렉션 연산에서 가장 중요한 것은 탐색 비용입니다. `List.contains()`는 O(n)이라서 반복문 안에서 호출하면 O(n^2)이 됩니다. 이 경우 `Set`으로 변환하면 각 탐색이 O(1)이 되어 전체가 O(n)으로 줄어듭니다. 정렬은 `Comparator.comparing()`과 `thenComparing()`으로 다중 기준을 체이닝할 수 있고, null이 있으면 `nullsLast()`를 사용해야 합니다. 중복 제거에서 `distinct()`는 `equals()` 기준이므로 객체에 `equals/hashCode`가 없으면 동작하지 않습니다. 실무에서는 정렬 기준이 DB 컬럼이면 ORDER BY를 쓰는 것이 효율적이고, 애플리케이션 정렬은 이미 메모리에 있는 소규모 데이터에 적합합니다.
+컬렉션 연산에서 가장 중요한 것은 탐색 비용입니다.
+`List.contains()`는 O(n)이라서 반복문 안에서 호출하면 O(n^2)이 됩니다.
+이 경우 `Set`으로 변환하면 각 탐색이 O(1)이 되어 전체가 O(n)으로 줄어듭니다.
+
+정렬은 `Comparator.comparing()`과 `thenComparing()`으로 다중 기준을 체이닝할 수 있고, null이 있으면 `nullsLast()`를 사용해야 합니다.
+
+중복 제거에서 `distinct()`는 `equals()` 기준이므로 객체에 `equals/hashCode`가 없으면 동작하지 않습니다.
+
+실무에서는 정렬 기준이 DB 컬럼이면 ORDER BY를 쓰는 것이 효율적이고, 애플리케이션 정렬은 이미 메모리에 있는 소규모 데이터에 적합합니다.
 
 ## 꼬리 질문
 
-- `List.contains()`와 `Set.contains()`의 시간 복잡도 차이는?
-- `distinct()`가 동작하지 않는 경우는 언제인가?
-- 다중 정렬 기준을 `Comparator`로 어떻게 표현하는가?
-- DB 정렬과 애플리케이션 정렬은 언제 각각 적합한가?
-- `TreeSet`의 동등성 판단 기준은 `equals()`인가 `compareTo()`인가?
+> [!question]- `List.contains()`와 `Set.contains()`의 시간 복잡도 차이는?
+> `List.contains()`는 O(n)으로 처음부터 순회하고, `HashSet.contains()`는 O(1) 평균으로 hash 기반 조회합니다.
+
+> [!question]- `distinct()`가 동작하지 않는 경우는 언제인가?
+> 객체에 `equals()`와 `hashCode()`를 재정의하지 않으면 참조 비교가 되어 같은 값의 다른 인스턴스가 중복 제거되지 않습니다.
+
+> [!question]- 다중 정렬 기준을 `Comparator`로 어떻게 표현하는가?
+> `Comparator.comparing(Order::getStatus).thenComparing(Order::getCreatedAt, Comparator.reverseOrder())`처럼 `thenComparing()`으로 체이닝합니다.
+
+> [!question]- DB 정렬과 애플리케이션 정렬은 언제 각각 적합한가?
+> 정렬 기준이 DB 컬럼이고 데이터가 크면 ORDER BY가 효율적입니다. 여러 API 결과를 합치거나 가공된 값 기준이면 애플리케이션 정렬을 사용합니다.
+
+> [!question]- `TreeSet`의 동등성 판단 기준은 `equals()`인가 `compareTo()`인가?
+> `compareTo()`입니다. `compareTo()`가 0을 반환하면 같은 원소로 취급하므로, `equals()`와 일관되지 않으면 예상과 다르게 동작할 수 있습니다.
 
 ## 관련 문서
 

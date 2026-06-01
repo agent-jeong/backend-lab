@@ -204,17 +204,34 @@ interface가 적합한 경우:
 - record를 JPA Entity로 사용하려다 프록시 생성 실패가 발생한다.
 - abstract class를 남용해서 상속 계층이 깊어지고 변경이 어려워진다.
 
-## 면접 답변 1분 버전
+## 핵심 요약
 
-Java에서 타입을 정의할 때는 용도에 따라 적절한 종류를 선택해야 합니다. 데이터 전달이 목적이면 record가 불변성과 equals/hashCode를 자동으로 보장해서 DTO에 적합합니다. 고정된 상수 집합은 enum을 사용하고, 상수별로 다른 로직이 필요하면 enum에 추상 메서드를 넣어서 if-else 분기를 제거할 수 있습니다. 행위의 계약을 정의할 때는 interface를 사용하며, Spring 환경에서 DI와 테스트 추상화에 주로 활용됩니다. class는 JPA Entity처럼 가변 상태와 행위를 함께 가지는 경우에 사용합니다. 주의할 점으로 enum을 JPA에서 사용할 때 `@Enumerated(STRING)`을 써야 순서 변경에 안전하고, record는 final class이므로 JPA Entity로는 사용할 수 없습니다.
+Java에서 타입을 정의할 때는 용도에 따라 적절한 종류를 선택해야 합니다.
+
+데이터 전달이 목적이면 record가 불변성과 equals/hashCode를 자동으로 보장해서 DTO에 적합합니다.
+고정된 상수 집합은 enum을 사용하고, 상수별로 다른 로직이 필요하면 enum에 추상 메서드를 넣어서 if-else 분기를 제거할 수 있습니다.
+
+행위의 계약을 정의할 때는 interface를 사용하며, Spring 환경에서 DI와 테스트 추상화에 주로 활용됩니다.
+class는 JPA Entity처럼 가변 상태와 행위를 함께 가지는 경우에 사용합니다.
+
+주의할 점으로 enum을 JPA에서 사용할 때 `@Enumerated(STRING)`을 써야 순서 변경에 안전하고, record는 final class이므로 JPA Entity로는 사용할 수 없습니다.
 
 ## 꼬리 질문
 
-- record를 JPA Entity로 사용할 수 없는 이유는?
-- enum에 로직을 넣으면 어떤 장점이 있는가?
-- `@Enumerated(ORDINAL)`이 위험한 이유는?
-- interface와 abstract class를 선택하는 기준은?
-- sealed class는 이 네 가지와 어떤 관계가 있는가?
+> [!question]- record를 JPA Entity로 사용할 수 없는 이유는?
+> record는 final class라 프록시 생성이 불가능하고, setter가 없어 필드 변경이 안 되며, 기본 생성자도 없어서 JPA 스펙을 충족하지 못합니다.
+
+> [!question]- enum에 로직을 넣으면 어떤 장점이 있는가?
+> 호출부의 if-else 분기를 제거할 수 있고, 새 상수 추가 시 추상 메서드 구현을 컴파일러가 강제해서 누락 실수를 방지합니다.
+
+> [!question]- `@Enumerated(ORDINAL)`이 위험한 이유는?
+> enum 상수의 선언 순서(0, 1, 2...)로 저장되기 때문에, 중간에 상수를 추가하거나 순서를 바꾸면 기존 DB 데이터와 매핑이 깨집니다.
+
+> [!question]- interface와 abstract class를 선택하는 기준은?
+> 다중 구현이 필요하거나 행위 계약만 정의하면 interface, 공통 상태나 구현을 자식에게 제공해야 하면 abstract class를 사용합니다.
+
+> [!question]- sealed class는 이 네 가지와 어떤 관계가 있는가?
+> sealed class는 상속 가능한 하위 타입을 `permits`로 제한합니다. interface나 abstract class에 적용해서 타입 안전한 계층 구조를 만들 수 있습니다.
 
 ## 관련 문서
 

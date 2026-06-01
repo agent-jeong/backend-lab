@@ -132,17 +132,31 @@ spring:
 | Java 8에 묶여 있는 프로젝트 | 라이브러리 호환성 확인 후 17로 먼저 올리기 |
 | Virtual Thread 도입 | I/O 바운드 서비스에서 Java 21 + Spring Boot 3.2+ |
 
-## 면접 답변 1분 버전
+## 핵심 요약
 
-Java 8은 Lambda, Stream, Optional으로 현대 Java의 기반을 만들었고, Java 17은 record와 sealed class로 타입 안전성과 불변 객체 생성을 편리하게 했습니다. 가장 큰 변화는 Java 21의 virtual thread인데, OS 스레드와 1:1 매핑이던 기존 모델에서 JVM이 관리하는 경량 스레드로 전환되어, I/O 바운드 서비스에서 수만 개의 동시 요청을 적은 리소스로 처리할 수 있게 되었습니다. 다만 CPU 바운드 작업에서는 이점이 없고, synchronized 블록이나 ThreadLocal 사용 시 주의가 필요합니다. 실무에서는 새 프로젝트는 Java 21, 기존 프로젝트는 17 이상으로 올리는 것을 기준으로 판단합니다.
+Java 8은 Lambda, Stream, Optional으로 현대 Java의 기반을 만들었고, Java 17은 record와 sealed class로 타입 안전성과 불변 객체 생성을 편리하게 했습니다.
+
+가장 큰 변화는 Java 21의 virtual thread인데, OS 스레드와 1:1 매핑이던 기존 모델에서 JVM이 관리하는 경량 스레드로 전환되어, I/O 바운드 서비스에서 수만 개의 동시 요청을 적은 리소스로 처리할 수 있게 되었습니다.
+다만 CPU 바운드 작업에서는 이점이 없고, synchronized 블록이나 ThreadLocal 사용 시 주의가 필요합니다.
+
+실무에서는 새 프로젝트는 Java 21, 기존 프로젝트는 17 이상으로 올리는 것을 기준으로 판단합니다.
 
 ## 꼬리 질문
 
-- virtual thread와 platform thread의 차이는?
-- virtual thread에서 pinning이 발생하는 상황은?
-- record를 JPA Entity로 사용할 수 없는 이유는?
-- sealed class는 어떤 설계 문제를 해결하는가?
-- var를 남용하면 어떤 문제가 생기는가?
+> [!question]- virtual thread와 platform thread의 차이는?
+> platform thread는 OS 스레드와 1:1 매핑되어 생성 비용이 큽니다. virtual thread는 JVM이 관리하는 경량 스레드로 수만 개를 생성해도 부담이 적습니다.
+
+> [!question]- virtual thread에서 pinning이 발생하는 상황은?
+> `synchronized` 블록 안에서 blocking I/O를 수행하면 carrier thread가 고정(pinning)됩니다. `ReentrantLock`으로 대체하면 해결됩니다.
+
+> [!question]- record를 JPA Entity로 사용할 수 없는 이유는?
+> record는 final class라 JPA가 프록시를 생성할 수 없고, setter가 없어 필드 값 변경이 불가능하며, 기본 생성자도 없습니다.
+
+> [!question]- sealed class는 어떤 설계 문제를 해결하는가?
+> 상속 가능한 하위 타입을 컴파일 타임에 제한합니다. switch에서 빠진 케이스를 컴파일러가 경고해주어 타입 안전성이 높아집니다.
+
+> [!question]- var를 남용하면 어떤 문제가 생기는가?
+> 타입이 오른쪽에서 명확히 보이지 않는 경우 코드 가독성이 떨어집니다. `var result = process(data)`처럼 타입 추론이 어려운 경우가 문제입니다.
 
 ## 관련 문서
 

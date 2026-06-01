@@ -134,17 +134,32 @@ checked exception에서도 롤백이 필요하면 `@Transactional(rollbackFor = 
 | 복구 불가능한 시스템 오류 | 잡지 말고 전파, 글로벌 핸들러에서 처리 |
 | 트랜잭션 롤백이 필요한 checked exception | `rollbackFor` 명시 |
 
-## 면접 답변 1분 버전
+## 핵심 요약
 
-Java 예외는 checked와 unchecked로 나뉘는데, 실무에서는 대부분의 비즈니스 예외를 unchecked로 만듭니다. checked exception은 모든 호출 계층에 throws를 강제해서 코드가 장황해지고, Spring의 `@Transactional`이 기본적으로 unchecked에서만 롤백하기 때문입니다. 커스텀 예외를 설계할 때는 ErrorCode enum과 함께 사용해서 HTTP 상태 코드와 메시지를 일관되게 관리합니다. 가장 주의할 점은 예외를 삼키지 않는 것과, 예외 변환 시 원본 cause를 반드시 포함하는 것입니다. 트랜잭션 경계에서는 checked exception이 기본적으로 롤백을 유발하지 않으므로 `rollbackFor`를 명시해야 하는 상황을 인지하고 있어야 합니다.
+Java 예외는 checked와 unchecked로 나뉘는데, 실무에서는 대부분의 비즈니스 예외를 unchecked로 만듭니다.
+checked exception은 모든 호출 계층에 throws를 강제해서 코드가 장황해지고, Spring의 `@Transactional`이 기본적으로 unchecked에서만 롤백하기 때문입니다.
+
+커스텀 예외를 설계할 때는 ErrorCode enum과 함께 사용해서 HTTP 상태 코드와 메시지를 일관되게 관리합니다.
+
+가장 주의할 점은 예외를 삼키지 않는 것과, 예외 변환 시 원본 cause를 반드시 포함하는 것입니다.
+트랜잭션 경계에서는 checked exception이 기본적으로 롤백을 유발하지 않으므로 `rollbackFor`를 명시해야 하는 상황을 인지하고 있어야 합니다.
 
 ## 꼬리 질문
 
-- checked exception과 unchecked exception의 차이는 무엇인가?
-- 실무에서 checked exception보다 unchecked exception을 선호하는 이유는?
-- Spring `@Transactional`에서 checked exception이 발생하면 어떻게 되는가?
-- 예외를 변환할 때 cause를 넘기지 않으면 어떤 문제가 생기는가?
-- 글로벌 예외 핸들러(`@ControllerAdvice`)는 어떤 역할을 하는가?
+> [!question]- checked exception과 unchecked exception의 차이는 무엇인가?
+> checked는 `Exception`을 상속하며 컴파일러가 처리를 강제합니다. unchecked는 `RuntimeException`을 상속하며 처리를 강제하지 않습니다.
+
+> [!question]- 실무에서 checked exception보다 unchecked exception을 선호하는 이유는?
+> checked는 모든 호출 계층에 throws를 강제해서 코드가 장황해지고, 실제로 catch해서 복구할 수 있는 상황이 많지 않기 때문입니다.
+
+> [!question]- Spring `@Transactional`에서 checked exception이 발생하면 어떻게 되는가?
+> 기본적으로 롤백하지 않고 커밋합니다. 롤백이 필요하면 `@Transactional(rollbackFor = Exception.class)`를 명시해야 합니다.
+
+> [!question]- 예외를 변환할 때 cause를 넘기지 않으면 어떤 문제가 생기는가?
+> 원본 예외의 stack trace가 유실되어 실제 장애 발생 지점을 추적할 수 없게 됩니다. `new BusinessException(errorCode, e)`처럼 cause를 포함해야 합니다.
+
+> [!question]- 글로벌 예외 핸들러(`@ControllerAdvice`)는 어떤 역할을 하는가?
+> 컨트롤러에서 발생한 예외를 한 곳에서 잡아 일관된 에러 응답(HTTP 상태 코드, 메시지)으로 변환합니다. 각 컨트롤러에서 try-catch를 반복하지 않아도 됩니다.
 
 ## 관련 문서
 

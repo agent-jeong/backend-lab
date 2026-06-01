@@ -170,17 +170,33 @@ java -XX:MaxRAMPercentage=75.0 -jar app.jar
 - 리소스(Connection, Stream)를 try-with-resources 없이 사용한다.
 - 컨테이너 메모리 한도와 JVM 메모리 설정의 관계를 고려하지 않는다.
 
-## 면접 답변 1분 버전
+## 핵심 요약
 
-메모리 누수는 더 이상 필요 없는 객체가 GC에 의해 회수되지 않고 heap에 남는 현상입니다. 대표적인 원인으로는 static 컬렉션에 제거 없이 추가만 하는 경우, 리소스를 닫지 않는 경우, ThreadLocal을 remove하지 않는 경우가 있습니다. 누수가 쌓이면 GC가 점점 자주 발생하다가 결국 OOM이 발생합니다. 운영에서는 반드시 `-XX:+HeapDumpOnOutOfMemoryError`를 설정해서 OOM 발생 시 heap dump가 자동 생성되도록 해야 합니다. 분석은 Eclipse MAT으로 Dominator Tree와 GC Roots를 확인해서 어떤 객체가 왜 회수되지 않는지 추적합니다. 컨테이너 환경에서는 JVM 메모리 총합이 컨테이너 한도를 넘지 않도록 `-Xmx`를 한도의 70~80% 이하로 설정해야 합니다.
+메모리 누수는 더 이상 필요 없는 객체가 GC에 의해 회수되지 않고 heap에 남는 현상입니다.
+대표적인 원인으로는 static 컬렉션에 제거 없이 추가만 하는 경우, 리소스를 닫지 않는 경우, ThreadLocal을 remove하지 않는 경우가 있습니다.
+
+누수가 쌓이면 GC가 점점 자주 발생하다가 결국 OOM이 발생합니다.
+운영에서는 반드시 `-XX:+HeapDumpOnOutOfMemoryError`를 설정해서 OOM 발생 시 heap dump가 자동 생성되도록 해야 합니다.
+
+분석은 Eclipse MAT으로 Dominator Tree와 GC Roots를 확인해서 어떤 객체가 왜 회수되지 않는지 추적합니다.
+컨테이너 환경에서는 JVM 메모리 총합이 컨테이너 한도를 넘지 않도록 `-Xmx`를 한도의 70~80% 이하로 설정해야 합니다.
 
 ## 꼬리 질문
 
-- 메모리 누수와 메모리 부족의 차이는?
-- `OutOfMemoryError: Java heap space`와 `GC overhead limit exceeded`의 차이는?
-- heap dump에서 메모리 누수를 어떻게 찾는가?
-- ThreadLocal이 스레드 풀 환경에서 누수를 일으키는 이유는?
-- 컨테이너 환경에서 JVM 메모리를 어떻게 설정하는가?
+> [!question]- 메모리 누수와 메모리 부족의 차이는?
+> 메모리 부족은 단순히 데이터가 많아서 heap이 모자란 것이고, 메모리 누수는 필요 없는 객체가 GC되지 않고 계속 쌓여서 결국 OOM에 이르는 것입니다.
+
+> [!question]- `OutOfMemoryError: Java heap space`와 `GC overhead limit exceeded`의 차이는?
+> `heap space`는 할당할 공간 자체가 없는 것이고, `GC overhead limit exceeded`는 GC에 98% 이상 시간을 쓰면서 2% 미만만 회수하는 상태입니다.
+
+> [!question]- heap dump에서 메모리 누수를 어떻게 찾는가?
+> Eclipse MAT에서 Dominator Tree로 가장 큰 객체를 찾고, GC Roots 경로를 추적해서 어떤 참조가 회수를 막고 있는지 확인합니다.
+
+> [!question]- ThreadLocal이 스레드 풀 환경에서 누수를 일으키는 이유는?
+> 스레드 풀의 스레드는 재사용되므로 `remove()`를 호출하지 않으면 이전 요청의 값이 남아있습니다. 스레드 수만큼 값이 계속 유지됩니다.
+
+> [!question]- 컨테이너 환경에서 JVM 메모리를 어떻게 설정하는가?
+> `-Xmx`를 컨테이너 한도의 70~80%로 설정합니다. heap 외에 Metaspace, Stack, Direct Buffer 등이 필요하므로 한도와 같게 설정하면 OOM Kill됩니다.
 
 ## 관련 문서
 

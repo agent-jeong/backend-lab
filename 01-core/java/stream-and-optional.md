@@ -130,17 +130,32 @@ User user = findById(id).orElseGet(() -> createDefault());
 - Stream 체이닝이 길어져서 어디서 문제가 생기는지 추적이 어렵다.
 - `parallelStream()`을 성능 개선 목적으로 무분별하게 사용한다.
 
-## 면접 답변 1분 버전
+## 핵심 요약
 
-Stream은 컬렉션 데이터를 선언적으로 필터링, 변환, 집계하는 파이프라인입니다. 가독성이 좋지만, 외부 상태를 변경하는 side effect를 넣으면 안 되고, 단순 로직에서는 for문이 나을 수 있습니다. Optional은 메서드 반환 타입에서 값이 없을 수 있음을 명시적으로 표현할 때 사용합니다. 필드나 파라미터에는 사용하지 않고, `get()` 대신 `orElseThrow()`나 `orElseGet()`을 사용하는 것이 안전합니다. 주의할 점으로 `orElse()`는 값이 있어도 인자가 항상 실행되므로, 비용이 큰 연산은 `orElseGet()`을 써야 합니다.
+Stream은 컬렉션 데이터를 선언적으로 필터링, 변환, 집계하는 파이프라인입니다.
+가독성이 좋지만, 외부 상태를 변경하는 side effect를 넣으면 안 되고, 단순 로직에서는 for문이 나을 수 있습니다.
+
+Optional은 메서드 반환 타입에서 값이 없을 수 있음을 명시적으로 표현할 때 사용합니다.
+필드나 파라미터에는 사용하지 않고, `get()` 대신 `orElseThrow()`나 `orElseGet()`을 사용하는 것이 안전합니다.
+
+주의할 점으로 `orElse()`는 값이 있어도 인자가 항상 실행되므로, 비용이 큰 연산은 `orElseGet()`을 써야 합니다.
 
 ## 꼬리 질문
 
-- Stream에서 side effect가 문제가 되는 구체적인 상황은?
-- `orElse()`와 `orElseGet()`의 차이를 코드로 설명할 수 있는가?
-- `parallelStream()`은 언제 성능이 나빠지는가?
-- Optional을 필드로 사용하면 안 되는 이유는?
-- Stream의 lazy evaluation은 어떻게 동작하는가?
+> [!question]- Stream에서 side effect가 문제가 되는 구체적인 상황은?
+> `forEach` 안에서 외부 리스트를 수정하면 `parallelStream` 사용 시 동시성 문제가 생깁니다. `map()`이나 `collect()`로 결과를 반환하는 것이 안전합니다.
+
+> [!question]- `orElse()`와 `orElseGet()`의 차이를 코드로 설명할 수 있는가?
+> `orElse(createDefault())`는 값이 있어도 `createDefault()`가 항상 실행됩니다. `orElseGet(() -> createDefault())`는 값이 없을 때만 실행됩니다. 비용이 큰 연산은 `orElseGet()`을 써야 합니다.
+
+> [!question]- `parallelStream()`은 언제 성능이 나빠지는가?
+> 데이터가 적거나, I/O 작업이 섞여 있거나, 공유 ForkJoinPool에서 다른 작업과 경합할 때 오히려 느려질 수 있습니다.
+
+> [!question]- Optional을 필드로 사용하면 안 되는 이유는?
+> `Optional`은 `Serializable`하지 않아 직렬화 문제가 생기고, 필드마다 wrapping하면 메모리 오버헤드와 코드 복잡성이 늘어납니다.
+
+> [!question]- Stream의 lazy evaluation은 어떻게 동작하는가?
+> `filter()`, `map()` 같은 중간 연산은 즉시 실행되지 않고, `collect()`, `toList()` 같은 최종 연산이 호출될 때 파이프라인 전체가 실행됩니다.
 
 ## 관련 문서
 

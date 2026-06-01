@@ -254,17 +254,33 @@ public record ExternalApiResponse(String userName, String emailAddress) {
 | 민감 필드 | DTO 분리가 우선, 부득이하면 `@JsonIgnore` |
 | 불변 요청 객체 | record 사용 (Jackson 2.12+) |
 
-## 면접 답변 1분 버전
+## 핵심 요약
 
-Spring Boot에서 API 요청/응답의 JSON 변환은 Jackson이 담당합니다. 직렬화는 getter 기준, 역직렬화는 기본 생성자 + setter 또는 `@JsonCreator` 기준으로 동작합니다. 실무에서 가장 중요한 원칙은 Entity를 API 응답으로 직접 반환하지 않는 것입니다. 순환 참조로 인한 `StackOverflowError`, 민감 정보 노출, lazy loading 문제가 생길 수 있기 때문입니다. record 기반 DTO로 변환하는 것이 안전합니다. `LocalDateTime`은 기본적으로 배열로 직렬화되므로 `write-dates-as-timestamps: false` 설정이 필요하고, enum은 대소문자 불일치에 주의해야 합니다.
+Spring Boot에서 API 요청/응답의 JSON 변환은 Jackson이 담당합니다.
+직렬화는 getter 기준, 역직렬화는 기본 생성자 + setter 또는 `@JsonCreator` 기준으로 동작합니다.
+
+실무에서 가장 중요한 원칙은 Entity를 API 응답으로 직접 반환하지 않는 것입니다.
+순환 참조로 인한 `StackOverflowError`, 민감 정보 노출, lazy loading 문제가 생길 수 있기 때문입니다.
+record 기반 DTO로 변환하는 것이 안전합니다.
+
+`LocalDateTime`은 기본적으로 배열로 직렬화되므로 `write-dates-as-timestamps: false` 설정이 필요하고, enum은 대소문자 불일치에 주의해야 합니다.
 
 ## 꼬리 질문
 
-- Jackson의 직렬화와 역직렬화 기준은 각각 무엇인가?
-- Entity를 API 응답으로 직접 반환하면 어떤 문제가 생기는가?
-- `@JsonIgnore`를 getter에만 붙이면 어떻게 되는가?
-- `LocalDateTime`의 기본 직렬화 형태는?
-- record의 역직렬화가 동작하는 원리는?
+> [!question]- Jackson의 직렬화와 역직렬화 기준은 각각 무엇인가?
+> 직렬화는 public getter 기준으로 필드를 JSON에 포함하고, 역직렬화는 기본 생성자 + setter 또는 `@JsonCreator`를 통해 객체를 생성합니다.
+
+> [!question]- Entity를 API 응답으로 직접 반환하면 어떤 문제가 생기는가?
+> 양방향 연관관계의 순환 참조로 `StackOverflowError`, 민감 정보 노출, lazy loading에 의한 추가 쿼리나 예외가 발생할 수 있습니다.
+
+> [!question]- `@JsonIgnore`를 getter에만 붙이면 어떻게 되는가?
+> 직렬화에서는 제외되지만 역직렬화에서는 여전히 바인딩됩니다. 양쪽 모두 제외하려면 필드에 붙이거나 `@JsonProperty(access = WRITE_ONLY)` 등을 사용합니다.
+
+> [!question]- `LocalDateTime`의 기본 직렬화 형태는?
+> 배열 형태(`[2024, 1, 15, 10, 30]`)로 직렬화됩니다. `write-dates-as-timestamps: false` 설정으로 ISO-8601 문자열로 변환할 수 있습니다.
+
+> [!question]- record의 역직렬화가 동작하는 원리는?
+> Jackson 2.12+에서 record의 canonical constructor를 자동 인식합니다. JSON 필드명이 다르면 생성자 파라미터에 `@JsonProperty`를 붙여야 합니다.
 
 ## 관련 문서
 

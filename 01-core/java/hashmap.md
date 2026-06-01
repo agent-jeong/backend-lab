@@ -143,17 +143,32 @@ Map<Long, Order> latestOrderMap = orders.stream()
 
 위 코드는 같은 `userId`의 주문이 여러 개 있으면 나중 주문으로 덮어쓴다. 실제 코드에서는 “최신” 기준이 생성일인지, 상태인지, 정렬된 입력인지 명확히 해야 한다.
 
-## 면접 답변 1분 버전
+## 핵심 요약
 
-`HashMap`은 key-value 형태로 데이터를 저장하고, key의 `hashCode()`로 내부 배열의 위치를 찾은 뒤 `equals()`로 같은 key인지 확인하는 자료구조입니다. 평균적으로 `get`과 `put`이 빠르기 때문에 실무에서는 DB에서 조회한 목록을 id 기준으로 매핑하거나, API 응답을 조립할 때 이중 반복을 줄이는 데 자주 사용합니다. 다만 객체를 key로 사용할 때 `equals()`와 `hashCode()`가 올바르게 구현되어 있지 않으면 같은 값인데도 조회가 안 되거나 중복 저장처럼 동작할 수 있습니다. 순서가 필요하면 `LinkedHashMap`, 정렬이 필요하면 `TreeMap`, 동시 수정이 필요하면 `ConcurrentHashMap`을 고려해야 합니다. 그래서 실무에서는 단순히 HashMap이 빠르다고 외우기보다 key의 동등성 기준, 데이터 크기, 순서 요구사항, 동시성 여부를 함께 보고 선택합니다.
+`HashMap`은 key-value 형태로 데이터를 저장하고, key의 `hashCode()`로 내부 배열의 위치를 찾은 뒤 `equals()`로 같은 key인지 확인하는 자료구조입니다.
+
+평균적으로 `get`과 `put`이 빠르기 때문에 실무에서는 DB에서 조회한 목록을 id 기준으로 매핑하거나, API 응답을 조립할 때 이중 반복을 줄이는 데 자주 사용합니다.
+다만 객체를 key로 사용할 때 `equals()`와 `hashCode()`가 올바르게 구현되어 있지 않으면 같은 값인데도 조회가 안 되거나 중복 저장처럼 동작할 수 있습니다.
+
+순서가 필요하면 `LinkedHashMap`, 정렬이 필요하면 `TreeMap`, 동시 수정이 필요하면 `ConcurrentHashMap`을 고려해야 합니다.
+그래서 실무에서는 단순히 HashMap이 빠르다고 외우기보다 key의 동등성 기준, 데이터 크기, 순서 요구사항, 동시성 여부를 함께 보고 선택합니다.
 
 ## 꼬리 질문
 
-- `HashMap`에서 `equals()`와 `hashCode()`를 함께 재정의해야 하는 이유는 무엇인가?
-- `HashMap`과 `ConcurrentHashMap`은 언제 구분해서 써야 하는가?
-- `Collectors.toMap()`에서 중복 key가 생기면 어떻게 되는가?
-- `HashMap`은 입력 순서를 보장하는가?
-- 객체를 `HashMap`의 key로 사용할 때 어떤 점을 조심해야 하는가?
+> [!question]- `HashMap`에서 `equals()`와 `hashCode()`를 함께 재정의해야 하는 이유는 무엇인가?
+> `hashCode()`로 bucket 위치를 정하고 `equals()`로 같은 key인지 판단합니다. 하나만 재정의하면 저장은 되지만 조회가 안 되는 문제가 생깁니다.
+
+> [!question]- `HashMap`과 `ConcurrentHashMap`은 언제 구분해서 써야 하는가?
+> 단일 스레드나 읽기 전용이면 `HashMap`, 여러 스레드가 동시에 읽고 쓰면 `ConcurrentHashMap`을 사용합니다.
+
+> [!question]- `Collectors.toMap()`에서 중복 key가 생기면 어떻게 되는가?
+> merge 전략이 없으면 `IllegalStateException`이 발생합니다. `(old, new) -> new` 같은 merge function을 세 번째 인자로 지정해야 합니다.
+
+> [!question]- `HashMap`은 입력 순서를 보장하는가?
+> 보장하지 않습니다. 입력 순서가 필요하면 `LinkedHashMap`, 정렬된 순서가 필요하면 `TreeMap`을 사용합니다.
+
+> [!question]- 객체를 `HashMap`의 key로 사용할 때 어떤 점을 조심해야 하는가?
+> `equals()`와 `hashCode()`를 반드시 재정의해야 하고, key로 쓰는 필드는 변경 불가능해야 합니다. 가능하면 `Long`, `String`, enum을 key로 쓰는 것이 안전합니다.
 
 ## 관련 문서
 
