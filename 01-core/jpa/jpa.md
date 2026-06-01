@@ -30,6 +30,8 @@ description: JPA 동작 원리와 성능 문제 학습 인덱스
 6. [[lazy-and-eager-loading|지연 로딩과 즉시 로딩]]
 7. [[n-plus-one-and-fetch-join|N+1과 Fetch Join]]
 8. [[transaction-and-flush|Transaction과 flush]]
+9. [[querydsl|QueryDSL]]
+10. [[querydsl-practical-usage|QueryDSL 실무 활용]]
 
 ## 핵심 질문
 
@@ -37,6 +39,9 @@ description: JPA 동작 원리와 성능 문제 학습 인덱스
 - 영속성 컨텍스트는 어떤 문제를 해결하는가?
 - flush는 언제 발생하고 어떤 영향을 주는가?
 - N+1은 왜 발생하고 어떻게 줄이는가?
+- QueryDSL은 어떤 문제를 해결하고 어떤 JPA 성능 문제를 그대로 남기는가?
+- 동적 검색 조건, DTO projection, count query는 어떻게 설계해야 하는가?
+- QueryDSL Custom Repository는 어떤 구조로 작성하는가?
 - 이 주제의 핵심 동작 원리는 무엇인가?
 - 실무에서 자주 발생하는 문제는 무엇인가?
 - 어떤 상황에서 주의해야 하는가?

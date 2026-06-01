@@ -34,6 +34,8 @@ ExternalPlugin.Explorer({
         "lazy-and-eager-loading",
         "n-plus-one-and-fetch-join",
         "transaction-and-flush",
+        "querydsl",
+        "querydsl-practical-usage",
       ],
       spring: [
         "why-spring",
