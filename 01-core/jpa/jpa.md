@@ -22,14 +22,14 @@ description: JPA 동작 원리와 성능 문제 학습 인덱스
 
 ## 학습 순서
 
-1. JPA를 사용하는 이유
-2. Entity와 Table 매핑
-3. 영속성 컨텍스트
-4. Dirty Checking
-5. 연관관계 매핑
-6. 지연 로딩과 즉시 로딩
-7. N+1과 Fetch Join
-8. Transaction과 flush
+1. [[why-jpa|JPA를 사용하는 이유]]
+2. [[entity-table-mapping|Entity와 Table 매핑]]
+3. [[persistence-context|영속성 컨텍스트]]
+4. [[dirty-checking|Dirty Checking]]
+5. [[association-mapping|연관관계 매핑]]
+6. [[lazy-and-eager-loading|지연 로딩과 즉시 로딩]]
+7. [[n-plus-one-and-fetch-join|N+1과 Fetch Join]]
+8. [[transaction-and-flush|Transaction과 flush]]
 
 ## 핵심 질문
 

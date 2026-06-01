@@ -158,6 +158,232 @@ article {
   display: none;
 }
 
+// ──────────────────────────────────────
+// Table
+// ──────────────────────────────────────
+.table-container > table {
+  width: 100%;
+  margin: 1rem 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--lightgray);
+  border-radius: 6px;
+  overflow: hidden;
+
+  th {
+    background-color: var(--highlight);
+    font-weight: 600;
+    font-size: 0.88rem;
+    letter-spacing: 0.01em;
+    padding: 0.55rem 0.85rem;
+    border-bottom: 2px solid var(--lightgray);
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 0.5rem 0.85rem;
+    font-size: 0.92rem;
+    vertical-align: top;
+  }
+
+  tr {
+    border-bottom: 1px solid var(--lightgray);
+    transition: background-color 0.15s ease;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background-color: var(--highlight);
+    }
+  }
+
+  code {
+    font-size: 0.84rem;
+  }
+}
+
+// ──────────────────────────────────────
+// Callout (공통)
+// ──────────────────────────────────────
+article .callout {
+  border-radius: 8px;
+  margin: 0.6rem 0;
+  border-left-width: 3px;
+
+  &.is-collapsed {
+    padding-bottom: 0;
+  }
+
+  .callout-title {
+    padding: 0.45rem 0.1rem;
+    gap: 0.45rem;
+
+    .callout-title-inner p {
+      font-weight: 600;
+      font-size: 0.92rem;
+    }
+  }
+
+  .callout-content {
+    padding: 0 0.1rem 0.3rem;
+
+    & > p {
+      margin: 0.3rem 0;
+      font-size: 0.91rem;
+      line-height: 1.7;
+    }
+  }
+}
+
+// 꼬리 질문 callout (question)
+article .callout[data-callout="question"] {
+  --color: var(--secondary);
+  --border: color-mix(in srgb, var(--secondary) 30%, transparent);
+  --bg: transparent;
+  border: none;
+  border-left: 2px solid var(--lightgray);
+  border-radius: 0;
+  padding: 0 0 0 0.75rem;
+  margin: 0.2rem 0;
+  transition: background-color 0.2s ease, border-left-color 0.2s ease, padding 0.2s ease;
+
+  // 접힌 상태: 컴팩트
+  &.is-collapsed {
+    padding: 0 0 0 0.75rem;
+  }
+
+  // 펼친 상태: 배경 + 강조
+  &:not(.is-collapsed) {
+    --bg: color-mix(in srgb, var(--secondary) 5%, transparent);
+    border-left-color: var(--secondary);
+    padding: 0.1rem 0.8rem 0.1rem 0.75rem;
+    border-radius: 0 6px 6px 0;
+  }
+
+  .callout-title {
+    padding: 0.3rem 0;
+    align-items: center;
+
+    .callout-fold {
+      display: flex;
+      align-items: center;
+    }
+
+    .callout-title-inner p {
+      color: var(--darkgray);
+      line-height: 1.4;
+    }
+  }
+
+  .callout-content {
+    padding-left: 0.6rem;
+
+    & > p {
+      color: var(--darkgray);
+    }
+  }
+}
+
+// ──────────────────────────────────────
+// 핵심 요약 – h2 직후 블록 강조
+// ──────────────────────────────────────
+article h2#핵심-요약 {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+
+  &::before {
+    content: "📌";
+    font-size: 0.85em;
+  }
+}
+
+// 핵심 요약: 초록색
+article h2#핵심-요약 ~ p,
+article h2#핵심-요약 ~ ul {
+  padding-left: 1rem;
+  border-left: 3px solid var(--tertiary);
+}
+
+// 꼬리 질문부터 핵심 요약 스타일 해제
+article h2#꼬리-질문 ~ p,
+article h2#꼬리-질문 ~ ul {
+  padding-left: 0;
+  border-left: none;
+}
+
+// 꼬리 질문: 파란색
+article h2#꼬리-질문 ~ .callout {
+  padding-left: 1rem;
+  border-left: 3px solid var(--secondary);
+}
+
+// 관련 문서부터 해제
+article h2#관련-문서 ~ * {
+  padding-left: 0;
+  border-left: none;
+}
+
+// ──────────────────────────────────────
+// 코드 블록
+// ──────────────────────────────────────
+article pre {
+  border-radius: 8px;
+  border: 1px solid var(--lightgray);
+}
+
+article :not(pre) > code {
+  padding: 0.15em 0.35em;
+  border-radius: 4px;
+  font-size: 0.87em;
+  background-color: var(--highlight);
+}
+
+// ──────────────────────────────────────
+// 인라인 링크
+// ──────────────────────────────────────
+article a.internal {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+// ──────────────────────────────────────
+// h2 구분선
+// ──────────────────────────────────────
+article h2 {
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--lightgray);
+}
+
+// ──────────────────────────────────────
+// 테이블 가로 스크롤 힌트
+// ──────────────────────────────────────
+.table-container {
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 2rem;
+    background: linear-gradient(to right, transparent, var(--light));
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  &.is-scrollable::after {
+    opacity: 1;
+  }
+}
+
+// ──────────────────────────────────────
+// Responsive
+// ──────────────────────────────────────
 @media (max-width: 800px) {
   article {
     line-height: 1.72;
@@ -169,6 +395,30 @@ article {
 
   article p {
     margin: 0.8rem 0 0.95rem;
+  }
+
+  article pre {
+    margin: 1rem 0 1.2rem;
+    padding: 0.8rem 0.9rem;
+    font-size: 0.85rem;
+  }
+
+  article .callout {
+    margin: 0.4rem 0;
+  }
+
+  article .callout[data-callout="question"] .callout-content {
+    padding-left: 0.3rem;
+  }
+
+  .table-container {
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+    padding: 0 0.5rem;
+
+    &::after {
+      opacity: 1;
+    }
   }
 
   .page-listing li.section-li > .section {
