@@ -25,7 +25,7 @@ JVM이 프로그램을 실행하면서 사용하는 메모리 영역이다.
 
 ```
 ┌───────────────────────────────────────┐
-│         Method Area (Metaspace)       │  ← 클래스 정보, static 변수
+│         Method Area (Metaspace)       │  ← 클래스 메타데이터, 상수 풀
 ├───────────────────────────────────────┤
 │              Heap                     │  ← 객체 인스턴스, 배열
 │  ┌─────────────┬─────────────────┐    │
@@ -78,7 +78,7 @@ java -Xss512k -jar app.jar
 
 ### Method Area (Metaspace)
 
-클래스 메타데이터, static 변수가 저장되는 영역이다.
+클래스 메타데이터, 런타임 상수 풀이 저장되는 영역이다. Java 8+에서 static 변수의 참조는 Heap의 `java.lang.Class` 객체에 저장된다.
 
 Java 8부터 PermGen이 Metaspace로 대체되었다. Metaspace는 Native Memory를 사용하므로 heap과 별도로 관리된다.
 
@@ -99,7 +99,7 @@ java -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=256m -jar app.jar
 ```
 
 1. **Loading**: .class 파일을 읽어서 Method Area에 클래스 정보를 저장한다.
-2. **Linking**: 검증(Verify) → 준비(Prepare, static 변수 기본값) → 해석(Resolve, 심볼릭 참조를 실제 참조로)
+2. **Linking**: 검증(Verify) → 준비(Prepare, static 변수 기본값) → 해석(Resolve, 심볼릭 참조를 실제 참조로). Resolution은 필요 시점에 지연될 수 있다.
 3. **Initialization**: static 초기화 블록과 static 변수에 실제 값 할당
 
 ClassLoader 계층 구조:

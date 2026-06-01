@@ -145,3 +145,4 @@ Entity를 API 응답으로 직접 반환하지 않고, 서비스 계층에서 DT
 - [[persistence-context]]
 - [[n-plus-one-and-fetch-join]]
 - [[association-mapping]]
+- [[01-core/spring/transaction-integration|transaction-integration]]

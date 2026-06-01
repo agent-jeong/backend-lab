@@ -51,7 +51,7 @@ public void example() {
 
 ### 변경 감지 (Dirty Checking)
 
-트랜잭션 커밋 시 영속성 컨텍스트가 스냅샷과 현재 상태를 비교해서 변경된 필드만 UPDATE한다. `save()`를 호출하지 않아도 영속 상태 Entity의 변경은 자동으로 반영된다.
+트랜잭션 커밋 시 영속성 컨텍스트가 스냅샷과 현재 상태를 비교해서 변경이 감지되면 UPDATE를 실행한다. 기본 동작은 모든 컬럼을 UPDATE하며, `@DynamicUpdate`를 사용하면 변경된 컬럼만 UPDATE한다. `save()`를 호출하지 않아도 영속 상태 Entity의 변경은 자동으로 반영된다.
 
 자세한 동작 원리와 주의점은 [[dirty-checking|Dirty Checking]] 문서에서 다룬다.
 

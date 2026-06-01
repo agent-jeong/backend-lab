@@ -22,25 +22,25 @@ description: 데이터베이스 성능과 정합성 학습 인덱스
 
 ## 학습 순서
 
-1. RDB를 사용하는 이유
-2. Table, Row, Column, Key
-3. Index 기본 원리
-4. 실행 계획
-5. Transaction과 Isolation Level
-6. Lock
-7. Join
-8. Pagination과 대용량 조회
+1. [[why-rdb|RDB를 사용하는 이유]]
+2. [[table-and-key|Table, Row, Column, Key]]
+3. [[db-index|Index 기본 원리]]
+4. [[execution-plan|실행 계획]]
+5. [[transaction-and-isolation|Transaction과 Isolation Level]]
+6. [[lock|Lock]]
+7. [[join|Join]]
+8. [[pagination-and-bulk-query|Pagination과 대용량 조회]]
 
 ## 핵심 질문
 
-- Database를 실무에서 왜 사용하는가?
+- RDB를 실무에서 왜 사용하는가?
 - 인덱스는 어떤 조건에서 효과가 있고 언제 효과가 떨어지는가?
 - 실행 계획에서 무엇을 확인해야 하는가?
 - 트랜잭션 격리 수준은 어떤 문제를 막기 위한 것인가?
-- 이 주제의 핵심 동작 원리는 무엇인가?
-- 실무에서 자주 발생하는 문제는 무엇인가?
-- 어떤 상황에서 주의해야 하는가?
-- 면접에서는 어떻게 설명할 수 있는가?
+- 비관적 락과 낙관적 락은 각각 언제 사용하는가?
+- JOIN의 실행 방식은 성능에 어떤 영향을 주는가?
+- OFFSET 페이징이 느린 이유와 대안은 무엇인가?
+- 대용량 데이터를 조회할 때 메모리 문제를 어떻게 방지하는가?
 
 ## 실무 관점
 

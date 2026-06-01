@@ -22,25 +22,25 @@ description: Spring 핵심 개념과 실무 학습 인덱스
 
 ## 학습 순서
 
-1. Spring을 사용하는 이유
-2. IoC와 DI
-3. Bean 생명주기와 Scope
-4. AOP
-5. Spring MVC 요청 흐름
-6. Validation과 예외 처리
-7. Transaction 연동
-8. Configuration과 Profile
+1. [[why-spring|Spring을 사용하는 이유]]
+2. [[ioc-and-di|IoC와 DI]]
+3. [[bean-lifecycle-and-scope|Bean 생명주기와 Scope]]
+4. [[aop|AOP]]
+5. [[spring-mvc-request-flow|Spring MVC 요청 흐름]]
+6. [[validation-and-exception-handling|Validation과 예외 처리]]
+7. [[transaction-integration|Transaction 연동]]
+8. [[configuration-and-profile|Configuration과 Profile]]
 
 ## 핵심 질문
 
-- Spring를 실무에서 왜 사용하는가?
+- Spring을 실무에서 왜 사용하는가?
 - Spring은 객체 생성과 의존성 관리를 어떻게 해결하는가?
 - Spring Bean은 언제 생성되고 어떻게 주입되는가?
 - AOP는 어떤 문제를 해결하기 위해 사용하는가?
-- 이 주제의 핵심 동작 원리는 무엇인가?
-- 실무에서 자주 발생하는 문제는 무엇인가?
-- 어떤 상황에서 주의해야 하는가?
-- 면접에서는 어떻게 설명할 수 있는가?
+- @Transactional은 어떤 원리로 동작하고 언제 실패하는가?
+- Spring MVC에서 요청은 어떤 순서로 처리되는가?
+- 검증과 예외 처리는 어떤 계층에서 해야 하는가?
+- Profile과 설정 관리를 어떻게 분리하는가?
 
 ## 실무 관점
 

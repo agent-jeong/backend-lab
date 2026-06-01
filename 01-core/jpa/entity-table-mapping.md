@@ -113,7 +113,7 @@ private LocalDateTime createdAt;
 private LocalDate birthDate;
 ```
 
-`@CreatedDate`, `@LastModifiedDate`를 사용하면 자동으로 생성/수정 시간을 관리할 수 있다.
+`@CreatedDate`, `@LastModifiedDate`를 사용하면 자동으로 생성/수정 시간을 관리할 수 있다. 단, Configuration 클래스에 `@EnableJpaAuditing`을 추가해야 동작한다.
 
 ```java
 @EntityListeners(AuditingEntityListener.class)
@@ -127,6 +127,12 @@ public abstract class BaseEntity {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 }
+```
+
+```java
+@Configuration
+@EnableJpaAuditing
+public class JpaConfig { }
 ```
 
 ## 자주 나는 실수

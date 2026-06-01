@@ -1,13 +1,86 @@
 import { loadQuartzConfig, loadQuartzLayout } from "./quartz/plugins/loader/config-loader"
 import * as ExternalPlugin from "./.quartz/plugins"
+import { FileTrieNode } from "./quartz/util/fileTrie"
 
 ExternalPlugin.Explorer({
-  filterFn: (node) => {
+  filterFn: (node: FileTrieNode) => {
     const hidden = new Set(["tags"])
     const segment = node.slugSegment ?? ""
     return !hidden.has(segment)
   },
-  mapFn: (node) => {
+  sortFn: (a: FileTrieNode, b: FileTrieNode) => {
+    const orderMap: Record<string, string[]> = {
+      java: [
+        "primitive-and-reference-types",
+        "class-interface-enum-record",
+        "equals-and-hashcode",
+        "exception-handling",
+        "collection-selection",
+        "hashmap",
+        "sorting-dedup-search-cost",
+        "stream-and-optional",
+        "java-version-features",
+        "jvm-memory-structure",
+        "gc-and-tuning",
+        "memory-leak-and-oom",
+        "serialization-and-jackson",
+      ],
+      jpa: [
+        "why-jpa",
+        "entity-table-mapping",
+        "persistence-context",
+        "dirty-checking",
+        "association-mapping",
+        "lazy-and-eager-loading",
+        "n-plus-one-and-fetch-join",
+        "transaction-and-flush",
+      ],
+      spring: [
+        "why-spring",
+        "ioc-and-di",
+        "bean-lifecycle-and-scope",
+        "aop",
+        "spring-mvc-request-flow",
+        "validation-and-exception-handling",
+        "transaction-integration",
+        "configuration-and-profile",
+      ],
+      database: [
+        "why-rdb",
+        "table-and-key",
+        "db-index",
+        "execution-plan",
+        "transaction-and-isolation",
+        "lock",
+        "join",
+        "pagination-and-bulk-query",
+      ],
+    }
+
+    if (a.isFolder !== b.isFolder) {
+      return a.isFolder ? -1 : 1
+    }
+
+    const slug = a.data?.slug ?? ""
+    const parentFolder = slug.split("/").at(-2) ?? ""
+    const order = orderMap[parentFolder]
+
+    if (order) {
+      const aSlug = (a.data?.slug ?? "").split("/").pop() ?? ""
+      const bSlug = (b.data?.slug ?? "").split("/").pop() ?? ""
+      const aIdx = order.indexOf(aSlug)
+      const bIdx = order.indexOf(bSlug)
+      if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx
+      if (aIdx !== -1) return -1
+      if (bIdx !== -1) return 1
+    }
+
+    return a.displayName.localeCompare(b.displayName, undefined, {
+      numeric: true,
+      sensitivity: "base",
+    })
+  },
+  mapFn: (node: FileTrieNode) => {
     const labels: Record<string, string> = {
       "00-home": "00 Home",
       "01-core": "01 Core",
