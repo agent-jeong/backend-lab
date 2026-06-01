@@ -22,14 +22,14 @@ description: 운영체제 기본기와 서버 리소스 분석 학습 인덱스
 
 ## 학습 순서
 
-1. Process와 Thread
-2. CPU Scheduling
-3. Memory
-4. Context Switching
-5. File I/O
-6. Socket I/O
-7. Blocking과 Non-blocking
-8. System Resource Monitoring
+1. [[process-and-thread|Process와 Thread]]
+2. [[context-switching|Context Switching]]
+3. [[memory|Memory]]
+4. [[cpu-scheduling|CPU Scheduling]]
+5. [[file-io|File I/O]]
+6. [[socket-io|Socket I/O]]
+7. [[blocking-and-non-blocking|Blocking과 Non-blocking]]
+8. [[system-resource-monitoring|System Resource Monitoring]]
 
 ## 핵심 질문
 
@@ -41,6 +41,13 @@ description: 운영체제 기본기와 서버 리소스 분석 학습 인덱스
 - 실무에서 자주 발생하는 문제는 무엇인가?
 - 어떤 상황에서 주의해야 하는가?
 - 면접에서는 어떻게 설명할 수 있는가?
+- Process와 Thread의 메모리 공유 차이는 Java 서버 동작과 어떻게 연결되는가?
+- 스레드 수가 많아지면 context switching 비용이 왜 증가하는가?
+- Blocking I/O와 Non-blocking I/O는 서버 스레드 사용 방식이 어떻게 다른가?
+- heap memory, native memory, swap, container limit은 OOM 분석에서 어떻게 구분하는가?
+- CPU 사용률, run queue, load average는 병목 판단에 어떤 의미가 있는가?
+- disk wait, network wait, connection backlog는 API 지연과 어떻게 연결되는가?
+- 스레드 덤프, GC 로그, OS 지표를 함께 봐야 하는 상황은 언제인가?
 
 ## 실무 관점
 

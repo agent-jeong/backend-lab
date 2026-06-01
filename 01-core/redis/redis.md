@@ -22,25 +22,28 @@ description: Redis 캐시 전략과 장애 대응 학습 인덱스
 
 ## 학습 순서
 
-1. Redis를 사용하는 이유
-2. Key-Value 모델
-3. TTL
-4. Cache Aside
-5. Cache Invalidation
-6. 자료구조
-7. 분산 락
-8. 장애와 복구
+1. [[why-redis|Redis를 사용하는 이유]]
+2. [[cache-aside-and-ttl|Cache Aside와 TTL]]
+3. [[redis-failure-and-fallback|Redis 장애 대응과 fallback]]
+4. [[redis-distributed-lock|Redis 분산 락]]
+5. [[redis-data-structures|Redis 자료구조]]
+6. [[redis-key-and-memory|Key 설계와 메모리 관리]]
+7. [[redis-monitoring|운영 모니터링]]
 
 ## 핵심 질문
 
 - Redis를 실무에서 왜 사용하는가?
+- Redis는 빠른 DB가 아니라 캐시, 세션, 락, 카운터 같은 보조 상태 처리 도구라는 점을 어떻게 설명할 수 있는가?
 - 캐시는 어떤 문제를 해결하고 어떤 정합성 문제를 만드는가?
+- Cache Aside에서 cache hit, cache miss, DB fallback 흐름은 어떻게 이어지는가?
 - TTL은 어떻게 정해야 하는가?
-- Redis 장애 시 서비스는 어떻게 동작해야 하는가?
-- 이 주제의 핵심 동작 원리는 무엇인가?
-- 실무에서 자주 발생하는 문제는 무엇인가?
-- 어떤 상황에서 주의해야 하는가?
-- 면접에서는 어떻게 설명할 수 있는가?
+- 캐시 무효화는 왜 어렵고, stale data 허용 시간은 어떻게 정하는가?
+- DB 변경 후 캐시 삭제가 실패하면 어떤 문제가 생기는가?
+- Redis 장애 시 timeout, fallback, circuit breaker는 어떻게 설계해야 하는가?
+- Redis 분산 락의 원자적 획득, TTL, 안전한 해제는 어떻게 보장하는가?
+- Redis 분산 락과 DB 정합성 보장은 어떤 차이가 있는가?
+- String, Hash, Set, Sorted Set, Stream/Pub/Sub은 각각 어떤 실무 문제에 적합한가?
+- hot key, big key, memory eviction, connection pool 고갈은 어떻게 확인하는가?
 
 ## 실무 관점
 

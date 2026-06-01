@@ -55,6 +55,37 @@ ExternalPlugin.Explorer({
         "join",
         "pagination-and-bulk-query",
       ],
+      network: [
+        "http-basics",
+        "tcp-connection",
+        "timeout",
+        "retry",
+        "status-code",
+        "dns",
+        "load-balancer",
+        "cors",
+        "tls",
+        "websocket",
+      ],
+      os: [
+        "process-and-thread",
+        "context-switching",
+        "memory",
+        "cpu-scheduling",
+        "file-io",
+        "socket-io",
+        "blocking-and-non-blocking",
+        "system-resource-monitoring",
+      ],
+      redis: [
+        "why-redis",
+        "cache-aside-and-ttl",
+        "redis-failure-and-fallback",
+        "redis-distributed-lock",
+        "redis-data-structures",
+        "redis-key-and-memory",
+        "redis-monitoring",
+      ],
     }
 
     if (a.isFolder !== b.isFolder) {

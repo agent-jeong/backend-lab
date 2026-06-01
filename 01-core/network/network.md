@@ -22,25 +22,38 @@ description: HTTP, timeout, retry, 네트워크 장애 분석 학습 인덱스
 
 ## 학습 순서
 
-1. HTTP 기본 구조
-2. DNS
-3. TCP와 연결
-4. Timeout
-5. Retry
-6. Status Code
-7. Load Balancer
-8. TLS
+1. [[http-basics|HTTP 기본 구조]]
+2. [[tcp-connection|TCP와 연결]]
+3. [[timeout|Timeout]]
+4. [[retry|Retry]]
+5. [[status-code|Status Code]]
+6. [[dns|DNS]]
+7. [[load-balancer|Load Balancer]]
+8. [[cors|CORS]]
+9. [[tls|TLS]]
+10. [[websocket|WebSocket]]
 
 ## 핵심 질문
 
-- Network를 실무에서 왜 사용하는가?
+- Network를 실무에서 왜 알아야 하는가?
 - HTTP 요청은 클라이언트에서 서버까지 어떤 단계를 거치는가?
+- GET, POST, PUT, DELETE의 멱등성 차이는 무엇인가?
+- DNS 조회 흐름과 TTL이 실무에서 왜 중요한가?
+- TCP 3-way handshake와 커넥션 풀의 관계는 무엇인가?
+- Connection timeout과 Read timeout은 어떻게 다른가?
 - timeout과 retry는 왜 함께 설계해야 하는가?
-- 네트워크 장애는 어떤 순서로 원인을 좁히는가?
-- 이 주제의 핵심 동작 원리는 무엇인가?
-- 실무에서 자주 발생하는 문제는 무엇인가?
-- 어떤 상황에서 주의해야 하는가?
-- 면접에서는 어떻게 설명할 수 있는가?
+- 재시도 가능한 에러와 불가능한 에러를 어떻게 구분하는가?
+- 로드밸런서의 헬스체크와 무중단 배포는 어떻게 연결되는가?
+- CORS Preflight는 왜 발생하고 어떻게 설정하는가?
+- WebSocket과 SSE는 각각 언제 사용하는가?
+- HTTP method, header, status code, stateless를 API 설계와 어떻게 연결할 수 있는가?
+- keep-alive, connection pool, connection reset은 장애 분석에서 어떻게 연결되는가?
+- 멱등성, backoff, 중복 처리, 부하 증폭을 고려한 retry 기준은 무엇인가?
+- 4xx와 5xx는 재시도 가능 여부 판단에 어떤 차이를 만드는가?
+- JVM DNS cache와 DNS TTL은 장애 대응에서 왜 중요한가?
+- Load Balancer의 502, 503은 어떤 원인으로 나눠 볼 수 있는가?
+- 네트워크 장애는 클라이언트, DNS, LB, 애플리케이션, 외부 API 중 어떤 순서로 좁히는가?
+- p95/p99 latency, timeout count, connection pool 사용률은 외부 연동 장애 판단에 어떻게 쓰는가?
 
 ## 실무 관점
 
