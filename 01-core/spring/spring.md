@@ -50,5 +50,5 @@ description: Spring 핵심 개념과 실무 학습 인덱스
 
 ## 관련 문서
 
-- [[performance]]
-- [[interview-questions]]
+- [[02-practical-backend/performance/performance|performance]]
+- [[04-interview/interview-questions|interview-questions]]

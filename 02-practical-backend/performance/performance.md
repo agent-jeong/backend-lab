@@ -48,5 +48,5 @@ description: 백엔드 성능 문제 분석과 개선 학습 인덱스
 
 ## 관련 문서
 
-- [[case-studies]]
-- [[interview-questions]]
+- [[03-case-studies/case-studies|case-studies]]
+- [[04-interview/interview-questions|interview-questions]]

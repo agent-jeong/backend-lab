@@ -47,5 +47,5 @@ description: 동시성 문제와 경쟁 조건 해결 학습 인덱스
 
 ## 관련 문서
 
-- [[case-studies]]
-- [[interview-questions]]
+- [[03-case-studies/case-studies|case-studies]]
+- [[04-interview/interview-questions|interview-questions]]

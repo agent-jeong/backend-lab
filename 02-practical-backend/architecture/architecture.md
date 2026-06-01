@@ -47,5 +47,5 @@ description: 책임 분리와 변경 비용을 줄이는 설계 학습 인덱스
 
 ## 관련 문서
 
-- [[case-studies]]
-- [[interview-questions]]
+- [[03-case-studies/case-studies|case-studies]]
+- [[04-interview/interview-questions|interview-questions]]

@@ -50,5 +50,5 @@ description: 데이터베이스 성능과 정합성 학습 인덱스
 
 ## 관련 문서
 
-- [[performance]]
-- [[interview-questions]]
+- [[02-practical-backend/performance/performance|performance]]
+- [[04-interview/interview-questions|interview-questions]]

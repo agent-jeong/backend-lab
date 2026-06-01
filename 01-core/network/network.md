@@ -50,5 +50,5 @@ description: HTTP, timeout, retry, 네트워크 장애 분석 학습 인덱스
 
 ## 관련 문서
 
-- [[performance]]
-- [[interview-questions]]
+- [[02-practical-backend/performance/performance|performance]]
+- [[04-interview/interview-questions|interview-questions]]

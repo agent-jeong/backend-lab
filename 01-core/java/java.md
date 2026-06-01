@@ -23,35 +23,25 @@ description: Java Core 학습 인덱스
 ## 학습 순서
 
 1. Java 언어 기본기
-   - primitive type과 reference type
-   - class, interface, enum, record
-   - equals / hashCode / toString
-   - exception 처리
+   - [[primitive-and-reference-types]]
+   - [[class-interface-enum-record]]
+   - [[equals-and-hashcode]]
+   - [[exception-handling]]
 2. Java 컬렉션
-   - List, Set, Map의 차이
-   - HashMap 동작 원리
-   - 정렬, 중복 제거, 탐색 비용
+   - [[collection-selection]]
+   - [[hashmap]]
+   - [[sorting-dedup-search-cost]]
 3. Java 버전별 핵심 변화
-   - Java 8: lambda, Stream, Optional
-   - Java 11: LTS 기준 변화와 실무 사용성
-   - Java 17: record, sealed class, pattern matching 기반
-   - Java 21: virtual thread와 동시성 모델 변화
+   - [[stream-and-optional]]
+   - [[java-version-features]]
 4. JVM 기본 구조
-   - class loading
-   - runtime data area
-   - stack과 heap
-   - JIT compiler
+   - [[jvm-memory-structure]]
 5. GC
-   - GC가 필요한 이유
-   - young / old generation
-   - stop-the-world
-   - G1 GC와 실무 튜닝 관점
+   - [[gc-and-tuning]]
 6. 실무 연결
-   - 메모리 누수
-   - OOM
-   - 과도한 객체 생성
-   - Stream 남용
-   - 동시성 문제
+   - [[memory-leak-and-oom]]
+   - [[serialization-and-jackson]]
+   - [[02-practical-backend/concurrency/concurrency|동시성 문제]]
 
 ## 핵심 질문
 
@@ -73,7 +63,8 @@ description: Java Core 학습 인덱스
 
 ## 관련 문서
 
-- [[primitive-and-reference-types]]
-- [[performance]]
-- [[concurrency]]
-- [[interview-questions]]
+- [[02-practical-backend/performance/performance|performance]]
+- [[02-practical-backend/concurrency/concurrency|concurrency]]
+- [[01-core/spring/spring|spring]]
+- [[01-core/jpa/jpa|jpa]]
+- [[04-interview/interview-questions|interview-questions]]

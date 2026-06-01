@@ -47,5 +47,5 @@ description: 변경 위험을 줄이는 테스트 전략 학습 인덱스
 
 ## 관련 문서
 
-- [[case-studies]]
-- [[interview-questions]]
+- [[03-case-studies/case-studies|case-studies]]
+- [[04-interview/interview-questions|interview-questions]]

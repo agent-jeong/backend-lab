@@ -47,5 +47,5 @@ description: 재처리 가능한 배치 처리 설계 학습 인덱스
 
 ## 관련 문서
 
-- [[case-studies]]
-- [[interview-questions]]
+- [[03-case-studies/case-studies|case-studies]]
+- [[04-interview/interview-questions|interview-questions]]

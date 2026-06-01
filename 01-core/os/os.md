@@ -50,5 +50,5 @@ description: 운영체제 기본기와 서버 리소스 분석 학습 인덱스
 
 ## 관련 문서
 
-- [[performance]]
-- [[interview-questions]]
+- [[02-practical-backend/performance/performance|performance]]
+- [[04-interview/interview-questions|interview-questions]]

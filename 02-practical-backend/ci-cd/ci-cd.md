@@ -47,5 +47,5 @@ description: 반복 가능하고 되돌릴 수 있는 배포 학습 인덱스
 
 ## 관련 문서
 
-- [[case-studies]]
-- [[interview-questions]]
+- [[03-case-studies/case-studies|case-studies]]
+- [[04-interview/interview-questions|interview-questions]]

@@ -35,8 +35,10 @@ description: 기술 면접 질문과 개념 노트 연결
 ## Java
 
 - primitive type과 reference type의 차이는 무엇인가? [[primitive-and-reference-types]]
+- equals와 hashCode를 함께 재정의해야 하는 이유는 무엇인가? [[equals-and-hashcode]]
+- List, Set, Map은 각각 어떤 상황에서 선택하나요? [[collection-selection]]
 - Java 버전별 차이는 무엇인가?
-- HashMap은 내부적으로 어떻게 동작하고 언제 성능이 나빠질 수 있나요?
+- HashMap은 내부적으로 어떻게 동작하고 언제 성능이 나빠질 수 있나요? [[hashmap]]
 - GC가 애플리케이션 지연 시간에 영향을 주는 경우를 어떻게 확인하나요?
 
 ## Spring
