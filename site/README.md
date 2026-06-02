@@ -35,8 +35,8 @@ Default values are already configured:
 
 - `repo`: `agent-jeong/backend-lab`
 - `repoId`: `R_kgDOSn8Rqg`
-- `category`: `Announcements`
-- `categoryId`: `DIC_kwDOSn8Rqs4C-UvH`
+- `category`: `General`
+- `categoryId`: `DIC_kwDOSn8Rqs4C-UvI`
 - `mapping`: `pathname`
 - `reactionsEnabled`: `true`
 - `lang`: `ko`

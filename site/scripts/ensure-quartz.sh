@@ -22,8 +22,8 @@ cp "$ROOT_DIR/site/quartz.config.yaml" "$QUARTZ_DIR/quartz.config.yaml"
 
 GISCUS_REPO="${GISCUS_REPO:-agent-jeong/backend-lab}"
 GISCUS_REPO_ID="${GISCUS_REPO_ID:-R_kgDOSn8Rqg}"
-GISCUS_CATEGORY="${GISCUS_CATEGORY:-Announcements}"
-GISCUS_CATEGORY_ID="${GISCUS_CATEGORY_ID:-DIC_kwDOSn8Rqs4C-UvH}"
+GISCUS_CATEGORY="${GISCUS_CATEGORY:-General}"
+GISCUS_CATEGORY_ID="${GISCUS_CATEGORY_ID:-DIC_kwDOSn8Rqs4C-UvI}"
 GISCUS_LANG="${GISCUS_LANG:-ko}"
 
 if [ "${ENABLE_GISCUS_COMMENTS:-true}" = "true" ]; then
