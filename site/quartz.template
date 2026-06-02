@@ -88,6 +88,15 @@ ExternalPlugin.Explorer({
         "redis-key-and-memory",
         "redis-monitoring",
       ],
+      "01-core": [
+        "java",
+        "spring",
+        "jpa",
+        "database",
+        "redis",
+        "network",
+        "os",
+      ],
       "02-practical-backend": [
         "transaction",
         "concurrency",
