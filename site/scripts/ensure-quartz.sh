@@ -36,11 +36,11 @@ if [ "${ENABLE_GISCUS_COMMENTS:-true}" = "true" ]; then
     options:
       provider: giscus
       options:
-        repo: ${GISCUS_REPO}
-        repoId: ${GISCUS_REPO_ID}
-        category: ${GISCUS_CATEGORY}
-        categoryId: ${GISCUS_CATEGORY_ID}
-        lang: ${GISCUS_LANG}
+        repo: "${GISCUS_REPO}"
+        repoId: "${GISCUS_REPO_ID}"
+        category: "${GISCUS_CATEGORY}"
+        categoryId: "${GISCUS_CATEGORY_ID}"
+        lang: "${GISCUS_LANG}"
         mapping: pathname
         strict: true
         reactionsEnabled: true

@@ -1,6 +1,7 @@
 ---
 title: Idempotency
 description: 중복 요청과 재시도에 안전한 설계 학습 인덱스
+comments: false
 ---
 
 # Idempotency

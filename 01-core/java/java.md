@@ -1,6 +1,7 @@
 ---
 title: Java
 description: Java Core 학습 인덱스
+comments: false
 ---
 
 # Java

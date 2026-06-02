@@ -1,6 +1,7 @@
 ---
 title: CI/CD
 description: 반복 가능하고 되돌릴 수 있는 배포 학습 인덱스
+comments: false
 ---
 
 # CI/CD

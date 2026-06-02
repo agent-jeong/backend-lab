@@ -1,6 +1,7 @@
 ---
 title: JPA
 description: JPA 동작 원리와 성능 문제 학습 인덱스
+comments: false
 ---
 
 # JPA

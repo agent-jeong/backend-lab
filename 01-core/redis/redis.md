@@ -1,6 +1,7 @@
 ---
 title: Redis
 description: Redis 캐시 전략과 장애 대응 학습 인덱스
+comments: false
 ---
 
 # Redis

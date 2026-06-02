@@ -1,6 +1,7 @@
 ---
 title: Database
 description: 데이터베이스 성능과 정합성 학습 인덱스
+comments: false
 ---
 
 # Database

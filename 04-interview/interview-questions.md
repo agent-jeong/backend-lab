@@ -1,6 +1,7 @@
 ---
 title: Interview Questions
 description: 기술 면접 질문과 개념 노트 연결
+comments: false
 ---
 
 # Interview Questions

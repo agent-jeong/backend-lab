@@ -1,6 +1,7 @@
 ---
 title: Testing
 description: 변경 위험을 줄이는 테스트 전략 학습 인덱스
+comments: false
 ---
 
 # Testing

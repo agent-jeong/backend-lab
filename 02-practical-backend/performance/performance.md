@@ -1,6 +1,7 @@
 ---
 title: Performance
 description: 백엔드 성능 문제 분석과 개선 학습 인덱스
+comments: false
 ---
 
 # Performance

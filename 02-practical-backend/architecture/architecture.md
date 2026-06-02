@@ -1,6 +1,7 @@
 ---
 title: Architecture
 description: 책임 분리와 변경 비용을 줄이는 설계 학습 인덱스
+comments: false
 ---
 
 # Architecture

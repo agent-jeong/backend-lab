@@ -1,6 +1,7 @@
 ---
 title: Case Studies
 description: 공개 가능한 실무 사례와 문제 해결 흐름
+comments: false
 ---
 
 # Case Studies

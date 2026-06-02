@@ -1,6 +1,7 @@
 ---
 title: Observability
 description: 로그, 메트릭, 트레이스 기반 장애 분석 학습 인덱스
+comments: false
 ---
 
 # Observability

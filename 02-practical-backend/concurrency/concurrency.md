@@ -1,6 +1,7 @@
 ---
 title: Concurrency
 description: 동시성 문제와 경쟁 조건 해결 학습 인덱스
+comments: false
 ---
 
 # Concurrency

@@ -1,6 +1,7 @@
 ---
 title: OS
 description: 운영체제 기본기와 서버 리소스 분석 학습 인덱스
+comments: false
 ---
 
 # OS

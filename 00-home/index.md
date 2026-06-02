@@ -1,6 +1,7 @@
 ---
 title: Backend Lab
 description: 실무 대비와 기술 면접 준비를 위한 백엔드 엔지니어링 학습 노트
+comments: false
 ---
 
 # Backend Lab

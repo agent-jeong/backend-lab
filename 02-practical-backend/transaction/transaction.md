@@ -1,6 +1,7 @@
 ---
 title: Transaction
 description: 데이터 정합성과 트랜잭션 경계 학습 인덱스
+comments: false
 ---
 
 # Transaction

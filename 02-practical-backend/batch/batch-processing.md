@@ -1,6 +1,7 @@
 ---
 title: Batch Processing
 description: 재처리 가능한 배치 처리 설계 학습 인덱스
+comments: false
 ---
 
 # Batch Processing

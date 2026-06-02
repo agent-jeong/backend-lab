@@ -1,6 +1,7 @@
 ---
 title: AI Workflows
 description: 백엔드 학습과 코드 리뷰를 돕는 AI 활용 흐름
+comments: false
 ---
 
 # AI Workflows
