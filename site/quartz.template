@@ -135,6 +135,15 @@ ExternalPlugin.Explorer({
         "message-consumer-idempotency",
         "payment-order-idempotency",
       ],
+      performance: [
+        "why-performance-problem",
+        "latency-and-throughput",
+        "bottleneck-analysis",
+        "db-query-performance",
+        "cache-performance",
+        "connection-pool-and-timeout",
+        "load-test-and-metrics",
+      ],
     }
 
     if (a.isFolder !== b.isFolder) {

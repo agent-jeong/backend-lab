@@ -23,18 +23,24 @@ comments: false
 
 ## 학습 순서
 
-1. 성능 문제를 정의하는 기준
-2. Latency와 Throughput
-3. DB 조회 성능
-4. Cache 적용
-5. N+1과 쿼리 수
-6. Connection Pool
-7. 부하 테스트
-8. 모니터링 지표 해석
+1. [[why-performance-problem|성능 문제를 정의하는 기준]]
+2. [[latency-and-throughput|Latency와 Throughput]]
+3. [[bottleneck-analysis|병목 분석 순서]]
+4. [[db-query-performance|DB 조회 성능]]
+5. [[cache-performance|Cache 적용]]
+6. [[connection-pool-and-timeout|Connection Pool과 Timeout]]
+7. [[load-test-and-metrics|부하 테스트와 지표 해석]]
 
 ## 핵심 질문
 
 - Performance 영역에서 실무적으로 중요한 문제는 무엇인가?
+- 느린 API를 성능 문제라고 판단하는 기준은 무엇인가?
+- 평균 latency보다 p95/p99를 봐야 하는 이유는 무엇인가?
+- 병목을 애플리케이션, DB, Redis, 외부 API, OS 중 어디서부터 좁힐 것인가?
+- DB 조회 성능은 인덱스, 실행 계획, 쿼리 수 중 무엇부터 확인할 것인가?
+- 캐시는 언제 성능 개선이 아니라 장애 전파를 만들 수 있는가?
+- connection pool 고갈과 timeout은 어떤 증상으로 드러나는가?
+- 부하 테스트 결과를 운영 지표와 어떻게 연결할 것인가?
 - 문제를 발견하면 어떤 순서로 원인을 좁히는가?
 - 어떤 해결책이 있고 각각의 한계는 무엇인가?
 - 프로젝트 경험과 어떻게 연결할 수 있는가?
@@ -49,5 +55,11 @@ comments: false
 
 ## 관련 문서
 
+- [[01-core/database/database|database]]
+- [[01-core/jpa/jpa|jpa]]
+- [[01-core/redis/redis|redis]]
+- [[01-core/network/network|network]]
+- [[01-core/os/os|os]]
+- [[02-practical-backend/observability/observability|observability]]
 - [[03-case-studies/case-studies|case-studies]]
 - [[04-interview/interview-questions|interview-questions]]
