@@ -78,8 +78,8 @@ Socket I/O는 네트워크 연결과 데이터 송수신을 OS socket을 통해 
 
 ## 관련 문서
 
-- [[os]]
+- [[01-core/os/os|os]]
 - [[tcp-connection]]
 - [[timeout]]
-- [[network]]
-- [[performance]]
+- [[01-core/network/network|network]]
+- [[02-practical-backend/performance/performance|performance]]

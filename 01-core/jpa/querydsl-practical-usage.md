@@ -324,8 +324,8 @@ QueryDSL은 쿼리 작성 편의 도구이므로 성능은 실행 SQL, 인덱스
 ## 관련 문서
 
 - [[querydsl]]
-- [[jpa]]
+- [[01-core/jpa/jpa|jpa]]
 - [[n-plus-one-and-fetch-join]]
 - [[pagination-and-bulk-query]]
 - [[db-index]]
-- [[performance]]
+- [[02-practical-backend/performance/performance|performance]]

@@ -84,8 +84,8 @@ Blocking은 호출 스레드가 I/O 완료까지 기다리는 방식이고, Non-
 
 ## 관련 문서
 
-- [[os]]
+- [[01-core/os/os|os]]
 - [[process-and-thread]]
 - [[context-switching]]
 - [[socket-io]]
-- [[performance]]
+- [[02-practical-backend/performance/performance|performance]]

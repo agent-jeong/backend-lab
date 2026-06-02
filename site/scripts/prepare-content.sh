@@ -22,6 +22,10 @@ PUBLIC_PATHS=(
 for path in "${PUBLIC_PATHS[@]}"; do
   if [ -d "$ROOT_DIR/$path" ]; then
     mkdir -p "$CONTENT_DIR/$path"
-    rsync -a --exclude ".DS_Store" "$ROOT_DIR/$path/" "$CONTENT_DIR/$path/"
+    if [ "$path" = "00-home" ]; then
+      rsync -a --exclude ".DS_Store" --exclude "index.md" "$ROOT_DIR/$path/" "$CONTENT_DIR/$path/"
+    else
+      rsync -a --exclude ".DS_Store" "$ROOT_DIR/$path/" "$CONTENT_DIR/$path/"
+    fi
   fi
 done

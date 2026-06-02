@@ -86,8 +86,8 @@ Redis key는 단순 문자열이 아니라 운영 단위다. prefix, 식별자, 
 
 ## 관련 문서
 
-- [[redis]]
+- [[01-core/redis/redis|redis]]
 - [[cache-aside-and-ttl]]
 - [[redis-data-structures]]
 - [[redis-failure-and-fallback]]
-- [[performance]]
+- [[02-practical-backend/performance/performance|performance]]

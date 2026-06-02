@@ -88,19 +88,41 @@ ExternalPlugin.Explorer({
         "redis-key-and-memory",
         "redis-monitoring",
       ],
+      "02-practical-backend": [
+        "transaction",
+        "concurrency",
+        "idempotency",
+        "performance",
+        "observability",
+        "architecture",
+        "batch",
+        "security",
+        "testing",
+        "ci-cd",
+      ],
+      transaction: [
+        "why-transaction",
+        "acid-and-isolation",
+        "transaction-boundary",
+        "spring-transaction",
+        "lock-and-deadlock",
+        "external-api-and-transaction",
+        "compensation-and-outbox",
+      ],
     }
 
     if (a.isFolder !== b.isFolder) {
       return a.isFolder ? -1 : 1
     }
 
-    const slug = a.data?.slug ?? ""
-    const parentFolder = slug.split("/").at(-2) ?? ""
+    const aParts = a.slug.split("/")
+    const bParts = b.slug.split("/")
+    const parentFolder = a.isFolder ? (aParts.at(-3) ?? "") : (aParts.at(-2) ?? "")
     const order = orderMap[parentFolder]
 
     if (order) {
-      const aSlug = (a.data?.slug ?? "").split("/").pop() ?? ""
-      const bSlug = (b.data?.slug ?? "").split("/").pop() ?? ""
+      const aSlug = a.isFolder ? (aParts.at(-2) ?? "") : (aParts.at(-1) ?? "")
+      const bSlug = b.isFolder ? (bParts.at(-2) ?? "") : (bParts.at(-1) ?? "")
       const aIdx = order.indexOf(aSlug)
       const bIdx = order.indexOf(bSlug)
       if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx

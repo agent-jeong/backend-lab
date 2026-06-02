@@ -79,7 +79,7 @@ File I/O는 CPU 계산보다 느리고, page cache와 디스크 상태에 따라
 
 ## 관련 문서
 
-- [[os]]
+- [[01-core/os/os|os]]
 - [[memory]]
-- [[performance]]
+- [[02-practical-backend/performance/performance|performance]]
 - [[batch-processing]]

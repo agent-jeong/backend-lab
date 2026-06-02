@@ -80,10 +80,10 @@ System Resource Monitoring은 서버가 느릴 때 어떤 자원이 병목인지
 
 ## 관련 문서
 
-- [[os]]
+- [[01-core/os/os|os]]
 - [[cpu-scheduling]]
 - [[memory]]
 - [[file-io]]
 - [[socket-io]]
-- [[performance]]
-- [[observability]]
+- [[02-practical-backend/performance/performance|performance]]
+- [[02-practical-backend/observability/observability|observability]]

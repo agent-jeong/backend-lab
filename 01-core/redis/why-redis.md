@@ -111,7 +111,7 @@ Redis는 빠른 메모리 저장소지만, 실무에서는 "어떤 문제를 Red
 
 ## 관련 문서
 
-- [[redis]]
+- [[01-core/redis/redis|redis]]
 - [[cache-aside-and-ttl]]
-- [[performance]]
-- [[idempotency]]
+- [[02-practical-backend/performance/performance|performance]]
+- [[02-practical-backend/idempotency/idempotency|idempotency]]
