@@ -22,18 +22,23 @@ description: 동시성 문제와 경쟁 조건 해결 학습 인덱스
 
 ## 학습 순서
 
-1. 동시성 문제가 생기는 이유
-2. Race Condition
-3. Critical Section
-4. Optimistic Lock
-5. Pessimistic Lock
-6. Distributed Lock
-7. Idempotency
-8. 테스트와 재현
+1. [[why-concurrency-problem|동시성 문제가 생기는 이유]]
+2. [[race-condition-and-critical-section|Race Condition과 Critical Section]]
+3. [[unique-constraint-and-state-transition|Unique 제약과 상태 전이]]
+4. [[optimistic-lock|낙관적 락]]
+5. [[pessimistic-lock|비관적 락]]
+6. [[distributed-lock|분산 락]]
+7. [[concurrency-test|동시성 테스트와 재현]]
 
 ## 핵심 질문
 
 - Concurrency 영역에서 실무적으로 중요한 문제는 무엇인가?
+- 어떤 공유 자원에서 경쟁 조건이 생기는가?
+- 단일 요청 테스트에서는 정상인데 운영에서 데이터가 깨지는 이유는 무엇인가?
+- lock보다 unique 제약, 조건부 update, 상태 전이가 더 나은 경우는 언제인가?
+- 낙관적 락과 비관적 락은 어떤 기준으로 선택하는가?
+- Redis 분산 락은 DB 정합성 보장과 무엇이 다른가?
+- 동시성 문제를 테스트로 어떻게 재현할 수 있는가?
 - 문제를 발견하면 어떤 순서로 원인을 좁히는가?
 - 어떤 해결책이 있고 각각의 한계는 무엇인가?
 - 프로젝트 경험과 어떻게 연결할 수 있는가?
@@ -47,5 +52,8 @@ description: 동시성 문제와 경쟁 조건 해결 학습 인덱스
 
 ## 관련 문서
 
+- [[02-practical-backend/transaction/transaction|transaction]]
+- [[02-practical-backend/idempotency/idempotency|idempotency]]
+- [[01-core/database/lock|lock]]
 - [[03-case-studies/case-studies|case-studies]]
 - [[04-interview/interview-questions|interview-questions]]

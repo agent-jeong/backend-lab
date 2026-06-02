@@ -56,16 +56,16 @@ description: 실무 대비와 기술 면접 준비를 위한 백엔드 엔지니
 
 실무에서 반복되는 장애, 성능, 정합성, 운영 문제를 해결 절차 중심으로 정리한다.
 
-- [[02-practical-backend/performance/performance|performance]]
 - [[02-practical-backend/transaction/transaction|transaction]]
 - [[02-practical-backend/concurrency/concurrency|concurrency]]
 - [[02-practical-backend/idempotency/idempotency|idempotency]]
+- [[02-practical-backend/performance/performance|performance]]
+- [[02-practical-backend/observability/observability|observability]]
+- [[02-practical-backend/architecture/architecture|architecture]]
 - [[02-practical-backend/batch/batch-processing|batch-processing]]
 - [[02-practical-backend/security/security|security]]
-- [[02-practical-backend/architecture/architecture|architecture]]
-- [[02-practical-backend/observability/observability|observability]]
-- [[02-practical-backend/ci-cd/ci-cd|ci-cd]]
 - [[02-practical-backend/testing/testing|testing]]
+- [[02-practical-backend/ci-cd/ci-cd|ci-cd]]
 
 ## 3단계: Interview / Case / AI
 

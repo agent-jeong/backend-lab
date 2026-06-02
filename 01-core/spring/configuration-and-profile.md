@@ -29,8 +29,8 @@ server:
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/mydb
-    username: root
-    password: password
+    username: app_user
+    password: ${DB_PASSWORD}
 
 app:
   api:
@@ -119,7 +119,7 @@ spring:
 # application-prod.yml
 spring:
   datasource:
-    url: jdbc:mysql://prod-server:3306/proddb
+    url: jdbc:mysql://db.example.com:3306/app
 ```
 
 ### Profile별 Bean 등록
@@ -189,7 +189,7 @@ public class AppConfig {
 # 위험: 비밀번호를 설정 파일에 직접 작성
 spring:
   datasource:
-    password: real-password
+    password: plain-text-password
 
 # 안전: 환경 변수로 주입
 spring:

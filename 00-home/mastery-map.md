@@ -52,16 +52,16 @@ description: 백엔드 엔지니어링 학습 주제와 목표 숙련도 지도
 
 | 영역 | 먼저 공부할 주제 | 실무 연결 질문 | 목표 | 연결 문서 |
 |---|---|---|---:|---|
-| Performance | latency, throughput, DB, cache, load test | 병목을 측정하고 개선 전후를 어떻게 증명하는가? | L5 | [performance](../02-practical-backend/performance/performance.md) |
 | Transaction | ACID, isolation, lock, external API boundary | 정합성과 락 경합 사이에서 어디에 경계를 둘 것인가? | L5 | [transaction](../02-practical-backend/transaction/transaction.md) |
 | Concurrency | race condition, lock, unique constraint | 같은 요청이 동시에 들어오면 어떤 데이터가 깨지는가? | L5 | [concurrency](../02-practical-backend/concurrency/concurrency.md) |
 | Idempotency | retry, idempotency key, state transition | 중복 요청과 재처리가 결과를 바꾸지 않게 하려면? | L5 | [idempotency](../02-practical-backend/idempotency/idempotency.md) |
+| Performance | latency, throughput, DB, cache, load test | 병목을 측정하고 개선 전후를 어떻게 증명하는가? | L5 | [performance](../02-practical-backend/performance/performance.md) |
+| Observability | log, metric, trace, alert | 장애가 나기 전에 어떤 신호를 남길 것인가? | L4 | [observability](../02-practical-backend/observability/observability.md) |
+| Architecture | layer, dependency, module, transaction boundary | 변경이 잦은 요구사항을 어느 책임에 둘 것인가? | L4 | [architecture](../02-practical-backend/architecture/architecture.md) |
 | Batch | scheduling, chunk, retry, monitoring | 실패한 배치를 어디서부터 다시 처리할 수 있는가? | L4 | [batch-processing](../02-practical-backend/batch/batch-processing.md) |
 | Security | authn/authz, token, CORS, injection, logging | 권한 누락과 민감 정보 노출을 어디서 막는가? | L4 | [security](../02-practical-backend/security/security.md) |
-| Architecture | layer, dependency, module, transaction boundary | 변경이 잦은 요구사항을 어느 책임에 둘 것인가? | L4 | [architecture](../02-practical-backend/architecture/architecture.md) |
-| Observability | log, metric, trace, alert | 장애가 나기 전에 어떤 신호를 남길 것인가? | L4 | [observability](../02-practical-backend/observability/observability.md) |
-| CI/CD | pipeline, rollback, config, secret, GitOps | 배포 실패를 어떻게 빠르게 되돌릴 것인가? | L4 | [ci-cd](../02-practical-backend/ci-cd/ci-cd.md) |
 | Testing | unit, integration, fixture, test container | 어떤 위험을 어떤 테스트로 막을 것인가? | L4 | [testing](../02-practical-backend/testing/testing.md) |
+| CI/CD | pipeline, rollback, config, secret, GitOps | 배포 실패를 어떻게 빠르게 되돌릴 것인가? | L4 | [ci-cd](../02-practical-backend/ci-cd/ci-cd.md) |
 
 ## 운영 방법
 
