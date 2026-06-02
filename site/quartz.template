@@ -118,6 +118,23 @@ ExternalPlugin.Explorer({
         "external-api-and-transaction",
         "compensation-and-outbox",
       ],
+      concurrency: [
+        "why-concurrency-problem",
+        "race-condition-and-critical-section",
+        "unique-constraint-and-state-transition",
+        "optimistic-lock",
+        "pessimistic-lock",
+        "distributed-lock",
+        "concurrency-test",
+      ],
+      idempotency: [
+        "why-idempotency",
+        "duplicate-request-and-retry",
+        "idempotency-key",
+        "state-transition-and-unique-constraint",
+        "message-consumer-idempotency",
+        "payment-order-idempotency",
+      ],
     }
 
     if (a.isFolder !== b.isFolder) {
