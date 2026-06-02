@@ -33,6 +33,7 @@ description: 외부 시스템 호출과 DB 트랜잭션을 함께 다룰 때의 
 | 중복 요청 위험 | idempotency key 사용 | 재시도해도 한 번만 처리되게 한다 |
 | 외부 성공 후 DB 실패 | 보상 또는 상태 복구 작업 | 외부 부작용은 rollback되지 않는다 |
 | 호출 지연 가능 | 짧은 timeout과 circuit breaker | DB 자원 점유와 장애 전파를 줄인다 |
+| timeout 발생 | 결과 조회 또는 상태 확인 | timeout은 실패가 아니라 결과 불명 상태일 수 있다 |
 
 ## 자주 나는 실수
 
