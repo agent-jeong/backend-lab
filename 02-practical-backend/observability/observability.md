@@ -23,18 +23,23 @@ comments: false
 
 ## 학습 순서
 
-1. Observability가 필요한 이유
-2. Logging
-3. Metric
-4. Tracing
-5. traceId
-6. Alert
-7. Dashboard
-8. 장애 분석 흐름
+1. [[why-observability|Observability가 필요한 이유]]
+2. [[logging|Logging]]
+3. [[metrics|Metrics]]
+4. [[distributed-tracing|Distributed Tracing]]
+5. [[trace-id-and-correlation-id|traceId와 correlationId]]
+6. [[alert-and-slo|Alert와 SLO]]
+7. [[dashboard|Dashboard]]
+8. [[incident-analysis-flow|장애 분석 흐름]]
 
 ## 핵심 질문
 
 - Observability 영역에서 실무적으로 중요한 문제는 무엇인가?
+- 로그, 메트릭, 트레이스는 각각 어떤 질문에 답하는가?
+- 장애 상황에서 어떤 지표를 먼저 보고, 어떤 로그로 좁힐 것인가?
+- traceId는 왜 필요하고 어디까지 전파해야 하는가?
+- 알림은 단순 임계치가 아니라 어떤 사용자 영향 기준으로 설계해야 하는가?
+- 대시보드는 보기 좋은 화면보다 어떤 의사결정을 도와야 하는가?
 - 문제를 발견하면 어떤 순서로 원인을 좁히는가?
 - 어떤 해결책이 있고 각각의 한계는 무엇인가?
 - 프로젝트 경험과 어떻게 연결할 수 있는가?
@@ -44,6 +49,8 @@ comments: false
 
 - Observability는 장애가 난 뒤 원인을 빠르게 좁히기 위한 준비다.
 - 로그, 메트릭, 트레이스는 서로 다른 질문에 답한다.
+- 모든 값을 수집하는 것이 아니라 장애 판단과 원인 분석에 필요한 신호를 수집한다.
+- 알림은 운영자가 행동할 수 있는 문제에만 울려야 한다.
 - 면접에서는 어떤 지표와 로그로 원인을 좁혔는지 순서대로 설명한다.
 
 ## 관련 문서
