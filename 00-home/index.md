@@ -46,6 +46,7 @@ comments: false
 기초 지식은 실무 문제를 설명하는 언어다. 문법 자체보다 “왜 이런 문제가 생기고 어떻게 판단하는가”를 우선한다.
 
 - [[01-core/java/java|java]]
+- [[01-core/kotlin/kotlin|kotlin]]
 - [[01-core/spring/spring|spring]]
 - [[01-core/jpa/jpa|jpa]]
 - [[01-core/database/database|database]]

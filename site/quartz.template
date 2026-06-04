@@ -29,6 +29,14 @@ ExternalPlugin.Explorer({
         "memory-leak-and-oom",
         "serialization-and-jackson",
       ],
+      kotlin: [
+        "kotlin-why-backend",
+        "kotlin-null-safety",
+        "kotlin-data-class-and-immutability",
+        "kotlin-collection-and-scope-functions",
+        "kotlin-java-interop",
+        "kotlin-coroutines-basics",
+      ],
       jpa: [
         "why-jpa",
         "entity-table-mapping",
@@ -94,6 +102,7 @@ ExternalPlugin.Explorer({
       ],
       "01-core": [
         "java",
+        "kotlin",
         "spring",
         "jpa",
         "database",

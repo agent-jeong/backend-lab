@@ -41,6 +41,7 @@ description: 백엔드 엔지니어링 학습 주제와 목표 숙련도 지도
 | 영역 | 먼저 공부할 주제 | 실무 연결 질문 | 목표 | 연결 문서 |
 |---|---|---|---:|---|
 | Java | primitive/reference, collection, JVM, GC | 타입/메모리/컬렉션 선택이 어떤 버그와 성능 문제를 만드는가? | L4 | [java](../01-core/java/java.md) |
+| Kotlin | null safety, data class, interop, coroutine | Java/Spring/JPA 경계에서 어떤 장점과 한계가 생기는가? | L3 | [kotlin](../01-core/kotlin/kotlin.md), [java](../01-core/java/java.md) |
 | Spring | DI, Bean, AOP, MVC, Transaction | 요청 하나가 어떤 객체와 프록시를 지나 처리되는가? | L5 | [spring](../01-core/spring/spring.md), [transaction](../02-practical-backend/transaction/transaction.md) |
 | JPA | 영속성 컨텍스트, flush, fetch 전략, N+1 | 쿼리 수와 트랜잭션 경계를 어떻게 확인하는가? | L5 | [jpa](../01-core/jpa/jpa.md), [performance](../02-practical-backend/performance/performance.md) |
 | Database | index, execution plan, lock, isolation | 느린 쿼리와 정합성 문제를 어떤 순서로 좁히는가? | L5 | [database](../01-core/database/database.md), [transaction](../02-practical-backend/transaction/transaction.md) |
