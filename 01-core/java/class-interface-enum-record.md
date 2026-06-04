@@ -40,7 +40,7 @@ public record UserResponse(
 }
 ```
 
-주의할 점은 record가 얕은 불변이라는 것이다. `List` 같은 mutable 객체를 받으면 방어적 복사를 고려한다.
+주의할 점은 record가 얕은 불변이라는 점이다. `List` 같은 mutable 객체는 내부 상태가 변경될 수 있으므로, 필요하다면 `List.copyOf()`로 방어적 복사를 적용한다.
 
 ```java
 public record UserGroup(List<String> names) {
