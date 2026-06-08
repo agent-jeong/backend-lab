@@ -13,9 +13,9 @@ comments: false
 - Java, Spring, JPA와 연결되는 실무 주제만 우선 정리한다.
 - 문법 나열보다 null 안정성, 불변성, Java interop, coroutine의 한계를 중심으로 정리한다.
 
-## 오늘 남길 것
+## 학습 산출물
 
-- 오늘 다룰 Kotlin 실무 개념 하나를 고른다.
+- 다룰 Kotlin 실무 개념 하나를 고른다.
 - Java와 비교했을 때 어떤 문제가 줄어드는지 먼저 쓴다.
 - Spring/JPA/Jackson에서 생기는 주의점을 함께 남긴다.
 - 마지막에 핵심 요약과 꼬리 질문을 남긴다.

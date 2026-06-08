@@ -5,16 +5,16 @@ description: 백엔드 엔지니어링 학습 주제와 목표 숙련도 지도
 
 # Mastery Map
 
-## 이번 달 운영 방식
+## 운영 방식
 
-매일 하나의 주제를 고르고, “개념 이해”가 아니라 “실무에서 어떻게 판단할지”를 남긴다.
+“개념 이해”가 아니라 “실무에서 어떻게 판단할지”를 남기는 것이 목표다.
 
-| 주기 | 목표 | 산출물 |
+| 활동 | 목표 | 산출물 |
 |---|---|---|
-| 매일 | 한 개념을 실무 문제와 연결 | 개념 문서 1개 보강 |
-| 주 2회 | 면접 질문으로 압축 | [interview-questions](../04-interview/interview-questions.md) 답변 1개 |
-| 주 1회 | 사례로 재구성 | [case-studies](../03-case-studies/case-studies.md) 항목 1개 보강 |
-| 월 1회 | 부족한 영역 재배치 | 현재 레벨 업데이트 |
+| 개념 학습 | 한 개념을 실무 문제와 연결 | 개념 문서 1개 보강 |
+| 면접 압축 | 면접 질문으로 압축 | [interview-questions](../04-interview/interview-questions.md) 답변 1개 |
+| 사례 정리 | 사례로 재구성 | [case-studies](../03-case-studies/case-studies.md) 항목 1개 보강 |
+| 레벨 점검 | 부족한 영역 재배치 | 현재 레벨 업데이트 |
 
 ## 숙련도 기준
 
@@ -26,15 +26,6 @@ description: 백엔드 엔지니어링 학습 주제와 목표 숙련도 지도
 | L3 | 실무 문제, 장애 양상, 해결책 설명 가능 |
 | L4 | 프로젝트 경험 또는 일반화된 사례와 연결해 면접 답변 가능 |
 | L5 | 트레이드오프와 대안을 비교해 설명 가능 |
-
-## 4주 학습 루트
-
-| 주차 | 집중 영역 | 매일 볼 질문 |
-|---|---|---|
-| 1주차 | Java, Spring, JPA | 이 기능은 어떤 실무 문제를 줄이는가? |
-| 2주차 | Database, Transaction, Concurrency | 정합성이나 성능 문제가 언제 생기는가? |
-| 3주차 | Performance, Redis, Network, OS | 병목을 어떤 순서로 좁히는가? |
-| 4주차 | Security, Testing, Observability, CI/CD, Batch | 운영 중 실패했을 때 어떻게 발견하고 복구하는가? |
 
 ## Core
 
