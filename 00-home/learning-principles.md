@@ -21,7 +21,7 @@ description: 실무 중심 백엔드 CS 학습 원칙
 
 ## 학습 루프
 
-1. [[00-home/mastery-map|mastery-map]]에서 학습할 주제를 고른다.
+1. [[00-home/daily-study-board|daily-study-board]] 또는 [[00-home/mastery-map|mastery-map]]에서 학습할 주제를 고른다.
 2. 해당 주제 인덱스에서 질문 하나를 고른다.
 3. 기존 문서가 있으면 보강하고, 없으면 `_templates/concept-template.md`로 작은 문서 하나를 만든다.
 4. 실무에서 문제가 되는 상황을 먼저 쓴다.

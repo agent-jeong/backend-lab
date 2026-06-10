@@ -1,6 +1,6 @@
 ---
 title: Backend Lab
-description: 실무 대비와 기술 면접 준비를 위한 백엔드 엔지니어링 학습 노트
+description: 실무 중심 백엔드 CS 학습과 기술 면접 준비를 위한 학습 노트
 comments: false
 ---
 
@@ -40,6 +40,7 @@ comments: false
 - [[00-home/learning-principles|learning-principles]]: 문서 작성 기준과 완료 조건
 - [[04-interview/interview-questions|interview-questions]]: 면접 질문과 답변 구조
 - [[03-case-studies/case-studies|case-studies]]: 공개 가능한 실무 사례 정리
+- [[00-home/glossary|glossary]]: 실무 핵심 용어 정리
 
 ## 1단계: Core
 
