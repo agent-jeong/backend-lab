@@ -19,6 +19,66 @@ GC(Garbage Collection)는 JVM이 더 이상 참조되지 않는 객체의 메모
 - 컨테이너 환경에서 메모리 한도를 넘겨 프로세스가 kill되는 경우
 - GC 로그를 보고 원인을 판단해야 하는 경우
 
+## GC의 핵심: 안 쓰는 객체를 어떻게 찾는가
+
+GC의 근본 문제는 "어떤 객체가 더 이상 사용되지 않는가"를 판별하는 것이다.
+
+### Reachability Analysis (도달성 분석)
+
+현대 JVM은 **GC Root에서 참조 체인을 따라가며 도달 가능한 객체를 식별**하는 방식을 사용한다. 도달 불가능한 객체가 수거 대상이다.
+
+```
+GC Roots
+  ├── Stack 지역변수 → 객체A → 객체B (도달 가능 → 생존)
+  ├── Static 변수 → 객체C (도달 가능 → 생존)
+  └── (참조 끊김)
+                         객체D → 객체E (도달 불가 → 수거 대상)
+```
+
+### GC Root가 되는 것들
+
+| GC Root | 예시 |
+|---|---|
+| Stack의 지역변수/매개변수 | 현재 실행 중인 메서드의 변수 |
+| Static 변수 | 클래스의 static 필드가 참조하는 객체 |
+| JNI 참조 | 네이티브 코드에서 참조하는 객체 |
+| 활성 스레드 | Thread 객체 자체 |
+| Synchronized lock 대상 | 현재 모니터를 잡고 있는 객체 |
+
+### Reference Counting은 왜 안 쓰는가
+
+초기 GC 방식인 Reference Counting(참조 횟수 카운팅)은 순환 참조를 해결하지 못한다.
+
+```java
+// 순환 참조 예시 - Reference Counting으로는 수거 불가
+class Node {
+    Node next;
+}
+
+Node a = new Node();
+Node b = new Node();
+a.next = b;  // b의 참조 카운트: 1
+b.next = a;  // a의 참조 카운트: 1
+a = null;    // a 참조 카운트: 1 (b.next가 여전히 참조)
+b = null;    // b 참조 카운트: 1 (a.next가 여전히 참조)
+// → 둘 다 카운트가 0이 아니라 수거 불가, 하지만 실제로는 접근 불가
+```
+
+**Reachability Analysis는 GC Root에서 도달할 수 없으면 수거 대상**이므로 순환 참조 문제가 없다.
+
+### GC를 직접 만든다면
+
+런타임을 직접 설계할 때 고려해야 할 핵심 판단:
+
+| 방식 | 장점 | 단점 |
+|---|---|---|
+| Reference Counting | 즉시 수거, 구현 단순 | 순환 참조 미해결, 카운트 갱신 오버헤드 |
+| Mark-and-Sweep | 순환 참조 해결, 정확 | STW 필요, 단편화 |
+| Mark-and-Compact | 단편화 해결 | 이동 비용 |
+| Copying (세대별) | Young Gen에서 빠름 | 메모리 2배 필요 |
+
+실무에서 JVM은 이들을 조합한다: Young Gen은 Copying, Old Gen은 Mark-Compact 계열을 사용한다.
+
 ## GC 기본 동작
 
 ### 세대별 구조

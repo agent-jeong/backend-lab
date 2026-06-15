@@ -40,6 +40,10 @@ comments: false
 - List, Set, Map은 각각 어떤 상황에서 선택하나요? [[collection-selection]]
 - Java 버전별 차이는 무엇인가?
 - HashMap은 내부적으로 어떻게 동작하고 언제 성능이 나빠질 수 있나요? [[hashmap]]
+- String을 리터럴로 할당하는 것과 new로 할당하는 것의 차이는? [[string-and-intern]]
+- String의 intern() 메서드는 무엇이고 언제 유용한가? [[string-and-intern]]
+- GC는 어떻게 안 쓰는 객체를 찾아내는가? (Reachability Analysis) [[gc-and-tuning]]
+- GC 같은 런타임을 직접 만든다면 안 쓰는 객체를 어떻게 찾을 것인가? [[gc-and-tuning]]
 - GC가 애플리케이션 지연 시간에 영향을 주는 경우를 어떻게 확인하나요?
 
 ## Spring
@@ -59,8 +63,12 @@ comments: false
 
 ## Database
 
-- 실행 계획에서 무엇을 확인하나요?
-- 복합 인덱스 컬럼 순서는 어떻게 정하나요?
+- B-Tree는 어떤 자료구조이고 왜 DB 인덱스에 사용하는가? [[db-index]]
+- B-Tree와 B+ Tree의 차이는 무엇인가? [[db-index]]
+- 인덱스는 어떤 기술인지 정의를 설명해주세요 [[db-index]]
+- 복합 인덱스 컬럼 순서는 어떻게 정하나요? [[db-index]]
+- 실행 계획에서 무엇을 확인하나요? (EXPLAIN) [[execution-plan]]
+- 작업이 느릴 때 어디가 느린지 탐지하고 성능을 개선하는 방법은? [[bottleneck-analysis]]
 - 트랜잭션 격리 수준은 어떤 문제를 막기 위한 것인가요?
 - Deadlock이 발생하면 어떤 순서로 원인을 좁히나요?
 
