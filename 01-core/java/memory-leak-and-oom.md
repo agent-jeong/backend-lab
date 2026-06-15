@@ -1,9 +1,9 @@
 ---
-title: Memory Leak And OOM
+title: 메모리 누수와 OOM 원인 분석
 description: Java 메모리 누수와 OOM 실무 원인 분석 및 대응
 ---
 
-# Memory Leak And OOM
+# 메모리 누수와 OOM 원인 분석
 
 ## 한 줄 정의
 

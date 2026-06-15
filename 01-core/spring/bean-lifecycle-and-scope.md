@@ -1,9 +1,9 @@
 ---
-title: Bean Lifecycle And Scope
+title: Bean 생명주기와 Scope
 description: Spring Bean의 생명주기와 Scope별 동작 차이
 ---
 
-# Bean Lifecycle And Scope
+# Bean 생명주기와 Scope
 
 ## 한 줄 정의
 

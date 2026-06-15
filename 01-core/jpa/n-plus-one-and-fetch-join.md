@@ -1,9 +1,9 @@
 ---
-title: N Plus One And Fetch Join
+title: "N+1 문제와 Fetch Join 해결"
 description: JPA N+1 문제의 원인과 fetch join 기반 해결 전략
 ---
 
-# N Plus One And Fetch Join
+# N+1 문제와 Fetch Join 해결
 
 ## 한 줄 정의
 

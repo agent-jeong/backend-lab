@@ -1,9 +1,9 @@
 ---
-title: AOP
+title: AOP 동작 원리와 프록시 제약
 description: Spring AOP의 동작 원리와 프록시 기반 제약
 ---
 
-# AOP
+# AOP 동작 원리와 프록시 제약
 
 ## 한 줄 정의
 

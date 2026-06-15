@@ -1,9 +1,9 @@
 ---
-title: Java Memory Model
+title: Java 메모리 모델과 happens-before
 description: Java 동시성에서 visibility, atomicity, happens-before를 이해하는 기준
 ---
 
-# Java Memory Model
+# Java 메모리 모델과 happens-before
 
 ## 한 줄 정의
 

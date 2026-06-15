@@ -1,9 +1,9 @@
 ---
-title: Generics And Type Erasure
+title: 제네릭과 타입 소거
 description: Java 제네릭과 타입 소거의 실무 사용 기준과 한계
 ---
 
-# Generics And Type Erasure
+# 제네릭과 타입 소거
 
 ## 한 줄 정의
 

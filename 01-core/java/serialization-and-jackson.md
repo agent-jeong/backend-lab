@@ -1,9 +1,9 @@
 ---
-title: Serialization And Jackson
+title: 직렬화와 Jackson 동작 원리
 description: Java 직렬화와 Jackson 기반 JSON 처리의 실무 주의점
 ---
 
-# Serialization And Jackson
+# 직렬화와 Jackson 동작 원리
 
 ## 한 줄 정의
 

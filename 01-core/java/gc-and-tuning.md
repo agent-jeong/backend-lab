@@ -1,9 +1,9 @@
 ---
-title: GC And Tuning
+title: GC 동작 원리와 튜닝
 description: Java GC 동작 원리와 실무 튜닝 관점
 ---
 
-# GC And Tuning
+# GC 동작 원리와 튜닝
 
 ## 한 줄 정의
 

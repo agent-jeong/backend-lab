@@ -1,9 +1,9 @@
 ---
-title: Memory
+title: "OS 메모리 관리 (가상 메모리, 페이징)"
 description: OS 메모리 관리, 가상 메모리, 페이징과 OOM
 ---
 
-# Memory
+# OS 메모리 관리 (가상 메모리, 페이징)
 
 ## 한 줄 정의
 

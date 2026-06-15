@@ -1,9 +1,9 @@
 ---
-title: TCP Connection
+title: "TCP 연결과 3-way 핸드셰이크"
 description: TCP 3-way/4-way handshake와 커넥션 풀, keep-alive
 ---
 
-# TCP Connection
+# TCP 연결과 3-way 핸드셰이크
 
 ## 한 줄 정의
 

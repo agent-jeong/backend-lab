@@ -1,9 +1,9 @@
 ---
-title: String Literal, new, intern
+title: String 리터럴 vs new vs intern의 차이
 description: String 리터럴 할당과 new 할당의 차이, String Pool과 intern 메서드의 동작 원리
 ---
 
-# String Literal, new, intern
+# String 리터럴 vs new vs intern의 차이
 
 ## 한 줄 정의
 

@@ -1,9 +1,9 @@
 ---
-title: TLS
+title: "TLS/SSL 동작 원리"
 description: TLS 동작 원리와 인증서, HTTPS 적용 실무
 ---
 
-# TLS
+# TLS/SSL 동작 원리
 
 ## 한 줄 정의
 

@@ -1,9 +1,9 @@
 ---
-title: Transaction And Isolation
+title: "트랜잭션 격리 수준과 동시성 문제"
 description: DB 트랜잭션 격리 수준과 동시성 문제
 ---
 
-# Transaction And Isolation
+# 트랜잭션 격리 수준과 동시성 문제
 
 ## 한 줄 정의
 

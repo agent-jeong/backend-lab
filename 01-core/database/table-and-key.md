@@ -1,9 +1,9 @@
 ---
-title: Table And Key
+title: "테이블 설계와 키 전략"
 description: 테이블 구조와 PK, FK, UK의 역할과 설계 기준
 ---
 
-# Table And Key
+# 테이블 설계와 키 전략
 
 ## 한 줄 정의
 

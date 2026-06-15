@@ -1,9 +1,9 @@
 ---
-title: CPU Scheduling
+title: "CPU 스케줄링 알고리즘"
 description: CPU 스케줄링 알고리즘과 서버 성능에 미치는 영향
 ---
 
-# CPU Scheduling
+# CPU 스케줄링 알고리즘
 
 ## 한 줄 정의
 

@@ -1,9 +1,9 @@
 ---
-title: Lazy And Eager Loading
+title: "지연 로딩과 즉시 로딩의 차이"
 description: JPA 지연 로딩과 즉시 로딩의 실무 선택 기준
 ---
 
-# Lazy And Eager Loading
+# 지연 로딩과 즉시 로딩의 차이
 
 ## 한 줄 정의
 

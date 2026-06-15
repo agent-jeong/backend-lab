@@ -1,9 +1,9 @@
 ---
-title: Spring MVC Request Flow
+title: Spring MVC 요청 처리 흐름
 description: Spring MVC의 요청 처리 흐름과 각 컴포넌트의 역할
 ---
 
-# Spring MVC Request Flow
+# Spring MVC 요청 처리 흐름
 
 ## 한 줄 정의
 

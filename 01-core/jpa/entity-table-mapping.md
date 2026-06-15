@@ -1,9 +1,9 @@
 ---
-title: Entity Table Mapping
+title: "엔티티-테이블 매핑 기본"
 description: JPA Entity와 테이블 매핑의 실무 규칙과 주의점
 ---
 
-# Entity Table Mapping
+# 엔티티-테이블 매핑 기본
 
 ## 한 줄 정의
 

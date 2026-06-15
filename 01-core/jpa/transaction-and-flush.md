@@ -1,9 +1,9 @@
 ---
-title: Transaction And Flush
+title: "트랜잭션과 flush 시점"
 description: JPA 트랜잭션 경계와 flush 동작의 실무 이해
 ---
 
-# Transaction And Flush
+# 트랜잭션과 flush 시점
 
 ## 한 줄 정의
 

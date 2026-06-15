@@ -1,9 +1,9 @@
 ---
-title: Java Version Features
+title: Java 버전별 핵심 변화
 description: Java 버전별 핵심 변화와 실무 적용 판단
 ---
 
-# Java Version Features
+# Java 버전별 핵심 변화
 
 ## 한 줄 정의
 

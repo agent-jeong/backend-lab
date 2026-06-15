@@ -1,9 +1,9 @@
 ---
-title: JVM Memory Structure
+title: JVM 메모리 구조와 각 영역의 역할
 description: JVM 메모리 구조와 실무 트러블슈팅 연결
 ---
 
-# JVM Memory Structure
+# JVM 메모리 구조와 각 영역의 역할
 
 ## 한 줄 정의
 

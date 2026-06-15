@@ -1,9 +1,9 @@
 ---
-title: Association Mapping
+title: "연관관계 매핑 전략"
 description: JPA 연관관계 매핑의 실무 설계와 주의점
 ---
 
-# Association Mapping
+# 연관관계 매핑 전략
 
 ## 한 줄 정의
 

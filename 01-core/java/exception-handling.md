@@ -1,9 +1,9 @@
 ---
-title: Exception Handling
+title: 예외 처리 전략과 실무 기준
 description: Java 예외 처리 전략과 백엔드 실무 판단 기준
 ---
 
-# Exception Handling
+# 예외 처리 전략과 실무 기준
 
 ## 한 줄 정의
 

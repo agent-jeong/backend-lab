@@ -1,9 +1,9 @@
 ---
-title: Pagination And Bulk Query
+title: "페이징과 대량 조회 전략"
 description: 페이징 처리와 대용량 조회의 성능 문제와 해결
 ---
 
-# Pagination And Bulk Query
+# 페이징과 대량 조회 전략
 
 ## 한 줄 정의
 

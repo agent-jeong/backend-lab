@@ -1,9 +1,9 @@
 ---
-title: Why RDB
+title: "관계형 DB를 사용하는 이유"
 description: 관계형 데이터베이스를 사용하는 이유와 핵심 특성
 ---
 
-# Why RDB
+# 관계형 DB를 사용하는 이유
 
 ## 한 줄 정의
 

@@ -1,9 +1,9 @@
 ---
-title: Context Switching
+title: "컨텍스트 스위칭 비용과 원리"
 description: 컨텍스트 스위칭의 동작 원리와 성능 영향
 ---
 
-# Context Switching
+# 컨텍스트 스위칭 비용과 원리
 
 ## 한 줄 정의
 

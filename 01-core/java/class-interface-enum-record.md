@@ -1,9 +1,9 @@
 ---
-title: Class Interface Enum Record
+title: 클래스·인터페이스·이넘·레코드 선택 기준
 description: Java 타입 선택 기준과 실무 설계 판단
 ---
 
-# Class Interface Enum Record
+# 클래스·인터페이스·이넘·레코드 선택 기준
 
 ## 한 줄 정의
 

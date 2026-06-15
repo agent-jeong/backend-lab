@@ -1,9 +1,9 @@
 ---
-title: Lock
+title: "DB 락의 종류와 동작"
 description: DB 락의 종류와 데드락 원인 및 해결
 ---
 
-# Lock
+# DB 락의 종류와 동작
 
 ## 한 줄 정의
 

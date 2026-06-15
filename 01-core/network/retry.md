@@ -1,9 +1,9 @@
 ---
-title: Retry
+title: "재시도 전략과 백오프"
 description: Retry 전략과 지수 백오프, 멱등성과의 관계
 ---
 
-# Retry
+# 재시도 전략과 백오프
 
 ## 한 줄 정의
 

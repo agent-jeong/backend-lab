@@ -1,9 +1,9 @@
 ---
-title: Primitive And Reference Types
+title: 기본 타입과 참조 타입의 차이
 description: Java primitive type과 reference type의 차이와 실무 주의점
 ---
 
-# Primitive And Reference Types
+# 기본 타입과 참조 타입의 차이
 
 ## 한 줄 정의
 

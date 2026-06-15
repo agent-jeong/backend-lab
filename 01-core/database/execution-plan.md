@@ -1,9 +1,9 @@
 ---
-title: Execution Plan
+title: "실행 계획(EXPLAIN) 읽는 법"
 description: 실행 계획의 읽는 방법과 성능 분석 기준
 ---
 
-# Execution Plan
+# 실행 계획(EXPLAIN) 읽는 법
 
 ## 한 줄 정의
 

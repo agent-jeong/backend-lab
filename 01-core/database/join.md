@@ -1,9 +1,9 @@
 ---
-title: Join
+title: "JOIN의 종류와 동작 원리"
 description: SQL JOIN의 종류와 동작 방식별 성능 차이
 ---
 
-# Join
+# JOIN의 종류와 동작 원리
 
 ## 한 줄 정의
 

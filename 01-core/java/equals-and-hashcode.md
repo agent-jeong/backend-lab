@@ -1,9 +1,9 @@
 ---
-title: Equals And HashCode
+title: equals와 hashCode를 함께 재정의하는 이유
 description: Java equals와 hashCode의 실무 동등성 기준
 ---
 
-# Equals And HashCode
+# equals와 hashCode를 함께 재정의하는 이유
 
 ## 한 줄 정의
 

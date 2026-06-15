@@ -1,9 +1,9 @@
 ---
-title: Why Spring
+title: Spring을 사용하는 이유
 description: Spring Framework를 사용하는 이유와 핵심 설계 철학
 ---
 
-# Why Spring
+# Spring을 사용하는 이유
 
 ## 한 줄 정의
 

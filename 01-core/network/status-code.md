@@ -1,9 +1,9 @@
 ---
-title: Status Code
+title: "HTTP 상태 코드 사용 기준"
 description: HTTP 상태 코드의 의미와 API 설계 시 올바른 사용법
 ---
 
-# Status Code
+# HTTP 상태 코드 사용 기준
 
 ## 한 줄 정의
 

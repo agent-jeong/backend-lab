@@ -1,9 +1,9 @@
 ---
-title: Process And Thread
+title: "프로세스와 스레드의 차이"
 description: 프로세스와 스레드의 차이, 멀티스레드 모델과 실무 영향
 ---
 
-# Process And Thread
+# 프로세스와 스레드의 차이
 
 ## 한 줄 정의
 

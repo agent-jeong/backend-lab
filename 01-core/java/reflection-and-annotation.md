@@ -1,9 +1,9 @@
 ---
-title: Reflection And Annotation
+title: 리플렉션과 애노테이션 동작 원리
 description: Spring, JPA, Jackson의 기반이 되는 Reflection과 Annotation의 실무 이해
 ---
 
-# Reflection And Annotation
+# 리플렉션과 애노테이션 동작 원리
 
 ## 한 줄 정의
 

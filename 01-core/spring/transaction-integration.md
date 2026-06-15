@@ -1,9 +1,9 @@
 ---
-title: Transaction Integration
+title: "@Transactional 동작 원리와 롤백 규칙"
 description: Spring의 트랜잭션 관리와 @Transactional 동작 원리
 ---
 
-# Transaction Integration
+# @Transactional 동작 원리와 롤백 규칙
 
 ## 한 줄 정의
 

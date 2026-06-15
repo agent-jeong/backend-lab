@@ -1,9 +1,9 @@
 ---
-title: HTTP Basics
+title: "HTTP 기초와 요청/응답 구조"
 description: HTTP 요청/응답 구조와 메서드, 헤더, 버전별 차이
 ---
 
-# HTTP Basics
+# HTTP 기초와 요청/응답 구조
 
 ## 한 줄 정의
 

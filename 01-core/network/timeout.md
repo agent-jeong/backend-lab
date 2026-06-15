@@ -1,9 +1,9 @@
 ---
-title: Timeout
+title: "타임아웃 설계와 실무 기준"
 description: Connection/Read/Write timeout의 차이와 실무 설정 기준
 ---
 
-# Timeout
+# 타임아웃 설계와 실무 기준
 
 ## 한 줄 정의
 

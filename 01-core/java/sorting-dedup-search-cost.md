@@ -1,9 +1,9 @@
 ---
-title: Sorting Dedup Search Cost
+title: 정렬·중복 제거·탐색의 시간 복잡도
 description: Java 컬렉션의 정렬, 중복 제거, 탐색 비용과 실무 판단
 ---
 
-# Sorting Dedup Search Cost
+# 정렬·중복 제거·탐색의 시간 복잡도
 
 ## 한 줄 정의
 

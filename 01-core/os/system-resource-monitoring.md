@@ -1,9 +1,9 @@
 ---
-title: System Resource Monitoring
+title: "시스템 자원 모니터링 (CPU, 메모리, 디스크)"
 description: CPU, memory, disk, network 지표로 서버 병목을 좁히는 방법
 ---
 
-# System Resource Monitoring
+# 시스템 자원 모니터링 (CPU, 메모리, 디스크)
 
 ## 한 줄 정의
 

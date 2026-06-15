@@ -1,9 +1,9 @@
 ---
-title: IoC And DI
+title: IoC 컨테이너와 의존성 주입
 description: Spring IoC 컨테이너의 동작 원리와 DI 방식별 특징
 ---
 
-# IoC And DI
+# IoC 컨테이너와 의존성 주입
 
 ## 한 줄 정의
 
