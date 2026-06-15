@@ -51,7 +51,9 @@ comments: false
 - Spring을 왜 사용하나요?
 - DI는 왜 필요한가요?
 - @Transactional은 어떻게 동작하나요?
+- @Transactional이 동작하지 않는 경우와 원인은? [[transactional-pitfalls]]
 - Spring AOP가 적용되지 않는 대표적인 경우는 무엇인가요?
+- Filter, Interceptor, AOP의 차이와 선택 기준은? [[filter-interceptor-aop]]
 - Controller, Service, Repository 책임을 어떻게 나누나요?
 
 ## JPA
@@ -60,6 +62,7 @@ comments: false
 - N+1은 왜 발생하나요?
 - 영속성 컨텍스트는 어떤 이점을 주고 어떤 혼란을 만들 수 있나요?
 - flush는 언제 발생하고 성능이나 정합성에 어떤 영향을 주나요?
+- OSIV란 무엇이고 왜 끄는가? [[osiv]]
 
 ## Database
 
@@ -67,6 +70,8 @@ comments: false
 - B-Tree와 B+ Tree의 차이는 무엇인가? [[db-index]]
 - 인덱스는 어떤 기술인지 정의를 설명해주세요 [[db-index]]
 - 복합 인덱스 컬럼 순서는 어떻게 정하나요? [[db-index]]
+- 정규화(1NF~3NF)란 무엇이고 반정규화는 언제 하는가? [[normalization-and-denormalization]]
+- Replication과 Sharding의 차이와 도입 시점은? [[replication-and-sharding]]
 - 실행 계획에서 무엇을 확인하나요? (EXPLAIN) [[execution-plan]]
 - 작업이 느릴 때 어디가 느린지 탐지하고 성능을 개선하는 방법은? [[bottleneck-analysis]]
 - 트랜잭션 격리 수준은 어떤 문제를 막기 위한 것인가요?
