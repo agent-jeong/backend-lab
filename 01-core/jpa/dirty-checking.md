@@ -1,5 +1,5 @@
 ---
-title: "변경 감지(Dirty Checking) 동작 원리"
+title: "변경 감지(Dirty Checking)"
 description: JPA 변경 감지의 동작 원리와 실무에서의 주의점
 ---
 

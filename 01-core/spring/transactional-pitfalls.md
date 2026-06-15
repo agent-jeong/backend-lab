@@ -1,5 +1,5 @@
 ---
-title: "@Transactional이 동작하지 않는 경우"
+title: "@Transactional 동작 실패 케이스"
 description: "@Transactional 미적용 원인을 빠르게 진단하는 체크리스트"
 ---
 
