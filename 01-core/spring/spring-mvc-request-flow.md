@@ -74,57 +74,15 @@ Controller 메서드의 파라미터를 HTTP 요청에서 추출해서 바인딩
 
 `@RequestBody`로 JSON → 객체 변환, `@ResponseBody`로 객체 → JSON 변환을 처리한다. Spring Boot에서는 Jackson이 기본 Converter다.
 
-## Filter vs Interceptor vs AOP
+## Filter, Interceptor, AOP의 위치
 
-| 구분 | Filter | Interceptor | AOP |
-|---|---|---|---|
-| 실행 위치 | 서블릿 전후 | 컨트롤러 전후 | 메서드 전후 |
-| 관리 주체 | 서블릿 컨테이너 | Spring MVC | Spring |
-| 접근 가능 범위 | HttpServletRequest/Response | Handler 정보 | 메서드 파라미터, 반환값 |
-| 용도 | 인코딩, CORS, 인증 | 로깅, 권한 체크, 공통 처리 | 트랜잭션, 실행 시간 측정 |
-| 예외 처리 | try-catch 직접 처리 | afterCompletion에서 처리 | `@ExceptionHandler`로 처리 |
+요청 흐름에서 각 계층이 어디에서 동작하는지가 핵심이다.
 
 ```
 HTTP 요청 → Filter → DispatcherServlet → Interceptor → AOP → Controller
 ```
 
-### Filter
-
-```java
-@Component
-public class LoggingFilter implements Filter {
-
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
-        log.info("Request: {}", ((HttpServletRequest) request).getRequestURI());
-        chain.doFilter(request, response);
-        log.info("Response: {}", ((HttpServletResponse) response).getStatus());
-    }
-}
-```
-
-Spring 컨텍스트 밖에서 동작한다. 모든 요청에 공통으로 적용할 처리(인코딩, CORS, 보안)에 사용한다.
-
-### Interceptor
-
-```java
-@Component
-public class AuthInterceptor implements HandlerInterceptor {
-
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        String token = request.getHeader("Authorization");
-        if (token == null) {
-            response.setStatus(401);
-            return false; // 컨트롤러 진입 차단
-        }
-        return true;
-    }
-}
-```
-
-Spring 컨텍스트 안에서 동작한다. Bean을 주입받을 수 있어서 비즈니스 로직과 연계가 필요한 공통 처리에 사용한다.
+각 계층의 상세 비교, 코드 예제, 실무 선택 기준은 [[filter-interceptor-aop]]에서 다룬다.
 
 ## 예외 처리 흐름
 
@@ -163,16 +121,12 @@ public class GlobalExceptionHandler {
 
 Spring MVC는 DispatcherServlet이 모든 요청을 받아서 HandlerMapping → Controller → ViewResolver 순서로 처리합니다.
 
-실행 순서는 Filter → Interceptor → AOP → Controller이며, 각 계층의 역할이 다릅니다.
-Filter는 서블릿 레벨, Interceptor는 Spring MVC 레벨, AOP는 메서드 레벨에서 동작합니다.
+실행 순서는 Filter → Interceptor → AOP → Controller이며, 각 계층의 상세 비교는 [[filter-interceptor-aop]]를 참고합니다.
 
 `@ExceptionHandler`는 Controller 계층의 예외만 처리합니다.
 Filter에서 발생한 예외는 별도로 처리해야 합니다.
 
 ## 꼬리 질문
-
-> [!question]- Filter와 Interceptor 중 어디에서 인증을 처리해야 하는가?
-> 단순 토큰 존재 여부 확인은 Filter, Spring Bean과 연계가 필요한 권한 체크는 Interceptor가 적합합니다. Spring Security는 Filter 기반으로 인증을 처리합니다.
 
 > [!question]- `@Controller`와 `@RestController`의 차이는?
 > `@RestController`는 `@Controller` + `@ResponseBody`입니다. `@Controller`는 View 이름을 반환하고, `@RestController`는 반환값을 JSON으로 직렬화합니다.
@@ -187,4 +141,5 @@ Filter에서 발생한 예외는 별도로 처리해야 합니다.
 
 - [[01-core/spring/spring|spring]]
 - [[aop]]
+- [[filter-interceptor-aop]]
 - [[validation-and-exception-handling]]

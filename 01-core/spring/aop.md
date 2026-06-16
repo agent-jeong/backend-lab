@@ -60,43 +60,9 @@ Spring Boot는 `proxyTargetClass=true`가 기본값이므로, **인터페이스 
 
 ## 프록시 기반 AOP의 제약
 
-### 1. 내부 호출 시 AOP 미적용
+프록시 기반이기 때문에 **내부 호출, private 메서드, final 클래스**에서는 AOP가 적용되지 않는다.
 
-```java
-@Service
-public class OrderService {
-
-    public void process() {
-        this.createOrder(); // 내부 호출 → 프록시를 거치지 않음 → @Transactional 미적용
-    }
-
-    @Transactional
-    public void createOrder() {
-        // 트랜잭션이 동작하지 않음
-    }
-}
-```
-
-`this`는 프록시가 아닌 실제 객체를 가리킨다. 내부 호출은 프록시를 거치지 않으므로 AOP가 적용되지 않는다.
-
-**해결 방법:**
-- 메서드를 별도 클래스로 분리한다 (가장 권장)
-- `ApplicationContext`에서 자기 자신을 가져와서 호출한다 (비권장)
-
-### 2. private 메서드에 AOP 미적용
-
-```java
-@Transactional
-private void internalProcess() {
-    // 프록시가 오버라이드할 수 없음 → AOP 미적용
-}
-```
-
-CGLIB 프록시는 클래스를 상속해서 메서드를 오버라이드하는 방식이므로, `private` 메서드는 오버라이드가 불가능하다.
-
-### 3. final 클래스/메서드에 AOP 미적용
-
-CGLIB은 상속 기반이므로 `final` 클래스나 `final` 메서드에는 프록시를 생성할 수 없다.
+대표적인 실패 케이스와 진단 방법은 [[@Transactional 동작 실패 케이스|transactional-pitfalls]]에서 상세하게 다룬다.
 
 ## 커스텀 AOP 예시
 
@@ -133,30 +99,22 @@ public class ExecutionTimeAspect {
 
 ## 자주 나는 실수
 
-- 같은 클래스 내부에서 `@Transactional` 메서드를 호출해서 트랜잭션이 동작하지 않는다.
-- `private` 메서드에 `@Transactional`을 붙여서 AOP가 적용되지 않는다.
-- 프록시 동작을 모르고 `@Transactional`이 항상 동작한다고 가정한다.
 - `@Around`에서 `joinPoint.proceed()`를 호출하지 않아서 실제 메서드가 실행되지 않는다.
 - AOP를 남용해서 코드 흐름을 추적하기 어렵게 만든다.
+- 프록시 제약(내부 호출, private, final)을 모르고 AOP가 항상 동작한다고 가정한다.
 
 ## 핵심 요약
 
 Spring AOP는 프록시 기반으로 동작합니다.
 외부에서 메서드를 호출하면 프록시가 부가 기능(트랜잭션, 로깅 등)을 실행한 뒤 실제 객체의 메서드를 호출합니다.
 
-프록시 기반이기 때문에 같은 클래스 내부 호출, `private` 메서드, `final` 클래스에서는 AOP가 적용되지 않습니다.
-실무에서 가장 흔한 실수는 내부 호출로 `@Transactional`이 무시되는 경우입니다. 해결 방법은 메서드를 별도 클래스로 분리하는 것입니다.
+프록시 기반이기 때문에 내부 호출, `private`, `final`에서는 AOP가 적용되지 않습니다.
+구체적인 실패 케이스와 진단 방법은 [[transactional-pitfalls]]를 참고합니다.
 
 ## 꼬리 질문
 
-> [!question]- `@Transactional`이 동작하지 않는 대표적인 경우는?
-> 같은 클래스 내부에서 `this`로 호출하면 프록시를 거치지 않아서 트랜잭션이 적용되지 않습니다. `private` 메서드에 붙여도 프록시가 오버라이드할 수 없어서 동작하지 않습니다.
-
 > [!question]- JDK 동적 프록시와 CGLIB의 차이는?
 > JDK 동적 프록시는 인터페이스 기반이고 CGLIB은 클래스 상속 기반입니다. Spring Boot는 기본적으로 CGLIB을 사용합니다. CGLIB은 인터페이스가 없어도 프록시를 만들 수 있지만 `final` 클래스에는 사용할 수 없습니다.
-
-> [!question]- 내부 호출에서 AOP를 적용하려면 어떻게 하는가?
-> 가장 권장되는 방법은 AOP가 필요한 메서드를 별도 클래스로 분리하는 것입니다. 같은 클래스에서 호출하면 `this`가 프록시가 아닌 실제 객체를 가리키기 때문입니다.
 
 > [!question]- AOP를 실무에서 직접 구현하는 경우는?
 > 실행 시간 측정, API 요청/응답 로깅, 권한 체크, 재시도(retry) 로직 등에서 직접 구현합니다. 단, 과도한 AOP는 코드 흐름을 추적하기 어렵게 만들므로 꼭 필요한 경우에만 사용합니다.
@@ -167,3 +125,4 @@ Spring AOP는 프록시 기반으로 동작합니다.
 - [[ioc-and-di]]
 - [[spring-mvc-request-flow]]
 - [[transaction-integration]]
+- [[transactional-pitfalls]]
