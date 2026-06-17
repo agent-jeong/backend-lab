@@ -54,6 +54,8 @@ comments: false
 - @Transactional이 동작하지 않는 경우와 원인은? [[transactional-pitfalls]]
 - Spring AOP가 적용되지 않는 대표적인 경우는 무엇인가요?
 - Filter, Interceptor, AOP의 차이와 선택 기준은? [[filter-interceptor-aop]]
+- @Async에서 트랜잭션이 동작하는가? ThreadLocal과의 관계는? [[threadlocal-and-async-transaction]]
+- 스레드 풀에서 ThreadLocal 누수가 발생하는 이유와 대응은? [[threadlocal-and-async-transaction]]
 - Controller, Service, Repository 책임을 어떻게 나누나요?
 
 ## JPA
