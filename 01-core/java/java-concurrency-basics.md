@@ -1,5 +1,5 @@
 ---
-title: Java 동시성 기초
+title: "Java 동시성 기초 (스레드, synchronized, volatile)"
 description: Java 스레드, ExecutorService, Future, CompletableFuture의 실무 사용 기준
 ---
 

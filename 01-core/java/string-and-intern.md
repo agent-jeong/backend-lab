@@ -1,5 +1,5 @@
 ---
-title: String 리터럴 vs new vs intern
+title: "String 리터럴 vs new vs intern의 차이"
 description: String 리터럴 할당과 new 할당의 차이, String Pool과 intern 메서드의 동작 원리
 ---
 
@@ -14,7 +14,7 @@ String 리터럴은 String Pool에서 재사용되고, `new String()`은 항상 
 - `==`와 `equals()`의 차이를 이해하지 못하면 문자열 비교 버그가 생긴다.
 - 대량의 동일 문자열을 `new String()`으로 생성하면 메모리가 낭비된다.
 - `intern()`을 무분별하게 사용하면 String Pool이 비대해져 GC 부담이 커진다.
-- 면접에서 JVM 메모리 구조와 연결하여 자주 물어보는 기본 질문이다.
+- String Pool과 Heap의 관계를 모르면 메모리 사용 패턴을 예측할 수 없다.
 
 ## 동작 원리
 

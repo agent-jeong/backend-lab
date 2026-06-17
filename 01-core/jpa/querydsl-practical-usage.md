@@ -3,7 +3,7 @@ title: QueryDSL 실무 활용
 description: Spring Data JPA에서 QueryDSL을 가장 자주 사용하는 Repository 코드 패턴
 ---
 
-# QueryDSL 활용
+# QueryDSL 실무 활용
 
 ## 한 줄 정의
 

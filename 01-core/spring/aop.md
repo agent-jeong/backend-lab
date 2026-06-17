@@ -62,7 +62,7 @@ Spring Boot는 `proxyTargetClass=true`가 기본값이므로, **인터페이스 
 
 프록시 기반이기 때문에 **내부 호출, private 메서드, final 클래스**에서는 AOP가 적용되지 않는다.
 
-대표적인 실패 케이스와 진단 방법은 [[@Transactional 동작 실패 케이스|transactional-pitfalls]]에서 상세하게 다룬다.
+대표적인 실패 케이스와 진단 방법은 [[transactional-pitfalls|@Transactional 동작 실패 케이스]]에서 상세하게 다룬다.
 
 ## 커스텀 AOP 예시
 
