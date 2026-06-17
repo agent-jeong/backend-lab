@@ -1,9 +1,9 @@
 ---
-title: ThreadLocal과 @Async 트랜잭션의 함정
+title:  @Async와 ThreadLocal 함정
 description: ThreadLocal 기반 Spring 상태 관리가 비동기와 스레드 풀에서 깨지는 원인과 대응
 ---
 
-# ThreadLocal과 @Async 트랜잭션의 함정
+#  @Async와 ThreadLocal 함정
 
 ## 한 줄 정의
 
