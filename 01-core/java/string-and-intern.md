@@ -1,5 +1,5 @@
 ---
-title: "String 리터럴 vs new vs intern의 차이"
+title: "String 리터럴 vs new vs intern"
 description: String 리터럴 할당과 new 할당의 차이, String Pool과 intern 메서드의 동작 원리
 ---
 

@@ -1,5 +1,5 @@
 ---
-title: Java 메모리 모델과 happens-before
+title: Java 메모리 모델
 description: Java 동시성에서 visibility, atomicity, happens-before를 이해하는 기준
 ---
 
