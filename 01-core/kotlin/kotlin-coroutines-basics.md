@@ -128,6 +128,41 @@ blocking JDBC/JPA나 blocking HTTP client를 그대로 호출하면 coroutine만
 > [!question]- `GlobalScope`를 서버 코드에서 피하는 이유는?
 > 요청이나 서비스 생명주기와 분리되어 취소, 예외 전파, 종료 관리가 어려워지기 때문입니다.
 
+## 면접 대비 퀴즈
+
+아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+
+<div class="quiz-list">
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>Coroutine과 Thread의 차이로 가장 적절한 설명은?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="Coroutine은 Thread보다 가벼운 실행 단위이며, suspend 지점에서 스레드를 점유하지 않고 중단/재개될 수 있다." aria-pressed="false">A. Coroutine은 suspend 지점에서 중단·재개 가능한 가벼운 실행 단위다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="Coroutine이 항상 새 OS 스레드를 만드는 것은 아니다." aria-pressed="false">B. Coroutine 하나는 항상 OS Thread 하나를 새로 만든다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="Coroutine도 dispatcher와 thread pool 위에서 실행된다." aria-pressed="false">C. Coroutine은 스레드와 완전히 무관하게 CPU에서 실행된다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">OX</span>GlobalScope를 서버 코드에서 남용하면 요청 생명주기와 무관한 작업이 남아 장애 추적과 취소가 어려워질 수 있다.</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="구조화된 동시성을 깨면 부모 작업 취소, 예외 전파, 리소스 정리가 어려워진다." aria-pressed="false">O</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="GlobalScope는 생명주기 관리를 개발자가 직접 책임져야 하므로 서버 요청 처리에서는 신중해야 한다." aria-pressed="false">X</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>suspend 함수의 의미로 가장 적절한 것은?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="호출 지점에서 중단될 수 있으며, 중단 중에는 스레드를 계속 점유하지 않을 수 있음을 표현한다." aria-pressed="false">A. 중단 가능 지점을 타입 수준에 드러낸다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="suspend가 붙었다고 항상 별도 스레드에서 실행되는 것은 아니다." aria-pressed="false">B. 항상 새 스레드에서 실행된다는 뜻이다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="suspend는 예외를 없애는 문법이 아니다." aria-pressed="false">C. 함수 내부 예외가 모두 무시된다는 뜻이다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+</div>
+
 ## 관련 문서
 
 - [[kotlin]]

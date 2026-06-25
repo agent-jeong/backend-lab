@@ -128,6 +128,41 @@ Kotlin의 `List`는 읽기 전용 인터페이스일 뿐 완전한 불변 컬렉
 > [!question]- `val`이면 불변 객체인가?
 > 아닙니다. `val`은 참조 재할당만 막습니다. 참조 대상이 mutable이면 내부 상태는 변경될 수 있습니다.
 
+## 면접 대비 퀴즈
+
+아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+
+<div class="quiz-list">
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>data class가 특히 적합한 백엔드 용도는?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="값 중심의 DTO, command, response처럼 동등성과 표현이 값 기준이어야 하는 모델에 적합하다." aria-pressed="false">A. DTO, command, response 같은 값 객체</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="JPA Entity는 프록시, 지연 로딩, 변경 감지 때문에 data class와 충돌할 수 있다." aria-pressed="false">B. 모든 JPA Entity</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="스레드 풀 자체를 data class로 표현하는 것이 목적은 아니다." aria-pressed="false">C. ExecutorService 구현체</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">OX</span>val 프로퍼티만 사용하면 객체 내부 상태까지 항상 완전한 불변이 된다.</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="val은 참조 재할당을 막을 뿐, 참조 대상이 MutableList라면 내부 변경은 가능하다." aria-pressed="false">O</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="완전한 불변을 원하면 참조 대상의 mutable 여부까지 함께 관리해야 한다." aria-pressed="false">X</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>JPA Entity에 data class를 피하는 이유로 가장 적절한 것은?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="data class가 생성하는 equals/hashCode/toString/copy와 final 성격이 JPA 프록시·연관관계와 충돌할 수 있다." aria-pressed="false">A. 자동 생성 메서드와 final 성격이 JPA 모델과 충돌할 수 있다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="data class에도 메서드를 정의할 수 있다." aria-pressed="false">B. data class는 메서드를 가질 수 없기 때문이다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="문제의 핵심은 SQL 생성 여부가 아니라 엔티티 생명주기와 프록시다." aria-pressed="false">C. data class는 SQL을 절대 생성하지 못하기 때문이다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+</div>
+
 ## 관련 문서
 
 - [[kotlin]]
