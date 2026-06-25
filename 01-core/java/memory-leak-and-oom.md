@@ -198,6 +198,41 @@ java -XX:MaxRAMPercentage=75.0 -jar app.jar
 > [!question]- 컨테이너 환경에서 JVM 메모리를 어떻게 설정하는가?
 > `-Xmx`를 컨테이너 한도의 70~80%로 설정합니다. heap 외에 Metaspace, Stack, Direct Buffer 등이 필요하므로 한도와 같게 설정하면 OOM Kill됩니다.
 
+## 면접 대비 퀴즈
+
+아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+
+<div class="quiz-list">
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>메모리 누수와 단순 메모리 부족을 구분하는 관찰 포인트는?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="GC 후에도 Old 영역 사용량이 계속 상승하면 누수를 의심할 수 있다." aria-pressed="false">A. Full GC 후에도 사용량이 줄지 않고 계속 증가하는지 본다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="순간 피크만으로 누수라고 단정할 수 없다." aria-pressed="false">B. 요청이 많은 순간 메모리가 올라가면 항상 누수다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="CPU 사용률만으로 heap 객체 보존 여부를 판단하기 어렵다." aria-pressed="false">C. CPU 사용률이 낮으면 누수가 아니다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">OX</span>ThreadLocal은 스레드 풀 환경에서 remove를 누락하면 누수 원인이 될 수 있다.</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="스레드가 재사용되므로 요청이 끝난 뒤에도 값이 남아 다음 요청까지 보존될 수 있다." aria-pressed="false">O</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="스레드 풀에서는 스레드 수명이 길어 ThreadLocal 값이 오래 남을 수 있다." aria-pressed="false">X</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>OOM 발생 시 heap dump를 분석할 때 먼저 볼 만한 것은?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="큰 객체 자체보다 어떤 참조 경로가 객체를 살려두는지 확인해야 누수 원인을 찾을 수 있다." aria-pressed="false">A. dominator tree와 GC root로부터의 참조 경로</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="파일명만으로 원인을 알 수 없다." aria-pressed="false">B. heap dump 파일명의 길이</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="클래스 이름 정렬만으로 보존 원인을 알기 어렵다." aria-pressed="false">C. 클래스 이름의 알파벳 순서</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+</div>
+
 ## 관련 문서
 
 - [[01-core/java/java|java]]

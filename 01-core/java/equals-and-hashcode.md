@@ -176,6 +176,41 @@ JPA Entity는 id 할당 시점, 프록시, 연관관계 때문에 모든 필드 
 > [!question]- `record`의 `equals/hashCode` 기준은 무엇인가?
 > 선언된 모든 컴포넌트 기준으로 자동 생성됩니다.
 
+## 면접 대비 퀴즈
+
+아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+
+<div class="quiz-list">
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">OX</span>equals가 true인 두 객체는 hashCode도 반드시 같아야 한다.</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="HashMap/HashSet은 hashCode로 버킷을 먼저 찾기 때문에 이 규칙이 깨지면 같은 객체를 찾지 못할 수 있다." aria-pressed="false">O</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="hashCode 계약상 equals가 true면 hashCode도 같아야 한다." aria-pressed="false">X</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>mutable 객체를 HashMap key로 쓰면 위험한 이유는?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="key의 hashCode나 equals 기준 값이 바뀌면 저장된 버킷과 조회 버킷이 달라질 수 있다." aria-pressed="false">A. 저장 후 key 값이 바뀌면 다시 조회하지 못할 수 있다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="HashMap이 key를 복사하지 않는 것이 핵심은 맞지만, 문제는 동등성 기준 변경이다." aria-pressed="false">B. HashMap이 key를 항상 deep copy하기 때문이다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="성능보다 정합성 문제가 더 중요하다." aria-pressed="false">C. HashMap이 자동으로 TreeMap으로 바뀌기 때문이다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>JPA Entity에 Lombok @Data를 무심코 붙이면 생길 수 있는 문제는?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="@Data는 여러 메서드를 생성한다. 단순 getter 생성만의 문제가 아니다." aria-pressed="false">A. getter가 생성되지 않는다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="양방향 연관관계나 lazy 로딩 필드가 equals/toString에 포함되어 성능 문제나 순환 참조가 생길 수 있다." aria-pressed="false">B. equals, hashCode, toString이 연관관계까지 건드릴 수 있다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="컴파일 자체가 막히는 것이 아니라 런타임 동작과 설계 문제가 생긴다." aria-pressed="false">C. Entity 클래스는 Lombok을 전혀 사용할 수 없다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+</div>
+
 ## 관련 문서
 
 - [[01-core/java/java|java]]

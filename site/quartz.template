@@ -217,5 +217,55 @@ ExternalPlugin.Explorer({
 
 const config = await loadQuartzConfig()
 
+const quizRuntimeScript = `
+function initializeQuizWidgets() {
+  document.querySelectorAll("[data-quiz-card]").forEach((card) => {
+    if (card.dataset.quizInitialized === "true") return
+    card.dataset.quizInitialized = "true"
+
+    const feedback = card.querySelector("[data-quiz-feedback]")
+    const options = card.querySelectorAll("[data-quiz-option]")
+
+    options.forEach((option) => {
+      option.addEventListener("click", () => {
+        const isCorrect = option.dataset.correct === "true"
+        const explanation = option.dataset.explanation || ""
+
+        options.forEach((item) => {
+          item.classList.remove("is-selected", "is-correct", "is-incorrect")
+          item.setAttribute("aria-pressed", "false")
+        })
+
+        option.classList.add("is-selected", isCorrect ? "is-correct" : "is-incorrect")
+        option.setAttribute("aria-pressed", "true")
+
+        if (feedback) {
+          feedback.textContent = (isCorrect ? "정답: " : "오답: ") + explanation
+          feedback.classList.toggle("is-correct", isCorrect)
+          feedback.classList.toggle("is-incorrect", !isCorrect)
+        }
+      })
+    })
+  })
+}
+
+initializeQuizWidgets()
+document.addEventListener("nav", initializeQuizWidgets)
+`
+
+config.plugins.emitters.push({
+  name: "QuizRuntime",
+  externalResources: () => ({
+    js: [
+      {
+        loadTime: "afterDOMReady",
+        contentType: "inline",
+        script: quizRuntimeScript,
+      },
+    ],
+  }),
+  async *emit() {},
+})
+
 export default config
 export const layout = await loadQuartzLayout()

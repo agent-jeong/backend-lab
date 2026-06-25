@@ -265,6 +265,41 @@ Set<User> users = new TreeSet<>(Comparator.comparing(User::getId));
 > [!question]- `TreeSet`의 동등성 판단 기준은 `equals()`인가 `compareTo()`인가?
 > `compareTo()`입니다. `compareTo()`가 0을 반환하면 같은 원소로 취급하므로, `equals()`와 일관되지 않으면 예상과 다르게 동작할 수 있습니다.
 
+## 면접 대비 퀴즈
+
+아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+
+<div class="quiz-list">
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>List.contains()를 대량 반복 호출하는 코드가 느릴 때 대표적인 개선은?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="반복 membership check는 Set으로 바꿔 탐색 비용을 줄이는 것이 일반적이다." aria-pressed="false">A. 조회 대상 컬렉션을 Set으로 변환한다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="출력은 성능 병목을 더 악화시킬 수 있다." aria-pressed="false">B. contains 호출마다 로그를 남긴다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="sleep은 처리량을 낮출 뿐 탐색 비용을 줄이지 않는다." aria-pressed="false">C. 호출 사이에 sleep을 추가한다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">OX</span>Stream distinct()는 객체의 equals/hashCode 기준으로 중복을 판단한다.</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="distinct가 기대와 다르게 동작하면 값 객체의 equals/hashCode 구현을 먼저 확인해야 한다." aria-pressed="false">O</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="객체 주소만이 아니라 equals/hashCode 기준이 사용된다." aria-pressed="false">X</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>DB 정렬과 애플리케이션 정렬 중 선택 기준으로 가장 적절한 것은?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="페이징, 인덱스, 데이터 양을 고려하면 보통 DB에서 정렬하는 편이 안정적이다." aria-pressed="false">A. 페이징과 대량 데이터는 DB 정렬을 우선 검토한다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="모든 정렬을 애플리케이션으로 가져오면 메모리와 네트워크 비용이 커질 수 있다." aria-pressed="false">B. 데이터가 많을수록 항상 애플리케이션에서 정렬한다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="정렬 기준이 항상 하나라는 가정은 현실적이지 않다." aria-pressed="false">C. 다중 정렬은 Java에서 불가능하므로 DB만 사용한다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+</div>
+
 ## 관련 문서
 
 - [[01-core/java/java|java]]

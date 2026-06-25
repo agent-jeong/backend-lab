@@ -158,6 +158,41 @@ Java 8은 Lambda, Stream, Optional으로 현대 Java의 기반을 만들었고, 
 > [!question]- var를 남용하면 어떤 문제가 생기는가?
 > 타입이 오른쪽에서 명확히 보이지 않는 경우 코드 가독성이 떨어집니다. `var result = process(data)`처럼 타입 추론이 어려운 경우가 문제입니다.
 
+## 면접 대비 퀴즈
+
+아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+
+<div class="quiz-list">
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>Virtual Thread 도입 시 가장 먼저 확인해야 할 작업 특성은?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="blocking I/O가 많은 요청 처리에서는 이점이 크지만 CPU 바운드 작업의 성능을 마법처럼 높이지는 않는다." aria-pressed="false">A. blocking I/O 중심인지 CPU 바운드인지 확인한다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="Virtual Thread가 DB 커넥션 같은 외부 리소스 한도를 없애지는 않는다." aria-pressed="false">B. DB 커넥션 풀 크기를 무시해도 되는지 확인한다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="문법 변화보다 실행 모델과 blocking 특성이 중요하다." aria-pressed="false">C. var를 더 많이 쓸 수 있는지 확인한다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">OX</span>sealed class는 허용된 하위 타입을 제한해 도메인 상태 모델을 명확하게 만들 수 있다.</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="확장 가능한 타입 집합을 제한하면 switch 처리와 상태 모델링에서 누락을 줄일 수 있다." aria-pressed="false">O</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="sealed는 상속을 완전히 금지하는 것이 아니라 허용 대상을 제한한다." aria-pressed="false">X</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>var를 사용할 때 실무에서 주의할 점은?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="우변만 봐도 타입과 의도가 명확한 경우에 제한적으로 써야 가독성을 해치지 않는다." aria-pressed="false">A. 타입 추론이 의도를 흐리면 명시 타입을 사용한다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="var는 동적 타입이 아니라 컴파일 타임 타입 추론이다." aria-pressed="false">B. 런타임에 타입이 자유롭게 바뀐다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="var 사용 여부가 null safety를 자동 보장하지 않는다." aria-pressed="false">C. null 관련 버그를 자동으로 제거한다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+</div>
+
 ## 관련 문서
 
 - [[01-core/java/java|java]]

@@ -282,6 +282,41 @@ record 기반 DTO로 변환하는 것이 안전합니다.
 > [!question]- record의 역직렬화가 동작하는 원리는?
 > Jackson 2.12+에서 record의 canonical constructor를 자동 인식합니다. JSON 필드명이 다르면 생성자 파라미터에 `@JsonProperty`를 붙여야 합니다.
 
+## 면접 대비 퀴즈
+
+아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+
+<div class="quiz-list">
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>Entity를 API 응답으로 직접 반환할 때 생길 수 있는 문제는?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="지연 로딩, 순환 참조, 내부 필드 노출, API 스펙 변경 전파가 생길 수 있다." aria-pressed="false">A. Lazy loading, 순환 참조, 내부 구조 노출 문제가 생길 수 있다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="Entity 반환이 항상 컴파일 에러를 만들지는 않는다." aria-pressed="false">B. Jackson이 Entity는 절대 직렬화하지 못한다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="DTO가 항상 더 느리다는 일반화는 맞지 않다." aria-pressed="false">C. DTO를 쓰면 무조건 성능이 나빠진다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">OX</span>@JsonIgnore를 getter에만 붙이면 직렬화와 역직렬화 양쪽에 동일하게 적용된다고 단정할 수 있다.</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="Jackson은 접근자, 필드, 생성자 등 설정에 따라 직렬화/역직렬화 경로가 달라질 수 있다." aria-pressed="false">O</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="읽기/쓰기 방향과 붙인 위치에 따라 결과가 달라질 수 있어 테스트가 필요하다." aria-pressed="false">X</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>LocalDateTime 직렬화에서 실무적으로 중요한 기준은?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="타임존이 없는 타입이므로 API 경계에서는 포맷과 시간대 의미를 명확히 정해야 한다." aria-pressed="false">A. 포맷과 시간대 의미를 API 스펙으로 명확히 한다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="LocalDateTime 자체에는 timezone 정보가 없다." aria-pressed="false">B. 항상 UTC 정보가 포함되어 안전하다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="프론트엔드가 알아서 해석하게 두면 환경별 오류가 생길 수 있다." aria-pressed="false">C. 문자열이면 어떤 포맷이든 상관없다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+</div>
+
 ## 관련 문서
 
 - [[01-core/java/java|java]]

@@ -216,6 +216,41 @@ enum을 DB에 저장할 때는 `ORDINAL`을 피한다. `STRING`도 이름 변경
 > [!question]- sealed class는 이 네 가지와 어떤 관계가 있는가?
 > sealed class는 상속 가능한 하위 타입을 `permits`로 제한합니다. interface나 abstract class에 적용해서 타입 안전한 계층 구조를 만들 수 있습니다.
 
+## 면접 대비 퀴즈
+
+아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+
+<div class="quiz-list">
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>record를 JPA Entity로 사용하기 어려운 가장 직접적인 이유는?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="record도 메서드를 가질 수 있다. 핵심 제약은 상속/프록시와 불변 구조다." aria-pressed="false">A. record는 메서드를 정의할 수 없기 때문이다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="record는 final이고 필드가 불변이라 JPA 프록시, 지연 로딩, 변경 감지 모델과 맞지 않는다." aria-pressed="false">B. final 불변 구조가 JPA 프록시와 변경 감지 방식에 맞지 않기 때문이다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="record도 생성자를 가진다. 기본 생성자만의 문제가 아니다." aria-pressed="false">C. record에는 생성자가 없기 때문이다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">OX</span>enum에 상태 전이 검증 같은 도메인 로직을 넣으면 switch/if 분산을 줄일 수 있다.</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="상태별 행위를 enum 내부로 모으면 분기 로직이 흩어지는 문제를 줄일 수 있다." aria-pressed="false">O</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="enum은 단순 상수뿐 아니라 제한된 상태와 행위를 함께 표현할 수 있다." aria-pressed="false">X</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>@Enumerated(ORDINAL)이 위험한 이유는?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="enum 순서가 바뀌거나 중간에 값이 추가되면 DB에 저장된 숫자의 의미가 바뀔 수 있다." aria-pressed="false">A. enum 선언 순서 변경이 저장 데이터 의미를 깨뜨릴 수 있다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="문자열 길이보다 데이터 의미 안정성이 더 중요하다." aria-pressed="false">B. 문자열보다 항상 저장 공간을 많이 쓰기 때문이다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="컴파일 에러로 잡히지 않는 데이터 호환성 문제가 핵심이다." aria-pressed="false">C. 컴파일 자체가 되지 않기 때문이다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+</div>
+
 ## 관련 문서
 
 - [[01-core/java/java|java]]

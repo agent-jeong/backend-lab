@@ -326,6 +326,98 @@ article h2#관련-문서 ~ * {
   border-left: none;
 }
 
+
+// ──────────────────────────────────────
+// 면접 대비 퀴즈
+// ──────────────────────────────────────
+.quiz-list {
+  display: grid;
+  gap: 1rem;
+  margin: 1.2rem 0 1.8rem;
+}
+
+.quiz-card {
+  border: 1px solid var(--lightgray);
+  border-radius: 10px;
+  padding: 1rem;
+  background: color-mix(in srgb, var(--light) 96%, var(--secondary));
+}
+
+.quiz-card p {
+  margin: 0;
+}
+
+.quiz-question {
+  color: var(--dark);
+  font-weight: 600;
+  line-height: 1.55;
+}
+
+.quiz-label {
+  display: inline-block;
+  margin-right: 0.45rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  background: var(--highlight);
+  color: var(--darkgray);
+  font-size: 0.78rem;
+  font-weight: 600;
+  vertical-align: 0.05rem;
+}
+
+.quiz-options {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 0.8rem;
+}
+
+.quiz-option {
+  width: 100%;
+  border: 1px solid var(--lightgray);
+  border-radius: 8px;
+  padding: 0.65rem 0.75rem;
+  background: var(--light);
+  color: var(--darkgray);
+  cursor: pointer;
+  font: inherit;
+  line-height: 1.5;
+  text-align: left;
+  transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+}
+
+.quiz-option:hover {
+  border-color: var(--secondary);
+  color: var(--dark);
+}
+
+.quiz-option.is-correct {
+  border-color: var(--tertiary);
+  background: color-mix(in srgb, var(--tertiary) 12%, var(--light));
+  color: var(--dark);
+}
+
+.quiz-option.is-incorrect {
+  border-color: var(--secondary);
+  background: color-mix(in srgb, var(--secondary) 10%, var(--light));
+  color: var(--dark);
+}
+
+.quiz-feedback {
+  min-height: 1.5rem;
+  margin-top: 0.75rem !important;
+  color: var(--darkgray);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.quiz-feedback.is-correct {
+  color: var(--tertiary);
+}
+
+.quiz-feedback.is-incorrect {
+  color: var(--secondary);
+}
+
 // ──────────────────────────────────────
 // 코드 블록
 // ──────────────────────────────────────

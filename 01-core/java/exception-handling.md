@@ -309,6 +309,69 @@ public class GlobalExceptionHandler {
 > [!question]- 글로벌 예외 핸들러의 역할은?
 > 컨트롤러에서 발생한 예외를 한 곳에서 HTTP 상태 코드와 에러 응답으로 변환해 API 응답 형식을 일관되게 만드는 것입니다.
 
+## 면접 대비 퀴즈
+
+아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+
+<div class="quiz-list">
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>외부 API 호출 실패를 현재 계층에서 복구할 수 없다. 가장 적절한 처리는?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="실패를 null로 바꾸면 호출자가 실제 데이터 부재와 장애를 구분하기 어렵다." aria-pressed="false">A. null을 반환하고 호출자가 알아서 처리하게 한다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="현재 서비스가 이해할 수 있는 예외로 변환하되 원본 예외를 cause로 보존하는 것이 적절하다." aria-pressed="false">B. 의미 있는 예외로 변환하고 원본 예외를 cause로 포함해 상위로 전파한다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="모든 실패를 잡아 성공처럼 처리하면 장애 원인을 숨기고 잘못된 후속 처리를 만들 수 있다." aria-pressed="false">C. Exception으로 모두 잡고 정상 응답을 반환한다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">OX</span>비즈니스 조건 검사는 try-catch보다 if문이나 Bean Validation으로 명시하는 것이 보통 더 적절하다.</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="예상 가능한 조건은 예외가 아니라 정상적인 제어 흐름으로 표현해야 장애와 분기 조건을 구분하기 쉽다." aria-pressed="false">O</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="예외를 일반 분기처럼 쓰면 흐름 이해 비용이 커지고 실제 장애와 조건 검사가 섞인다." aria-pressed="false">X</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>@Transactional 메서드에서 checked exception이 발생했을 때 Spring의 기본 동작은?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="Spring은 기본적으로 모든 Exception을 롤백하지 않는다. checked exception은 별도 설정이 필요하다." aria-pressed="false">A. 모든 Exception이므로 자동 롤백된다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="기본 롤백 대상은 RuntimeException과 Error다. checked exception 롤백은 rollbackFor를 명시해야 한다." aria-pressed="false">B. 기본적으로 커밋되며, 롤백이 필요하면 rollbackFor를 명시한다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="try-catch 여부가 아니라 트랜잭션 프록시 밖으로 어떤 예외가 전파되는지가 중요하다." aria-pressed="false">C. try-catch를 사용한 경우에만 롤백된다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">OX</span>예외를 다른 예외로 변환할 때 원본 예외를 cause로 넘기지 않아도 메시지만 있으면 장애 추적에는 충분하다.</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="메시지만 남기면 실제 실패 지점의 stack trace가 끊긴다. 원본 예외를 cause로 보존해야 한다." aria-pressed="false">O</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="원본 stack trace를 보존해야 장애 발생 지점과 호출 경로를 추적할 수 있다." aria-pressed="false">X</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>InterruptedException을 catch한 뒤 현재 계층에서 그대로 throws 할 수 없다. 놓치기 쉬운 핵심 처리는?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="인터럽트는 중단 요청 신호이므로 Thread.currentThread().interrupt()로 상태를 복원한 뒤 의미 있는 예외로 변환한다." aria-pressed="false">A. 인터럽트 상태를 복원하고 의미 있는 예외로 변환한다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="빈 catch 블록은 중단 요청을 삼켜 애플리케이션 종료나 취소 처리를 지연시킬 수 있다." aria-pressed="false">B. 종료 중에도 안전하도록 catch 블록을 비워 둔다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="RuntimeException으로 바꾸더라도 인터럽트 상태를 복원하지 않으면 중단 신호가 사라질 수 있다." aria-pressed="false">C. RuntimeException으로만 감싸면 충분하다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">OX</span>같은 예외를 여러 계층에서 반복해서 로깅하면 장애 추적에 항상 도움이 된다.</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="중복 로깅은 하나의 실패를 여러 장애처럼 보이게 할 수 있다. 보통 처리 경계나 글로벌 핸들러에서 한 번 남긴다." aria-pressed="false">O</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="예외를 처리하는 최종 경계에서 한 번 로깅하는 것이 기본이며, 예상 가능한 비즈니스 예외는 낮은 레벨을 쓴다." aria-pressed="false">X</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+</div>
+
 ## 관련 문서
 
 - [[01-core/java/java|java]]

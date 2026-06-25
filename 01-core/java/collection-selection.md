@@ -159,6 +159,41 @@ List<OrderResponse> responses = orders.stream()
 > [!question]- `Collectors.toMap()`에서 중복 key가 생기면?
 > merge 전략이 없으면 `IllegalStateException`이 발생합니다. 세 번째 인자로 merge function을 지정해야 합니다.
 
+## 면접 대비 퀴즈
+
+아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+
+<div class="quiz-list">
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>ID로 반복 조회해야 하는 데이터를 List로 계속 filter하는 코드의 개선 방향은?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="조회 기준이 key라면 Map으로 한 번 인덱싱해 O(1)에 가깝게 찾는 것이 일반적이다." aria-pressed="false">A. Map으로 변환해 key 기반 조회로 바꾼다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="정렬은 조회 비용 문제의 직접적인 해결책이 아니다." aria-pressed="false">B. List를 매번 정렬한 뒤 filter한다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="parallelStream은 구조적 비용을 해결하지 못하고 오히려 오버헤드를 만들 수 있다." aria-pressed="false">C. parallelStream으로 filter를 병렬화한다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">OX</span>HashSet의 중복 판단은 equals와 hashCode에 의존한다.</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="HashSet은 내부적으로 HashMap 구조를 사용하므로 hashCode와 equals 계약이 중요하다." aria-pressed="false">O</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="참조 주소만으로 중복을 판단하지 않는다. equals/hashCode 구현이 기준이 된다." aria-pressed="false">X</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>Collectors.toMap()에서 중복 key가 생길 수 있는 경우 가장 안전한 대응은?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="중복을 무시하면 어떤 값이 남는지 의도가 불명확해진다." aria-pressed="false">A. 예외가 나지 않도록 아무 값이나 남긴다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="중복이 정상인지 오류인지 먼저 판단하고, 필요하면 merge function으로 명시한다." aria-pressed="false">B. 중복 정책을 정하고 merge function 또는 사전 검증을 둔다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="Set 변환은 key 충돌 정책을 명확히 설명하지 못한다." aria-pressed="false">C. 무조건 Set으로 바꾼다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+</div>
+
 ## 관련 문서
 
 - [[01-core/java/java|java]]

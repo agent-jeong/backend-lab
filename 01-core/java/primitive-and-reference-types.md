@@ -113,6 +113,41 @@ primitive type은 `null`이 될 수 없고 `==`로 값을 비교합니다.
 > [!question]- Boolean과 boolean은 언제 구분해서 사용해야 하는가?
 > 값이 반드시 true 또는 false라면 boolean을 사용합니다. 반면 true, false, 미정 처럼 세 가지 상태를 표현해야 하거나 DB NULL을 표현해야 한다면 Boolean을 사용합니다. 단, 조건문에서는 Boolean.TRUE.equals(value)처럼 비교하는 것이 안전합니다.
 
+## 면접 대비 퀴즈
+
+아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+
+<div class="quiz-list">
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>int 대신 Integer를 선택해야 하는 대표적인 경우는?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="성능만 보면 primitive가 더 단순하고 boxing 비용도 없다." aria-pressed="false">A. 모든 숫자 연산에서 성능을 높이고 싶을 때</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="null로 값의 부재를 표현해야 하거나 제네릭/컬렉션에 담아야 할 때 wrapper가 필요하다." aria-pressed="false">B. null 가능성이나 컬렉션/제네릭 사용이 필요한 경우</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="비교 연산을 위해 wrapper를 쓰면 오히려 == 비교 함정이 생길 수 있다." aria-pressed="false">C. == 비교를 더 안전하게 만들고 싶을 때</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">OX</span>Integer끼리는 값이 같으면 항상 == 비교가 true다.</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="Integer 캐시는 일부 범위에만 적용된다. 값 비교는 equals를 사용해야 한다." aria-pressed="false">O</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="wrapper 객체의 ==는 참조 비교다. 캐시 범위를 벗어나면 같은 값이어도 false가 될 수 있다." aria-pressed="false">X</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>Boolean wrapper를 사용할 때 면접에서 자주 지적되는 위험은?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="Boolean은 null이 될 수 있어 auto-unboxing 시 NullPointerException이 발생할 수 있다." aria-pressed="false">A. null 값이 auto-unboxing되면 NPE가 날 수 있다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="Boolean 자체가 동시성 안전성을 제공하지는 않는다." aria-pressed="false">B. Boolean은 멀티스레드에서 항상 race condition을 만든다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="값이 두 개뿐이라는 점이 문제가 아니라 null 가능성이 핵심이다." aria-pressed="false">C. true/false만 표현할 수 있어서 상태 표현이 불가능하다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+</div>
+
 ## 관련 문서
 
 - [[01-core/java/java|java]]

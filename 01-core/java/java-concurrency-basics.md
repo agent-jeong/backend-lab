@@ -136,6 +136,41 @@ pool 크기는 CPU, I/O 대기, DB connection pool, 외부 API 제한을 함께 
 > [!question]- `Future.get()`을 사용할 때 무엇을 주의해야 하는가?
 > timeout 없이 호출하면 작업이 끝날 때까지 무기한 대기할 수 있으므로 `get(timeout, unit)`을 사용하고 예외 처리를 해야 합니다.
 
+## 면접 대비 퀴즈
+
+아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+
+<div class="quiz-list">
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>Thread를 직접 생성하기보다 ExecutorService를 사용하는 이유는?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="스레드 생성 비용과 개수를 관리하고 작업 제출/종료 정책을 분리할 수 있다." aria-pressed="false">A. 스레드 생명주기와 풀 크기를 관리하기 쉽다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="ExecutorService도 잘못 쓰면 동시성 문제가 생긴다." aria-pressed="false">B. 모든 동시성 버그를 자동으로 제거한다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="비동기 처리가 항상 단일 스레드라는 뜻은 아니다." aria-pressed="false">C. 모든 작업을 반드시 하나의 스레드에서 실행한다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">OX</span>thread pool 크기를 무작정 키우면 처리량이 항상 증가한다.</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="컨텍스트 스위칭, 메모리, DB 커넥션 같은 하위 자원 병목 때문에 오히려 나빠질 수 있다." aria-pressed="false">O</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="풀 크기는 CPU/IO 특성과 하위 리소스 한도를 함께 보고 정해야 한다." aria-pressed="false">X</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>CompletableFuture.supplyAsync()에서 executor를 지정하지 않을 때 주의점은?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="공용 ForkJoinPool을 사용하므로 blocking 작업이 섞이면 다른 비동기 작업에 영향을 줄 수 있다." aria-pressed="false">A. 공용 풀을 사용해 blocking 작업에서 문제가 될 수 있다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="별도 executor가 자동으로 무한 생성되는 것은 아니다." aria-pressed="false">B. 요청마다 전용 스레드 풀이 자동 생성된다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="동기 실행만 하는 것이 아니라 비동기 실행된다." aria-pressed="false">C. 항상 호출한 스레드에서 동기 실행된다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+</div>
+
 ## 관련 문서
 
 - [[java]]

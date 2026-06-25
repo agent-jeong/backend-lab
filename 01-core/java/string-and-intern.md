@@ -121,6 +121,41 @@ Java 7+에서 String Pool은 Heap에 존재하므로 GC 대상이 됩니다.
 > [!question]- `==`와 `equals()`를 구분하지 않으면 어떤 버그가 생기는가?
 > 리터럴끼리 비교할 때는 `==`가 동작하지만, 외부 입력(HTTP 파라미터, DB 조회 결과 등)은 `new String()`과 동일하게 Heap 객체이므로 `==`로 비교하면 false가 됩니다.
 
+## 면접 대비 퀴즈
+
+아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+
+<div class="quiz-list">
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>new String(&quot;hello&quot;)가 불필요한 이유로 가장 적절한 것은?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="리터럴은 이미 String Pool을 사용할 수 있는데 new String은 별도 객체 생성을 유발한다." aria-pressed="false">A. 이미 존재할 수 있는 리터럴과 별개 객체를 만들 수 있다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="new String도 문자열 값을 표현한다. 문제는 불필요한 객체와 참조 비교 혼동이다." aria-pressed="false">B. 문자열 내용이 저장되지 않는다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="equals 비교가 불가능해지는 것은 아니다." aria-pressed="false">C. equals를 사용할 수 없게 된다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">OX</span>String 값 비교는 ==보다 equals를 사용하는 것이 원칙이다.</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="==는 참조 비교라 pool/intern 여부에 따라 결과가 달라질 수 있다." aria-pressed="false">O</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="문자열 값 비교는 equals가 기준이다." aria-pressed="false">X</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>intern()을 실무에서 신중하게 써야 하는 이유는?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="중복 문자열을 줄일 수 있지만 pool 관리 비용과 메모리 압박이 생길 수 있어 측정 기반으로 써야 한다." aria-pressed="false">A. 메모리 절감 가능성과 pool 부담을 함께 검토해야 한다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="intern이 모든 성능 문제를 해결하지 않는다." aria-pressed="false">B. 호출하면 항상 GC 비용이 0이 된다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="intern은 문자열 pool과 관련된 기능이다." aria-pressed="false">C. 숫자 wrapper 캐시를 제어하는 기능이다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+</div>
+
 ## 관련 문서
 
 - [[01-core/java/java|java]]
