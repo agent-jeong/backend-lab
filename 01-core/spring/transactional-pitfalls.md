@@ -156,6 +156,41 @@ checked 예외의 기본 미롤백과 try-catch로 예외를 삼키는 패턴도
 > [!question]- `@Transactional`을 테스트에서 검증하는 방법은?
 > 예외를 강제로 발생시킨 뒤 DB 상태를 확인합니다. 또는 `TransactionSynchronizationManager.isActualTransactionActive()`로 트랜잭션 활성 여부를 검증합니다.
 
+## 면접 대비 퀴즈
+
+아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+
+<div class="quiz-list">
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>@Transactional이 적용되지 않는 대표적인 내부 호출 문제는 무엇인가?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="같은 클래스의 메서드를 this로 호출하면 프록시를 거치지 않아 트랜잭션 advice가 실행되지 않을 수 있다." aria-pressed="false">A. 같은 클래스 내부에서 this로 호출해 프록시를 우회하는 경우</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="메서드 이름 길이와 프록시 적용은 직접 관련이 없다." aria-pressed="false">B. 메서드 이름이 너무 짧은 경우</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="파라미터 개수 자체가 트랜잭션 적용 실패 원인은 아니다." aria-pressed="false">C. 파라미터가 두 개 이상인 경우</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">OX</span>private 메서드에 @Transactional을 붙이면 외부 프록시 호출 대상이 아니므로 기대대로 동작하지 않을 수 있다.</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="Spring AOP는 프록시를 통한 public 메서드 호출 경계에서 주로 동작한다." aria-pressed="false">O</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="private 메서드는 프록시가 외부에서 호출할 수 있는 진입점이 아니다." aria-pressed="false">X</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>@Transactional 동작 여부를 테스트에서 확인하는 방법으로 가장 적절한 것은?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="실제 프록시를 통한 호출 경로와 롤백/커밋 결과를 검증해야 한다. 단순히 어노테이션 존재만 보면 부족하다." aria-pressed="false">A. 프록시 호출 경로와 DB 반영/롤백 결과를 함께 검증한다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="어노테이션이 붙었다고 항상 적용되는 것은 아니다." aria-pressed="false">B. 리플렉션으로 어노테이션 존재만 확인한다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="로그가 없다고 트랜잭션이 없는 것은 아니며 결과 검증이 필요하다." aria-pressed="false">C. 콘솔 로그가 조용하면 정상으로 본다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+</div>
+
 ## 관련 문서
 
 - [[aop]]

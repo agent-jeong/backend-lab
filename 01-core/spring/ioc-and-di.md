@@ -194,6 +194,41 @@ Spring에서 DI 방식은 생성자 주입이 권장됩니다.
 > [!question]- `@Component`와 `@Service`, `@Repository`의 차이는?
 > 기능적으로 모두 Bean 등록용 어노테이션입니다. `@Service`는 비즈니스 로직, `@Repository`는 데이터 접근 계층임을 명시하는 역할이고, `@Repository`는 추가로 persistence 예외를 Spring 예외로 변환합니다.
 
+## 면접 대비 퀴즈
+
+아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+
+<div class="quiz-list">
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>생성자 주입이 권장되는 가장 중요한 이유는?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="필수 의존성을 객체 생성 시점에 보장하고, final 사용과 테스트가 쉬우며 순환 참조를 더 빨리 드러낸다." aria-pressed="false">A. 필수 의존성을 명확히 하고 불변성과 테스트 용이성을 높인다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="생성자 주입이 성능 최적화의 핵심 이유는 아니다." aria-pressed="false">B. 런타임 성능이 항상 필드 주입보다 압도적으로 빠르다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="생성자 주입도 순환 참조를 만들 수 있지만 더 명확히 실패한다." aria-pressed="false">C. 순환 참조가 있어도 항상 자동 해결된다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">OX</span>같은 타입의 Bean이 여러 개일 때 Spring은 항상 이름을 무시하고 무작위로 하나를 주입한다.</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="Spring은 타입으로 후보를 찾고, @Primary, @Qualifier, 이름 등을 통해 후보를 좁힌다." aria-pressed="false">O</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="무작위 주입이 아니라 명시적인 우선순위와 qualifier 기준을 사용한다." aria-pressed="false">X</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>순환 참조가 발생했을 때 가장 먼저 검토할 해결 방향은?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="두 객체가 서로 너무 많은 책임을 알고 있는지 확인하고 책임 분리나 중간 서비스 도입을 검토한다." aria-pressed="false">A. 설계를 재검토해 책임을 분리한다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="lazy 주입은 우회일 수 있지만 근본 해결이 아닐 수 있다." aria-pressed="false">B. 모든 의존성에 @Lazy를 붙인다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="필드 주입은 순환 참조를 숨겨 설계 문제 발견을 늦출 수 있다." aria-pressed="false">C. 생성자 주입을 모두 필드 주입으로 바꾼다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+</div>
+
 ## 관련 문서
 
 - [[01-core/spring/spring|spring]]

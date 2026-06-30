@@ -192,6 +192,41 @@ Cascade는 생명주기가 완전히 같을 때만 사용해야 합니다.
 > [!question]- Cascade를 잘못 사용하면 어떤 문제가 생기는가?
 > `CascadeType.REMOVE`가 걸린 부모를 삭제하면 자식도 함께 삭제됩니다. 다른 곳에서 참조하는 자식이면 데이터 정합성이 깨집니다.
 
+## 면접 대비 퀴즈
+
+아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+
+<div class="quiz-list">
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>연관관계의 주인이 중요한 이유는?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="외래 키를 관리하는 쪽이 변경의 기준이 되며, 주인이 아닌 쪽만 수정하면 DB 반영이 안 될 수 있다." aria-pressed="false">A. 외래 키 변경을 어느 쪽 변경으로 반영할지 결정하기 때문이다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="주인은 객체 생성 순서가 아니라 외래 키 관리 기준이다." aria-pressed="false">B. 먼저 생성된 Entity를 뜻한다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="주인이 된다고 항상 cascade가 자동 적용되는 것은 아니다." aria-pressed="false">C. 주인은 모든 하위 Entity를 자동 삭제한다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">OX</span>@ManyToMany는 실무에서 보통 중간 Entity로 풀어 @OneToMany/@ManyToOne으로 모델링하는 편이 안전하다.</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="중간 테이블에 생성일, 상태, 정렬 순서 같은 속성이 생기기 쉽고 제어도 명확해진다." aria-pressed="false">O</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="@ManyToMany는 단순해 보이지만 확장성과 제어 측면에서 함정이 많다." aria-pressed="false">X</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>Cascade를 사용할 때 가장 중요한 판단 기준은?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="부모와 자식의 생명주기가 정말 같은지 확인해야 한다. 공유 참조 Entity에 cascade remove를 걸면 위험하다." aria-pressed="false">A. 생명주기가 같은 aggregate 내부인지 확인한다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="cascade는 성능 최적화 옵션이 아니라 영속성 전이 옵션이다." aria-pressed="false">B. 조회 성능을 높이기 위해 모든 연관관계에 켠다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="cascade가 외래 키 제약을 자동 설계하지 않는다." aria-pressed="false">C. DB 스키마 설계를 자동 완성하기 위해 사용한다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+</div>
+
 ## 관련 문서
 
 - [[01-core/jpa/jpa|jpa]]

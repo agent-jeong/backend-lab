@@ -264,6 +264,41 @@ traceId나 인증 정보가 필요하면 파라미터로 전달하거나 TaskDec
 > [!question]- CompletableFuture에서 MDC traceId를 유지하려면?
 > TaskDecorator 패턴으로 작업 실행 전 호출 스레드의 MDC를 캡처하고, 비동기 스레드에서 설정한 뒤, finally에서 정리합니다.
 
+## 면접 대비 퀴즈
+
+아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+
+<div class="quiz-list">
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>@Async 메서드에서 기존 요청 스레드의 트랜잭션이 그대로 이어지지 않는 이유는?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="Spring 트랜잭션 컨텍스트는 주로 ThreadLocal에 묶여 있고 @Async는 다른 스레드에서 실행되기 때문이다." aria-pressed="false">A. 트랜잭션 컨텍스트가 ThreadLocal 기반인데 다른 스레드에서 실행되기 때문이다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="@Async가 항상 같은 스레드에서 실행되는 것은 아니다." aria-pressed="false">B. @Async가 같은 스레드에서 동기 실행되기 때문이다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="문제의 핵심은 final 여부가 아니라 스레드 경계다." aria-pressed="false">C. 메서드명이 async로 끝나지 않기 때문이다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">OX</span>스레드 풀 환경에서 ThreadLocal 값을 정리하지 않으면 다음 요청에 이전 요청의 값이 남을 수 있다.</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="스레드가 재사용되므로 finally에서 remove하거나 명확한 정리 전략을 둬야 한다." aria-pressed="false">O</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="스레드 풀에서는 요청마다 스레드가 폐기되지 않을 수 있다." aria-pressed="false">X</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>CompletableFuture에서 MDC traceId를 유지하려면 필요한 접근은?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="작업 제출 시점의 MDC를 캡처하고 실행 스레드에서 복원한 뒤 finally에서 정리하는 TaskDecorator류 전략이 필요하다." aria-pressed="false">A. MDC를 캡처·복원·정리하는 executor/task decorator를 사용한다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="InheritableThreadLocal은 스레드 풀 재사용 문제를 안정적으로 해결하지 못한다." aria-pressed="false">B. InheritableThreadLocal만 쓰면 모든 스레드 풀 문제가 해결된다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="static 필드는 요청 간 오염과 동시성 문제를 만들 수 있다." aria-pressed="false">C. traceId를 static 변수에 저장한다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+</div>
+
 ## 관련 문서
 
 - [[01-core/spring/spring|spring]]

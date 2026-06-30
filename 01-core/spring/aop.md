@@ -119,6 +119,41 @@ Spring AOP는 프록시 기반으로 동작합니다.
 > [!question]- AOP를 실무에서 직접 구현하는 경우는?
 > 실행 시간 측정, API 요청/응답 로깅, 권한 체크, 재시도(retry) 로직 등에서 직접 구현합니다. 단, 과도한 AOP는 코드 흐름을 추적하기 어렵게 만들므로 꼭 필요한 경우에만 사용합니다.
 
+## 면접 대비 퀴즈
+
+아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+
+<div class="quiz-list">
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>Spring AOP가 기본적으로 프록시 기반이라는 사실이 만드는 대표 제약은?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="같은 클래스 내부 메서드 호출은 프록시를 거치지 않아 AOP advice가 적용되지 않을 수 있다." aria-pressed="false">A. self-invocation에서는 advice가 적용되지 않을 수 있다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="AOP가 SQL 실행을 자동으로 제거하지 않는다." aria-pressed="false">B. 모든 DB 호출이 자동으로 캐시된다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="AOP는 런타임 프록시를 통해 동작할 수 있으며 컴파일 에러가 핵심은 아니다." aria-pressed="false">C. AOP를 쓰면 컴파일이 불가능하다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">OX</span>JDK 동적 프록시는 인터페이스 기반이고, CGLIB은 클래스를 상속해 프록시를 만든다.</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="이 차이 때문에 인터페이스 유무, final 클래스/메서드 여부가 프록시 생성에 영향을 준다." aria-pressed="false">O</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="두 방식은 프록시 생성 방식이 다르다." aria-pressed="false">X</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>AOP를 직접 구현하기 적합한 실무 사례는?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="여러 계층에 반복되는 로깅, 권한 체크, 감사 기록, 메트릭 수집 같은 횡단 관심사에 적합하다." aria-pressed="false">A. 여러 메서드에 공통으로 적용되는 횡단 관심사</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="핵심 비즈니스 규칙을 AOP로 숨기면 흐름 추적이 어려워진다." aria-pressed="false">B. 주문 상태 전이의 핵심 분기 로직 전체</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="단순 조건문을 모두 AOP로 바꾸는 것은 과한 추상화다." aria-pressed="false">C. 한 메서드 안에서만 쓰는 단순 if문</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+</div>
+
 ## 관련 문서
 
 - [[01-core/spring/spring|spring]]

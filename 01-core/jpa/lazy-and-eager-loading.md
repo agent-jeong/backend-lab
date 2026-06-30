@@ -139,6 +139,41 @@ Entity를 API 응답으로 직접 반환하지 않고, 서비스 계층에서 DT
 > [!question]- 지연 로딩과 N+1의 관계는?
 > 지연 로딩 자체는 문제가 아닙니다. 반복문 안에서 N개의 Entity가 각각 지연 로딩을 실행하면 N+1 쿼리가 발생하는 것이 문제입니다. fetch join으로 해결합니다.
 
+## 면접 대비 퀴즈
+
+아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+
+<div class="quiz-list">
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>실무에서 연관관계 기본 전략을 LAZY로 두는 이유는?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="필요하지 않은 연관 객체까지 즉시 조회하면 예측하기 어려운 쿼리와 성능 문제가 생길 수 있기 때문이다." aria-pressed="false">A. 필요한 시점에 명시적으로 조회 전략을 선택하기 위해서다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="LAZY가 N+1을 자동으로 없애지는 않는다." aria-pressed="false">B. LAZY만 쓰면 N+1이 절대 발생하지 않는다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="LAZY는 트랜잭션을 제거하지 않는다." aria-pressed="false">C. 트랜잭션 없이도 모든 연관 객체를 안전하게 조회하게 해준다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">OX</span>EAGER로 바꾸면 N+1 문제가 항상 해결된다.</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="EAGER도 JPQL 조회 방식에 따라 추가 쿼리가 발생할 수 있고, 불필요한 조회까지 강제할 수 있다." aria-pressed="false">O</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="N+1은 fetch join, batch size, entity graph 등 조회 전략으로 해결해야 한다." aria-pressed="false">X</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>LazyInitializationException이 발생하는 대표 원인은?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="영속성 컨텍스트가 닫힌 뒤 지연 로딩 프록시를 초기화하려고 하기 때문이다." aria-pressed="false">A. 트랜잭션/영속성 컨텍스트 밖에서 lazy 연관을 접근했기 때문이다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="프록시 초기화 문제와 컴파일 여부는 다르다." aria-pressed="false">B. Entity 클래스가 컴파일되지 않았기 때문이다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="기본 생성자만으로 해결되는 문제가 아니다." aria-pressed="false">C. DTO에 기본 생성자가 없기 때문이다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+</div>
+
 ## 관련 문서
 
 - [[01-core/jpa/jpa|jpa]]

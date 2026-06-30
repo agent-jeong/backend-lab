@@ -321,6 +321,41 @@ QueryDSL은 쿼리 작성 편의 도구이므로 성능은 실행 SQL, 인덱스
 > [!question]- QueryDSL 목록 API에서 가장 먼저 확인할 성능 포인트는?
 > 실행 SQL, where 조건의 인덱스 사용 여부, order by 비용, count query 비용, 불필요한 join 여부를 확인합니다.
 
+## 면접 대비 퀴즈
+
+아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+
+<div class="quiz-list">
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>Page와 Slice를 나누는 실무 기준은?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="전체 개수가 꼭 필요하면 Page, 다음 페이지 존재 여부만 필요하면 count query를 피할 수 있는 Slice를 고려한다." aria-pressed="false">A. 전체 count 필요 여부</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="Slice가 항상 모든 경우에 더 적합한 것은 아니다." aria-pressed="false">B. 데이터가 하나라도 있으면 무조건 Slice만 쓴다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="DTO 사용 여부만으로 Page/Slice가 결정되지는 않는다." aria-pressed="false">C. DTO projection을 쓰면 항상 Page를 금지한다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">OX</span>동적 조건을 BooleanExpression helper로 분리하면 조건 재사용과 테스트가 쉬워질 수 있다.</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="null이면 조건에서 제외되는 방식으로 조합하면 검색 조건이 늘어도 가독성을 유지하기 쉽다." aria-pressed="false">O</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="BooleanExpression helper는 동적 조건을 명시적으로 구성하는 데 유용하다." aria-pressed="false">X</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>QueryDSL 목록 API에서 가장 먼저 확인할 성능 포인트는?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="join으로 인한 row 증가, N+1, count query 비용, 정렬 인덱스 사용 여부를 확인해야 한다." aria-pressed="false">A. join/N+1/count/정렬 인덱스</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="메서드명이 짧다고 성능이 보장되지 않는다." aria-pressed="false">B. Repository 메서드명 길이</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="패키지 경로 길이와 SQL 성능은 직접 관련이 없다." aria-pressed="false">C. Q클래스 패키지 경로 길이</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+</div>
+
 ## 관련 문서
 
 - [[querydsl]]

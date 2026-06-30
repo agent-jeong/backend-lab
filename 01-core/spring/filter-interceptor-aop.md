@@ -184,6 +184,41 @@ Spring Security는 Filter 레벨에서 동작하고, `@Transactional`은 AOP로 
 > [!question]- Filter에서 request body를 로깅하려면?
 > `ContentCachingRequestWrapper`로 request를 래핑해서 body를 여러 번 읽을 수 있게 합니다. 원본 request의 InputStream은 1회성이므로 직접 읽으면 Controller에서 읽을 수 없습니다.
 
+## 면접 대비 퀴즈
+
+아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+
+<div class="quiz-list">
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>Spring Security가 주로 Filter 체인에서 동작하는 이유는?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="인증/인가 판단은 DispatcherServlet에 도달하기 전 요청 경계에서 처리해야 하는 경우가 많기 때문이다." aria-pressed="false">A. Spring MVC 진입 전 HTTP 요청 경계에서 보안 처리가 필요하기 때문이다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="Security가 Controller 내부 로직만 다루는 것은 아니다." aria-pressed="false">B. Controller 메서드 실행 후에만 인증해야 하기 때문이다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="보안 처리를 DB 트랜잭션 이후로 미루는 것은 적절하지 않다." aria-pressed="false">C. 트랜잭션 커밋 뒤에만 권한을 확인해야 하기 때문이다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">OX</span>Interceptor의 preHandle에서 false를 반환하면 이후 Handler 실행을 막을 수 있다.</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="인증 실패, 권한 부족, 요청 차단 같은 경우에 핸들러 진입 전 흐름을 중단할 수 있다." aria-pressed="false">O</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="preHandle의 반환값은 요청 진행 여부에 영향을 준다." aria-pressed="false">X</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>Filter에서 request body를 로깅할 때 주의할 점은?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="Servlet request body는 한 번 읽으면 다시 읽기 어려우므로 wrapping하고, 민감 정보 마스킹도 필요하다." aria-pressed="false">A. body 재사용 가능 wrapper와 민감 정보 마스킹을 고려한다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="body를 무조건 읽으면 컨트롤러에서 body를 못 읽는 문제가 생길 수 있다." aria-pressed="false">B. 그냥 InputStream을 모두 읽고 버린다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="header만 복사해도 body 재사용 문제가 해결되지는 않는다." aria-pressed="false">C. 헤더만 복사하면 body도 자동 복원된다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+</div>
+
 ## 관련 문서
 
 - [[01-core/spring/spring|spring]]

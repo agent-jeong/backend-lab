@@ -138,6 +138,41 @@ OSIV를 끄면 Service 계층에서 필요한 데이터를 모두 로딩하고 D
 > [!question]- OSIV OFF에서 지연 로딩 문제를 해결하는 방법은?
 > Fetch Join, DTO 조회, @EntityGraph, batch_fetch_size 설정 등으로 Service 계층에서 필요한 데이터를 미리 로딩합니다. 엔티티 대신 DTO를 컨트롤러에 반환하는 것이 근본적인 해결입니다.
 
+## 면접 대비 퀴즈
+
+아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+
+<div class="quiz-list">
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>OSIV를 켰을 때 커넥션 풀이 고갈될 수 있는 이유는?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="요청 처리 후 view/response 단계까지 영속성 컨텍스트와 DB 커넥션 점유 시간이 길어질 수 있기 때문이다." aria-pressed="false">A. 요청 끝부분까지 커넥션 점유 시간이 길어질 수 있기 때문이다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="OSIV가 커넥션 풀 크기를 자동으로 늘리지 않는다." aria-pressed="false">B. OSIV가 커넥션을 무한히 생성하기 때문이다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="OSIV는 브라우저 캐시 기능이 아니다." aria-pressed="false">C. 브라우저가 DB 커넥션을 직접 열기 때문이다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">OX</span>OSIV를 끄면 Controller/Serializer 계층에서 lazy 연관을 접근할 때 LazyInitializationException이 발생할 수 있다.</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="서비스 트랜잭션 안에서 필요한 데이터를 fetch join, DTO projection 등으로 미리 조회해야 한다." aria-pressed="false">O</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="OSIV OFF에서는 영속성 컨텍스트 범위가 짧아져 지연 로딩 접근 위치를 명확히 해야 한다." aria-pressed="false">X</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>OSIV OFF에서 지연 로딩 문제를 해결하는 방식으로 가장 적절한 것은?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="서비스 계층에서 필요한 조회 범위를 명확히 하고 fetch join, batch size, DTO projection 등을 사용한다." aria-pressed="false">A. 트랜잭션 안에서 필요한 데이터를 명시적으로 조회한다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="모든 연관관계를 EAGER로 바꾸면 성능 문제가 더 커질 수 있다." aria-pressed="false">B. 모든 연관관계를 EAGER로 바꾼다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="예외를 삼키면 응답 데이터가 불완전해지고 원인 파악이 어렵다." aria-pressed="false">C. LazyInitializationException을 빈 catch로 무시한다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+</div>
+
 ## 관련 문서
 
 - [[01-core/jpa/jpa|jpa]]

@@ -220,6 +220,41 @@ public record ErrorResponse(String code, String message) { }
 > [!question]- checked 예외와 unchecked 예외 중 어떤 것을 사용하는가?
 > Spring에서는 unchecked 예외(RuntimeException)를 주로 사용합니다. checked 예외는 호출부에서 반드시 처리해야 해서 코드가 복잡해지고, `@Transactional`의 기본 롤백 대상도 unchecked 예외입니다.
 
+## 면접 대비 퀴즈
+
+아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+
+<div class="quiz-list">
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>@Valid와 @Validated의 차이로 가장 적절한 것은?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="@Validated는 Spring의 검증 애노테이션으로 validation group 지정 등 Spring 기능과 함께 쓰인다." aria-pressed="false">A. @Validated는 validation group 같은 Spring 검증 기능에 유용하다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="@Valid도 요청 DTO 검증에 사용할 수 있다." aria-pressed="false">B. @Valid는 DTO 검증에 사용할 수 없다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="둘 다 예외를 제거하는 문법은 아니다." aria-pressed="false">C. @Validated를 쓰면 예외 처리가 필요 없어졌다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">OX</span>모든 검증 로직은 DTO 애노테이션으로만 처리해야 하고 Service에서는 절대 검증하면 안 된다.</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="형식 검증은 DTO에서, DB 조회나 도메인 상태가 필요한 비즈니스 검증은 Service/Domain에서 처리하는 것이 자연스럽다." aria-pressed="false">O</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="검증 위치는 단순 입력 형식인지 비즈니스 규칙인지에 따라 나뉜다." aria-pressed="false">X</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>글로벌 예외 핸들러를 설계할 때 중요한 기준은?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="예외 종류를 HTTP 상태 코드와 일관된 에러 응답으로 변환하고, 민감 정보는 응답에 노출하지 않는다." aria-pressed="false">A. 예외를 일관된 상태 코드/응답으로 변환하고 민감 정보 노출을 막는다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="모든 예외를 200으로 응답하면 클라이언트와 모니터링이 실패를 인식하기 어렵다." aria-pressed="false">B. 모든 예외를 HTTP 200으로 반환한다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="스택트레이스를 응답으로 노출하면 보안 위험이 있다." aria-pressed="false">C. 운영에서도 stack trace 전체를 사용자에게 반환한다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+</div>
+
 ## 관련 문서
 
 - [[01-core/spring/spring|spring]]

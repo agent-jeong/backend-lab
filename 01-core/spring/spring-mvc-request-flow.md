@@ -137,6 +137,41 @@ Filter에서 발생한 예외는 별도로 처리해야 합니다.
 > [!question]- DispatcherServlet의 역할은?
 > Front Controller 패턴의 구현체로, 모든 HTTP 요청을 중앙에서 받아 적절한 Handler에 위임합니다. HandlerMapping, HandlerAdapter, ViewResolver 등을 조합해서 요청을 처리합니다.
 
+## 면접 대비 퀴즈
+
+아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+
+<div class="quiz-list">
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>DispatcherServlet의 역할로 가장 적절한 것은?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="요청을 받아 HandlerMapping, HandlerAdapter, ViewResolver/MessageConverter 등 Spring MVC 구성요소로 위임하는 front controller다." aria-pressed="false">A. Spring MVC 요청 처리의 front controller</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="DispatcherServlet이 직접 모든 SQL을 실행하지 않는다." aria-pressed="false">B. 모든 Repository 메서드를 직접 호출하는 객체</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="DispatcherServlet은 JVM GC를 제어하는 구성요소가 아니다." aria-pressed="false">C. GC 튜닝을 담당하는 JVM 컴포넌트</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">OX</span>@RestController는 @Controller와 @ResponseBody를 합친 성격이라 보통 객체를 HTTP 응답 body로 직렬화한다.</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="REST API에서는 View 이름이 아니라 MessageConverter를 통해 body로 응답하는 흐름이 일반적이다." aria-pressed="false">O</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="@RestController는 View 렌더링 중심 컨트롤러와 응답 처리 방식이 다르다." aria-pressed="false">X</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="quiz-card" data-quiz-card>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>@RequestBody 바인딩 실패의 대표 원인으로 가장 적절한 것은?</p>
+    <div class="quiz-options">
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="잘못된 JSON 형식, Content-Type 누락, 기본 생성자/생성자 매핑 문제, 타입 불일치 등이 원인이 될 수 있다." aria-pressed="false">A. JSON 형식, Content-Type, DTO 생성/타입 매핑 문제</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="GET만 바인딩 가능한 것이 아니다." aria-pressed="false">B. @RequestBody는 GET 요청에서만 동작하기 때문이다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="Controller 이름 길이와 직접적인 관계는 없다." aria-pressed="false">C. Controller 클래스명이 너무 길기 때문이다.</button>
+    </div>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+  </div>
+</div>
+
 ## 관련 문서
 
 - [[01-core/spring/spring|spring]]
