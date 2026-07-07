@@ -12,7 +12,7 @@ comments: false
 - 상세 내용은 `01-core/os/` 아래 개념별 문서로 나눈다.
 - 학습한 내용은 하나의 작은 문서에 정리한다.
 - 아직 학습하지 않은 내용을 미리 길게 채우지 않는다.
-- 각 개념 문서는 프로세스, 스레드, 메모리, I/O, 장애 분석, 면접 답변을 중심으로 작성한다.
+- 각 개념 문서는 프로세스, 스레드, 메모리, I/O, 장애 분석, 기술 답변을 중심으로 작성한다.
 
 ## 학습 산출물
 
@@ -41,7 +41,7 @@ comments: false
 - 이 주제의 핵심 동작 원리는 무엇인가?
 - 실무에서 자주 발생하는 문제는 무엇인가?
 - 어떤 상황에서 주의해야 하는가?
-- 면접에서는 어떻게 설명할 수 있는가?
+- 질문을 받으면 어떻게 설명할 수 있는가?
 - Process와 Thread의 메모리 공유 차이는 Java 서버 동작과 어떻게 연결되는가?
 - 스레드 수가 많아지면 context switching 비용이 왜 증가하는가?
 - Blocking I/O와 Non-blocking I/O는 서버 스레드 사용 방식이 어떻게 다른가?
@@ -59,4 +59,4 @@ comments: false
 ## 관련 문서
 
 - [[02-practical-backend/performance/performance|performance]]
-- [[04-interview/interview-questions|interview-questions]]
+- [[04-interview/interview-questions|technical-questions]]

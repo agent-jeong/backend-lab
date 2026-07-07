@@ -220,9 +220,9 @@ public record ErrorResponse(String code, String message) { }
 > [!question]- checked 예외와 unchecked 예외 중 어떤 것을 사용하는가?
 > Spring에서는 unchecked 예외(RuntimeException)를 주로 사용합니다. checked 예외는 호출부에서 반드시 처리해야 해서 코드가 복잡해지고, `@Transactional`의 기본 롤백 대상도 unchecked 예외입니다.
 
-## 면접 대비 퀴즈
+## 점검 퀴즈
 
-아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>

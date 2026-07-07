@@ -12,7 +12,7 @@ comments: false
 - 상세 내용은 `01-core/spring/` 아래 개념별 문서로 나눈다.
 - 학습한 내용은 하나의 작은 문서에 정리한다.
 - 아직 학습하지 않은 내용을 미리 길게 채우지 않는다.
-- 각 개념 문서는 동작 원리, 실무 주의점, 면접 답변을 중심으로 작성한다.
+- 각 개념 문서는 동작 원리, 실무 주의점, 기술 답변을 중심으로 작성한다.
 
 ## 학습 산출물
 
@@ -52,4 +52,4 @@ comments: false
 ## 관련 문서
 
 - [[02-practical-backend/performance/performance|performance]]
-- [[04-interview/interview-questions|interview-questions]]
+- [[04-interview/interview-questions|technical-questions]]

@@ -216,9 +216,9 @@ enum을 DB에 저장할 때는 `ORDINAL`을 피한다. `STRING`도 이름 변경
 > [!question]- sealed class는 이 네 가지와 어떤 관계가 있는가?
 > sealed class는 상속 가능한 하위 타입을 `permits`로 제한합니다. interface나 abstract class에 적용해서 타입 안전한 계층 구조를 만들 수 있습니다.
 
-## 면접 대비 퀴즈
+## 점검 퀴즈
 
-아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>

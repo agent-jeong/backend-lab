@@ -12,7 +12,7 @@ comments: false
 - 상세 내용은 `02-practical-backend/security/` 아래 개념별 문서로 나눈다.
 - 학습한 내용은 하나의 작은 문서에 정리한다.
 - 아직 학습하지 않은 내용을 미리 길게 채우지 않는다.
-- 각 문서는 인증, 인가, 입력 검증, 민감 정보 보호, 면접 답변을 중심으로 작성한다.
+- 각 문서는 인증, 인가, 입력 검증, 민감 정보 보호, 설명 가능한 요약을 중심으로 작성한다.
 
 ## 학습 산출물
 
@@ -23,14 +23,14 @@ comments: false
 
 ## 학습 순서
 
-1. 인증과 인가
-2. Session과 Token
-3. Password 저장
-4. CORS
-5. CSRF
-6. SQL Injection
-7. 민감 정보 로깅 방지
-8. 권한 검증 위치
+1. [[authentication-and-authorization|인증과 인가]]
+2. [[session-and-token|Session과 Token]]
+3. [[password-storage|Password 저장]]
+4. [[01-core/network/cors|CORS]]
+5. [[csrf|CSRF]]
+6. [[sql-injection|SQL Injection]]
+7. [[sensitive-data-logging|민감 정보 로깅 방지]]
+8. [[authorization-check-location|권한 검증 위치]]
 
 ## 핵심 질문
 
@@ -38,7 +38,7 @@ comments: false
 - 문제를 발견하면 어떤 순서로 원인을 좁히는가?
 - 어떤 해결책이 있고 각각의 한계는 무엇인가?
 - 프로젝트 경험과 어떻게 연결할 수 있는가?
-- 면접에서는 어떻게 설명할 수 있는가?
+- 질문을 받으면 어떻게 설명할 수 있는가?
 
 ## 실무 관점
 
@@ -48,5 +48,13 @@ comments: false
 
 ## 관련 문서
 
+- [[authentication-and-authorization]]
+- [[session-and-token]]
+- [[password-storage]]
+- [[01-core/network/cors|cors]]
+- [[csrf]]
+- [[sql-injection]]
+- [[sensitive-data-logging]]
+- [[authorization-check-location]]
 - [[03-case-studies/case-studies|case-studies]]
-- [[04-interview/interview-questions|interview-questions]]
+- [[04-interview/interview-questions|technical-questions]]

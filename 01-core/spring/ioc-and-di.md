@@ -194,9 +194,9 @@ Spring에서 DI 방식은 생성자 주입이 권장됩니다.
 > [!question]- `@Component`와 `@Service`, `@Repository`의 차이는?
 > 기능적으로 모두 Bean 등록용 어노테이션입니다. `@Service`는 비즈니스 로직, `@Repository`는 데이터 접근 계층임을 명시하는 역할이고, `@Repository`는 추가로 persistence 예외를 Spring 예외로 변환합니다.
 
-## 면접 대비 퀴즈
+## 점검 퀴즈
 
-아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>

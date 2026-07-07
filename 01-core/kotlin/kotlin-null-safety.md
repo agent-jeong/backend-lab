@@ -106,7 +106,7 @@ Kotlin null safety는 null 가능성을 타입으로 표현해 null 처리 누�
 
 빈 목록은 null보다 empty list로 표현하는 편이 호출부를 단순하게 만든다.
 
-면접에서는 Kotlin이 NPE를 완전히 제거하는 것이 아니라 컴파일 타임에 null 위험을 줄인다고 설명하는 것이 정확하다.
+질문을 받으면 Kotlin이 NPE를 완전히 제거하는 것이 아니라 컴파일 타임에 null 위험을 줄인다고 설명하는 것이 정확하다.
 
 ## 꼬리 질문
 
@@ -119,9 +119,9 @@ Kotlin null safety는 null 가능성을 타입으로 표현해 null 처리 누�
 > [!question]- Kotlin을 써도 NPE가 발생할 수 있는 경우는?
 > Java interop의 platform type, `!!`, 초기화 전 접근, reflection/Jackson/JPA 경계에서 발생할 수 있습니다.
 
-## 면접 대비 퀴즈
+## 점검 퀴즈
 
-아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>

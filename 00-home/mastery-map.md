@@ -12,7 +12,7 @@ description: 백엔드 엔지니어링 학습 주제와 목표 숙련도 지도
 | 활동 | 목표 | 산출물 |
 |---|---|---|
 | 개념 학습 | 한 개념을 실무 문제와 연결 | 개념 문서 1개 보강 |
-| 면접 압축 | 면접 질문으로 압축 | [interview-questions](../04-interview/interview-questions.md) 답변 1개 |
+| 질문 압축 | 기술 질문으로 압축 | [technical-questions](../04-interview/interview-questions.md) 답변 1개 |
 | 사례 정리 | 사례로 재구성 | [case-studies](../03-case-studies/case-studies.md) 항목 1개 보강 |
 | 레벨 점검 | 부족한 영역 재배치 | 현재 레벨 업데이트 |
 
@@ -24,7 +24,7 @@ description: 백엔드 엔지니어링 학습 주제와 목표 숙련도 지도
 | L1 | 한 줄 정의 가능 |
 | L2 | 동작 순서와 내부 원리 설명 가능 |
 | L3 | 실무 문제, 장애 양상, 해결책 설명 가능 |
-| L4 | 프로젝트 경험 또는 일반화된 사례와 연결해 면접 답변 가능 |
+| L4 | 프로젝트 경험 또는 일반화된 사례와 연결해 짧게 설명 가능 |
 | L5 | 트레이드오프와 대안을 비교해 설명 가능 |
 
 ## Core
@@ -53,11 +53,12 @@ description: 백엔드 엔지니어링 학습 주제와 목표 숙련도 지도
 | Batch | scheduling, chunk, retry, monitoring | 실패한 배치를 어디서부터 다시 처리할 수 있는가? | L4 | [batch-processing](../02-practical-backend/batch/batch-processing.md) |
 | Security | authn/authz, token, CORS, injection, logging | 권한 누락과 민감 정보 노출을 어디서 막는가? | L4 | [security](../02-practical-backend/security/security.md) |
 | Testing | unit, integration, fixture, test container | 어떤 위험을 어떤 테스트로 막을 것인가? | L4 | [testing](../02-practical-backend/testing/testing.md) |
+| Kubernetes | pod, deployment, service, ingress, probe | 배포된 서비스가 트래픽을 받지 못하면 어떤 리소스부터 확인할 것인가? | L3 | [kubernetes](../02-practical-backend/kubernetes/kubernetes.md), [ci-cd](../02-practical-backend/ci-cd/ci-cd.md) |
 | CI/CD | pipeline, rollback, config, secret, GitOps | 배포 실패를 어떻게 빠르게 되돌릴 것인가? | L4 | [ci-cd](../02-practical-backend/ci-cd/ci-cd.md) |
 
 ## 운영 방법
 
 - 현재 레벨은 주기적으로 업데이트한다.
-- 한 번에 L5를 목표로 하지 않는다. L2까지는 원리, L3부터는 실무 문제, L4부터는 면접 답변을 남긴다.
+- 한 번에 L5를 목표로 하지 않는다. L2까지는 원리, L3부터는 실무 문제, L4부터는 질문에 답할 수 있는 요약을 남긴다.
 - L3 이상 문서에는 반드시 실패 사례, 검증 방법, 한계가 있어야 한다.
 - 실제 회사 정보는 쓰지 않고 `order`, `payment`, `user`, `example-service` 같은 일반 이름만 사용한다.

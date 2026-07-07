@@ -321,9 +321,9 @@ QueryDSL은 쿼리 작성 편의 도구이므로 성능은 실행 SQL, 인덱스
 > [!question]- QueryDSL 목록 API에서 가장 먼저 확인할 성능 포인트는?
 > 실행 SQL, where 조건의 인덱스 사용 여부, order by 비용, count query 비용, 불필요한 join 여부를 확인합니다.
 
-## 면접 대비 퀴즈
+## 점검 퀴즈
 
-아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>

@@ -205,9 +205,9 @@ prototype Bean을 singleton에 주입하면 최초 한 번만 생성되므로, �
 > [!question]- 웹 스코프 Bean에 `proxyMode`가 필요한 이유는?
 > singleton Bean이 생성되는 시점에는 아직 HTTP 요청이 없어서 request 스코프 Bean을 바로 주입할 수 없습니다. 프록시가 실제 요청 시점에 Bean을 가져오도록 위임합니다.
 
-## 면접 대비 퀴즈
+## 점검 퀴즈
 
-아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>

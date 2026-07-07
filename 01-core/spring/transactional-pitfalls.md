@@ -146,7 +146,7 @@ public class OrderService {
 가장 흔한 원인은 같은 클래스 내부 호출(self-invocation)이고, 해결 방법은 메서드를 별도 빈으로 분리하는 것입니다.
 
 checked 예외의 기본 미롤백과 try-catch로 예외를 삼키는 패턴도 실무에서 자주 발생합니다.
-면접에서는 "원인 → 프록시 구조 → 해결 방법"을 연결해서 설명하면 됩니다.
+질문을 받으면 "원인 → 프록시 구조 → 해결 방법"을 연결해서 설명하면 됩니다.
 
 ## 꼬리 질문
 
@@ -156,9 +156,9 @@ checked 예외의 기본 미롤백과 try-catch로 예외를 삼키는 패턴도
 > [!question]- `@Transactional`을 테스트에서 검증하는 방법은?
 > 예외를 강제로 발생시킨 뒤 DB 상태를 확인합니다. 또는 `TransactionSynchronizationManager.isActualTransactionActive()`로 트랜잭션 활성 여부를 검증합니다.
 
-## 면접 대비 퀴즈
+## 점검 퀴즈
 
-아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>

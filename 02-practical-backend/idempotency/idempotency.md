@@ -12,7 +12,7 @@ comments: false
 - 상세 내용은 `02-practical-backend/idempotency/` 아래 개념별 문서로 나눈다.
 - 학습한 내용은 하나의 작은 문서에 정리한다.
 - 아직 학습하지 않은 내용을 미리 길게 채우지 않는다.
-- 각 문서는 중복 요청, 재시도, 상태 전이, 유니크 제약, 면접 답변을 중심으로 작성한다.
+- 각 문서는 중복 요청, 재시도, 상태 전이, 유니크 제약, 기술 답변을 중심으로 작성한다.
 
 ## 학습 산출물
 
@@ -42,13 +42,13 @@ comments: false
 - 문제를 발견하면 어떤 순서로 원인을 좁히는가?
 - 어떤 해결책이 있고 각각의 한계는 무엇인가?
 - 프로젝트 경험과 어떻게 연결할 수 있는가?
-- 면접에서는 어떻게 설명할 수 있는가?
+- 질문을 받으면 어떻게 설명할 수 있는가?
 
 ## 실무 관점
 
 - 멱등성은 같은 요청이 여러 번 와도 결과가 깨지지 않게 만드는 설계다.
 - 네트워크 재시도, 사용자 중복 클릭, 메시지 재처리에서 필요하다.
-- 면접에서는 API 레벨, DB 제약, 상태 전이를 함께 설명한다.
+- 질문을 받으면 API 레벨, DB 제약, 상태 전이를 함께 설명한다.
 
 ## 관련 문서
 
@@ -57,4 +57,4 @@ comments: false
 - [[02-practical-backend/transaction/external-api-and-transaction|external-api-and-transaction]]
 - [[02-practical-backend/transaction/compensation-and-outbox|compensation-and-outbox]]
 - [[03-case-studies/case-studies|case-studies]]
-- [[04-interview/interview-questions|interview-questions]]
+- [[04-interview/interview-questions|technical-questions]]

@@ -95,7 +95,7 @@ public PaymentResponse markPaid(Long orderId, String approvalId) {
 
 주문 상태 전이, payment key unique, idempotency key, outbox, 소비자 멱등성을 함께 사용해야 한다.
 
-면접에서는 "중복 요청을 막는다"보다 "중복 요청이 와도 같은 결과로 수렴하게 설계한다"고 설명하는 것이 좋다.
+질문을 받으면 "중복 요청을 막는다"보다 "중복 요청이 와도 같은 결과로 수렴하게 설계한다"고 설명하는 것이 좋다.
 
 ## 꼬리 질문
 

@@ -1,10 +1,10 @@
 ---
-title: Interview Questions
-description: 기술 면접 질문과 개념 노트 연결
+title: Technical Questions
+description: 기술 질문과 개념 노트 연결
 comments: false
 ---
 
-# Interview Questions
+# Technical Questions
 
 ## 운영 방식
 
@@ -16,7 +16,7 @@ comments: false
 
 ## 답변 구조
 
-면접 답변은 아래 순서로 짧게 말한다.
+기술 답변은 아래 순서로 짧게 말한다.
 
 1. 한 줄 정의
 2. 동작 원리 또는 처리 흐름
@@ -85,6 +85,16 @@ comments: false
 - Cache Aside 패턴의 장점과 한계는 무엇인가요?
 - Redis 장애가 나도 서비스가 계속 동작해야 한다면 어떻게 설계하나요?
 
+## Security
+
+- 인증과 인가는 어떤 차이가 있나요? [[authentication-and-authorization]]
+- Session과 Token 방식은 어떤 기준으로 선택하나요? [[session-and-token]]
+- 권한 검증은 Controller와 Service 중 어디에 두나요? [[authorization-check-location]]
+- 비밀번호를 안전하게 저장하려면 무엇을 고려해야 하나요? [[password-storage]]
+- CSRF는 어떤 조건에서 문제가 되고 어떻게 막나요? [[csrf]]
+- SQL Injection은 ORM을 써도 발생할 수 있나요? [[sql-injection]]
+- 로그에 민감 정보가 남지 않게 하려면 무엇을 확인해야 하나요? [[sensitive-data-logging]]
+
 ## Concurrency
 
 - 멱등성은 어떻게 보장하나요?
@@ -95,11 +105,46 @@ comments: false
 
 - Kubernetes CronJob을 왜 사용하나요?
 - 실패한 배치를 재처리 가능하게 만들려면 무엇을 기록해야 하나요?
+- Chunk 크기는 어떤 기준으로 정하나요? [[chunk-processing]]
+- 배치 중복 실행은 어떻게 막나요? [[duplicate-execution-prevention]]
+- 배치 성공 여부는 어떤 지표로 판단하나요? [[batch-monitoring]]
+
+## Architecture
+
+- 계층을 나누는 기준은 무엇인가요? [[layered-architecture]]
+- Controller, Service, Repository 책임은 어떻게 나누나요? [[service-responsibility]]
+- DTO와 Entity를 분리하는 이유는 무엇인가요? [[dto-vs-entity]]
+- 의존성 방향이 깨지면 어떤 문제가 생기나요? [[dependency-direction]]
+- 모듈 경계는 어떤 기준으로 정하나요? [[module-boundary]]
+
+## Testing
+
+- Unit Test와 Integration Test는 어떻게 나누나요? [[unit-vs-integration-test]]
+- Mock과 Stub은 무엇이 다른가요? [[mock-stub-fake]]
+- Test Fixture가 복잡해지면 어떤 문제가 생기나요? [[test-fixture]]
+- `@Transactional` 테스트의 주의점은 무엇인가요? [[transactional-test]]
+- Testcontainers는 언제 사용하는 것이 적절한가요? [[testcontainers]]
+
+## Kubernetes
+
+- Deployment, Service, Ingress는 각각 어떤 문제를 해결하나요? [[deployment-service-ingress]]
+- Pod가 Running인데 요청이 실패하면 무엇을 확인하나요? [[deployment-service-ingress]]
+- Rolling Update 중 순간 장애를 줄이려면 어떤 설정을 확인해야 하나요? [[deployment-service-ingress]]
+- Readiness Probe와 Liveness Probe는 어떻게 다른가요? [[readiness-and-liveness-probe]]
+- ConfigMap과 Secret은 어떤 기준으로 나누나요? [[configmap-and-secret]]
+- Resource request와 limit은 어떤 장애와 연결되나요? [[resource-request-and-limit]]
+- CronJob 중복 실행은 어떻게 막나요? [[cronjob]]
+- Pod가 재시작된 원인은 어떻게 확인하나요? [[kubernetes-logging-and-metrics]]
 
 ## CI/CD
 
 - GitOps의 장점은 무엇인가요?
 - 배포 실패 시 롤백 전략을 어떻게 설계하나요?
+- CI와 CD는 무엇이 다른가요? [[ci-vs-cd]]
+- Build Pipeline에서 어떤 단계를 검증해야 하나요? [[build-pipeline]]
+- 배포 전략은 어떤 기준으로 선택하나요? [[deployment-strategy]]
+- Rollback이 어려운 배포는 어떤 경우인가요? [[rollback-strategy]]
+- Config와 Secret은 어떻게 관리해야 하나요? [[config-and-secret-management]]
 
 ## Observability
 

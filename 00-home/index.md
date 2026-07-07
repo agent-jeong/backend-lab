@@ -1,6 +1,6 @@
 ---
 title: Backend Lab
-description: 실무 중심 백엔드 CS 학습과 기술 면접 준비를 위한 학습 노트
+description: 실무 중심 백엔드 CS 학습과 기술 질문 대응을 위한 학습 노트
 comments: false
 ---
 
@@ -8,14 +8,14 @@ comments: false
 
 ## 이 문서의 목적
 
-백엔드 주제를 실무 판단 기준과 기술 면접 답변으로 정리하기 위한 작업대다.
+백엔드 주제를 실무 판단 기준과 설명 가능한 기술 답변으로 정리하기 위한 작업대다.
 
 ## 시작하기
 
 1. [[00-home/daily-study-board|daily-study-board]]에서 학습할 주제를 고른다.
 2. 해당 주제 인덱스를 열고 핵심 질문 하나를 선택한다.
 3. 개념 문서 하나를 보강한다.
-4. [[04-interview/interview-questions|interview-questions]]에 1분 답변으로 압축한다.
+4. [[04-interview/interview-questions|technical-questions]]에 짧은 설명으로 압축한다.
 
 결과물은 긴 글이 아니라 아래 4가지면 충분하다.
 
@@ -31,14 +31,14 @@ comments: false
 | 1 | 기존 문서 읽기와 빈칸 찾기 | 다룰 질문 1개 |
 | 2 | 공식 문서, 코드, 예제, 장애 패턴 확인 | 핵심 원리와 주의점 |
 | 3 | 실무 판단 기준으로 정리 | 체크리스트 3-5개 |
-| 4 | 면접 답변으로 압축 | 1분 답변과 꼬리 질문 |
+| 4 | 설명 가능한 답변으로 압축 | 1분 요약과 꼬리 질문 |
 
 ## 바로가기
 
 - [[00-home/daily-study-board|daily-study-board]]: 영역별 학습 주제와 산출물 가이드
 - [[00-home/mastery-map|mastery-map]]: 전체 주제와 목표 숙련도
 - [[00-home/learning-principles|learning-principles]]: 문서 작성 기준과 완료 조건
-- [[04-interview/interview-questions|interview-questions]]: 면접 질문과 답변 구조
+- [[04-interview/interview-questions|technical-questions]]: 기술 질문과 답변 구조
 - [[03-case-studies/case-studies|case-studies]]: 공개 가능한 실무 사례 정리
 - [[00-home/glossary|glossary]]: 실무 핵심 용어 정리
 
@@ -68,13 +68,14 @@ comments: false
 - [[02-practical-backend/batch/batch-processing|batch-processing]]
 - [[02-practical-backend/security/security|security]]
 - [[02-practical-backend/testing/testing|testing]]
+- [[02-practical-backend/kubernetes/kubernetes|kubernetes]]
 - [[02-practical-backend/ci-cd/ci-cd|ci-cd]]
 
-## 3단계: Interview / Case / AI
+## 3단계: Questions / Case / AI
 
-학습한 개념은 반드시 면접 답변과 공개 가능한 사례로 재가공한다.
+학습한 개념은 반드시 짧은 기술 답변과 공개 가능한 사례로 재가공한다.
 
-- [[04-interview/interview-questions|interview-questions]]
+- [[04-interview/interview-questions|technical-questions]]
 - [[03-case-studies/case-studies|case-studies]]
 - [[05-ai-workflows/ai-workflows|ai-workflows]]
 
@@ -83,4 +84,4 @@ comments: false
 - 첫 화면에서 “무엇을 해결하는 개념인지” 보인다.
 - 추상 설명보다 장애 양상, 판단 기준, 트레이드오프가 먼저 나온다.
 - 예시는 `order`, `payment`, `user`, `example-service`처럼 공개 가능한 이름만 쓴다.
-- 마지막에는 면접에서 말할 수 있는 짧은 답변이 있다.
+- 마지막에는 질문을 받았을 때 바로 설명할 수 있는 짧은 답변이 있다.

@@ -264,9 +264,9 @@ traceId나 인증 정보가 필요하면 파라미터로 전달하거나 TaskDec
 > [!question]- CompletableFuture에서 MDC traceId를 유지하려면?
 > TaskDecorator 패턴으로 작업 실행 전 호출 스레드의 MDC를 캡처하고, 비동기 스레드에서 설정한 뒤, finally에서 정리합니다.
 
-## 면접 대비 퀴즈
+## 점검 퀴즈
 
-아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>

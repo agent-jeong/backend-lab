@@ -128,9 +128,9 @@ blocking JDBC/JPA나 blocking HTTP client를 그대로 호출하면 coroutine만
 > [!question]- `GlobalScope`를 서버 코드에서 피하는 이유는?
 > 요청이나 서비스 생명주기와 분리되어 취소, 예외 전파, 종료 관리가 어려워지기 때문입니다.
 
-## 면접 대비 퀴즈
+## 점검 퀴즈
 
-아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>

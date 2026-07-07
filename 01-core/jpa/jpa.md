@@ -12,7 +12,7 @@ comments: false
 - 상세 내용은 `01-core/jpa/` 아래 개념별 문서로 나눈다.
 - 학습한 내용은 하나의 작은 문서에 정리한다.
 - 아직 학습하지 않은 내용을 미리 길게 채우지 않는다.
-- 각 개념 문서는 동작 원리, 성능 문제, 트랜잭션 경계, 면접 답변을 중심으로 작성한다.
+- 각 개념 문서는 동작 원리, 성능 문제, 트랜잭션 경계, 기술 답변을 중심으로 작성한다.
 
 ## 학습 산출물
 
@@ -46,7 +46,7 @@ comments: false
 - 이 주제의 핵심 동작 원리는 무엇인가?
 - 실무에서 자주 발생하는 문제는 무엇인가?
 - 어떤 상황에서 주의해야 하는가?
-- 면접에서는 어떻게 설명할 수 있는가?
+- 질문을 받으면 어떻게 설명할 수 있는가?
 
 ## 실무 관점
 
@@ -57,4 +57,4 @@ comments: false
 ## 관련 문서
 
 - [[02-practical-backend/performance/performance|performance]]
-- [[04-interview/interview-questions|interview-questions]]
+- [[04-interview/interview-questions|technical-questions]]

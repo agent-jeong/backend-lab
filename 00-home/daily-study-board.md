@@ -7,7 +7,7 @@ description: 실무 중심 백엔드 CS 학습 보드
 
 ## 사용 방법
 
-- 이미 아는 주제라도 면접 답변과 실무 체크리스트가 없으면 다시 정리한다.
+- 이미 아는 주제라도 짧은 기술 답변과 실무 체크리스트가 없으면 다시 정리한다.
 - 완료한 주제의 연결 문서에 작은 개선을 남긴다.
 - 실제 회사 정보는 쓰지 않고 공개 가능한 예시만 사용한다.
 
@@ -15,7 +15,7 @@ description: 실무 중심 백엔드 CS 학습 보드
 
 ### Java 기초
 
-| 주제 | 산출물 | 면접 질문 |
+| 주제 | 산출물 | 기술 질문 |
 |---|---|---|
 | [[primitive-and-reference-types]] | `==`, `equals()`, wrapper null 실수 정리 | primitive type과 reference type의 차이는? |
 | [[equals-and-hashcode]] | 객체 동등성 기준과 hash 컬렉션 문제 정리 | equals와 hashCode를 왜 함께 재정의하나? |
@@ -25,7 +25,7 @@ description: 실무 중심 백엔드 CS 학습 보드
 
 ### Spring / JPA
 
-| 주제 | 산출물 | 면접 질문 |
+| 주제 | 산출물 | 기술 질문 |
 |---|---|---|
 | [spring](../01-core/spring/spring.md) DI / Bean | Bean 생성, 주입, scope 흐름 | DI는 왜 필요한가? |
 | [spring](../01-core/spring/spring.md) AOP / Proxy | 프록시가 적용되지 않는 경우 | `@Transactional`이 안 먹는 경우는? |
@@ -34,7 +34,7 @@ description: 실무 중심 백엔드 CS 학습 보드
 
 ### Database / Transaction
 
-| 주제 | 산출물 | 면접 질문 |
+| 주제 | 산출물 | 기술 질문 |
 |---|---|---|
 | [database](../01-core/database/database.md) Index | 선택도, 복합 인덱스 순서 | 복합 인덱스 컬럼 순서는 어떻게 정하나? |
 | [database](../01-core/database/database.md) 실행 계획 | full scan, range scan, join 확인 | 실행 계획에서 무엇을 보나? |
@@ -42,7 +42,7 @@ description: 실무 중심 백엔드 CS 학습 보드
 
 ### 실무 백엔드
 
-| 주제 | 산출물 | 면접 질문 |
+| 주제 | 산출물 | 기술 질문 |
 |---|---|---|
 | [concurrency](../02-practical-backend/concurrency/concurrency.md) Race Condition | 동시에 들어온 요청 재현 방법 | 동시성 문제를 어떻게 재현하나? |
 | [idempotency](../02-practical-backend/idempotency/idempotency.md) Retry / Key | 중복 요청 방지 흐름 | 멱등성은 어떻게 보장하나? |
@@ -51,7 +51,7 @@ description: 실무 중심 백엔드 CS 학습 보드
 
 ### 인프라 / 운영
 
-| 주제 | 산출물 | 면접 질문 |
+| 주제 | 산출물 | 기술 질문 |
 |---|---|---|
 | [network](../01-core/network/network.md) Timeout / Retry | timeout, retry, circuit breaker 판단 | retry는 왜 위험할 수 있나? |
 | [os](../01-core/os/os.md) Resource | CPU, memory, disk, network 병목 구분 | 서버 리소스 병목을 어떻게 확인하나? |
@@ -61,7 +61,7 @@ description: 실무 중심 백엔드 CS 학습 보드
 
 ### 사례 정리
 
-| 주제 | 산출물 | 면접 질문 |
+| 주제 | 산출물 | 기술 질문 |
 |---|---|---|
 | [case-studies](../03-case-studies/case-studies.md) | 하나의 사례를 문제-원인-해결로 정리 | 프로젝트 경험을 어떻게 기술적으로 설명하나? |
 

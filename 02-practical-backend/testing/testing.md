@@ -12,7 +12,7 @@ comments: false
 - 상세 내용은 `02-practical-backend/testing/` 아래 개념별 문서로 나눈다.
 - 학습한 내용은 하나의 작은 문서에 정리한다.
 - 아직 학습하지 않은 내용을 미리 길게 채우지 않는다.
-- 각 문서는 테스트 목적, 범위, 격리, 유지보수 비용, 면접 답변을 중심으로 작성한다.
+- 각 문서는 테스트 목적, 범위, 격리, 유지보수 비용, 기술 답변을 중심으로 작성한다.
 
 ## 학습 산출물
 
@@ -24,12 +24,12 @@ comments: false
 ## 학습 순서
 
 1. 테스트가 필요한 이유
-2. Unit Test
-3. Integration Test
-4. Mock과 Stub
-5. Test Fixture
-6. Transactional Test
-7. Test Container
+2. [[unit-vs-integration-test|Unit Test]]
+3. [[unit-vs-integration-test|Integration Test]]
+4. [[mock-stub-fake|Mock과 Stub]]
+5. [[test-fixture|Test Fixture]]
+6. [[transactional-test|Transactional Test]]
+7. [[testcontainers|Test Container]]
 8. E2E Test
 
 ## 핵심 질문
@@ -38,15 +38,20 @@ comments: false
 - 문제를 발견하면 어떤 순서로 원인을 좁히는가?
 - 어떤 해결책이 있고 각각의 한계는 무엇인가?
 - 프로젝트 경험과 어떻게 연결할 수 있는가?
-- 면접에서는 어떻게 설명할 수 있는가?
+- 질문을 받으면 어떻게 설명할 수 있는가?
 
 ## 실무 관점
 
 - 테스트는 버그가 없음을 증명하는 것이 아니라 변경 위험을 줄이는 장치다.
 - 테스트 범위가 넓을수록 신뢰도는 높아지지만 속도와 유지보수 비용이 커진다.
-- 면접에서는 어떤 로직을 왜 단위/통합 테스트로 나눴는지 설명한다.
+- 질문을 받으면 어떤 로직을 왜 단위/통합 테스트로 나눴는지 설명한다.
 
 ## 관련 문서
 
+- [[unit-vs-integration-test]]
+- [[mock-stub-fake]]
+- [[test-fixture]]
+- [[transactional-test]]
+- [[testcontainers]]
 - [[03-case-studies/case-studies|case-studies]]
-- [[04-interview/interview-questions|interview-questions]]
+- [[04-interview/interview-questions|technical-questions]]

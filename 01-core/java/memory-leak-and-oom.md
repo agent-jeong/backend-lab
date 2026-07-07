@@ -198,9 +198,9 @@ java -XX:MaxRAMPercentage=75.0 -jar app.jar
 > [!question]- 컨테이너 환경에서 JVM 메모리를 어떻게 설정하는가?
 > `-Xmx`를 컨테이너 한도의 70~80%로 설정합니다. heap 외에 Metaspace, Stack, Direct Buffer 등이 필요하므로 한도와 같게 설정하면 OOM Kill됩니다.
 
-## 면접 대비 퀴즈
+## 점검 퀴즈
 
-아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>

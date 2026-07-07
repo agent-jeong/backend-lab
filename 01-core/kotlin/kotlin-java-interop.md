@@ -138,9 +138,9 @@ Kotlin 백엔드를 실무에서 안정적으로 쓰려면 Java interop 경계�
 > [!question]- Kotlin에서 Java checked exception은 어떻게 다뤄지는가?
 > Kotlin은 checked exception 처리를 강제하지 않습니다. 따라서 Java API 호출 실패를 명시적으로 처리할 기준을 코드 리뷰와 설계에서 잡아야 합니다.
 
-## 면접 대비 퀴즈
+## 점검 퀴즈
 
-아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>

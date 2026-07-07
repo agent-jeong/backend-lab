@@ -115,9 +115,9 @@ JDBC의 반복적인 SQL 작성과 수동 매핑을 줄이고, 영속성 컨텍�
 > [!question]- Spring Data JPA의 `JpaRepository`는 어떻게 구현 없이 동작하는가?
 > Spring이 런타임에 프록시 객체를 생성하고, 메서드 이름을 파싱해서 JPQL을 자동 생성합니다. `findByEmail`은 `SELECT u FROM User u WHERE u.email = :email`이 됩니다.
 
-## 면접 대비 퀴즈
+## 점검 퀴즈
 
-아래 문항은 기술면접에서 답변의 깊이가 갈리는 지점을 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>

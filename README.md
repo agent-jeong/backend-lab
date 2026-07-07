@@ -2,7 +2,7 @@
 
 A practical backend lab for learning, organizing, and mastering backend engineering knowledge.
 
-이 저장소는 백엔드 개발자가 알아야 할 핵심 개념, 실무 문제 해결 패턴, 면접 답변, AI 활용 방식을 체계적으로 정리하는 기술 위키입니다.
+이 저장소는 백엔드 개발자가 알아야 할 핵심 개념, 실무 문제 해결 패턴, 기술 질문 대응, AI 활용 방식을 체계적으로 정리하는 기술 위키입니다.
 
 ## Topics
 
@@ -54,9 +54,9 @@ backend-lab
 |---|---|
 | `00-home` | 전체 인덱스, 학습 원칙, 숙련도 관리 |
 | `01-core` | Java, Spring, JPA, DB, Redis, Network, OS 기본기 |
-| `02-practical-backend` | 성능, 트랜잭션, 동시성, 배치, 보안, 아키텍처, 관측성, CI/CD |
+| `02-practical-backend` | 성능, 트랜잭션, 동시성, 배치, 보안, 아키텍처, 관측성, Kubernetes, CI/CD |
 | `03-case-studies` | 공개 가능한 실무 사례 정리 |
-| `04-interview` | 면접 질문과 답변 |
+| `04-interview` | 기술 질문과 설명 요약 |
 | `05-ai-workflows` | AI 활용 프롬프트와 개발 루틴 |
 | `99-archive` | 오래된 문서 보관 |
 | `_templates` | 문서 템플릿 |

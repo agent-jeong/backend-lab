@@ -44,14 +44,14 @@ comments: false
 - 문제를 발견하면 어떤 순서로 원인을 좁히는가?
 - 어떤 해결책이 있고 각각의 한계는 무엇인가?
 - 프로젝트 경험과 어떻게 연결할 수 있는가?
-- 면접에서는 어떻게 설명할 수 있는가?
+- 질문을 받으면 어떻게 설명할 수 있는가?
 
 ## 실무 관점
 
 - 성능 문제는 먼저 측정 기준과 재현 조건을 정의한다.
 - 개선 전후를 숫자로 비교한다.
 - 캐시, 인덱스, 비동기, 스케일아웃은 각각 다른 부작용을 만든다.
-- 면접에서는 "무엇을 개선했다"보다 "어떻게 병목을 찾았는가"를 설명한다.
+- 질문을 받으면 "무엇을 개선했다"보다 "어떻게 병목을 찾았는가"를 설명한다.
 
 ## 관련 문서
 
@@ -62,4 +62,4 @@ comments: false
 - [[01-core/os/os|os]]
 - [[02-practical-backend/observability/observability|observability]]
 - [[03-case-studies/case-studies|case-studies]]
-- [[04-interview/interview-questions|interview-questions]]
+- [[04-interview/interview-questions|technical-questions]]
