@@ -29,7 +29,7 @@ comments: false
 4. [[dto-vs-entity|DTO와 Entity 분리]]
 5. [[dependency-direction|의존성 방향]]
 6. [[module-boundary|모듈 분리]]
-7. [[02-practical-backend/transaction/transaction-boundary|Transaction 경계]]
+7. [[transaction-boundary|Transaction 경계]]
 8. 테스트 가능한 설계
 
 ## 핵심 질문
