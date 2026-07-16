@@ -27,6 +27,7 @@ comments: false
    - [[primitive-and-reference-types]]
    - [[class-interface-enum-record]]
    - [[equals-and-hashcode]]
+   - [[string-and-intern]]
    - [[exception-handling]]
    - [[generics-and-type-erasure]]
 2. Java 컬렉션
@@ -48,7 +49,7 @@ comments: false
 8. 실무 연결
    - [[memory-leak-and-oom]]
    - [[serialization-and-jackson]]
-   - [[02-practical-backend/concurrency/concurrency|동시성 문제]]
+   - [[concurrency|동시성 문제]]
 
 ## 핵심 질문
 

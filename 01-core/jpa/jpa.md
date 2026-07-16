@@ -31,8 +31,9 @@ comments: false
 6. [[lazy-and-eager-loading|지연 로딩과 즉시 로딩]]
 7. [[n-plus-one-and-fetch-join|N+1과 Fetch Join]]
 8. [[transaction-and-flush|Transaction과 flush]]
-9. [[querydsl|QueryDSL]]
-10. [[querydsl-practical-usage|QueryDSL 실무 활용]]
+9. [[osiv|OSIV]]
+10. [[querydsl|QueryDSL]]
+11. [[querydsl-practical-usage|QueryDSL 실무 활용]]
 
 ## 핵심 질문
 

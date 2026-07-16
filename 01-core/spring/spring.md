@@ -29,8 +29,11 @@ comments: false
 4. [[aop|AOP]]
 5. [[spring-mvc-request-flow|Spring MVC 요청 흐름]]
 6. [[validation-and-exception-handling|Validation과 예외 처리]]
-7. [[transaction-integration|Transaction 연동]]
-8. [[configuration-and-profile|Configuration과 Profile]]
+7. [[filter-interceptor-aop|Filter, Interceptor, AOP]]
+8. [[transaction-integration|Transaction 연동]]
+9. [[transactional-pitfalls|@Transactional 주의점]]
+10. [[threadlocal-and-async-transaction|ThreadLocal과 비동기 트랜잭션]]
+11. [[configuration-and-profile|Configuration과 Profile]]
 
 ## 핵심 질문
 

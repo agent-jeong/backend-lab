@@ -29,8 +29,10 @@ comments: false
 4. [[execution-plan|실행 계획]]
 5. [[transaction-and-isolation|Transaction과 Isolation Level]]
 6. [[lock|Lock]]
-7. [[join|Join]]
-8. [[pagination-and-bulk-query|Pagination과 대용량 조회]]
+7. [[normalization-and-denormalization|정규화와 반정규화]]
+8. [[join|Join]]
+9. [[replication-and-sharding|Replication과 Sharding]]
+10. [[pagination-and-bulk-query|Pagination과 대용량 조회]]
 
 ## 핵심 질문
 

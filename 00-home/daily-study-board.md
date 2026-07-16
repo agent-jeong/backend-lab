@@ -1,6 +1,7 @@
 ---
 title: Daily Study Board
 description: 실무 중심 백엔드 CS 학습 보드
+comments: false
 ---
 
 # Daily Study Board

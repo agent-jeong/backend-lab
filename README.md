@@ -6,7 +6,7 @@ A practical backend lab for learning, organizing, and mastering backend engineer
 
 ## Topics
 
-- Java
+- Java / Kotlin
 - Spring Boot
 - JPA
 - Database
@@ -19,7 +19,7 @@ A practical backend lab for learning, organizing, and mastering backend engineer
 - Security / Authentication / Authorization
 - Architecture
 - Kubernetes / CI/CD
-- Logging / Monitoring
+- Observability
 - Testing
 - AI for Backend Engineers
 
@@ -53,7 +53,7 @@ backend-lab
 | Directory | Purpose |
 |---|---|
 | `00-home` | 전체 인덱스, 학습 원칙, 숙련도 관리 |
-| `01-core` | Java, Spring, JPA, DB, Redis, Network, OS 기본기 |
+| `01-core` | Java, Kotlin, Spring, JPA, DB, Redis, Network, OS 기본기 |
 | `02-practical-backend` | 성능, 트랜잭션, 동시성, 배치, 보안, 아키텍처, 관측성, Kubernetes, CI/CD |
 | `03-case-studies` | 공개 가능한 실무 사례 정리 |
 | `04-interview` | 기술 질문과 설명 요약 |

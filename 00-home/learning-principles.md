@@ -1,6 +1,7 @@
 ---
 title: Learning Principles
 description: 실무 중심 백엔드 CS 학습 원칙
+comments: false
 ---
 
 # Learning Principles

@@ -1,6 +1,7 @@
 ---
 title: Glossary
 description: 백엔드 실무에서 반드시 알아야 하는 핵심 용어 정리
+comments: false
 ---
 
 # Glossary
@@ -73,7 +74,7 @@ description: 백엔드 실무에서 반드시 알아야 하는 핵심 용어 정
 
 ## CI/CD / Deployment
 
-- **CI (Continuous Integration)**: 코드 변경을 자동으로 빌드하고 테스트하는 파이프라인.
-- **CD (Continuous Deployment)**: 테스트를 통과한 코드를 자동으로 운영 환경에 배포하는 프로세스.
-- **Rollback**: 배포 후 문제 발생 시 이전 버전으로 되돌리는 절차.
-- **GitOps**: Git을 단일 진실 공급원(Single Source of Truth)으로 두고 인프라와 배포를 관리하는 방식.
+- **CI (Continuous Integration)**: 코드 변경을 자동으로 빌드하고 테스트하는 파이프라인. → [[ci-vs-cd]]
+- **CD (Continuous Deployment)**: 테스트를 통과한 코드를 자동으로 운영 환경에 배포하는 프로세스. → [[ci-vs-cd]]
+- **Rollback**: 배포 후 문제 발생 시 이전 버전으로 되돌리는 절차. → [[rollback-strategy]]
+- **GitOps**: Git을 단일 진실 공급원(Single Source of Truth)으로 두고 인프라와 배포를 관리하는 방식. → [[gitops]]
