@@ -9,10 +9,10 @@ comments: false
 ## 운영 방식
 
 - 질문을 외우지 않는다.
-- 질문마다 핵심 답변, 실무 예시, 주의점을 함께 정리한다.
-- 프로젝트 경험과 연결할 수 있는 질문은 반드시 연결한다.
-- 가능하면 개념 문서와 연결해 답변 근거를 남긴다.
-- 질문은 "정의"보다 "왜", "언제 문제 되는지", "어떻게 판단하는지"를 중심으로 정리한다.
+- 질문마다 짧은 답변, 실무 예시, 깨지는 곳을 같이 정리한다.
+- 프로젝트 경험과 이을 수 있는 질문은 꼭 잇는다.
+- 답변 근거는 개념 문서 링크로 남긴다.
+- "정의"보다 "왜", "언제 문제 되는지", "어떻게 판단하는지"에 맞춰 정리한다.
 
 ## 답변 구조
 
@@ -28,7 +28,7 @@ comments: false
 
 | 단계 | 할 일 | 완료 기준 |
 |---|---|---|
-| 1 | 학습한 개념에서 질문 하나를 고른다 | 질문이 왜 중요한지 설명 가능 |
+| 1 | 공부한 개념에서 질문 하나를 고른다 | 왜 이 질문을 받는지 설명 가능 |
 | 2 | 1분 답변을 쓴다 | 정의, 원리, 실무 예시 포함 |
 | 3 | 꼬리 질문 2개를 만든다 | 한계나 대안 질문 포함 |
 | 4 | 관련 문서 링크를 붙인다 | 근거 문서로 이동 가능 |
@@ -90,7 +90,7 @@ comments: false
 - 인증과 인가는 어떤 차이가 있나요? [[authentication-and-authorization]]
 - Session과 Token 방식은 어떤 기준으로 선택하나요? [[session-and-token]]
 - 권한 검증은 Controller와 Service 중 어디에 두나요? [[authorization-check-location]]
-- 비밀번호를 안전하게 저장하려면 무엇을 고려해야 하나요? [[password-storage]]
+- 비밀번호를 안전하게 저장하려면 무엇을 챙겨야 하나요? [[password-storage]]
 - CSRF는 어떤 조건에서 문제가 되고 어떻게 막나요? [[csrf]]
 - SQL Injection은 ORM을 써도 발생할 수 있나요? [[sql-injection]]
 - 로그에 민감 정보가 남지 않게 하려면 무엇을 확인해야 하나요? [[sensitive-data-logging]]
@@ -123,7 +123,7 @@ comments: false
 - Mock과 Stub은 무엇이 다른가요? [[mock-stub-fake]]
 - Test Fixture가 복잡해지면 어떤 문제가 생기나요? [[test-fixture]]
 - `@Transactional` 테스트의 주의점은 무엇인가요? [[transactional-test]]
-- Testcontainers는 언제 사용하는 것이 적절한가요? [[testcontainers]]
+- Testcontainers는 언제 쓰나요? [[testcontainers]]
 
 ## Kubernetes
 

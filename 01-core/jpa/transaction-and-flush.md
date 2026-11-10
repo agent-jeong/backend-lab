@@ -5,23 +5,11 @@ description: JPA 트랜잭션 경계와 flush 동작의 실무 이해
 
 # 트랜잭션과 flush 시점
 
-## 한 줄 정의
+트랜잭션은 데이터 일관성을 보장하는 작업 단위이고, flush는 영속성 컨텍스트의 변경 내용을 DB에 SQL로 보내는 동작이다.
 
-트랜잭션은 데이터 일관성을 보장하는 작업 단위이고, flush는 영속성 컨텍스트의 변경 내용을 DB에 SQL로 전송하는 동작이다.
+둘은 같은 게 아니다. flush는 SQL을 보낼 뿐 확정하지 않고, 확정은 commit이 한다. 그리고 Spring의 `@Transactional`은 **프록시를 거쳐 호출될 때만** 동작한다. 이 두 가지를 모르면 "변경이 왜 안 들어갔지", "롤백이 왜 안 됐지"를 설명하지 못한다.
 
-## 실무에서 왜 중요한가
-
-트랜잭션과 flush를 모르면 다음 문제가 생긴다.
-
-- `@Transactional`을 붙이지 않아서 변경 감지가 동작하지 않는다.
-- `@Transactional`을 private 메서드나 같은 클래스 내부 호출에 붙여서 동작하지 않는다.
-- checked exception에서 롤백이 안 되는 이유를 모른다.
-- JPQL 쿼리 실행 전에 flush가 자동으로 발생하는 것을 모르고 혼란이 생긴다.
-- 읽기 전용 작업에 `readOnly = true`를 설정하지 않아 불필요한 flush가 발생한다.
-
-## @Transactional 동작 원리
-
-Spring의 `@Transactional`은 AOP 프록시를 통해 동작한다.
+## @Transactional은 프록시로 동작한다
 
 ```
 호출자 → 프록시 → 트랜잭션 시작 → 실제 메서드 실행 → 커밋/롤백
@@ -40,7 +28,7 @@ public class UserService {
 }
 ```
 
-### 동작하지 않는 경우
+같은 클래스 안에서 부르면 프록시를 거치지 않아 트랜잭션이 걸리지 않는다. private 메서드에 붙여도 마찬가지다.
 
 ```java
 @Service
@@ -57,8 +45,6 @@ public class UserService {
 }
 ```
 
-`@Transactional`은 외부에서 프록시를 통해 호출해야 동작한다.
-
 ## 롤백 규칙
 
 | 예외 종류 | 기본 롤백 여부 |
@@ -66,6 +52,8 @@ public class UserService {
 | Unchecked (`RuntimeException`) | 롤백 |
 | Checked (`Exception`) | 커밋 |
 | `Error` | 롤백 |
+
+checked exception에서도 롤백하려면 `rollbackFor`를 적는다.
 
 ```java
 // checked exception에서도 롤백이 필요하면
@@ -75,11 +63,9 @@ public void process() throws IOException {
 }
 ```
 
-## Flush 동작
+## Flush
 
-flush는 영속성 컨텍스트의 변경 내용을 DB에 SQL로 보내는 것이다. **트랜잭션을 커밋하는 것이 아니다.**
-
-### flush가 발생하는 시점
+flush는 영속성 컨텍스트의 변경 내용을 DB에 SQL로 보내는 것이다. 트랜잭션을 커밋하지는 않는다. flush 뒤에도 롤백하면 DB 변경은 취소된다.
 
 | 시점 | 이유 |
 |---|---|
@@ -87,7 +73,7 @@ flush는 영속성 컨텍스트의 변경 내용을 DB에 SQL로 보내는 것�
 | JPQL 쿼리 실행 전 | 영속성 컨텍스트와 DB의 일관성을 맞추기 위해 |
 | `entityManager.flush()` 직접 호출 | 명시적 flush |
 
-### JPQL 실행 전 auto flush
+JPQL 실행 전 auto flush 때문에, 방금 `persist()`한 데이터가 JPQL 결과에 포함된다.
 
 ```java
 @Transactional
@@ -102,8 +88,6 @@ public void example() {
     // kim이 결과에 포함됨
 }
 ```
-
-JPA는 JPQL 실행 전에 자동으로 flush해서 영속성 컨텍스트의 변경 내용이 쿼리 결과에 반영되도록 한다.
 
 ## @Transactional(readOnly = true)
 
@@ -122,7 +106,7 @@ public List<UserResponse> getUsers() {
 | DB 힌트 | DB에 따라 읽기 전용 최적화 적용 |
 | 실수 방지 | 읽기 전용 메서드에서 실수로 데이터를 변경하는 것을 방지 |
 
-읽기 전용 작업에는 항상 `readOnly = true`를 설정하는 것이 좋다.
+읽기 전용 작업에는 항상 `readOnly = true`를 붙인다.
 
 ## 트랜잭션 전파 (Propagation)
 
@@ -149,24 +133,21 @@ public class NotificationService {
 }
 ```
 
-## 자주 나는 실수
+`REQUIRES_NEW`는 DB 커넥션을 하나 더 쓴다.
 
-- 같은 클래스 내부에서 `@Transactional` 메서드를 호출해서 트랜잭션이 동작하지 않는다.
-- private 메서드에 `@Transactional`을 붙인다.
-- checked exception에서 롤백이 안 되는 것을 모른다.
-- 읽기 전용 메서드에 `readOnly = true`를 설정하지 않는다.
-- `REQUIRES_NEW`를 남용해서 트랜잭션이 너무 많이 생성된다.
-- flush 시점을 모르고 JPQL 쿼리 결과에 방금 변경한 데이터가 포함되는지 혼동한다.
+## 자주 깨지는 곳
 
-## 핵심 요약
+- **같은 클래스 안에서 `@Transactional` 메서드를 부른다.** 프록시를 거치지 않아 트랜잭션이 없다.
+- **private 메서드에 `@Transactional`을 붙인다.** 역시 적용되지 않는다.
+- **`@Transactional` 자체를 빠뜨린다.** 변경 감지가 돌지 않는다.
+- **checked exception도 롤백된다고 믿는다.** 기본은 커밋이다.
+- **읽기 전용 메서드에 `readOnly = true`를 빠뜨린다.** 불필요한 스냅샷 비교와 flush가 돈다.
+- **`REQUIRES_NEW`를 남용한다.** 트랜잭션과 커넥션이 필요 이상으로 늘어난다.
+- **auto flush를 모른다.** 방금 바꾼 데이터가 JPQL 결과에 왜 들어 있는지 헷갈린다.
 
-Spring의 `@Transactional`은 AOP 프록시를 통해 동작하므로, 같은 클래스 내부 호출이나 private 메서드에서는 동작하지 않습니다.
+## 면접에서 말하기
 
-기본적으로 unchecked exception에서만 롤백하고, checked exception에서는 커밋합니다.
-checked exception에서도 롤백이 필요하면 `rollbackFor`를 명시해야 합니다.
-
-flush는 영속성 컨텍스트의 변경 내용을 DB에 SQL로 전송하는 동작이며, 트랜잭션 커밋 시와 JPQL 실행 전에 자동으로 발생합니다.
-읽기 전용 작업에는 `@Transactional(readOnly = true)`를 설정해서 불필요한 flush를 방지합니다.
+> Spring의 `@Transactional`은 AOP 프록시로 동작해서, 같은 클래스 내부 호출이나 private 메서드에서는 적용되지 않습니다. 기본 롤백은 unchecked exception만이라 checked exception도 롤백하려면 `rollbackFor`를 명시합니다. flush는 변경 내용을 SQL로 보내는 것이지 확정이 아니고, 커밋할 때와 JPQL 실행 전에 자동으로 일어납니다. 읽기 전용 작업에는 `readOnly = true`를 붙여 불필요한 flush를 막습니다.
 
 ## 꼬리 질문
 

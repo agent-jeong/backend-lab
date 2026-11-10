@@ -6,19 +6,8 @@ comments: false
 
 # Kotlin
 
-## 운영 방식
-
-- 이 문서는 Kotlin Core 학습 인덱스로만 사용한다.
-- 상세 내용은 `01-core/kotlin/` 아래 개념별 문서로 나눈다.
-- Java, Spring, JPA와 연결되는 실무 주제만 우선 정리한다.
-- 문법 나열보다 null 안정성, 불변성, Java interop, coroutine의 한계를 중심으로 정리한다.
-
-## 학습 산출물
-
-- 다룰 Kotlin 실무 개념 하나를 고른다.
-- Java와 비교했을 때 어떤 문제가 줄어드는지 먼저 쓴다.
-- Spring/JPA/Jackson에서 생기는 주의점을 함께 남긴다.
-- 마지막에 핵심 요약과 꼬리 질문을 남긴다.
+> 학습 인덱스다. 상세 내용은 `01-core/kotlin/` 아래 개념 문서에 둔다.
+> 문법 나열은 하지 않는다. Java, Spring, JPA와 맞닿는 주제만 고르고, 각 문서는 "Java 대비 무엇이 줄어드는가 → Spring/JPA/Jackson에서 무엇이 깨지는가" 순으로 쓴다.
 
 ## 학습 순서
 
@@ -40,12 +29,12 @@ comments: false
 - coroutine은 thread를 대체하는가, 아니면 다른 추상화인가?
 - Spring MVC/JPA 기반 서비스에서 coroutine을 쓸 때 어떤 한계가 있는가?
 
-## 실무 관점
+## 공부할 때 기준
 
-- Kotlin의 장점은 짧은 문법보다 null 안정성, 불변 데이터 모델, 표현력 있는 컬렉션 처리에 있다.
-- Java와 함께 쓰는 프로젝트에서는 interop 경계의 nullability와 annotation 처리가 중요하다.
-- Spring/JPA에서는 Kotlin의 final class, 기본 생성자, `data class` 자동 메서드가 프레임워크 요구사항과 충돌할 수 있다.
-- Coroutine은 I/O 대기 작업을 효율적으로 표현하는 도구지만, blocking API와 섞이면 기대한 효과를 얻기 어렵다.
+- Kotlin의 장점은 짧은 문법보다 null 안정성, 불변 데이터 모델, 읽기 쉬운 컬렉션 처리에 있다.
+- Java와 섞인 프로젝트에서 NPE는 대부분 interop 경계(platform type)에서 난다.
+- Spring/JPA에서는 Kotlin의 final class, 기본 생성자, `data class` 자동 메서드가 프레임워크 요구사항과 부딪힌다.
+- Coroutine은 I/O 대기를 적은 스레드로 표현하는 도구지만, blocking API와 섞이면 그 이점이 사라진다.
 
 ## 관련 문서
 

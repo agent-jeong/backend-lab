@@ -5,20 +5,11 @@ description: JPA N+1 문제의 원인과 fetch join 기반 해결 전략
 
 # N+1 문제와 Fetch Join 해결
 
-## 한 줄 정의
+N+1 문제는 쿼리 1번으로 N건을 가져온 뒤, 각 건의 연관 데이터를 읽느라 N번의 쿼리가 더 나가는 현상이다.
 
-N+1 문제는 1번의 쿼리로 N건의 데이터를 가져온 뒤, 각 건의 연관 데이터를 조회하기 위해 N번의 추가 쿼리가 발생하는 현상이다.
+JPA 실무에서 가장 자주 만나는 성능 문제다. 개발 환경은 데이터가 적어 티가 안 나고, 운영에서는 목록 API가 데이터 건수에 비례해 느려지며 커넥션을 오래 잡아 풀까지 고갈시킨다. **목록 API에서 쿼리 수가 건수에 비례하는지**부터 확인한다.
 
-## 실무에서 왜 중요한가
-
-N+1은 JPA를 사용하는 실무에서 가장 자주 발생하는 성능 문제다.
-
-- 목록 API 응답 시간이 데이터가 늘수록 비례해서 느려진다.
-- 단순 목록 조회인데 수십~수백 개의 SELECT가 실행된다.
-- 개발 환경에서는 데이터가 적어서 문제를 모르고, 운영에서 터진다.
-- DB 커넥션 점유 시간이 길어져 커넥션 풀이 고갈된다.
-
-## N+1이 발생하는 과정
+## 어떻게 생기나
 
 ```java
 @Entity
@@ -55,9 +46,9 @@ SELECT * FROM users WHERE id = 3;
 ...
 ```
 
-주문이 100건이면 101번의 쿼리가 실행된다.
+주문이 100건이면 쿼리가 101번 나간다.
 
-## 해결 방법 1: Fetch Join
+## 해결 1: Fetch Join
 
 ```java
 @Query("SELECT o FROM Order o JOIN FETCH o.user")
@@ -68,22 +59,22 @@ List<Order> findAllWithUser();
 SELECT o.*, u.* FROM orders o INNER JOIN users u ON o.user_id = u.id
 ```
 
-한 번의 쿼리로 Order와 User를 함께 가져온다.
+쿼리 한 번으로 Order와 User를 함께 가져온다.
 
 ### 컬렉션 fetch join
 
-`@OneToMany` 관계에서 fetch join하면 데이터가 중복될 수 있다.
+`@OneToMany` 쪽을 fetch join하면 부모 데이터가 중복된다.
 
 ```java
 @Query("SELECT DISTINCT u FROM User u JOIN FETCH u.orders")
 List<User> findAllWithOrders();
 ```
 
-`DISTINCT`를 사용해서 중복을 제거한다. Hibernate 6에서는 JPQL에 `DISTINCT`를 쓰면 SQL에는 DISTINCT를 넣지 않고 애플리케이션 레벨에서 중복 Entity를 제거한다. Hibernate 5에서는 SQL에도 DISTINCT가 포함된다.
+`DISTINCT`로 중복을 없앤다. Hibernate 6에서는 JPQL에 `DISTINCT`를 써도 SQL에는 넣지 않고 애플리케이션 레벨에서 중복 Entity를 제거한다. Hibernate 5에서는 SQL에도 DISTINCT가 들어간다.
 
 ### 컬렉션 fetch join과 페이징
 
-**컬렉션 fetch join과 페이징은 함께 사용할 수 없다.**
+컬렉션 fetch join과 페이징은 함께 쓸 수 없다.
 
 ```java
 // 위험: 메모리에서 페이징 처리 (모든 데이터를 먼저 가져옴)
@@ -91,11 +82,9 @@ List<User> findAllWithOrders();
 Page<User> findAllWithOrders(Pageable pageable);
 ```
 
-Hibernate가 경고 로그를 남기며 전체 데이터를 메모리에 올린 후 페이징한다.
+Hibernate는 경고 로그만 남기고 전체 데이터를 메모리에 올린 뒤 페이징한다. 이럴 때는 `@BatchSize`를 쓴다.
 
-해결 방법: `@BatchSize`를 사용한다.
-
-## 해결 방법 2: @BatchSize
+## 해결 2: @BatchSize
 
 ```java
 @Entity
@@ -122,18 +111,18 @@ spring:
 SELECT * FROM orders WHERE user_id IN (1, 2, 3, ... , 100);
 ```
 
-N번의 쿼리가 `ceil(N / batchSize)`번으로 줄어든다. 컬렉션 fetch join과 달리 페이징과 함께 사용할 수 있어서, 실무에서는 `default_batch_fetch_size`를 전역 설정하고 페이징이 필요한 곳에서 활용하는 것이 일반적이다.
+N번의 쿼리가 `ceil(N / batchSize)`번으로 준다. 컬렉션 fetch join과 달리 페이징과 같이 쓸 수 있어서, 실무에서는 `default_batch_fetch_size`를 전역으로 걸어 두고 페이징이 필요한 곳에서 활용하는 게 일반적이다.
 
-## 해결 방법 3: EntityGraph
+## 해결 3: EntityGraph
 
 ```java
 @EntityGraph(attributePaths = {"user"})
 List<Order> findAll();
 ```
 
-JPQL 없이 fetch join과 같은 효과를 낸다. 간단한 경우에 유용하지만, 복잡한 조건에서는 JPQL fetch join이 더 명확하다.
+JPQL 없이 fetch join과 같은 효과를 낸다. 간단한 경우엔 편하지만, 조건이 복잡하면 JPQL fetch join이 더 명확하다.
 
-## 해결 방법 비교
+## 무엇을 고르나
 
 | 방법 | 장점 | 단점 |
 |---|---|---|
@@ -142,24 +131,19 @@ JPQL 없이 fetch join과 같은 효과를 낸다. 간단한 경우에 유용하
 | `@EntityGraph` | 어노테이션만으로 간단히 적용 | 복잡한 조건에서 한계 |
 | DTO 직접 조회 | 필요한 컬럼만 조회, 성능 최적화 | 코드가 복잡해짐 |
 
-## 자주 나는 실수
+보통은 `default_batch_fetch_size`를 전역으로 두고, 성능이 중요한 곳에 fetch join을 더한다.
 
-- N+1이 발생하는지 확인하지 않고 코드를 작성한다.
-- 컬렉션 fetch join과 페이징을 함께 사용한다.
-- 여러 컬렉션을 동시에 fetch join해서 `MultipleBagFetchException`이 발생한다.
-- `@BatchSize`를 설정하지 않고 모든 곳에 fetch join을 사용한다.
-- 개발 환경에서 데이터가 적어 N+1을 발견하지 못한다.
-- `spring.jpa.show-sql=true`만 보고 실제 쿼리 수를 파악하지 못한다.
+## 자주 깨지는 곳
 
-## 핵심 요약
+- **쿼리 수를 확인하지 않고 코드를 쓴다.** 개발 환경은 데이터가 적어 N+1이 안 보인다.
+- **컬렉션 fetch join에 페이징을 붙인다.** 전체 데이터가 메모리에 올라간다.
+- **여러 컬렉션을 동시에 fetch join한다.** `MultipleBagFetchException`이 난다.
+- **`@BatchSize` 없이 모든 곳을 fetch join으로 막는다.** 페이징이 필요한 곳에서 막힌다.
+- **`spring.jpa.show-sql=true`만 본다.** 로그가 흘러가 버려 실제 쿼리 수를 세지 못한다.
 
-N+1은 목록 조회 시 각 건의 연관 데이터를 개별 쿼리로 조회해서 쿼리 수가 N+1이 되는 문제입니다.
+## 면접에서 말하기
 
-가장 기본적인 해결 방법은 fetch join으로 한 번의 쿼리에 연관 데이터를 함께 가져오는 것입니다.
-단, 컬렉션 fetch join은 페이징과 함께 사용할 수 없습니다.
-
-페이징이 필요하면 `@BatchSize`(또는 `default_batch_fetch_size`)를 설정해서 IN 절로 묶어 조회합니다.
-실무에서는 `default_batch_fetch_size`를 전역으로 설정하고, 성능이 중요한 곳에서 fetch join을 추가로 적용하는 조합이 일반적입니다.
+> N+1은 목록을 조회한 뒤 각 건의 연관 데이터를 개별 쿼리로 읽어서 쿼리가 N+1번 나가는 문제입니다. 기본 해결은 fetch join으로 연관 데이터를 한 번에 가져오는 것인데, 컬렉션 fetch join은 페이징과 같이 쓸 수 없습니다. 그래서 저는 `default_batch_fetch_size`를 전역으로 걸어 IN 절로 묶고, 성능이 중요한 곳에만 fetch join을 추가합니다. 발견은 목록 API의 쿼리 수가 건수에 비례하는지로 합니다.
 
 ## 꼬리 질문
 

@@ -5,31 +5,25 @@ description: Java 타입 선택 기준과 실무 설계 판단
 
 # 클래스·인터페이스·이넘·레코드 선택 기준
 
-## 한 줄 정의
+`class`, `interface`, `enum`, `record`는 모두 타입을 정의하지만 표현하는 의도가 다르다. 문법보다 "이 타입이 무엇을 표현하는가"를 먼저 정해야 한다.
 
-`class`, `interface`, `enum`, `record`는 Java에서 타입을 정의하는 대표적인 방법이며, 각각 다른 설계 의도를 표현한다.
+선택이 어긋나면 DTO에 boilerplate가 쌓이고, 문자열 상수 오타가 런타임까지 숨고, 생명주기가 있는 Entity를 record로 만들려다 실패한다.
 
-## 실무에서 왜 중요한가
-
-문법 자체보다 중요한 것은 "이 타입이 무엇을 표현하는가"이다.
-
-타입 선택이 어긋나면 DTO에 boilerplate가 늘어나고, 문자열 상수 오타가 런타임까지 숨어 있으며, Entity처럼 생명주기가 있는 객체를 record로 만들려다 실패한다.
-
-## 한눈에 보는 선택 기준
+## 무엇을 고르나
 
 | 상황 | 선택 | 이유 |
 |---|---|---|
-| 데이터 전달이 목적 | `record` | 필드, 생성자, `equals`, `hashCode`, `toString`을 간결하게 표현 |
-| 고정된 상태/유형/분류 | `enum` | 허용 가능한 값을 타입으로 제한 |
+| 데이터 전달이 목적 | `record` | 필드, 생성자, `equals`, `hashCode`, `toString`을 짧게 표현 |
+| 고정된 상태·유형·분류 | `enum` | 허용되는 값을 타입으로 제한 |
 | 여러 구현체를 같은 방식으로 사용 | `interface` | 구현체 교체, 테스트 대체, DI에 유리 |
 | 식별자와 변경 가능한 상태가 있음 | `class` | Entity, 도메인 객체처럼 생명주기와 행위를 표현 |
 | 공통 상태와 구현을 상속해야 함 | `abstract class` | 하위 클래스에 공통 로직 제공 |
 
-먼저 `enum`과 `record`로 표현할 수 있는지 확인하고, 생명주기와 상태 변경이 필요하면 `class`를 선택한다. `interface`는 구현체 교체나 의존성 분리가 실제로 필요할 때 사용한다.
+먼저 `enum`이나 `record`로 표현되는지 보고, 생명주기와 상태 변경이 필요하면 `class`로 간다. `interface`는 구현체 교체나 의존성 분리가 실제로 필요할 때 만든다.
 
-### DTO / 값 전달 객체 → record
+## DTO와 값 전달 객체: record
 
-DTO처럼 데이터를 옮기는 객체는 `record`가 읽기 쉽다.
+데이터를 옮기는 객체는 `record`로 쓰면 읽기 쉽다.
 
 ```java
 public record UserResponse(
@@ -40,7 +34,7 @@ public record UserResponse(
 }
 ```
 
-주의할 점은 record가 얕은 불변이라는 점이다. `List` 같은 mutable 객체는 내부 상태가 변경될 수 있으므로, 필요하다면 `List.copyOf()`로 방어적 복사를 적용한다.
+record는 얕은 불변이다. `List` 같은 mutable 객체를 담으면 그 내부는 바뀐다. 막아야 하면 `List.copyOf()`로 방어적 복사를 한다.
 
 ```java
 public record UserGroup(List<String> names) {
@@ -50,21 +44,17 @@ public record UserGroup(List<String> names) {
 }
 ```
 
-적합한 곳: API 요청/응답 DTO, 메서드 간 데이터 전달 객체, 캐시 key, 작은 값 객체.
+API 요청·응답 DTO, 메서드 간 전달 객체, 캐시 key, 작은 값 객체에 맞는다. JPA Entity, 단계적으로 상태가 바뀌는 객체, 상속이 필요한 객체에는 맞지 않는다.
 
-피해야 할 곳: JPA Entity, 단계적으로 상태가 바뀌는 객체, 상속이 필요한 객체.
+## 고정된 분류와 상태: enum
 
-### 고정된 분류와 상태 → enum
-
-상태, 유형, 카테고리처럼 값이 정해져 있는 경우 enum을 사용한다.
-
-문자열 상수는 허용 가능한 값의 범위를 타입으로 표현하지 못한다.
+상태, 유형, 카테고리처럼 값이 정해져 있으면 enum을 쓴다. 문자열 상수는 허용되는 값의 범위를 타입으로 표현하지 못한다.
 
 ```java
 process("PENDNG"); // 오타가 있어도 컴파일된다.
 ```
 
-enum을 사용하면 잘못된 값이 컴파일 단계에서 드러난다.
+enum이면 잘못된 값이 컴파일 단계에서 드러난다.
 
 ```java
 public enum OrderStatus {
@@ -84,7 +74,7 @@ process(OrderStatus.PENDNG); // 컴파일 에러: 존재하지 않는 enum 상�
 
 ### enum에 로직 넣기
 
-상수별 작은 정책 차이가 있으면 enum 내부에 로직을 둘 수 있다. 호출부의 if-else를 줄이는 데 도움이 된다.
+상수마다 작은 정책 차이가 있으면 enum 안에 로직을 둔다. 호출부의 if-else가 줄어든다.
 
 ```java
 public enum PaymentType {
@@ -111,11 +101,11 @@ public enum PaymentType {
 }
 ```
 
-새 결제 수단을 추가하면 `calculateFee` 구현을 컴파일러가 강제한다. 다만 큰 비즈니스 흐름은 enum이 아니라 서비스나 정책 객체로 분리하는 편이 낫다.
+새 결제 수단을 추가하면 컴파일러가 `calculateFee` 구현을 강제한다. 다만 큰 비즈니스 흐름은 enum이 아니라 서비스나 정책 객체로 빼는 편이 낫다.
 
-### enum + DB 매핑 주의점
+### enum을 DB에 저장할 때
 
-JPA에서 enum을 DB에 저장할 때 `@Enumerated`의 기본값은 `ORDINAL`이다. 실무에서는 대부분 `STRING`을 명시한다.
+JPA `@Enumerated`의 기본값은 `ORDINAL`이다. 실무에서는 대부분 `STRING`을 명시한다.
 
 ```java
 // 위험: enum 선언 순서가 DB 값이 된다.
@@ -127,13 +117,13 @@ private OrderStatus status; // 0, 1, 2...
 private OrderStatus status; // "PENDING", "APPROVED"...
 ```
 
-`ORDINAL`은 enum 상수의 선언 순서가 바뀌면 기존 DB 데이터와 매핑이 깨진다. `STRING`은 순서 변경에는 안전하지만 enum 이름을 바꾸면 DB 값과 매핑이 깨질 수 있다.
+`ORDINAL`은 상수 선언 순서가 바뀌면 기존 DB 데이터와 매핑이 깨진다. `STRING`은 순서 변경에는 안전하지만 enum 이름을 바꾸면 깨진다.
 
-DB에 저장되는 코드가 오래 유지되어야 하거나 외부 시스템과 계약된 값이면 enum 이름을 그대로 저장하기보다 별도 code 필드와 converter를 두는 편이 낫다.
+DB에 오래 남는 코드이거나 외부 시스템과 약속한 값이면, enum 이름을 그대로 저장하지 말고 별도 code 필드와 converter를 둔다.
 
-### 행위 계약 → interface
+## 행위 계약: interface
 
-구현체를 바꿔 끼우거나 테스트에서 대체해야 한다면 interface를 사용한다.
+구현체를 바꿔 끼우거나 테스트에서 대체해야 하면 interface를 쓴다.
 
 ```java
 public interface NotificationSender {
@@ -144,23 +134,23 @@ public class EmailSender implements NotificationSender { ... }
 public class SlackSender implements NotificationSender { ... }
 ```
 
-interface가 적합한 경우:
+이럴 때 쓴다.
 
-- 여러 구현체가 존재하거나 존재할 수 있는 경우
-- 외부 의존성을 추상화해서 테스트 가능하게 만들 때
-- Spring에서 DI 대상으로 사용할 때
-- 포트/어댑터 구조에서 애플리케이션 코드가 외부 기술에 직접 의존하지 않게 할 때
+- 구현체가 여럿이거나 여럿이 될 수 있다.
+- 외부 의존성을 추상화해 테스트할 수 있게 만든다.
+- Spring에서 DI 대상으로 쓴다.
+- 포트/어댑터 구조에서 애플리케이션 코드가 외부 기술에 직접 의존하지 않게 한다.
 
-단, 구현체가 하나뿐이고 교체 가능성도 낮다면 무조건 interface를 만들 필요는 없다. 테스트 가능성, 의존 방향, 확장 가능성이 실제로 필요할 때 사용한다.
+구현체가 하나뿐이고 바뀔 일도 없으면 interface를 만들 필요가 없다. 테스트, 의존 방향, 확장이 실제로 필요할 때 만든다.
 
-### class는 언제?
+## 식별자와 상태가 있는 객체: class
 
-class는 가장 일반적인 타입이지만, 실무에서는 특히 식별자와 생명주기, 변경 가능한 상태, 도메인 행위를 함께 표현할 때 적합하다.
+class는 식별자와 생명주기, 변경 가능한 상태, 도메인 행위를 함께 표현할 때 맞는다.
 
-- 가변 상태와 행위를 함께 가지는 도메인 객체
+- 가변 상태와 행위를 함께 가진 도메인 객체
 - JPA Entity
 - 상속 구조가 필요한 경우
-- 빌더 패턴 등 복잡한 생성 로직이 필요한 경우
+- 빌더 패턴처럼 생성 로직이 복잡한 경우
 - 캡슐화된 상태 변경 메서드가 필요한 경우
 
 ```java
@@ -177,24 +167,20 @@ public class Order {
 }
 ```
 
-이런 객체는 단순 데이터 묶음이 아니라 상태 전이 규칙을 가진다. 이 경우 record보다 class가 더 자연스럽다.
+이 객체는 데이터 묶음이 아니라 상태 전이 규칙을 가진다. 그래서 record보다 class가 자연스럽다.
 
-## 자주 나는 실수
+## 자주 깨지는 곳
 
-- DTO를 class로 만들어서 getter, equals, hashCode를 수동으로 관리한다.
-- `@Enumerated(ORDINAL)`을 사용해서 enum 순서 변경 시 DB 데이터가 깨진다.
-- `@Enumerated(STRING)`이면 완전히 안전하다고 생각하고 enum 이름을 쉽게 변경한다.
-- interface 하나에 구현체가 하나인데 불필요하게 추상화한다.
-- enum을 단순 상수로만 쓰고, 분기 로직을 호출부에 if-else로 작성한다.
-- record를 JPA Entity로 사용하려다 프록시 생성 실패가 발생한다.
+- **DTO를 class로 만든다.** getter, equals, hashCode를 손으로 관리하게 된다.
+- **`@Enumerated(ORDINAL)`을 쓴다.** enum 순서가 바뀌면 DB 데이터의 의미가 바뀐다.
+- **`STRING`이면 완전히 안전하다고 믿는다.** enum 이름을 바꾸는 순간 저장된 값과 매핑이 깨진다.
+- **구현체 하나짜리 interface를 습관적으로 만든다.** 추상화 비용만 늘어난다.
+- **enum을 상수로만 쓴다.** 분기 로직이 호출부 곳곳의 if-else로 흩어진다.
+- **record를 JPA Entity로 쓰려 한다.** 프록시 생성에서 실패한다.
 
-## 핵심 요약
+## 면접에서 말하기
 
-데이터 전달은 `record`, 고정된 선택지는 `enum`, 행위 계약은 `interface`, 식별자와 상태 변경을 가진 객체는 `class`를 우선 고려한다.
-
-JPA Entity는 생명주기와 상태 변경이 있으므로 `class`가 자연스럽다. record는 DTO나 값 전달 객체에 더 적합하다.
-
-enum을 DB에 저장할 때는 `ORDINAL`을 피한다. `STRING`도 이름 변경에는 취약하므로 장기 저장 값이면 별도 code 전략을 고려한다.
+> 데이터 전달은 record, 고정된 선택지는 enum, 행위 계약은 interface, 식별자와 상태 변경이 있는 객체는 class를 먼저 떠올립니다. JPA Entity는 생명주기와 상태 변경이 있어서 class로 만들고, record는 DTO나 값 객체에 씁니다. enum을 DB에 저장할 때는 ORDINAL을 피하고, STRING도 이름 변경에 약하기 때문에 오래 남는 값이면 별도 code 필드와 converter를 둡니다.
 
 ## 꼬리 질문
 

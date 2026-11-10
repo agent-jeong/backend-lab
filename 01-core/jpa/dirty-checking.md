@@ -5,20 +5,11 @@ description: JPA 변경 감지의 동작 원리와 실무에서의 주의점
 
 # 변경 감지(Dirty Checking) 동작 원리
 
-## 한 줄 정의
+Dirty Checking은 영속성 컨텍스트가 Entity의 스냅샷과 현재 상태를 비교해서, 바뀐 Entity를 자동으로 UPDATE하는 방식이다.
 
-Dirty Checking은 영속성 컨텍스트가 Entity의 스냅샷과 현재 상태를 비교해서, 변경된 필드를 자동으로 UPDATE하는 메커니즘이다.
+덕분에 `save()` 없이도 값이 반영되지만, 반대로 트랜잭션 밖에서 고친 값은 반영되지 않는다. 대량 수정에서는 한 건씩 UPDATE가 나가 느려진다. 변경 감지는 **영속 상태 Entity를 트랜잭션 안에서 고칠 때만** 돈다.
 
-## 실무에서 왜 중요한가
-
-변경 감지를 모르면 다음 상황에서 혼란이 생긴다.
-
-- `save()`를 호출하지 않았는데 UPDATE가 실행된다.
-- Entity를 수정했는데 DB에 반영되지 않는다 (트랜잭션 밖).
-- 의도하지 않은 필드까지 UPDATE에 포함된다.
-- 대량 데이터를 수정할 때 한 건씩 UPDATE가 나가서 성능이 나빠진다.
-
-## 동작 원리
+## 동작
 
 ```
 1. Entity 조회 → 영속성 컨텍스트에 스냅샷 저장
@@ -37,9 +28,7 @@ public void updateUserName(Long id, String newName) {
 }
 ```
 
-`userRepository.save(user)`를 호출하지 않아도 트랜잭션 커밋 시 자동으로 UPDATE가 실행된다.
-
-## 변경 감지가 동작하는 조건
+`userRepository.save(user)`를 부르지 않아도 커밋 시 UPDATE가 나간다.
 
 | 조건 | 필요 여부 |
 |---|---|
@@ -48,7 +37,7 @@ public void updateUserName(Long id, String newName) {
 | `save()` 호출 | 불필요 |
 | setter 호출 | 필드 값이 바뀌면 됨 (setter가 아니어도 가능) |
 
-## 변경 감지가 동작하지 않는 경우
+## 동작하지 않는 경우
 
 ```java
 // 트랜잭션 없음 → 준영속 상태 → 변경 감지 X
@@ -69,16 +58,16 @@ public void createAndModify() {
 }
 ```
 
-## UPDATE 범위
+## UPDATE 범위와 @DynamicUpdate
 
-Hibernate의 기본 동작은 모든 컬럼을 UPDATE한다.
+Hibernate는 기본적으로 모든 컬럼을 UPDATE한다.
 
 ```sql
 -- name만 바꿨지만 전체 컬럼이 UPDATE에 포함
 UPDATE users SET name=?, email=?, status=?, updated_at=? WHERE id=?
 ```
 
-변경된 컬럼만 UPDATE하려면 `@DynamicUpdate`를 사용한다.
+바뀐 컬럼만 UPDATE하려면 `@DynamicUpdate`를 쓴다.
 
 ```java
 @Entity
@@ -88,11 +77,11 @@ public class User {
 }
 ```
 
-단, `@DynamicUpdate`는 매번 SQL을 새로 생성하므로 PreparedStatement 캐시 효과가 줄어든다. 컬럼 수가 많고 일부만 자주 변경되는 경우에 고려한다.
+대신 `@DynamicUpdate`는 매번 SQL을 새로 만들어서 PreparedStatement 캐시 효과가 줄어든다. 컬럼이 많고 그중 일부만 자주 바뀔 때 쓴다.
 
-## 대량 수정 시 주의점
+## 대량 수정은 벌크 연산으로
 
-변경 감지는 한 건씩 UPDATE를 실행한다. 대량 수정에는 벌크 연산이 효율적이다.
+변경 감지는 한 건씩 UPDATE를 실행한다. 대량 수정은 벌크 연산이 낫다.
 
 ```java
 // 변경 감지: 1000건이면 UPDATE 1000번
@@ -110,24 +99,19 @@ public void deactivateAll(List<Long> userIds) {
 int bulkUpdateStatus(@Param("ids") List<Long> ids, @Param("status") UserStatus status);
 ```
 
-벌크 연산은 영속성 컨텍스트를 거치지 않으므로 `clearAutomatically = true`로 캐시를 비워야 한다.
+벌크 연산은 영속성 컨텍스트를 거치지 않으므로 `clearAutomatically = true`로 캐시를 비운다.
 
-## 자주 나는 실수
+## 자주 깨지는 곳
 
-- 트랜잭션 밖에서 Entity를 수정하고 반영될 것으로 기대한다.
-- `save()`를 호출하지 않아서 반영이 안 된다고 생각하고, 불필요하게 `save()`를 호출한다.
-- 대량 데이터를 변경 감지로 수정해서 UPDATE 쿼리가 수천 번 나간다.
-- 벌크 연산 후 영속성 컨텍스트를 비우지 않아서 캐시된 이전 데이터를 읽는다.
-- `@DynamicUpdate`를 무조건 좋은 것으로 생각하고 모든 Entity에 적용한다.
+- **트랜잭션 밖에서 Entity를 고치고 반영을 기대한다.** 준영속이라 UPDATE가 나가지 않는다.
+- **반영이 안 될까 봐 `save()`를 습관처럼 부른다.** 영속 상태에서는 필요 없는 호출이다.
+- **대량 데이터를 변경 감지로 고친다.** UPDATE 쿼리가 수천 번 나간다.
+- **벌크 연산 뒤 영속성 컨텍스트를 비우지 않는다.** 캐시에 남은 이전 데이터를 읽는다.
+- **`@DynamicUpdate`를 모든 Entity에 붙인다.** PreparedStatement 캐시 효과만 잃는 경우가 많다.
 
-## 핵심 요약
+## 면접에서 말하기
 
-Dirty Checking은 영속 상태 Entity의 스냅샷과 현재 상태를 비교해서 변경된 필드를 자동으로 UPDATE하는 메커니즘입니다.
-`@Transactional` 안에서 Entity 필드를 수정하면 `save()` 호출 없이도 커밋 시 UPDATE가 실행됩니다.
-
-변경 감지가 동작하려면 Entity가 영속 상태여야 하고 트랜잭션 안에서 수정해야 합니다.
-
-대량 수정에는 변경 감지 대신 벌크 연산(`@Modifying` + JPQL)을 사용하고, 벌크 연산 후에는 영속성 컨텍스트를 반드시 비워야 합니다.
+> Dirty Checking은 영속 상태 Entity의 스냅샷과 현재 상태를 비교해서 바뀐 것을 커밋 시점에 자동으로 UPDATE하는 방식입니다. 그래서 `@Transactional` 안에서 필드만 바꾸면 `save()` 없이도 반영되고, 반대로 트랜잭션 밖의 준영속 Entity는 반영되지 않습니다. 대량 수정은 한 건씩 UPDATE가 나가므로 `@Modifying` 벌크 연산을 쓰고, 그 뒤에는 영속성 컨텍스트를 비웁니다.
 
 ## 꼬리 질문
 

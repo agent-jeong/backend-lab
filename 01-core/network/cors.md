@@ -5,22 +5,13 @@ description: CORS 동작 원리와 Preflight, Spring에서의 설정 방법
 
 # CORS
 
-## 한 줄 정의
+CORS(Cross-Origin Resource Sharing)는 브라우저가 다른 출처(Origin)의 서버에 요청할 때, 서버가 그 요청을 허용하는지 확인하는 보안 장치다.
 
-CORS(Cross-Origin Resource Sharing)는 브라우저가 다른 출처(Origin)의 서버에 요청할 때, 서버가 이를 허용하는지 확인하는 보안 메커니즘이다.
+CORS는 브라우저만 검사한다. 그래서 Postman에서는 잘 되는데 브라우저에서만 막히는 일이 생긴다. 실제로 부딪히는 문제는 대개 셋이다. OPTIONS를 막아 Preflight가 실패하거나, 인증 헤더(Cookie, Authorization)를 실은 요청이 막히거나, `*`로 열어 둔 채 운영에 배포하는 것이다.
 
-## 실무에서 왜 중요한가
+## Origin
 
-CORS를 이해하지 못하면 다음 문제가 생긴다.
-
-- 프론트엔드에서 API를 호출하면 브라우저에서 에러가 나는데 Postman에서는 정상이다.
-- Preflight 요청을 모르고 OPTIONS 메서드를 차단해서 모든 API가 실패한다.
-- CORS 설정을 `*`로 열어두고 운영에 배포해서 보안 문제가 생긴다.
-- 인증 헤더(Cookie, Authorization)를 포함한 요청이 CORS에 막히는 원인을 모른다.
-
-## Origin이란
-
-Origin = **프로토콜 + 호스트 + 포트**의 조합이다.
+Origin은 **프로토콜 + 호스트 + 포트**의 조합이다.
 
 ```
 https://app.example.com:443  → Origin
@@ -35,11 +26,11 @@ https://app.example.com:443  → Origin
 | `https://app.com` | `https://api.app.com` | X (호스트 다름) |
 | `https://app.com` | `https://app.com:8080` | X (포트 다름) |
 
-## CORS 동작 흐름
+## 동작
 
 ### Simple Request (단순 요청)
 
-조건을 모두 만족하면 Preflight 없이 바로 요청한다.
+아래 조건을 모두 만족하면 Preflight 없이 바로 요청한다.
 
 - 메서드: GET, HEAD, POST
 - 헤더: Accept, Content-Type(`application/x-www-form-urlencoded`, `multipart/form-data`, `text/plain`만), Accept-Language 등 기본 헤더만
@@ -56,7 +47,7 @@ Browser                          Server
 
 ### Preflight Request (사전 요청)
 
-단순 요청 조건을 만족하지 않으면, 브라우저가 먼저 OPTIONS 요청을 보내서 허용 여부를 확인한다.
+단순 요청 조건을 하나라도 벗어나면, 브라우저가 먼저 OPTIONS 요청을 보내 허용 여부를 묻는다.
 
 ```
 Browser                              Server
@@ -78,11 +69,9 @@ Browser                              Server
   │◀── 201 Created ──────────────   │
 ```
 
-`Access-Control-Max-Age`는 Preflight 결과를 캐시하는 시간(초)이다. 이 시간 동안 같은 요청에 대해 Preflight를 다시 보내지 않는다.
+`Access-Control-Max-Age`는 Preflight 결과를 캐시하는 시간(초)이다. 그동안 같은 요청에는 Preflight를 다시 보내지 않는다.
 
-## 주요 CORS 헤더
-
-### 응답 헤더 (서버 → 브라우저)
+## 응답 헤더 (서버 → 브라우저)
 
 | 헤더 | 용도 | 예시 |
 |---|---|---|
@@ -93,9 +82,9 @@ Browser                              Server
 | `Access-Control-Max-Age` | Preflight 캐시 시간 (초) | `3600` |
 | `Access-Control-Expose-Headers` | 브라우저에서 접근 가능한 응답 헤더 | `X-Total-Count` |
 
-### 인증 정보 포함 요청 (Credentials)
+### 인증 정보를 실은 요청 (Credentials)
 
-Cookie나 Authorization 헤더를 포함하려면 양쪽 모두 설정이 필요하다.
+Cookie나 Authorization 헤더를 실으려면 프론트와 서버 양쪽에 설정이 필요하다.
 
 ```javascript
 // 프론트엔드
@@ -110,9 +99,9 @@ Access-Control-Allow-Origin: https://app.example.com  ← * 불가!
 Access-Control-Allow-Credentials: true
 ```
 
-**`credentials: true`일 때 `Allow-Origin: *`는 허용되지 않는다.** 반드시 특정 Origin을 지정해야 한다.
+`credentials: true`일 때 `Allow-Origin: *`는 허용되지 않는다. 특정 Origin을 지정해야 한다.
 
-## Spring에서 CORS 설정
+## Spring에서 설정하기
 
 ### 방법 1: @CrossOrigin (컨트롤러 단위)
 
@@ -173,34 +162,30 @@ public class SecurityConfig {
 }
 ```
 
-Spring Security를 사용하면 `WebMvcConfigurer`만으로는 부족하다. Security 필터가 먼저 실행되어 Preflight가 차단될 수 있으므로, `CorsConfigurationSource`를 Security에 등록해야 한다.
+Spring Security를 쓰면 `WebMvcConfigurer`만으로는 부족하다. Security 필터가 먼저 실행되어 Preflight를 막을 수 있으므로, `CorsConfigurationSource`를 Security에 등록한다.
 
 ## Postman에서는 되는데 브라우저에서 안 되는 이유
 
-CORS는 **브라우저가 강제하는 보안 정책**이다. Postman, curl 같은 도구는 CORS를 확인하지 않으므로 요청이 성공한다.
+CORS는 브라우저가 강제하는 정책이다. Postman, curl 같은 도구는 CORS를 검사하지 않으므로 요청이 성공한다.
 
 ```
 Postman → 서버: CORS 헤더 무관하게 요청 성공
 브라우저 → 서버: CORS 헤더 없으면 응답을 차단
 ```
 
-서버는 정상적으로 응답했지만, 브라우저가 `Access-Control-Allow-Origin` 헤더가 없으면 응답을 JavaScript에 전달하지 않는다.
+서버는 정상 응답했지만, `Access-Control-Allow-Origin` 헤더가 없으면 브라우저가 그 응답을 JavaScript에 넘기지 않는다.
 
-## 자주 나는 실수
+## 자주 깨지는 곳
 
-- `Access-Control-Allow-Origin: *`으로 설정하고 `credentials: true`를 사용해서 에러가 발생한다.
-- Spring Security 환경에서 `WebMvcConfigurer`만 설정하고 Security에 CORS를 등록하지 않는다.
-- OPTIONS 메서드를 차단해서 Preflight가 실패한다.
-- 개발 환경에서 프록시로 우회하다가 운영에서 CORS 문제를 발견한다.
-- `Access-Control-Max-Age`를 설정하지 않아서 매 요청마다 Preflight가 발생한다.
+- **`Allow-Origin: *`에 `credentials: true`를 같이 쓴다.** 브라우저가 에러를 낸다.
+- **Spring Security 환경에서 `WebMvcConfigurer`만 설정한다.** Security 필터가 Preflight를 먼저 막는다.
+- **OPTIONS 메서드를 차단한다.** Preflight가 실패해 모든 API가 막힌다.
+- **개발 환경에서 프록시로 우회한다.** 운영에 가서야 CORS 문제를 발견한다.
+- **`Access-Control-Max-Age`를 설정하지 않는다.** 매 요청마다 Preflight가 나간다.
 
-## 핵심 요약
+## 면접에서 말하기
 
-CORS는 브라우저가 다른 Origin의 요청을 제한하는 보안 정책으로, 서버가 응답 헤더로 허용 여부를 결정합니다.
-`application/json` 요청은 Preflight(OPTIONS)가 먼저 발생하며, 서버가 이를 허용해야 실제 요청이 전송됩니다.
-
-`credentials: true`일 때는 `Allow-Origin: *`를 사용할 수 없고 특정 Origin을 지정해야 합니다.
-Spring Security 환경에서는 `CorsConfigurationSource`를 Security에 등록해야 합니다.
+> CORS는 브라우저가 다른 Origin으로의 요청을 제한하는 정책이고, 허용 여부는 서버가 응답 헤더로 정합니다. `application/json` 요청은 OPTIONS로 Preflight가 먼저 나가기 때문에, 저는 서버가 OPTIONS를 막지 않는지부터 봅니다. 쿠키를 실어야 하면 `Allow-Origin: *` 대신 특정 Origin을 지정하고, Spring Security를 쓰면 `CorsConfigurationSource`를 Security에 등록합니다.
 
 ## 꼬리 질문
 

@@ -5,37 +5,20 @@ description: Java 스레드, ExecutorService, Future, CompletableFuture의 실�
 
 # Java 동시성 기초 (스레드, synchronized, volatile)
 
-## 한 줄 정의
+여러 작업을 동시에 돌리려면 `Thread`, `ExecutorService`, `Future`, `CompletableFuture` 같은 실행 모델을 알고 써야 한다. thread pool은 성능을 올리는 도구이기 전에 **동시에 도는 작업 수를 제한해 시스템을 지키는 장치**다.
 
-Java 동시성 기본은 여러 작업을 동시에 실행하기 위해 `Thread`, `ExecutorService`, `Future`, `CompletableFuture` 같은 실행 모델을 이해하고 안전하게 사용하는 것이다.
+백엔드 서버는 요청 처리, 외부 API 호출, 배치, 메시지 소비를 동시에 한다. 여기서 흔한 사고는 요청마다 `Thread`를 만들어 OS 스레드와 메모리를 낭비하는 것, pool 크기를 근거 없이 키워 DB connection pool이나 외부 API를 더 빨리 고갈시키는 것, `Future.get()`을 그냥 불러 비동기를 동기 대기로 바꾸는 것, `CompletableFuture`에 executor를 주지 않아 공용 pool에 부하를 주는 것, timeout·cancel·예외 처리 없이 비동기 작업을 방치하는 것이다.
 
-## 실무에서 왜 중요한가
+## Thread를 직접 만들지 않는 이유
 
-백엔드 서버는 요청 처리, 외부 API 호출, 배치, 메시지 소비처럼 여러 작업을 동시에 처리한다. 동시성 기본을 모르면 다음 문제가 생긴다.
-
-- 요청마다 직접 `Thread`를 만들어 OS 스레드와 메모리를 과도하게 사용한다.
-- thread pool 크기를 근거 없이 키워 DB connection pool이나 외부 API를 더 빨리 고갈시킨다.
-- `Future.get()`을 무작정 호출해서 비동기 처리를 동기 대기로 만들어버린다.
-- `CompletableFuture`에서 executor를 지정하지 않아 공용 pool에 부하를 준다.
-- timeout, cancel, exception handling 없이 비동기 작업을 방치한다.
-
-## Thread와 Runnable
-
-직접 `Thread`를 만들면 작업 실행은 단순하지만 운영 제어가 어렵다.
+직접 `Thread`를 만들면 실행은 간단하지만 운영에서 제어할 손잡이가 없다.
 
 ```java
 Thread thread = new Thread(() -> sendEmail(orderId));
 thread.start();
 ```
 
-실무 서버에서는 보통 직접 Thread를 만들기보다 thread pool을 사용한다.
-
-이유는 다음과 같다.
-
-- 스레드 생성 비용을 줄인다.
-- 동시에 실행되는 작업 수를 제한한다.
-- queue, reject policy, shutdown을 관리할 수 있다.
-- 메트릭으로 active thread, queue size를 관찰할 수 있다.
+서버에서는 thread pool을 쓴다. 스레드 생성 비용이 줄고, 동시에 도는 작업 수가 제한되고, queue·reject policy·shutdown을 관리할 수 있고, active thread와 queue size를 메트릭으로 볼 수 있다.
 
 ## ExecutorService
 
@@ -49,7 +32,7 @@ Future<OrderResult> future = executor.submit(() -> processOrder(orderId));
 OrderResult result = future.get(500, TimeUnit.MILLISECONDS);
 ```
 
-실무에서는 `Executors.newFixedThreadPool()`을 바로 쓰기보다 queue 크기와 reject policy를 명시할 수 있는 `ThreadPoolExecutor`를 검토한다.
+실무에서는 `Executors.newFixedThreadPool()`보다 queue 크기와 reject policy를 직접 정할 수 있는 `ThreadPoolExecutor`를 먼저 본다.
 
 ```java
 ExecutorService executor = new ThreadPoolExecutor(
@@ -62,7 +45,7 @@ ExecutorService executor = new ThreadPoolExecutor(
 );
 ```
 
-무제한 queue나 과도한 pool 크기는 장애를 늦게 드러내거나 다른 자원을 고갈시킬 수 있다.
+queue가 무제한이면 장애가 늦게 드러나고, pool이 과하게 크면 다른 자원이 먼저 고갈된다.
 
 ## Future와 CompletableFuture
 
@@ -73,7 +56,7 @@ Future<PaymentResult> future = executor.submit(() -> paymentClient.pay(request))
 PaymentResult result = future.get(1, TimeUnit.SECONDS);
 ```
 
-`CompletableFuture`는 작업 조합과 예외 처리가 더 유연하다.
+`CompletableFuture`는 작업을 엮고 예외를 처리하기가 더 쉽다.
 
 ```java
 CompletableFuture<PaymentResult> paymentFuture =
@@ -82,45 +65,38 @@ CompletableFuture<PaymentResult> paymentFuture =
         .exceptionally(ex -> PaymentResult.failed());
 ```
 
-다만 `supplyAsync()`에 executor를 지정하지 않으면 기본적으로 common pool을 사용한다. 서버 애플리케이션에서는 작업 성격에 맞는 executor를 명시하는 것이 안전하다.
+`supplyAsync()`에 executor를 주지 않으면 common pool에서 돈다. 서버 애플리케이션에서는 작업 성격에 맞는 executor를 명시한다.
 
-## 실무 판단 기준
+## 작업별로 어떻게 돌리나
 
 | 상황 | 권장 |
 |---|---|
 | 짧은 CPU 작업 | 현재 스레드 또는 작은 pool |
 | 외부 API 병렬 호출 | 별도 I/O executor + timeout |
 | 배치 병렬 처리 | 제한된 pool + chunk 단위 |
-| 요청 흐름의 부가 작업 | 비동기 처리하되 실패 보상 기준 명확화 |
+| 요청 흐름의 부가 작업 | 비동기로 돌리되 실패 보상 기준을 정해 둔다 |
 | 공유 상태 수정 | 동기화, lock, atomic, 불변 구조 검토 |
 
-## 자주 나는 실수
+pool 크기는 CPU, I/O 대기, DB connection pool, 외부 API 제한을 같이 보고 정한다.
 
-- 요청마다 직접 Thread를 생성한다.
-- pool 크기만 키우면 성능이 좋아진다고 생각한다.
-- DB connection pool보다 훨씬 큰 작업 pool을 만들어 대기만 늘린다.
-- timeout 없이 `Future.get()`을 호출한다.
-- `CompletableFuture` 예외를 처리하지 않아 실패가 조용히 누락된다.
-- executor shutdown을 하지 않아 테스트나 배치가 종료되지 않는다.
+## 자주 깨지는 곳
 
-## 확인 방법
+- **요청마다 Thread를 만든다.** 스레드 수에 상한이 없어 부하가 몰리면 메모리부터 무너진다.
+- **pool 크기만 키우면 빨라진다고 믿는다.** DB connection pool보다 훨씬 큰 작업 pool은 대기만 늘린다.
+- **timeout 없이 `Future.get()`을 부른다.** 작업이 안 끝나면 무기한 기다린다.
+- **`CompletableFuture` 예외를 처리하지 않는다.** 실패가 조용히 사라진다.
+- **executor를 shutdown하지 않는다.** 테스트나 배치가 끝나지 않는다.
 
-- 로그: thread name, elapsed time, timeout 여부를 확인한다.
-- 메트릭: active thread, queue size, rejected task, task duration을 본다.
-- 테스트: timeout, exception, cancel 상황에서 결과가 의도대로 처리되는지 확인한다.
-- 스레드 덤프: 작업이 blocked, waiting 상태로 쌓이는지 확인한다.
+## 운영에서 볼 것
 
-## 핵심 요약
+- 로그에 thread name, 걸린 시간, timeout 여부를 남긴다.
+- 메트릭으로 active thread, queue size, rejected task, task duration을 본다.
+- timeout, 예외, cancel 상황에서 결과가 의도대로 처리되는지 테스트한다.
+- 스레드 덤프에서 작업이 blocked, waiting 상태로 쌓이는지 본다.
 
-Java에서 동시 작업은 직접 `Thread`를 만들기보다 `ExecutorService`로 실행 수와 queue를 제어하는 것이 실무에 적합합니다.
+## 면접에서 말하기
 
-Thread pool은 성능을 무조건 높이는 도구가 아니라 동시 실행 수를 제한해 시스템을 보호하는 장치입니다.
-
-pool 크기는 CPU, I/O 대기, DB connection pool, 외부 API 제한을 함께 고려해야 합니다.
-
-`Future.get()`은 timeout 없이 호출하면 무기한 대기가 될 수 있고, `CompletableFuture`는 executor와 예외 처리를 명시해야 안전합니다.
-
-동시성 문제는 실행 모델뿐 아니라 공유 상태와 Java Memory Model까지 함께 이해해야 합니다.
+> 동시 작업은 Thread를 직접 만들지 않고 ExecutorService로 실행 수와 queue를 제어합니다. thread pool은 빠르게 하려는 도구라기보다 동시 실행 수를 제한해 시스템을 보호하는 장치라서, 크기는 CPU, I/O 대기, DB connection pool, 외부 API 제한을 같이 보고 정합니다. Future.get()은 timeout을 꼭 주고, CompletableFuture는 executor와 예외 처리를 명시합니다. 공유 상태 문제는 실행 모델과 별개라서 Java Memory Model까지 같이 봅니다.
 
 ## 꼬리 질문
 

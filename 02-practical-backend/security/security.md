@@ -6,20 +6,8 @@ comments: false
 
 # Security
 
-## 운영 방식
-
-- 이 문서는 Security 학습 인덱스로만 사용한다.
-- 상세 내용은 `02-practical-backend/security/` 아래 개념별 문서로 나눈다.
-- 학습한 내용은 하나의 작은 문서에 정리한다.
-- 아직 학습하지 않은 내용을 미리 길게 채우지 않는다.
-- 각 문서는 인증, 인가, 입력 검증, 민감 정보 보호, 설명 가능한 요약을 중심으로 작성한다.
-
-## 학습 산출물
-
-- 다룰 개념 또는 문제 상황 하나를 고른다.
-- 실제 개발자가 마주치는 증상, 원인, 확인 방법을 먼저 쓴다.
-- 해결책은 장점과 한계를 같이 적는다.
-- 마지막에 핵심 요약과 꼬리 질문을 남긴다.
+> 학습 인덱스다. 상세 내용은 `02-practical-backend/security/` 아래 개념 문서에 둔다.
+> 개념 문서는 인증, 인가, 입력 검증, 민감 정보 보호를 다룬다. 순서는 증상·원인·확인 방법 → 해결책의 장점과 한계 → 꼬리 질문이다. 아직 공부하지 않은 내용은 미리 채우지 않는다.
 
 ## 학습 순서
 
@@ -32,29 +20,24 @@ comments: false
 7. [[sensitive-data-logging|민감 정보 로깅 방지]]
 8. [[authorization-check-location|권한 검증 위치]]
 
-## 핵심 질문
+## 붙잡고 있을 질문
 
-- Security 영역에서 실무적으로 중요한 문제는 무엇인가?
-- 문제를 발견하면 어떤 순서로 원인을 좁히는가?
-- 어떤 해결책이 있고 각각의 한계는 무엇인가?
-- 프로젝트 경험과 어떻게 연결할 수 있는가?
-- 질문을 받으면 어떻게 설명할 수 있는가?
+- 인증과 인가는 무엇이 다르고, 각각 실패하면 401과 403 중 무엇을 돌려주나?
+- 세션과 JWT는 로그아웃, 탈취 대응, 수평 확장에서 어떻게 다른가?
+- 비밀번호는 왜 암호화가 아니라 느린 단방향 해시(bcrypt, Argon2 등)로 저장하나?
+- CORS를 설정하면 CSRF도 막히나?
+- 권한 검증을 Controller, Service, 쿼리 조건 중 어디에 두어야 누락이 줄어드나?
+- 로그와 에러 응답으로 민감 정보가 새는 경로는 어디인가?
 
 ## 실무 관점
 
-- Security는 기능 추가가 아니라 기본 설계와 운영 습관에 가깝다.
-- 인증과 인가를 구분하고, 권한 검증이 누락되는 지점을 줄여야 한다.
-- 민감 정보는 저장, 로그, 응답, 외부 전송 경로에서 모두 관리해야 한다.
+- 보안은 나중에 붙이는 기능이 아니라 기본 설계와 운영 습관이다.
+- 인증과 인가를 나눠서 본다. 실무 사고는 "로그인은 했지만 남의 데이터에 접근"하는 인가 누락에서 자주 난다.
+- 민감 정보는 저장, 로그, 응답, 외부 전송 경로를 하나씩 따라가며 확인한다.
 
 ## 관련 문서
 
-- [[authentication-and-authorization]]
-- [[session-and-token]]
-- [[password-storage]]
-- [[cors]]
-- [[csrf]]
-- [[sql-injection]]
-- [[sensitive-data-logging]]
-- [[authorization-check-location]]
+- [[01-core/network/cors|cors]]
+- [[02-practical-backend/observability/logging|logging]]
 - [[03-case-studies/case-studies|case-studies]]
 - [[04-interview/interview-questions|technical-questions]]

@@ -6,20 +6,8 @@ comments: false
 
 # CI/CD
 
-## 운영 방식
-
-- 이 문서는 CI/CD 학습 인덱스로만 사용한다.
-- 상세 내용은 `02-practical-backend/ci-cd/` 아래 개념별 문서로 나눈다.
-- 학습한 내용은 하나의 작은 문서에 정리한다.
-- 아직 학습하지 않은 내용을 미리 길게 채우지 않는다.
-- 각 문서는 빌드, 테스트, 배포, 롤백, 운영 안정성, 기술 답변을 중심으로 작성한다.
-
-## 학습 산출물
-
-- 다룰 개념 또는 문제 상황 하나를 고른다.
-- 실제 개발자가 마주치는 증상, 원인, 확인 방법을 먼저 쓴다.
-- 해결책은 장점과 한계를 같이 적는다.
-- 마지막에 핵심 요약과 꼬리 질문을 남긴다.
+> 학습 인덱스다. 상세 내용은 `02-practical-backend/ci-cd/` 아래 개념 문서에 둔다.
+> 개념 문서는 빌드, 테스트, 배포, 롤백을 다루고, 증상·원인·확인 방법 → 해결책의 장점과 한계 → 꼬리 질문 순으로 쓴다. 아직 학습하지 않은 내용은 미리 채우지 않는다.
 
 ## 학습 순서
 
@@ -28,31 +16,26 @@ comments: false
 3. Test Automation
 4. [[deployment-strategy|Deployment Strategy]]
 5. [[rollback-strategy|Rollback]]
-6. [[config-and-secret-management|Environment Variable]]
-7. [[config-and-secret-management|Secret 관리]]
-8. [[gitops|GitOps]]
+6. [[config-and-secret-management|환경 변수와 Secret 관리]]
+7. [[gitops|GitOps]]
 
 ## 핵심 질문
 
-- CI/CD 영역에서 실무적으로 중요한 문제는 무엇인가?
-- 문제를 발견하면 어떤 순서로 원인을 좁히는가?
-- 어떤 해결책이 있고 각각의 한계는 무엇인가?
-- 프로젝트 경험과 어떻게 연결할 수 있는가?
-- 질문을 받으면 어떻게 설명할 수 있는가?
+- CI와 CD는 각각 무엇을 자동화하고, 어디까지 사람이 승인해야 하는가?
+- 같은 커밋을 다시 빌드했을 때 다른 결과물이 나오면 무엇이 문제인가?
+- rolling, blue-green, canary 배포는 롤백 속도와 비용에서 어떻게 다른가?
+- DB 스키마 변경이 포함된 배포는 왜 애플리케이션 롤백만으로 되돌릴 수 없는가?
+- 환경 변수와 secret은 어디에 두고, 누가 바꿀 수 있어야 하는가?
 
-## 실무 관점
+## 기준
 
-- CI/CD는 빠른 배포보다 반복 가능하고 되돌릴 수 있는 배포가 중요하다.
-- 배포 자동화는 테스트, 설정, 권한, 롤백 전략과 함께 설계해야 한다.
-- 질문을 받으면 파이프라인 단계와 실패 시 대응 방식을 설명한다.
+- 빨리 배포하는 것보다 같은 결과를 반복할 수 있고 되돌릴 수 있는 배포가 먼저다.
+- 배포 자동화는 테스트, 설정, 권한, 롤백 전략까지 같이 설계해야 끝난다.
+- 면접에서는 파이프라인 단계와 각 단계가 실패했을 때의 대응을 말한다.
 
 ## 관련 문서
 
-- [[ci-vs-cd]]
-- [[build-pipeline]]
-- [[deployment-strategy]]
-- [[rollback-strategy]]
-- [[config-and-secret-management]]
-- [[gitops]]
+- [[02-practical-backend/kubernetes/rolling-update-and-rollback|rolling-update-and-rollback]]
+- [[02-practical-backend/kubernetes/configmap-and-secret|configmap-and-secret]]
 - [[03-case-studies/case-studies|case-studies]]
 - [[04-interview/interview-questions|technical-questions]]

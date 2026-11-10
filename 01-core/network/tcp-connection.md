@@ -5,20 +5,11 @@ description: TCP 3-way/4-way handshake와 커넥션 풀, keep-alive
 
 # TCP 연결과 3-way 핸드셰이크
 
-## 한 줄 정의
+TCP(Transmission Control Protocol)는 데이터가 빠짐없이 순서대로 도착하도록 보장하는 연결 지향 프로토콜이다. 3-way handshake로 연결을 맺고 4-way handshake로 끊는다.
 
-TCP(Transmission Control Protocol)는 신뢰성 있는 데이터 전송을 보장하는 연결 지향 프로토콜로, 3-way handshake로 연결을 수립하고 4-way handshake로 종료한다.
+연결을 맺고 끊는 데는 비용이 든다. 매 요청마다 새로 연결하면 응답이 느려지고, 끊은 연결이 TIME_WAIT으로 쌓이면 포트가 고갈된다. 그래서 Keep-Alive와 커넥션 풀로 연결을 재사용한다. 외부 API에 연결 자체가 안 될 때 원인을 찾으려면 handshake가 어디서 멈췄는지 알아야 한다.
 
-## 실무에서 왜 중요한가
-
-TCP 연결을 이해하지 못하면 다음 문제가 생긴다.
-
-- 매 요청마다 TCP 연결을 새로 맺어서 응답 시간이 느리다.
-- 커넥션 풀을 설정했는데 TIME_WAIT이 쌓여서 포트가 고갈된다.
-- Keep-Alive를 모르고 커넥션을 계속 새로 생성한다.
-- 외부 API 호출 시 연결 자체가 안 되는데 원인을 못 찾는다.
-
-## TCP 3-way Handshake (연결 수립)
+## 3-way Handshake: 연결 맺기
 
 ```
 Client                     Server
@@ -32,13 +23,13 @@ Client                     Server
   │     연결 수립 완료          │
 ```
 
-1. **SYN**: 클라이언트가 서버에 연결 요청
-2. **SYN+ACK**: 서버가 요청을 수락하고 확인 응답
-3. **ACK**: 클라이언트가 확인 응답을 보내고 연결 완료
+1. **SYN**: 클라이언트가 서버에 연결을 요청한다.
+2. **SYN+ACK**: 서버가 요청을 수락하고 확인 응답을 보낸다.
+3. **ACK**: 클라이언트가 확인 응답을 보내면 연결이 완료된다.
 
-이 과정에 1.5 RTT(Round Trip Time)가 소요된다. 서버가 물리적으로 멀면 수십~수백ms가 걸린다.
+여기에 1.5 RTT(Round Trip Time)가 든다. 서버가 물리적으로 멀면 수십~수백ms다.
 
-## TCP 4-way Handshake (연결 종료)
+## 4-way Handshake: 연결 끊기
 
 ```
 Client                     Server
@@ -56,7 +47,7 @@ Client                     Server
 
 ### TIME_WAIT
 
-연결을 먼저 종료한 쪽에 TIME_WAIT 상태가 발생한다. 보통 60초(2 × MSL) 동안 유지된다.
+연결을 먼저 끊은 쪽이 TIME_WAIT 상태에 들어간다. RFC는 2 × MSL(최대 4분)을 정의하지만, Linux는 60초로 고정되어 있다.
 
 ```bash
 # TIME_WAIT 상태 확인
@@ -64,17 +55,19 @@ netstat -an | grep TIME_WAIT | wc -l
 ss -s  # 요약 통계
 ```
 
-TIME_WAIT이 많으면 사용 가능한 로컬 포트가 부족해질 수 있다.
+TIME_WAIT이 많이 쌓이면 쓸 수 있는 로컬 포트가 모자란다.
 
 ```bash
 # 커널 파라미터로 완화
-net.ipv4.tcp_tw_reuse = 1          # TIME_WAIT 소켓 재사용
+net.ipv4.tcp_tw_reuse = 1          # TIME_WAIT 소켓 재사용 (나가는 연결에만 적용)
 net.ipv4.ip_local_port_range = 1024 65535  # 사용 가능 포트 범위 확장
 ```
 
+`tcp_tw_reuse`는 클라이언트 쪽(나가는 연결)에만 효과가 있고 TCP timestamp가 켜져 있어야 한다. 근본 해결은 커널 파라미터가 아니라 Keep-Alive와 커넥션 풀로 연결을 덜 끊는 것이다.
+
 ## Keep-Alive
 
-HTTP/1.1의 Keep-Alive는 TCP 연결을 재사용해서 매 요청마다 handshake를 반복하지 않게 한다.
+HTTP/1.1의 Keep-Alive는 TCP 연결을 재사용해 요청마다 handshake를 반복하지 않게 한다. HTTP/1.1에서는 기본으로 켜져 있다.
 
 ```
 Keep-Alive 없이:
@@ -88,11 +81,9 @@ Keep-Alive 사용:
                               FIN                     (일정 시간 후 종료)
 ```
 
-HTTP/1.1에서는 기본적으로 Keep-Alive가 활성화되어 있다.
+## 커넥션 풀
 
-## 커넥션 풀 (Connection Pool)
-
-매번 TCP 연결을 새로 맺으면 handshake 비용이 발생한다. 커넥션 풀은 미리 연결을 만들어두고 재사용한다.
+커넥션 풀은 연결을 미리 만들어 두고 돌려 쓴다. 매번 handshake 비용을 내지 않는다.
 
 ### DB 커넥션 풀 (HikariCP)
 
@@ -126,11 +117,11 @@ CloseableHttpClient httpClient = HttpClients.custom()
 factory.setHttpClient(httpClient);
 ```
 
-### 커넥션 풀 사이즈 결정 기준
+### 풀 크기 정하기
 
-- **너무 작으면**: 대기(waiting)가 발생하고 응답 시간이 느려진다
-- **너무 크면**: 서버 리소스(메모리, 파일 디스크립터)를 낭비하고, DB는 커넥션 수 제한에 걸린다
-- **기준**: 동시 요청 수, 요청당 점유 시간, 대상 서버의 최대 커넥션 수를 고려
+- **너무 작으면** 커넥션을 기다리느라 응답이 느려진다.
+- **너무 크면** 서버 리소스(메모리, 파일 디스크립터)를 낭비하고, DB는 최대 커넥션 수 제한에 걸린다.
+- 동시 요청 수, 요청당 커넥션을 쥐는 시간, 대상 서버의 최대 커넥션 수를 보고 정한다.
 
 ## TCP vs UDP
 
@@ -141,23 +132,19 @@ factory.setHttpClient(httpClient);
 | 속도 | 상대적으로 느림 | 빠름 |
 | 용도 | HTTP, DB 통신 | DNS 조회, 실시간 스트리밍, QUIC |
 
-백엔드 API 통신은 대부분 TCP 기반이다. HTTP/3는 UDP 기반의 QUIC를 사용하지만, 프로토콜 내부에서 신뢰성을 보장한다.
+백엔드 API 통신은 대부분 TCP 위에서 돈다. HTTP/3는 UDP 기반의 QUIC를 쓰지만, 신뢰성은 프로토콜 안에서 보장한다.
 
-## 자주 나는 실수
+## 자주 깨지는 곳
 
-- 커넥션 풀 없이 매번 새 연결을 맺어서 handshake 오버헤드가 반복된다.
-- TIME_WAIT을 모르고 대량 요청 후 포트 고갈 문제를 겪는다.
-- 커넥션 풀의 max-lifetime을 설정하지 않아서 서버 측에서 끊긴 커넥션을 사용한다.
-- Keep-Alive timeout과 서버 측 idle timeout이 맞지 않아서 연결 에러가 발생한다.
-- DB 커넥션 풀 사이즈를 근거 없이 크게 설정해서 DB 부하가 증가한다.
+- **커넥션 풀 없이 매번 새로 연결한다.** handshake 비용을 요청마다 낸다.
+- **TIME_WAIT을 모른다.** 대량 요청 뒤 포트 고갈로 연결이 안 된다.
+- **풀의 max-lifetime을 안 잡는다.** 서버 쪽에서 이미 끊은 커넥션을 꺼내 쓰다 에러가 난다.
+- **Keep-Alive timeout과 서버 idle timeout이 어긋난다.** 상대가 먼저 닫은 연결로 요청을 보내 연결 에러가 난다.
+- **DB 커넥션 풀을 근거 없이 크게 잡는다.** DB 부하만 늘어난다.
 
-## 핵심 요약
+## 면접에서 말하기
 
-TCP는 3-way handshake로 연결을 수립하고, 4-way handshake로 종료합니다.
-연결을 먼저 종료한 쪽에 TIME_WAIT이 발생하며, 대량 요청 시 포트 고갈의 원인이 됩니다.
-
-Keep-Alive로 연결을 재사용하고, 커넥션 풀로 미리 연결을 만들어두면 handshake 비용을 줄일 수 있습니다.
-풀 사이즈는 동시 요청 수, 요청 점유 시간, 대상 서버 제한을 고려해서 설정해야 합니다.
+> TCP는 3-way handshake로 연결을 맺고 4-way handshake로 끊습니다. 먼저 끊은 쪽에는 TIME_WAIT이 남아서, 짧은 연결을 대량으로 만들면 포트가 고갈됩니다. 그래서 저는 Keep-Alive와 커넥션 풀로 연결을 재사용하고, 풀 크기는 동시 요청 수와 요청당 점유 시간, 대상 서버의 커넥션 제한을 보고 정합니다. max-lifetime은 서버 쪽 timeout보다 짧게 잡습니다.
 
 ## 꼬리 질문
 

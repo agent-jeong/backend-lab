@@ -5,20 +5,11 @@ description: Connection/Read/Write timeout의 차이와 실무 설정 기준
 
 # 타임아웃 설계와 실무 기준
 
-## 한 줄 정의
+Timeout은 네트워크 요청의 각 단계에서 응답을 기다리는 최대 시간이다. 설정하지 않으면 무한정 기다리고, 그 대기가 장애를 옮긴다.
 
-Timeout은 네트워크 요청의 각 단계에서 응답을 기다리는 최대 시간으로, 설정하지 않으면 무한 대기로 장애가 전파된다.
+외부 API 하나가 느려지면 그 API를 기다리는 스레드가 쌓이고, 커넥션 풀이 바닥나고, 결국 상관없는 기능까지 멈춘다. 그래서 timeout은 "얼마나 기다릴까"보다 **"느린 상대 하나 때문에 우리 서버 전체가 멈추지 않게"**를 기준으로 정한다. Connection timeout과 Read timeout은 걸리는 원인이 달라서 따로 잡는다.
 
-## 실무에서 왜 중요한가
-
-Timeout을 제대로 설정하지 않으면 다음 문제가 생긴다.
-
-- 외부 API가 느려질 때 우리 서버의 스레드가 전부 대기 상태에 빠진다.
-- 타임아웃 없이 무한 대기하다가 커넥션 풀이 고갈된다.
-- Connection timeout과 Read timeout을 구분하지 못해서 적절한 값을 설정하지 못한다.
-- 하나의 느린 외부 서비스가 전체 시스템을 마비시킨다 (장애 전파).
-
-## Timeout 종류
+## 종류
 
 ```
 Client                              Server
@@ -41,7 +32,7 @@ Client                              Server
 
 ### Connection Timeout
 
-TCP 3-way handshake가 완료되기까지의 시간이다. 서버가 다운되었거나 방화벽에 의해 차단된 경우 이 timeout에 걸린다.
+TCP 3-way handshake가 끝나기까지의 시간이다. 서버가 죽었거나 방화벽이 막고 있으면 여기서 걸린다.
 
 ```java
 // RestTemplate
@@ -52,11 +43,11 @@ HttpClient httpClient = HttpClient.create()
     .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000);
 ```
 
-서버가 응답하지 않는 상황에서 OS 기본 TCP timeout(보통 75초~2분)까지 대기하게 되므로, 반드시 짧게 설정해야 한다.
+설정하지 않으면 서버가 응답하지 않을 때 OS 기본 TCP timeout(보통 75초~2분)까지 기다린다. 그래서 짧게 잡는다.
 
 ### Read Timeout (Response Timeout)
 
-TCP 연결이 수립된 후, 서버의 응답을 기다리는 시간이다. 서버의 처리 시간이 긴 경우 이 timeout에 걸린다.
+TCP 연결이 맺어진 뒤 서버 응답을 기다리는 시간이다. 서버 처리가 오래 걸리면 여기서 걸린다.
 
 ```java
 // RestTemplate
@@ -71,9 +62,9 @@ WebClient webClient = WebClient.builder()
     .build();
 ```
 
-Read timeout은 API의 예상 응답 시간에 맞게 설정한다. 결제 API처럼 처리 시간이 긴 경우 넉넉하게, 단순 조회 API는 짧게 설정한다.
+Read timeout은 API의 예상 응답 시간에 맞춘다. 결제 API처럼 처리가 긴 곳은 넉넉하게, 단순 조회 API는 짧게 잡는다.
 
-## 실무 설정 예시
+## API별로 따로 잡는다
 
 ```yaml
 # application.yml - 외부 API별 timeout 설정
@@ -107,7 +98,7 @@ public class ExternalApiConfig {
 }
 ```
 
-## Timeout과 장애 전파
+## Timeout이 없으면 장애가 번진다
 
 ```
 사용자 → 우리 서버 (스레드 200개) → 외부 결제 API (응답 지연)
@@ -119,11 +110,11 @@ public class ExternalApiConfig {
 5. → 전체 서비스 장애
 ```
 
-**대응 방법:**
+대응은 세 가지를 같이 쓴다.
 
-1. **적절한 Read Timeout**: 예상 응답 시간의 2~3배 이내
-2. **Circuit Breaker**: 연속 실패 시 빠르게 실패 처리 (Resilience4j 등)
-3. **Bulkhead**: 외부 API별 스레드 풀을 분리해서 한 API의 장애가 다른 기능에 영향을 주지 않게 함
+1. **Read Timeout**: 예상 응답 시간의 2~3배 이내로 잡는다.
+2. **Circuit Breaker**: 연속으로 실패하면 바로 실패를 돌려준다(Resilience4j 등).
+3. **Bulkhead**: 외부 API별로 스레드 풀을 나눠, 한 API의 장애가 다른 기능으로 넘어가지 않게 한다.
 
 ```java
 // Resilience4j Circuit Breaker 예시
@@ -140,7 +131,7 @@ private PaymentResult paymentFallback(PaymentRequest request, Exception e) {
 
 ## 서버 측 Timeout
 
-클라이언트 timeout만 설정하면 안 되고, 서버 측 timeout도 함께 고려해야 한다.
+클라이언트 timeout만으로는 부족하고, 서버 측 timeout도 같이 맞춘다.
 
 | 설정 | 의미 | 기본값 (Tomcat) |
 |---|---|---|
@@ -148,23 +139,19 @@ private PaymentResult paymentFallback(PaymentRequest request, Exception e) {
 | `spring.mvc.async.request-timeout` | 비동기 요청 처리 시간 | 30초 |
 | HikariCP `connectionTimeout` | DB 커넥션 획득 대기 시간 | 30초 |
 
-서버의 요청 처리 시간이 클라이언트의 Read timeout보다 길면, 클라이언트는 timeout으로 끊었지만 서버는 계속 처리하는 상황이 발생한다.
+서버의 요청 처리 시간이 클라이언트의 Read timeout보다 길면, 클라이언트는 이미 끊었는데 서버는 계속 처리한다.
 
-## 자주 나는 실수
+## 자주 깨지는 곳
 
-- timeout을 설정하지 않아서 외부 API 장애가 전체 서비스로 전파된다.
-- Connection timeout과 Read timeout을 구분하지 않고 같은 값을 설정한다.
-- Read timeout을 너무 짧게 설정해서 정상 요청도 실패한다.
-- 서버 측 timeout을 고려하지 않아서 클라이언트는 끊었는데 서버는 계속 처리한다.
-- 모든 외부 API에 같은 timeout을 설정해서 특성에 맞지 않는다.
+- **timeout을 설정하지 않는다.** 외부 API 장애가 전체 서비스로 번진다.
+- **Connection timeout과 Read timeout에 같은 값을 넣는다.** 연결 실패는 늦게 알아채고, 느린 처리는 너무 일찍 끊는다.
+- **Read timeout을 너무 짧게 잡는다.** 정상 요청까지 실패한다.
+- **서버 측 timeout을 안 맞춘다.** 클라이언트는 끊었는데 서버는 계속 처리한다.
+- **모든 외부 API에 같은 timeout을 쓴다.** 결제와 검색은 응답 시간이 다르다.
 
-## 핵심 요약
+## 면접에서 말하기
 
-Timeout은 Connection(연결), Read(응답 대기), Write(전송)로 구분됩니다.
-설정하지 않으면 외부 API 장애가 전체 서비스로 전파될 수 있습니다.
-
-Connection timeout은 1~3초, Read timeout은 API 특성에 맞게 설정합니다.
-Circuit Breaker와 Bulkhead를 함께 사용하면 장애 전파를 더 효과적으로 차단할 수 있습니다.
+> Timeout은 연결을 맺기까지의 Connection timeout, 응답을 기다리는 Read timeout, 요청을 보내는 Write timeout으로 나뉩니다. 설정하지 않으면 외부 API 하나가 느려질 때 스레드가 모두 묶여 전체 서비스가 멈춥니다. 저는 Connection timeout은 1~3초로 짧게, Read timeout은 API마다 예상 응답 시간을 보고 따로 잡습니다. 여기에 Circuit Breaker와 Bulkhead를 붙여 장애가 번지지 않게 합니다.
 
 ## 꼬리 질문
 

@@ -6,20 +6,8 @@ comments: false
 
 # Batch Processing
 
-## 운영 방식
-
-- 이 문서는 Batch 학습 인덱스로만 사용한다.
-- 상세 내용은 `02-practical-backend/batch/` 아래 개념별 문서로 나눈다.
-- 학습한 내용은 하나의 작은 문서에 정리한다.
-- 아직 학습하지 않은 내용을 미리 길게 채우지 않는다.
-- 각 문서는 재처리, 실패 복구, 대용량 처리, 모니터링, 기술 답변을 중심으로 작성한다.
-
-## 학습 산출물
-
-- 다룰 개념 또는 문제 상황 하나를 고른다.
-- 실제 개발자가 마주치는 증상, 원인, 확인 방법을 먼저 쓴다.
-- 해결책은 장점과 한계를 같이 적는다.
-- 마지막에 핵심 요약과 꼬리 질문을 남긴다.
+> 학습 인덱스다. 상세 내용은 `02-practical-backend/batch/` 아래 개념 문서에 둔다.
+> 개념 문서는 재처리, 실패 복구, 대용량 처리, 모니터링을 다룬다. 순서는 증상·원인·확인 방법 → 해결책의 장점과 한계 → 꼬리 질문이다. 아직 공부하지 않은 내용은 미리 채우지 않는다.
 
 ## 학습 순서
 
@@ -32,27 +20,23 @@ comments: false
 7. [[duplicate-execution-prevention|중복 실행 방지]]
 8. [[batch-monitoring|모니터링과 알림]]
 
-## 핵심 질문
+## 붙잡고 있을 질문
 
-- Batch Processing 영역에서 실무적으로 중요한 문제는 무엇인가?
-- 문제를 발견하면 어떤 순서로 원인을 좁히는가?
-- 어떤 해결책이 있고 각각의 한계는 무엇인가?
-- 프로젝트 경험과 어떻게 연결할 수 있는가?
-- 질문을 받으면 어떻게 설명할 수 있는가?
+- 배치가 중간에 실패하면 처음부터 다시 돌리나, 실패 지점부터 이어서 돌리나?
+- 같은 배치를 두 번 실행해도 결과가 같으려면 무엇이 필요한가?
+- chunk 크기는 무엇을 기준으로 정하나? 너무 크거나 작으면 어떤 문제가 생기나?
+- 대량 조회에서 offset 페이징이 느려지는 이유와 대안은?
+- 여러 인스턴스에서 같은 배치가 동시에 뜨는 것을 어떻게 막나?
+- 배치가 "조용히" 실패하거나 평소보다 적게 처리한 것을 어떻게 알아채나?
 
 ## 실무 관점
 
-- Batch는 정해진 시간에 대량 작업을 안정적으로 처리하는 설계다.
-- 실패했을 때 어디서부터 다시 시작할 수 있는지가 핵심이다.
-- 질문을 받으면 처리량보다 재처리 가능성과 데이터 정합성을 중심으로 설명한다.
+- 배치는 정해진 시간에 대량 작업을 끝내는 일이다. 빨리 끝내는 것보다 실패 뒤 어디서부터 다시 시작할 수 있는지가 먼저다.
+- 설명할 때도 처리량보다 재처리 가능성과 데이터 정합성을 앞에 둔다.
 
 ## 관련 문서
 
-- [[chunk-processing]]
-- [[retryable-batch-design]]
-- [[batch-failure-state]]
-- [[large-data-query]]
-- [[duplicate-execution-prevention]]
-- [[batch-monitoring]]
+- [[02-practical-backend/kubernetes/cronjob|cronjob]]
+- [[02-practical-backend/idempotency/idempotency|idempotency]]
 - [[03-case-studies/case-studies|case-studies]]
 - [[04-interview/interview-questions|technical-questions]]

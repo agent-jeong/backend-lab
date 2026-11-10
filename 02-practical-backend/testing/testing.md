@@ -6,52 +6,36 @@ comments: false
 
 # Testing
 
-## 운영 방식
-
-- 이 문서는 Testing 학습 인덱스로만 사용한다.
-- 상세 내용은 `02-practical-backend/testing/` 아래 개념별 문서로 나눈다.
-- 학습한 내용은 하나의 작은 문서에 정리한다.
-- 아직 학습하지 않은 내용을 미리 길게 채우지 않는다.
-- 각 문서는 테스트 목적, 범위, 격리, 유지보수 비용, 기술 답변을 중심으로 작성한다.
-
-## 학습 산출물
-
-- 다룰 개념 또는 문제 상황 하나를 고른다.
-- 실제 개발자가 마주치는 증상, 원인, 확인 방법을 먼저 쓴다.
-- 해결책은 장점과 한계를 같이 적는다.
-- 마지막에 핵심 요약과 꼬리 질문을 남긴다.
+> 학습 인덱스다. 상세 내용은 `02-practical-backend/testing/` 아래 개념 문서에 둔다.
+> 개념 문서는 테스트 목적, 범위, 격리, 유지보수 비용을 다루고, 증상·원인·확인 방법 → 해결책의 장점과 한계 → 꼬리 질문 순으로 쓴다. 아직 학습하지 않은 내용은 미리 채우지 않는다.
 
 ## 학습 순서
 
 1. 테스트가 필요한 이유
-2. [[unit-vs-integration-test|Unit Test]]
-3. [[unit-vs-integration-test|Integration Test]]
-4. [[mock-stub-fake|Mock과 Stub]]
-5. [[test-fixture|Test Fixture]]
-6. [[transactional-test|Transactional Test]]
-7. [[testcontainers|Test Container]]
-8. E2E Test
+2. [[unit-vs-integration-test|Unit Test와 Integration Test]]
+3. [[mock-stub-fake|Mock과 Stub]]
+4. [[test-fixture|Test Fixture]]
+5. [[transactional-test|Transactional Test]]
+6. [[testcontainers|Testcontainers]]
+7. E2E Test
 
 ## 핵심 질문
 
-- Testing 영역에서 실무적으로 중요한 문제는 무엇인가?
-- 문제를 발견하면 어떤 순서로 원인을 좁히는가?
-- 어떤 해결책이 있고 각각의 한계는 무엇인가?
-- 프로젝트 경험과 어떻게 연결할 수 있는가?
-- 질문을 받으면 어떻게 설명할 수 있는가?
+- 어떤 로직은 단위 테스트로, 어떤 로직은 통합 테스트로 검증해야 하는가?
+- mock을 많이 쓰면 테스트가 통과해도 운영에서 깨지는 이유는 무엇인가?
+- 테스트에 `@Transactional`을 붙이면 무엇을 검증하지 못하게 되는가?
+- H2 대신 Testcontainers로 실제 DB를 띄우는 이유와 비용은 무엇인가?
+- 테스트가 서로의 데이터에 영향을 받아 순서에 따라 깨질 때 어떻게 격리하는가?
 
-## 실무 관점
+## 기준
 
-- 테스트는 버그가 없음을 증명하는 것이 아니라 변경 위험을 줄이는 장치다.
-- 테스트 범위가 넓을수록 신뢰도는 높아지지만 속도와 유지보수 비용이 커진다.
-- 질문을 받으면 어떤 로직을 왜 단위/통합 테스트로 나눴는지 설명한다.
+- 테스트는 버그가 없음을 증명하지 못한다. 변경했을 때 무엇이 깨졌는지 빨리 알려 주는 장치다.
+- 범위가 넓은 테스트일수록 믿을 만해지지만, 느려지고 유지보수 비용이 커진다.
+- 면접에서는 어떤 로직을 왜 단위/통합 테스트로 나눴는지 말한다.
 
 ## 관련 문서
 
-- [[unit-vs-integration-test]]
-- [[mock-stub-fake]]
-- [[test-fixture]]
-- [[transactional-test]]
-- [[testcontainers]]
+- [[02-practical-backend/concurrency/concurrency-test|concurrency-test]]
+- [[02-practical-backend/transaction/spring-transaction|spring-transaction]]
 - [[03-case-studies/case-studies|case-studies]]
 - [[04-interview/interview-questions|technical-questions]]

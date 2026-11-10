@@ -5,28 +5,17 @@ description: Java 직렬화와 Jackson 기반 JSON 처리의 실무 주의점
 
 # 직렬화와 Jackson 동작 원리
 
-## 한 줄 정의
+직렬화(Serialization)는 객체를 전송하거나 저장할 수 있는 형태로 바꾸는 일이다. 실무에서는 대부분 Jackson으로 하는 JSON 직렬화·역직렬화를 말한다.
 
-직렬화(Serialization)는 객체를 전송/저장 가능한 형태로 변환하는 과정이고, 실무에서는 대부분 Jackson을 통한 JSON 직렬화/역직렬화를 의미한다.
+Spring Boot API 서버의 요청과 응답은 거의 다 JSON이다. Jackson이 알아서 처리해 주지만 규칙을 모르면 이런 일을 겪는다. 응답에서 필드가 빠지거나 null로 나온다. 날짜가 숫자 timestamp나 예상과 다른 포맷으로 나온다. JPA Entity를 그대로 반환해 순환 참조로 `StackOverflowError`가 난다. 요청 JSON과 Java 필드명이 달라 바인딩이 안 된다. enum 대소문자가 안 맞아 역직렬화가 실패한다. record DTO가 역직렬화되지 않는다.
 
-## 실무에서 왜 중요한가
+## Jackson은 어떻게 동작하나
 
-Spring Boot 기반 API 서버에서 요청/응답은 거의 모두 JSON이다. Jackson이 자동으로 처리해주지만, 규칙을 모르면 다음 문제를 마주한다.
-
-- API 응답에서 특정 필드가 누락되거나 null로 나온다.
-- 날짜/시간 값이 timestamp 숫자나 예상과 다른 포맷으로 나온다.
-- JPA Entity를 그대로 반환해서 순환 참조로 `StackOverflowError`가 발생한다.
-- 요청 JSON의 필드명과 Java 필드명이 달라서 바인딩이 안 된다.
-- enum 값이 대소문자 불일치로 역직렬화에 실패한다.
-- record 기반 DTO에서 역직렬화가 안 되는 경우가 생긴다.
-
-## Jackson 동작 원리
-
-Spring Boot에서 `@RestController`의 반환 객체는 `HttpMessageConverter`를 통해 JSON으로 변환된다. 기본 구현체가 Jackson의 `MappingJackson2HttpMessageConverter`다.
+`@RestController`의 반환 객체는 `HttpMessageConverter`가 JSON으로 바꾼다. 기본 구현체가 Jackson의 `MappingJackson2HttpMessageConverter`다.
 
 ### 직렬화 (객체 → JSON)
 
-Jackson은 기본적으로 **public getter**를 기준으로 필드를 JSON에 포함한다.
+기본적으로 public getter를 기준으로 필드를 JSON에 넣는다.
 
 ```java
 public class UserResponse {
@@ -38,11 +27,11 @@ public class UserResponse {
 }
 ```
 
-getter가 없으면 해당 필드는 JSON에 포함되지 않는다.
+getter가 없으면 그 필드는 JSON에 들어가지 않는다.
 
 ### 역직렬화 (JSON → 객체)
 
-기본적으로 **기본 생성자 + setter** 또는 **@JsonCreator** 를 통해 객체를 생성한다.
+기본적으로 기본 생성자 + setter, 또는 `@JsonCreator`로 객체를 만든다.
 
 ```java
 // 기본 생성자 + setter 방식
@@ -57,7 +46,7 @@ public class UserRequest {
 }
 ```
 
-기본 생성자가 없으면 역직렬화에 실패한다. 단, record는 Jackson이 canonical constructor를 자동으로 인식한다.
+기본 생성자가 없으면 역직렬화가 실패한다. 단, record는 Jackson이 canonical constructor를 자동으로 인식한다.
 
 ## 자주 쓰는 어노테이션
 
@@ -70,14 +59,14 @@ public class UserRequest {
 | `@JsonCreator` | 역직렬화 시 사용할 생성자 지정 | 불변 객체 역직렬화 |
 | `@JsonValue` | enum 직렬화 시 사용할 값 지정 | enum을 특정 문자열로 변환 |
 
-## 실무에서 자주 겪는 문제
+## 실무에서 자주 부딪히는 문제
 
-### 1. 날짜/시간 포맷
+### 날짜·시간 포맷
 
-Jackson은 `LocalDateTime`을 기본적으로 배열(`[2024, 1, 15, 10, 30]`)로 직렬화한다.
+`ObjectMapper`를 직접 만들어 `JavaTimeModule`만 등록하면 `LocalDateTime`은 배열(`[2024, 1, 15, 10, 30]`)로 나간다. Spring Boot가 만들어 주는 `ObjectMapper`는 `WRITE_DATES_AS_TIMESTAMPS`를 이미 꺼 두어서 기본이 ISO-8601 문자열이다. 배열로 나온다면 `ObjectMapper`를 직접 생성해 Boot 설정을 덮어쓴 경우가 많다.
 
 ```java
-// 문제: 배열로 나온다
+// 문제: 직접 만든 ObjectMapper에서는 배열로 나온다
 private LocalDateTime createdAt;
 // → [2024, 1, 15, 10, 30, 0]
 
@@ -95,14 +84,14 @@ spring:
   jackson:
     serialization:
       write-dates-as-timestamps: false
-    date-format: "yyyy-MM-dd HH:mm:ss"
+    date-format: "yyyy-MM-dd HH:mm:ss"  # java.util.Date에만 적용, java.time 타입에는 영향 없음
 ```
 
-`write-dates-as-timestamps: false`를 설정하면 ISO-8601 형식(`2024-01-15T10:30:00`)으로 출력된다.
+`write-dates-as-timestamps: false`면 ISO-8601 형식(`2024-01-15T10:30:00`)으로 나온다.
 
-### 2. 순환 참조
+### 순환 참조
 
-JPA Entity를 그대로 API 응답으로 반환하면 양방향 연관관계에서 순환 참조가 발생한다.
+JPA Entity를 그대로 응답으로 반환하면 양방향 연관관계에서 순환 참조가 생긴다.
 
 ```java
 @Entity
@@ -118,7 +107,7 @@ public class Member {
 }
 ```
 
-해결 방법:
+Entity를 반환하지 말고 DTO로 바꾼다.
 
 ```java
 // 가장 좋은 방법: Entity를 직접 반환하지 않고 DTO로 변환
@@ -133,9 +122,9 @@ public record TeamResponse(Long id, String name, List<String> memberNames) {
 }
 ```
 
-`@JsonIgnore`나 `@JsonManagedReference`/`@JsonBackReference`로도 해결할 수 있지만, **Entity를 API 응답으로 직접 노출하지 않는 것**이 근본적인 해결이다.
+`@JsonIgnore`나 `@JsonManagedReference`/`@JsonBackReference`로도 막을 수는 있다. 하지만 근본 해결은 Entity를 API 응답으로 직접 내보내지 않는 것이다.
 
-### 3. enum 역직렬화
+### enum 역직렬화
 
 ```java
 public enum OrderStatus {
@@ -175,7 +164,7 @@ public enum OrderStatus {
 }
 ```
 
-### 4. record 역직렬화
+### record 역직렬화
 
 Java 16+ record는 Jackson 2.12+에서 기본 지원된다. canonical constructor를 자동으로 인식한다.
 
@@ -185,7 +174,7 @@ public record CreateUserRequest(String name, String email) {
 }
 ```
 
-단, JSON 필드명이 다른 경우 `@JsonProperty`를 생성자 파라미터에 붙여야 한다.
+JSON 필드명이 다르면 생성자 파라미터에 `@JsonProperty`를 붙인다.
 
 ```java
 public record CreateUserRequest(
@@ -195,9 +184,9 @@ public record CreateUserRequest(
 }
 ```
 
-### 5. 민감 정보 노출
+### 민감 정보 노출
 
-Entity나 내부 객체를 그대로 반환하면 의도하지 않은 필드가 노출될 수 있다.
+Entity나 내부 객체를 그대로 반환하면 의도하지 않은 필드까지 나간다.
 
 ```java
 // 위험: password, role 등이 그대로 노출
@@ -214,9 +203,9 @@ public UserResponse getUser(@PathVariable Long id) {
 }
 ```
 
-## snake_case ↔ camelCase 전략
+### snake_case와 camelCase
 
-외부 API가 snake_case를 사용하는 경우 전역 설정으로 변환할 수 있다.
+외부 API가 snake_case를 쓰면 전역 설정으로 바꾼다.
 
 ```yaml
 spring:
@@ -224,7 +213,7 @@ spring:
     property-naming-strategy: SNAKE_CASE
 ```
 
-또는 특정 클래스에만 적용:
+특정 클래스에만 적용할 수도 있다.
 
 ```java
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
@@ -233,17 +222,7 @@ public record ExternalApiResponse(String userName, String emailAddress) {
 // → {"user_name": "...", "email_address": "..."}
 ```
 
-## 자주 나는 실수
-
-- Entity를 그대로 API 응답으로 반환해서 순환 참조나 민감 정보 노출이 발생한다.
-- `LocalDateTime`의 기본 직렬화가 배열인 것을 모르고 프론트엔드와 포맷이 안 맞는다.
-- 기본 생성자가 없어서 역직렬화가 실패하는데 원인을 모른다.
-- getter가 없어서 직렬화 시 필드가 누락되는데 원인을 모른다.
-- enum 대소문자 불일치로 `HttpMessageNotReadableException`이 발생한다.
-- `@JsonIgnore`를 getter에만 붙여서 역직렬화에서는 여전히 바인딩된다.
-- 외부 API 연동 시 snake_case/camelCase 변환을 필드마다 수동으로 한다.
-
-## 실무 판단 기준
+## 상황별로 어떻게 하나
 
 | 상황 | 권장 |
 |---|---|
@@ -254,16 +233,19 @@ public record ExternalApiResponse(String userName, String emailAddress) {
 | 민감 필드 | DTO 분리가 우선, 부득이하면 `@JsonIgnore` |
 | 불변 요청 객체 | record 사용 (Jackson 2.12+) |
 
-## 핵심 요약
+## 자주 깨지는 곳
 
-Spring Boot에서 API 요청/응답의 JSON 변환은 Jackson이 담당합니다.
-직렬화는 getter 기준, 역직렬화는 기본 생성자 + setter 또는 `@JsonCreator` 기준으로 동작합니다.
+- **Entity를 그대로 응답으로 반환한다.** 순환 참조, 민감 정보 노출이 같이 온다.
+- **`ObjectMapper`를 직접 생성해 Boot 기본 설정을 덮어쓴다.** `LocalDateTime`이 배열로 나가 프론트엔드와 포맷이 어긋난다.
+- **기본 생성자가 없다.** 역직렬화가 실패하는데 원인을 찾기 어렵다.
+- **getter가 없다.** 직렬화에서 필드가 조용히 빠진다.
+- **enum 대소문자가 맞지 않는다.** `HttpMessageNotReadableException`이 난다.
+- **`@JsonIgnore`가 한쪽 방향만 막는다고 생각한다.** getter에만 붙여도 Jackson은 property 전체를 무시해서 역직렬화에서도 빠진다. 한 방향만 막으려면 `@JsonProperty(access = ...)`를 쓴다.
+- **외부 API의 snake_case를 필드마다 손으로 매핑한다.** 빠뜨린 필드가 null로 들어온다.
 
-실무에서 가장 중요한 원칙은 Entity를 API 응답으로 직접 반환하지 않는 것입니다.
-순환 참조로 인한 `StackOverflowError`, 민감 정보 노출, lazy loading 문제가 생길 수 있기 때문입니다.
-record 기반 DTO로 변환하는 것이 안전합니다.
+## 면접에서 말하기
 
-`LocalDateTime`은 기본적으로 배열로 직렬화되므로 `write-dates-as-timestamps: false` 설정이 필요하고, enum은 대소문자 불일치에 주의해야 합니다.
+> Spring Boot에서 요청과 응답의 JSON 변환은 Jackson이 맡고, 직렬화는 getter, 역직렬화는 기본 생성자와 setter 또는 `@JsonCreator`를 기준으로 동작합니다. 제가 가장 먼저 지키는 원칙은 Entity를 API 응답으로 직접 반환하지 않는 것입니다. 순환 참조로 StackOverflowError가 나거나 민감 정보가 노출되고 lazy loading 문제도 생기기 때문에 record DTO로 바꿔서 내보냅니다. 그 외에 날짜 포맷과 enum 대소문자 불일치를 설정으로 맞춰 두고, `ObjectMapper`를 직접 만들어 Boot 기본 설정을 덮어쓰지 않습니다.
 
 ## 꼬리 질문
 
@@ -274,10 +256,10 @@ record 기반 DTO로 변환하는 것이 안전합니다.
 > 양방향 연관관계의 순환 참조로 `StackOverflowError`, 민감 정보 노출, lazy loading에 의한 추가 쿼리나 예외가 발생할 수 있습니다.
 
 > [!question]- `@JsonIgnore`를 getter에만 붙이면 어떻게 되는가?
-> 직렬화에서는 제외되지만 역직렬화에서는 여전히 바인딩됩니다. 양쪽 모두 제외하려면 필드에 붙이거나 `@JsonProperty(access = WRITE_ONLY)` 등을 사용합니다.
+> getter에만 붙여도 Jackson은 그 property 전체를 무시하므로 직렬화와 역직렬화 모두에서 빠집니다. 다른 접근자(setter 등)에 `@JsonProperty`를 명시하면 그쪽은 살아납니다. 한 방향만 막으려면 `@JsonProperty(access = WRITE_ONLY)`나 `READ_ONLY`를 씁니다.
 
 > [!question]- `LocalDateTime`의 기본 직렬화 형태는?
-> 배열 형태(`[2024, 1, 15, 10, 30]`)로 직렬화됩니다. `write-dates-as-timestamps: false` 설정으로 ISO-8601 문자열로 변환할 수 있습니다.
+> Jackson 단독으로는 `WRITE_DATES_AS_TIMESTAMPS`가 켜져 있어 배열(`[2024, 1, 15, 10, 30]`)로 나갑니다. Spring Boot의 자동 설정 `ObjectMapper`는 이 옵션을 꺼 두어 ISO-8601 문자열로 나갑니다.
 
 > [!question]- record의 역직렬화가 동작하는 원리는?
 > Jackson 2.12+에서 record의 canonical constructor를 자동 인식합니다. JSON 필드명이 다르면 생성자 파라미터에 `@JsonProperty`를 붙여야 합니다.

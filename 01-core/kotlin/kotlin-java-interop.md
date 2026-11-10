@@ -5,23 +5,13 @@ description: Kotlin과 Java를 함께 사용할 때 nullability, annotation, 예
 
 # Kotlin Java Interop
 
-## 한 줄 정의
+Kotlin과 Java는 같은 JVM에서 서로를 호출한다. 문제는 그 경계에서 Kotlin의 안전장치가 약해진다는 점이다.
 
-Kotlin Java interop은 Kotlin 코드와 Java 코드가 같은 JVM 생태계에서 서로 호출될 수 있게 하는 기능과 그 경계에서 생기는 주의점이다.
-
-## 실무에서 왜 중요한가
-
-Kotlin 백엔드는 대부분 Java 라이브러리, Spring, JPA, Jackson과 함께 동작한다. interop을 모르면 다음 문제가 생긴다.
-
-- Java 반환값이 null일 수 있는데 Kotlin에서 non-null처럼 사용한다.
-- Java에서 Kotlin default parameter를 자연스럽게 호출하지 못한다.
-- checked exception이 Kotlin에서 강제되지 않아 실패 처리를 놓친다.
-- `@JvmStatic`, `@JvmOverloads`, `@JvmField` 사용 기준이 없다.
-- Kotlin class가 기본 final이라 Spring/JPA proxy와 충돌한다.
+Kotlin 백엔드는 거의 항상 Java 라이브러리, Spring, JPA, Jackson과 같이 돈다. 그래서 Java가 돌려준 null을 Kotlin이 non-null로 믿거나, Java 쪽에서 Kotlin default parameter를 못 쓰거나, checked exception이 강제되지 않아 실패 처리를 놓치는 일이 생긴다. Kotlin class가 기본 final이라 Spring/JPA proxy와 부딪히는 것도 이 경계 문제다.
 
 ## Platform Type
 
-Java 타입은 Kotlin에서 nullability를 확정할 수 없으면 platform type으로 보인다.
+Kotlin이 nullability를 확정할 수 없는 Java 타입은 platform type으로 보인다.
 
 ```java
 public User findUser(Long id) {
@@ -29,14 +19,14 @@ public User findUser(Long id) {
 }
 ```
 
-Kotlin에서는 `User!`처럼 취급되어 nullable처럼도, non-null처럼도 사용할 수 있다.
+Kotlin에서는 `User!`로 취급되어 nullable로도, non-null로도 쓸 수 있다. 컴파일러가 막아 주지 않는다는 뜻이다.
 
 ```kotlin
 val user = javaUserRepository.findUser(id)
 println(user.name) // 런타임 NPE 가능
 ```
 
-Java API 경계에서는 null 가능성을 명시적으로 방어하는 것이 안전하다.
+Java API 경계에서는 null을 명시적으로 막는다.
 
 ```kotlin
 val user = javaUserRepository.findUser(id)
@@ -45,7 +35,7 @@ val user = javaUserRepository.findUser(id)
 
 ## Java에서 Kotlin 호출
 
-Kotlin의 default parameter는 Java에서 그대로 편하게 보이지 않는다.
+Kotlin의 default parameter는 Java에서는 보이지 않는다. Java 쪽은 모든 인자를 넘겨야 한다.
 
 ```kotlin
 class MailSender {
@@ -54,7 +44,7 @@ class MailSender {
 }
 ```
 
-Java 호출 편의가 필요하면 `@JvmOverloads`를 검토한다.
+Java에서도 편하게 불러야 하면 `@JvmOverloads`로 overload를 만든다.
 
 ```kotlin
 class MailSender {
@@ -64,7 +54,7 @@ class MailSender {
 }
 ```
 
-companion object를 Java static처럼 노출하려면 `@JvmStatic`을 사용할 수 있다.
+companion object 함수를 Java static처럼 노출하려면 `@JvmStatic`을 붙인다.
 
 ```kotlin
 class TokenUtils {
@@ -77,9 +67,9 @@ class TokenUtils {
 
 ## Spring/JPA와의 경계
 
-Kotlin class는 기본적으로 final이다. Spring AOP나 JPA proxy는 상속 기반 proxy를 사용할 때 open class가 필요할 수 있다.
+Kotlin class는 기본이 final이다. Spring AOP나 JPA가 상속 기반 proxy를 쓰면 open class가 필요하다.
 
-실무에서는 Gradle plugin으로 처리하는 경우가 많다.
+보통 Gradle plugin으로 처리한다.
 
 ```kotlin
 plugins {
@@ -88,19 +78,28 @@ plugins {
 }
 ```
 
-이 플러그인은 Spring annotation이나 JPA entity에 필요한 open/no-arg 처리를 도와준다. 그래도 Entity를 `data class`로 만드는 문제까지 자동으로 해결해주지는 않는다.
+두 플러그인은 하는 일이 다르다.
 
-## 자주 나는 실수
+| 플러그인 | 하는 일 | 하지 않는 일 |
+|---|---|---|
+| `plugin.spring` | `@Component`, `@Transactional`, `@Async` 등이 붙은 클래스를 `open`으로 만든다 | `@Entity`는 열지 않는다 |
+| `plugin.jpa` | `@Entity`, `@Embeddable`, `@MappedSuperclass`에 no-arg 생성자를 만든다 | `open` 처리는 하지 않는다 |
 
-- Java API 반환값을 non-null로 단정한다.
-- Java 호출이 필요한 Kotlin 함수에 default parameter만 믿고 overload를 만들지 않는다.
-- Kotlin에서 checked exception 처리를 놓친다.
-- `kotlin("plugin.spring")`, `kotlin("plugin.jpa")` 설정 없이 proxy 문제를 만난다.
-- Java와 Kotlin DTO의 nullability annotation을 맞추지 않는다.
+그래서 Entity는 기본 설정만으로는 final로 남고, Hibernate가 지연 로딩 프록시를 만들지 못해 `@ManyToOne(fetch = LAZY)`가 사실상 즉시 로딩처럼 동작할 수 있다. Entity에는 `allOpen`을 따로 건다.
 
-## 실무 판단 기준
+```kotlin
+allOpen {
+    annotation("jakarta.persistence.Entity")
+    annotation("jakarta.persistence.MappedSuperclass")
+    annotation("jakarta.persistence.Embeddable")
+}
+```
 
-| 상황 | 권장 |
+Entity를 `data class`로 만드는 문제는 플러그인으로 해결되지 않는다. [[kotlin-data-class-and-immutability]] 참고.
+
+## 상황별로 정리하면
+
+| 상황 | 할 일 |
 |---|---|
 | Java API 호출 | null 가능성 방어 |
 | Java에서도 호출할 Kotlin API | `@JvmOverloads`, `@JvmStatic` 검토 |
@@ -108,35 +107,28 @@ plugins {
 | JPA Entity | kotlin jpa plugin + 일반 class 설계 |
 | 외부 라이브러리 예외 | Kotlin에서도 명시적 try-catch 기준 마련 |
 
-## 확인 방법
+## 자주 깨지는 곳
 
-- Java API 경계에서 platform type 경고와 null 처리 방식을 확인한다.
-- Spring proxy가 필요한 class가 final로 남아 있지 않은지 확인한다.
-- JPA Entity에 no-arg 생성자와 open 처리가 적용되는지 확인한다.
-- Java 호출부에서 Kotlin default parameter를 제대로 사용할 수 있는지 확인한다.
+- **Java API 반환값을 non-null로 단정한다.** platform type이라 컴파일은 되고 런타임에 NPE가 난다. platform type 경고와 null 처리 방식을 경계마다 본다.
+- **default parameter만 믿고 overload를 만들지 않는다.** Java 호출부가 모든 인자를 넘겨야 한다.
+- **Java checked exception 처리를 놓친다.** Kotlin이 강제하지 않으니 실패가 그대로 올라간다.
+- **`kotlin("plugin.spring")`, `kotlin("plugin.jpa")` 없이 proxy 문제를 만난다.** proxy가 필요한 class가 final로 남는다. Entity는 no-arg 생성자와 open 처리가 둘 다 적용됐는지 따로 확인한다.
+- **Java와 Kotlin DTO의 nullability annotation이 어긋난다.** 한쪽에서는 필수, 다른 쪽에서는 선택이 된다.
 
-## 핵심 요약
+## 면접에서 말하기
 
-Kotlin은 Java와 잘 섞이지만 interop 경계에서는 Kotlin의 안전성이 약해질 수 있다.
-
-Java 반환 타입은 nullability를 알 수 없는 platform type이 될 수 있어 Kotlin에서도 NPE가 발생할 수 있다.
-
-Java에서 Kotlin 코드를 호출해야 한다면 default parameter, companion object, property 노출 방식을 별도로 고려해야 한다.
-
-Spring/JPA에서는 Kotlin class의 final 기본값과 no-arg 생성자 문제가 proxy와 Entity 생성에 영향을 줄 수 있다.
-
-Kotlin 백엔드를 실무에서 안정적으로 쓰려면 Java interop 경계를 명시적으로 관리해야 한다.
+> Kotlin은 Java와 잘 섞이지만 그 경계에서는 Kotlin의 null 안전성이 약해집니다. Java 반환 타입은 nullability를 모르는 platform type이라 Kotlin에서도 NPE가 날 수 있어서, 저는 Java API를 부르는 자리에서 null을 명시적으로 막습니다. Spring/JPA에서는 Kotlin class가 기본 final이고 no-arg 생성자가 없어서 plugin.spring, plugin.jpa가 필요하고, Entity에는 allOpen을 따로 겁니다.
 
 ## 꼬리 질문
 
 > [!question]- Kotlin platform type이란 무엇인가?
-> Java에서 온 타입처럼 null 가능성을 Kotlin 컴파일러가 확정할 수 없는 타입입니다. 안전하게 처리하지 않으면 런타임 NPE가 발생할 수 있습니다.
+> Java에서 온 타입처럼 null 가능성을 Kotlin 컴파일러가 확정할 수 없는 타입입니다. 명시적으로 처리하지 않으면 런타임 NPE가 납니다.
 
 > [!question]- Kotlin class가 기본 final인 것이 Spring/JPA에서 왜 문제가 되는가?
 > Spring AOP나 JPA proxy가 상속 기반으로 동작할 때 final class를 상속할 수 없기 때문입니다.
 
 > [!question]- Kotlin에서 Java checked exception은 어떻게 다뤄지는가?
-> Kotlin은 checked exception 처리를 강제하지 않습니다. 따라서 Java API 호출 실패를 명시적으로 처리할 기준을 코드 리뷰와 설계에서 잡아야 합니다.
+> Kotlin은 checked exception 처리를 강제하지 않습니다. 그래서 Java API 호출 실패를 어떻게 처리할지 설계와 코드 리뷰에서 기준을 정해 둡니다.
 
 ## 점검 퀴즈
 

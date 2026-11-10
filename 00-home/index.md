@@ -6,9 +6,7 @@ comments: false
 
 # Backend Lab
 
-## 이 문서의 목적
-
-백엔드 주제를 실무 판단 기준과 설명 가능한 기술 답변으로 정리하기 위한 작업대다.
+백엔드 주제를 실무 판단 기준과 말로 설명할 수 있는 기술 답변으로 정리하는 작업대다.
 
 ## 시작하기
 
@@ -17,12 +15,12 @@ comments: false
 3. 개념 문서 하나를 보강한다.
 4. [[04-interview/interview-questions|technical-questions]]에 짧은 설명으로 압축한다.
 
-결과물은 긴 글이 아니라 아래 4가지면 충분하다.
+결과물은 긴 글이 아니라 이 네 가지면 된다.
 
 - 한 줄 정의
 - 실무에서 문제가 되는 상황
 - 판단 기준 또는 해결 절차
-- 핵심 요약
+- 말로 할 짧은 답변
 
 ## 학습 흐름
 
@@ -44,7 +42,7 @@ comments: false
 
 ## 1단계: Core
 
-기초 지식은 실무 문제를 설명하는 언어다. 문법 자체보다 “왜 이런 문제가 생기고 어떻게 판단하는가”를 우선한다.
+기초 지식은 실무 문제를 설명하는 언어다. 문법보다 “왜 이런 문제가 생기고 어떻게 판단하는가”를 먼저 본다.
 
 - [[01-core/java/java|java]]
 - [[01-core/kotlin/kotlin|kotlin]]
@@ -57,7 +55,7 @@ comments: false
 
 ## 2단계: Practical Backend
 
-실무에서 반복되는 장애, 성능, 정합성, 운영 문제를 해결 절차 중심으로 정리한다.
+실무에서 되풀이되는 장애, 성능, 정합성, 운영 문제를 해결 절차 위주로 정리한다.
 
 - [[02-practical-backend/transaction/transaction|transaction]]
 - [[02-practical-backend/concurrency/concurrency|concurrency]]
@@ -73,7 +71,7 @@ comments: false
 
 ## 3단계: Questions / Case / AI
 
-학습한 개념은 반드시 짧은 기술 답변과 공개 가능한 사례로 재가공한다.
+공부한 개념은 짧은 기술 답변과 공개 가능한 사례로 다시 만든다.
 
 - [[04-interview/interview-questions|technical-questions]]
 - [[03-case-studies/case-studies|case-studies]]
@@ -81,7 +79,7 @@ comments: false
 
 ## 좋은 문서 기준
 
-- 첫 화면에서 “무엇을 해결하는 개념인지” 보인다.
+- 첫 화면에서 “무엇을 해결하는 개념인지”가 보인다.
 - 추상 설명보다 장애 양상, 판단 기준, 트레이드오프가 먼저 나온다.
 - 예시는 `order`, `payment`, `user`, `example-service`처럼 공개 가능한 이름만 쓴다.
-- 마지막에는 질문을 받았을 때 바로 설명할 수 있는 짧은 답변이 있다.
+- 끝에 질문을 받으면 바로 말할 수 있는 짧은 답변이 있다.

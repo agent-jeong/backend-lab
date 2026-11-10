@@ -5,18 +5,9 @@ description: Spring MVC의 요청 처리 흐름과 각 컴포넌트의 역할
 
 # Spring MVC 요청 처리 흐름
 
-## 한 줄 정의
+Spring MVC에서는 DispatcherServlet이 모든 HTTP 요청을 받아 Handler를 고르고, 비즈니스 로직을 거친 결과를 View나 Response Body로 바꿔 돌려준다.
 
-Spring MVC는 HTTP 요청을 DispatcherServlet이 받아서 Handler → 비즈니스 로직 → View 또는 Response Body로 변환하는 요청 처리 아키텍처다.
-
-## 실무에서 왜 중요한가
-
-요청 흐름을 모르면 다음 상황에서 원인을 파악하기 어렵다.
-
-- 404가 발생했는데 컨트롤러 매핑 문제인지 필터 문제인지 구분하지 못한다.
-- `@RequestBody`가 바인딩되지 않는 원인을 모른다.
-- Filter, Interceptor, AOP의 실행 순서를 모르고 예외 처리 위치를 잘못 잡는다.
-- `@ExceptionHandler`가 동작하지 않는 범위를 이해하지 못한다.
+이 흐름을 알아야 장애 위치를 좁힐 수 있다. 404가 컨트롤러 매핑 문제인지 필터 문제인지, `@RequestBody`가 왜 바인딩되지 않는지, `@ExceptionHandler`가 왜 어떤 예외는 못 잡는지가 모두 "요청이 지금 어느 단계에 있나"로 풀린다.
 
 ## 요청 처리 흐름
 
@@ -37,15 +28,15 @@ Spring MVC는 HTTP 요청을 DispatcherServlet이 받아서 Handler → 비즈�
 11. 클라이언트 ← HTTP 응답
 ```
 
-## 핵심 컴포넌트
+## 단계별 컴포넌트
 
 ### DispatcherServlet
 
-모든 HTTP 요청의 진입점이다. Front Controller 패턴으로 요청을 적절한 핸들러에 위임한다.
+모든 HTTP 요청의 진입점이다. Front Controller 패턴으로 요청을 받아 맞는 핸들러에 넘긴다.
 
 ### HandlerMapping
 
-요청 URL과 HTTP 메서드를 기반으로 어떤 Controller 메서드를 호출할지 결정한다.
+요청 URL과 HTTP 메서드를 보고 어떤 Controller 메서드를 부를지 정한다.
 
 ```java
 @RestController
@@ -61,7 +52,7 @@ public class OrderController {
 
 ### ArgumentResolver
 
-Controller 메서드의 파라미터를 HTTP 요청에서 추출해서 바인딩한다.
+HTTP 요청에서 값을 꺼내 Controller 메서드 파라미터에 바인딩한다.
 
 | 어노테이션 | 소스 | 예시 |
 |---|---|---|
@@ -72,17 +63,15 @@ Controller 메서드의 파라미터를 HTTP 요청에서 추출해서 바인딩
 
 ### HttpMessageConverter
 
-`@RequestBody`로 JSON → 객체 변환, `@ResponseBody`로 객체 → JSON 변환을 처리한다. Spring Boot에서는 Jackson이 기본 Converter다.
+`@RequestBody`면 JSON을 객체로, `@ResponseBody`면 객체를 JSON으로 바꾼다. Spring Boot의 기본 Converter는 Jackson이다.
 
 ## Filter, Interceptor, AOP의 위치
-
-요청 흐름에서 각 계층이 어디에서 동작하는지가 핵심이다.
 
 ```
 HTTP 요청 → Filter → DispatcherServlet → Interceptor → AOP → Controller
 ```
 
-각 계층의 상세 비교, 코드 예제, 실무 선택 기준은 [[filter-interceptor-aop]]에서 다룬다.
+계층별 비교, 코드 예제, 고르는 기준은 [[filter-interceptor-aop]]에 있다.
 
 ## 예외 처리 흐름
 
@@ -107,24 +96,19 @@ public class GlobalExceptionHandler {
 }
 ```
 
-`@ExceptionHandler`는 Controller에서 발생한 예외를 처리한다. Filter에서 발생한 예외는 잡지 못한다.
+`@ExceptionHandler`는 Controller에서 난 예외만 처리한다. Filter는 DispatcherServlet 앞에 있어서 거기서 난 예외는 잡지 못하고 따로 처리해야 한다.
 
-## 자주 나는 실수
+## 자주 깨지는 곳
 
-- `@RequestBody`에 기본 생성자가 없어서 바인딩이 실패한다.
-- Filter에서 발생한 예외를 `@ExceptionHandler`로 처리하려 한다.
-- Interceptor에서 `preHandle()`이 `false`를 반환하면 Controller가 실행되지 않는 것을 모른다.
-- `@RestController`와 `@Controller`의 차이를 모르고 JSON 응답에 `@ResponseBody`를 빠뜨린다.
-- Filter와 Interceptor의 역할을 구분하지 않고 혼용한다.
+- **`@RequestBody` 대상에 기본 생성자가 없다.** 바인딩이 실패한다.
+- **Filter 예외를 `@ExceptionHandler`로 잡으려 한다.** 잡히지 않는다.
+- **`preHandle()`이 `false`를 반환한 뒤를 모른다.** Controller가 실행되지 않는다.
+- **`@Controller`에서 JSON을 반환하면서 `@ResponseBody`를 빠뜨린다.** 반환값이 View 이름으로 해석된다.
+- **Filter와 Interceptor를 구분 없이 쓴다.** 같은 처리가 두 곳에 흩어진다.
 
-## 핵심 요약
+## 면접에서 말하기
 
-Spring MVC는 DispatcherServlet이 모든 요청을 받아서 HandlerMapping → Controller → ViewResolver 순서로 처리합니다.
-
-실행 순서는 Filter → Interceptor → AOP → Controller이며, 각 계층의 상세 비교는 [[filter-interceptor-aop]]를 참고합니다.
-
-`@ExceptionHandler`는 Controller 계층의 예외만 처리합니다.
-Filter에서 발생한 예외는 별도로 처리해야 합니다.
+> Spring MVC는 DispatcherServlet이 모든 요청을 받아 HandlerMapping으로 Controller를 찾고, 결과를 ViewResolver나 MessageConverter로 응답에 씁니다. 실행 순서는 Filter, Interceptor, AOP, Controller입니다. `@ExceptionHandler`는 Controller 쪽 예외만 잡기 때문에, Filter에서 나는 예외는 따로 처리합니다.
 
 ## 꼬리 질문
 
@@ -132,10 +116,10 @@ Filter에서 발생한 예외는 별도로 처리해야 합니다.
 > `@RestController`는 `@Controller` + `@ResponseBody`입니다. `@Controller`는 View 이름을 반환하고, `@RestController`는 반환값을 JSON으로 직렬화합니다.
 
 > [!question]- `@RequestBody` 바인딩이 실패하는 원인은?
-> 대표적으로 기본 생성자 누락, 필드명 불일치, Content-Type 미설정(`application/json`), Jackson 어노테이션 오류 등이 있습니다.
+> 기본 생성자 누락, 필드명 불일치, Content-Type(`application/json`) 미설정, Jackson 어노테이션 오류가 대표적입니다.
 
 > [!question]- DispatcherServlet의 역할은?
-> Front Controller 패턴의 구현체로, 모든 HTTP 요청을 중앙에서 받아 적절한 Handler에 위임합니다. HandlerMapping, HandlerAdapter, ViewResolver 등을 조합해서 요청을 처리합니다.
+> Front Controller 패턴의 구현체로, 모든 HTTP 요청을 한곳에서 받아 맞는 Handler에 넘깁니다. HandlerMapping, HandlerAdapter, ViewResolver 등을 조합해 요청을 처리합니다.
 
 ## 점검 퀴즈
 

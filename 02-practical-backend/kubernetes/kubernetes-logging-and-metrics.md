@@ -5,26 +5,17 @@ description: Pod, Deployment, Service 문제를 로그와 메트릭으로 좁히
 
 # Kubernetes 로그와 메트릭 확인
 
-## 한 줄 정의
+Kubernetes에서 장애를 볼 때는 Pod 로그, event, resource 사용량, rollout 상태를 같이 본다. 목적은 애플리케이션 문제인지 클러스터 리소스 문제인지 가르는 것이다.
 
-Kubernetes 로그와 메트릭 확인은 애플리케이션 문제와 클러스터 리소스 문제를 구분하기 위해 Pod 로그, event, resource 사용량, rollout 상태를 함께 보는 과정이다.
+애플리케이션 로그만 보면 Service selector, readiness, OOMKilled 같은 원인은 보이지 않는다. CPU throttling이나 memory limit 초과도 겉으로는 애플리케이션 지연과 오류로 나타난다. 이렇게 보면 문제 위치가 app, network, scheduling, resource 중 하나로 좁혀진다.
 
-## 실무에서 왜 문제 되는가
+## 보는 순서
 
-- 애플리케이션 로그만 보면 Service selector, readiness, OOMKilled 같은 원인을 놓칠 수 있다.
-- Pod가 재시작되면 이전 container 로그를 따로 확인해야 한다.
-- CPU throttling이나 memory limit 초과는 애플리케이션 지연과 오류로 나타난다.
-- event를 보지 않으면 image pull, scheduling, probe 실패 원인을 늦게 찾는다.
-
-## 동작 원리
-
-1. Deployment rollout 상태와 replica 수를 확인한다.
-2. Pod 상태, restart count, event를 확인한다.
-3. container 로그와 이전 container 로그를 확인한다.
-4. Service endpoint와 Ingress routing을 확인한다.
-5. CPU, memory, throttling, network 지표를 애플리케이션 지표와 함께 본다.
-
-## 실무 판단 기준
+1. Deployment rollout 상태와 replica 수를 본다.
+2. Pod 상태, restart count, event를 본다.
+3. container 로그와 이전 container 로그를 본다.
+4. Service endpoint와 Ingress routing을 본다.
+5. CPU, memory, throttling, network 지표를 애플리케이션 지표와 나란히 본다.
 
 | 증상 | 확인 |
 |---|---|
@@ -34,44 +25,31 @@ Kubernetes 로그와 메트릭 확인은 애플리케이션 문제와 클러스�
 | Pod Pending | request, node resource, scheduling event |
 | 새 버전 반영 안 됨 | rollout status, image tag, ReplicaSet |
 
-## 자주 나는 실수
+## 자주 깨지는 곳
 
-- `kubectl logs`만 보고 event를 보지 않는다.
-- 재시작된 Pod의 이전 로그를 확인하지 않는다.
-- Pod Running 상태를 정상 서비스 상태로 판단한다.
-- 리소스 지표 없이 애플리케이션 코드만 의심한다.
+- **`kubectl logs`만 보고 event를 안 본다.** image pull, scheduling, probe 실패 원인을 늦게 찾는다.
+- **재시작된 Pod의 이전 로그를 안 본다.** 재시작 원인은 지금 container가 아니라 죽은 container 로그에 있다.
+- **Pod Running을 서비스 정상으로 본다.** Running이어도 readiness가 실패하면 트래픽을 받지 못한다.
+- **리소스 지표 없이 코드만 의심한다.** throttling과 OOMKilled는 코드 문제처럼 보인다.
 
-## 확인 방법
+## 운영에서 볼 것
 
-- 명령: `kubectl describe pod`로 event와 종료 사유를 본다.
-- 명령: `kubectl logs --previous`로 재시작 전 로그를 본다.
-- 명령: `kubectl get endpoints`로 Service 대상 Pod를 확인한다.
-- 메트릭: restart count, readiness failure, CPU throttling, memory usage를 본다.
+- `kubectl describe pod`로 event와 종료 사유를 본다.
+- `kubectl logs --previous`로 재시작 전 로그를 본다.
+- `kubectl get endpoints`로 Service가 가리키는 Pod를 확인한다.
+- 메트릭은 restart count, readiness failure, CPU throttling, memory usage.
 
-## 장점과 한계
+이렇게 하려면 클러스터 접근 권한과 관측 도구가 있어야 한다. 메트릭 보관 기간이 짧으면 지난 장애는 분석하기 어렵다.
 
-| 장점 | 한계 |
-|---|---|
-| 문제 위치를 app, network, scheduling, resource로 나눌 수 있다 | 클러스터 접근 권한과 관측 도구가 필요하다 |
-| event와 metric을 함께 보면 재현 어려운 장애를 좁힐 수 있다 | 메트릭 보관 기간이 짧으면 과거 분석이 어렵다 |
+## 면접에서 말하기
 
-## 핵심 요약
-
-Kubernetes 장애 분석은 로그, event, metric, rollout 상태를 함께 봐야 한다.
-
-Pod Running은 서비스 가능 상태와 같지 않다.
-
-재시작 문제는 현재 로그뿐 아니라 previous log와 종료 사유가 중요하다.
-
-503은 애플리케이션 오류뿐 아니라 readiness, endpoint, ingress 문제일 수 있다.
-
-CPU throttling과 OOMKilled는 애플리케이션 성능 문제처럼 보일 수 있다.
+> Kubernetes 장애는 로그, event, metric, rollout 상태를 같이 봐야 합니다. Pod가 Running이라고 서비스 가능한 건 아니어서, 503이 늘면 저는 애플리케이션 오류보다 readiness, endpoint, ingress를 먼저 봅니다. 재시작이 반복되면 `logs --previous`와 종료 사유를 확인하고, 지연이 늘면 CPU throttling과 OOMKilled처럼 코드 문제로 보이는 리소스 문제부터 걸러 냅니다.
 
 ## 꼬리 질문
 
-- Pod가 재시작된 원인은 어떻게 확인할 것인가?
-- 503이 증가하면 Kubernetes에서 무엇부터 볼 것인가?
-- CPU throttling은 어떤 지표와 증상으로 확인할 것인가?
+- Pod가 재시작된 원인은 어떻게 확인하나?
+- 503이 늘면 Kubernetes에서 무엇부터 보나?
+- CPU throttling은 어떤 지표와 증상으로 확인하나?
 
 ## 관련 문서
 

@@ -5,23 +5,11 @@ description: JPA 영속성 컨텍스트의 동작 원리와 실무 영향
 
 # 영속성 컨텍스트의 역할과 생명주기
 
-## 한 줄 정의
+영속성 컨텍스트는 JPA가 Entity를 관리하는 1차 캐시 공간이다. 동일성 보장, 쓰기 지연, 변경 감지가 모두 여기서 나온다.
 
-영속성 컨텍스트는 Entity를 관리하는 JPA의 1차 캐시 공간으로, 동일성 보장, 변경 감지, 쓰기 지연을 제공한다.
+이걸 모르면 JPA의 "이상한" 동작을 설명하지 못한다. 같은 id를 두 번 조회했는데 쿼리가 한 번만 나가고, `save()`를 안 불렀는데 UPDATE가 나가고, 트랜잭션 밖에서 고친 값은 DB에 안 들어간다. 모두 **Entity가 지금 영속성 컨텍스트 안에 있느냐**로 갈린다.
 
-## 실무에서 왜 중요한가
-
-영속성 컨텍스트를 모르면 다음 상황에서 원인을 파악할 수 없다.
-
-- 같은 id로 두 번 조회했는데 쿼리가 한 번만 나간다.
-- Entity 필드를 변경했는데 `save()`를 호출하지 않아도 UPDATE가 나간다.
-- 트랜잭션 밖에서 Entity를 수정했는데 DB에 반영되지 않는다.
-- `@Transactional`이 없는 메서드에서 지연 로딩이 실패한다.
-- 같은 row를 가리키는 두 객체가 `==`로 true가 된다.
-
-## 영속성 컨텍스트의 기능
-
-### 1차 캐시
+## 1차 캐시
 
 ```java
 @Transactional
@@ -33,9 +21,11 @@ public void example() {
 }
 ```
 
-같은 트랜잭션 안에서 같은 id로 조회하면 1차 캐시에서 반환한다. DB 접근이 줄어들고 객체 동일성이 보장된다.
+같은 트랜잭션 안에서 같은 id로 조회하면 1차 캐시에서 돌려준다. DB 접근이 줄고, 같은 row를 가리키는 두 객체가 `==`로 true가 된다.
 
-### 쓰기 지연 (Transactional Write-Behind)
+1차 캐시를 타는 건 `find()`(`findById()`)처럼 id로 찾을 때뿐이다. JPQL·QueryDSL 쿼리는 항상 DB에 SQL을 보내고, 결과 행 중 이미 영속성 컨텍스트에 있는 Entity는 DB 값이 아니라 기존 객체를 돌려준다.
+
+## 쓰기 지연 (Transactional Write-Behind)
 
 ```java
 @Transactional
@@ -47,13 +37,15 @@ public void example() {
 }
 ```
 
-`persist()` 시점에 바로 SQL이 나가지 않고, flush 시점에 모아서 실행한다.
+`persist()` 시점에는 SQL이 나가지 않고, flush 시점에 모아서 실행한다.
 
-### 변경 감지 (Dirty Checking)
+예외: `@GeneratedValue(strategy = IDENTITY)`는 id를 DB가 만들기 때문에 `persist()` 즉시 INSERT가 나간다. MySQL auto_increment를 쓰면 쓰기 지연과 JDBC batch insert의 이점이 사라진다. 자세한 내용은 [[entity-table-mapping]].
 
-트랜잭션 커밋 시 영속성 컨텍스트가 스냅샷과 현재 상태를 비교해서 변경이 감지되면 UPDATE를 실행한다. 기본 동작은 모든 컬럼을 UPDATE하며, `@DynamicUpdate`를 사용하면 변경된 컬럼만 UPDATE한다. `save()`를 호출하지 않아도 영속 상태 Entity의 변경은 자동으로 반영된다.
+## 변경 감지 (Dirty Checking)
 
-자세한 동작 원리와 주의점은 [[dirty-checking|Dirty Checking]] 문서에서 다룬다.
+트랜잭션 커밋 시 영속성 컨텍스트가 스냅샷과 현재 상태를 비교하고, 바뀐 게 있으면 UPDATE를 실행한다. 기본은 모든 컬럼을 UPDATE하고, `@DynamicUpdate`를 쓰면 바뀐 컬럼만 UPDATE한다. 영속 상태 Entity라면 `save()`를 부르지 않아도 변경이 반영된다.
+
+자세한 동작과 주의점은 [[dirty-checking|Dirty Checking]]에 있다.
 
 ## Entity 생명주기
 
@@ -72,7 +64,7 @@ public void example() {
 | 준영속 (detached) | 영속성 컨텍스트에서 분리된 상태 | X |
 | 삭제 (removed) | 삭제 예정 상태 | - |
 
-## 영속성 컨텍스트의 범위
+## 범위는 트랜잭션과 같다
 
 Spring에서 영속성 컨텍스트의 생명주기는 기본적으로 트랜잭션과 같다.
 
@@ -86,24 +78,19 @@ public void process() {
 }
 ```
 
-`@Transactional`이 없는 메서드에서는 각 repository 호출마다 별도 트랜잭션이 열리고 닫힌다. 이 경우 Entity는 조회 직후 준영속 상태가 되어 지연 로딩이 실패한다.
+`@Transactional`이 없는 메서드에서는 repository 호출마다 트랜잭션이 따로 열리고 닫힌다. 그래서 Entity는 조회 직후 준영속이 되고, 지연 로딩이 실패한다.
 
-## 자주 나는 실수
+## 자주 깨지는 곳
 
-- 트랜잭션 밖에서 Entity를 수정하고 DB에 반영될 것으로 기대한다.
-- `@Transactional`이 없는 메서드에서 지연 로딩을 시도해서 `LazyInitializationException`이 발생한다.
-- 영속성 컨텍스트가 1차 캐시 역할을 하는 것을 모르고, 불필요한 조회를 반복한다.
-- 대량 데이터를 영속성 컨텍스트에 올려서 메모리가 부족해진다.
-- `clear()` 없이 배치 처리를 해서 영속성 컨텍스트가 계속 커진다.
+- **트랜잭션 밖에서 Entity를 고치고 반영을 기대한다.** 준영속 Entity라 변경 감지가 돌지 않는다.
+- **`@Transactional` 없는 메서드에서 지연 로딩을 한다.** `LazyInitializationException`이 난다.
+- **1차 캐시를 모르고 같은 조회를 반복한다.** id 조회라면 이미 캐시에 있는 걸 다시 가져오려 한다.
+- **대량 데이터를 영속성 컨텍스트에 올린다.** 메모리가 부족해진다.
+- **배치에서 `clear()`를 하지 않는다.** 영속성 컨텍스트가 처리 건수만큼 계속 커진다.
 
-## 핵심 요약
+## 면접에서 말하기
 
-영속성 컨텍스트는 Entity를 관리하는 1차 캐시 공간으로, 동일성 보장, 쓰기 지연, 변경 감지를 제공합니다.
-
-같은 트랜잭션 안에서 같은 id로 조회하면 캐시에서 반환하고, Entity 필드를 변경하면 커밋 시점에 자동으로 UPDATE가 실행됩니다.
-
-Spring에서 영속성 컨텍스트의 범위는 `@Transactional`과 같습니다.
-트랜잭션 밖에서는 Entity가 준영속 상태가 되어 변경 감지와 지연 로딩이 동작하지 않습니다.
+> 영속성 컨텍스트는 Entity를 관리하는 1차 캐시 공간으로, 동일성 보장, 쓰기 지연, 변경 감지를 제공합니다. 같은 트랜잭션에서 같은 id로 조회하면 캐시에서 돌려주고, 필드를 바꾸면 커밋 시점에 UPDATE가 나갑니다. Spring에서는 범위가 `@Transactional`과 같아서, 트랜잭션 밖에서는 Entity가 준영속이 되어 변경 감지와 지연 로딩이 동작하지 않습니다. 대량 처리에서는 일정 건수마다 flush와 clear로 비워 줍니다.
 
 ## 꼬리 질문
 

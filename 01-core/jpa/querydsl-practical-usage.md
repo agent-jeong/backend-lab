@@ -5,11 +5,11 @@ description: Spring Data JPA에서 QueryDSL을 가장 자주 사용하는 Reposi
 
 # QueryDSL 실무 활용
 
-## 한 줄 정의
+실무에서 QueryDSL은 거의 이 모양으로 쓴다. Spring Data JPA Repository에 Custom Repository를 붙이고, 구현체에서 `JPAQueryFactory`로 동적 조건, DTO 조회, 페이징 쿼리를 직접 작성한다.
 
-QueryDSL 의 표준 패턴은 Spring Data JPA Repository에 Custom Repository를 붙이고, `JPAQueryFactory`로 동적 조건, DTO 조회, 페이징 쿼리를 명시적으로 작성하는 것이다.
+가장 흔한 용도는 선택 검색 조건이 많은 목록 API다. 코드는 길어도 구조는 단순하다. 성능은 QueryDSL이 아니라 **목록 쿼리와 count query를 어떻게 나누고, 정렬과 인덱스를 어떻게 맞추느냐**에서 갈린다.
 
-## 실무에서 가장 많이 쓰는 구조
+## 파일 구조
 
 ```text
 order/
@@ -28,7 +28,7 @@ order/
 | `OrderSearchCondition` | 검색 조건 DTO |
 | `OrderSummaryResponse` | 조회 결과 DTO |
 
-예제 코드는 `QOrder.order`, `QUser.user`를 static import했다고 가정한다. Spring Boot 3 이상에서는 `EntityManager` import가 `jakarta.persistence.EntityManager`인지 확인한다.
+예제 코드는 `QOrder.order`, `QUser.user`를 static import했다고 가정한다. Spring Boot 3 이상이면 `EntityManager` import가 `jakarta.persistence.EntityManager`인지 확인한다.
 
 ## JPAQueryFactory 설정
 
@@ -43,7 +43,7 @@ public class QuerydslConfig {
 }
 ```
 
-`JPAQueryFactory`는 thread-safe하게 사용할 수 있으므로 Bean으로 등록해 Repository 구현체에 주입하는 패턴을 가장 자주 쓴다.
+`JPAQueryFactory`는 thread-safe하게 쓸 수 있어서, Bean으로 등록해 Repository 구현체에 주입하는 방식을 가장 많이 쓴다.
 
 ## Repository 구성
 
@@ -68,7 +68,7 @@ public interface OrderRepositoryCustom {
 }
 ```
 
-실무에서는 `OrderRepositoryCustom`을 `OrderRepository`에 붙이고, 구현체를 별도 클래스로 둔다. 구현체 이름은 프로젝트의 Spring Data JPA 버전과 컨벤션에 맞춰 `OrderRepositoryImpl` 또는 `OrderRepositoryCustomImpl`처럼 정한다.
+`OrderRepositoryCustom`을 `OrderRepository`에 붙이고, 구현체는 별도 클래스로 둔다. 구현체 이름은 프로젝트의 Spring Data JPA 버전과 컨벤션에 맞춰 `OrderRepositoryImpl` 또는 `OrderRepositoryCustomImpl`로 정한다.
 
 ## 검색 조건 DTO
 
@@ -84,7 +84,7 @@ public record OrderSearchCondition(
 }
 ```
 
-조건 DTO는 Controller 요청 객체와 분리하는 편이 좋다. API 요청 형식이 바뀌어도 Repository 조회 조건은 안정적으로 유지할 수 있다.
+조건 DTO는 Controller 요청 객체와 분리한다. 그래야 API 요청 형식이 바뀌어도 Repository 조회 조건은 그대로 둘 수 있다.
 
 ## 응답 DTO
 
@@ -99,7 +99,7 @@ public record OrderSummaryResponse(
 }
 ```
 
-목록 API에서는 Entity를 그대로 조회한 뒤 응답 DTO로 변환하기보다, 필요한 컬럼만 DTO로 직접 조회하는 패턴을 자주 사용한다.
+목록 API에서는 Entity를 조회해 응답 DTO로 바꾸기보다, 필요한 컬럼만 DTO로 바로 조회하는 경우가 많다.
 
 ## Custom Repository 구현
 
@@ -157,7 +157,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
 }
 ```
 
-실무에서는 목록 조회 쿼리와 count query를 분리한다. 목록 조회에는 DTO projection과 join이 필요하지만, count query에는 불필요한 join을 제거할 수 있기 때문이다.
+목록 쿼리와 count query는 분리한다. 목록에는 DTO projection과 join이 필요하지만, count query에서는 필요 없는 join을 뺄 수 있다.
 
 ## 동적 조건 Helper
 
@@ -187,7 +187,7 @@ private BooleanExpression priceLoe(Integer maxPrice) {
 }
 ```
 
-QueryDSL의 `where`는 `null` 조건을 무시하므로 선택 검색 조건을 깔끔하게 조립할 수 있다. 다만 helper가 너무 많아지면 오히려 흐름이 안 보이므로, 같은 도메인에서 재사용되는 조건만 분리한다.
+QueryDSL의 `where`는 `null` 조건을 무시하므로 선택 검색 조건이 깔끔하게 조립된다. 다만 helper가 너무 많아지면 흐름이 오히려 안 보이니, 같은 도메인에서 재사용되는 조건만 분리한다. 복잡한 OR 조합이 많으면 `BooleanBuilder`가 더 편할 때도 있다.
 
 ## 정렬 처리
 
@@ -217,7 +217,7 @@ private OrderSpecifier<?>[] toOrderSpecifiers(Sort sort) {
 }
 ```
 
-정렬 필드는 외부 입력을 그대로 경로로 변환하지 말고 허용 목록을 둔다. 정렬 컬럼이 많아질수록 인덱스와 실행 계획 확인이 중요하다.
+정렬 필드는 외부 입력을 그대로 경로로 바꾸지 말고 허용 목록을 둔다. 정렬 컬럼이 늘어날 때마다 그 정렬이 인덱스를 타는지 실행 계획으로 확인한다.
 
 ## Slice 조회
 
@@ -258,9 +258,9 @@ public Slice<OrderSummaryResponse> searchOrdersSlice(
 }
 ```
 
-전체 개수가 꼭 필요하지 않은 무한 스크롤, 더보기 API는 `Page`보다 `Slice`가 실무적으로 유리하다. count query를 실행하지 않아도 다음 페이지 존재 여부를 알 수 있다.
+전체 개수가 필요 없는 무한 스크롤, 더보기 API는 `Page`보다 `Slice`가 낫다. `pageSize + 1`건을 읽어 보면 count query 없이도 다음 페이지가 있는지 안다.
 
-## 자주 쓰는 선택 기준
+## 무엇으로 조회하나
 
 | 상황 | 추천 |
 |---|---|
@@ -272,37 +272,21 @@ public Slice<OrderSummaryResponse> searchOrdersSlice(
 | 전체 개수 불필요 | `Slice` |
 | 복잡한 통계/DB 함수 | native query 또는 SQL mapper 검토 |
 
-## 실무 체크리스트
+## 자주 깨지는 곳
 
-- 검색 조건 DTO와 응답 DTO를 Entity와 분리했는가?
-- where 조건 helper가 null을 안전하게 처리하는가?
-- 목록 query와 count query를 분리했는가?
-- count query에 불필요한 join이 들어가지 않았는가?
-- 정렬 필드를 허용 목록으로 제한했는가?
-- `offset` 페이징이 느려질 데이터 규모라면 keyset pagination을 검토했는가?
-- 실행 SQL과 실행 계획을 확인했는가?
-- QueryDSL 벌크 연산 후 영속성 컨텍스트를 정리했는가?
+- **검색 조건 DTO와 응답 DTO를 Entity와 섞는다.** API 형식 변경이 Repository까지 번진다.
+- **where 조건 helper가 null을 처리하지 않는다.** 선택 조건이 비었을 때 NPE가 나거나 조건이 잘못 붙는다.
+- **모든 조회를 메서드 하나에 몰아넣는다.** QueryDSL 코드가 길어질수록 읽을 수 없게 된다.
+- **count query에 목록용 join을 그대로 둔다.** DTO projection을 써도 불필요한 join이 남으면 count가 병목이 된다.
+- **`Page`가 필요 없는데 습관적으로 count query를 돌린다.** `Slice`로 충분한 곳에서 비용만 쓴다.
+- **정렬 파라미터를 검증하지 않는다.** 의도하지 않은 정렬, 인덱스를 못 타는 정렬이 허용된다.
+- **`offset`이 큰 페이지도 같은 방식으로 조회한다.** 데이터 규모가 커지면 keyset pagination을 검토한다.
+- **QueryDSL을 썼으니 됐다고 실행 계획 확인을 건너뛴다.** 느린 SQL은 그대로다.
+- **벌크 연산 뒤 영속성 컨텍스트를 정리하지 않는다.** 이미 로딩된 Entity와 DB 값이 어긋난다.
 
-## 자주 나는 실수
+## 면접에서 말하기
 
-- QueryDSL 코드가 길어지는데도 모든 조회를 하나의 메서드에 몰아넣는다.
-- DTO projection을 쓰면서도 불필요한 join을 많이 남긴다.
-- `Page`가 필요 없는데 습관적으로 count query를 실행한다.
-- 정렬 파라미터를 검증하지 않아 의도하지 않은 정렬을 허용한다.
-- `offset`이 큰 페이지에서도 같은 방식으로 조회한다.
-- QueryDSL을 썼다는 이유로 실행 계획 확인을 생략한다.
-
-## 핵심 요약
-
-실무에서 QueryDSL은 보통 Spring Data JPA Custom Repository 구현체 안에서 사용한다.
-
-가장 흔한 용도는 선택 검색 조건이 많은 목록 API, DTO projection, 페이징 조회다.
-
-동적 조건은 `BooleanExpression` helper로 분리하고, `where`에서 null 조건을 무시하는 특성을 활용한다.
-
-목록 조회와 count query는 분리해서 작성하고, 전체 개수가 필요 없으면 `Slice`로 count query를 피한다.
-
-QueryDSL은 쿼리 작성 편의 도구이므로 성능은 실행 SQL, 인덱스, join, 정렬, count query 설계로 검증해야 한다.
+> 실무에서는 Spring Data JPA Repository에 Custom Repository를 붙이고, 구현체에서 `JPAQueryFactory`로 선택 검색 조건이 많은 목록 API를 작성합니다. 동적 조건은 `BooleanExpression` helper로 나눠 `where`가 null을 무시하는 특성을 이용합니다. 목록 쿼리와 count query는 분리하고, 전체 개수가 필요 없으면 `Slice`로 count를 피합니다. 성능은 QueryDSL이 아니라 실행 SQL, 인덱스, join, 정렬, count 설계로 검증합니다.
 
 ## 꼬리 질문
 

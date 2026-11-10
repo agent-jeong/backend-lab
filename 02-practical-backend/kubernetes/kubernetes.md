@@ -6,20 +6,8 @@ comments: false
 
 # Kubernetes
 
-## 운영 방식
-
-- 이 문서는 Kubernetes 학습 인덱스로만 사용한다.
-- 상세 내용은 `02-practical-backend/kubernetes/` 아래 개념별 문서로 나눈다.
-- 학습한 내용은 하나의 작은 문서에 정리한다.
-- 아직 학습하지 않은 내용을 미리 길게 채우지 않는다.
-- 각 문서는 배포 단위, 트래픽 경로, 설정, 장애 복구, 운영 안정성을 중심으로 작성한다.
-
-## 학습 산출물
-
-- 다룰 개념 또는 문제 상황 하나를 고른다.
-- 실제 개발자가 마주치는 증상, 원인, 확인 방법을 먼저 쓴다.
-- 해결책은 장점과 한계를 같이 적는다.
-- 마지막에 핵심 요약과 꼬리 질문을 남긴다.
+> 학습 인덱스다. 상세 내용은 `02-practical-backend/kubernetes/` 아래 개념 문서에 둔다.
+> 개념 문서는 배포 단위, 트래픽 경로, 설정, 장애 복구를 다루고, 증상·원인·확인 방법 → 해결책의 장점과 한계 → 꼬리 질문 순으로 쓴다. 아직 학습하지 않은 내용은 미리 채우지 않는다.
 
 ## 학습 순서
 
@@ -42,22 +30,14 @@ comments: false
 - 롤링 배포와 롤백은 어떤 조건에서 안전하게 동작하는가?
 - CronJob은 일반 배치 스케줄러와 어떤 운영 차이가 있는가?
 
-## 실무 관점
+## 어디까지 알면 되나
 
-- Kubernetes는 배포 도구가 아니라 컨테이너 워크로드를 선언한 상태로 유지하는 운영 플랫폼이다.
-- 백엔드 개발자는 모든 내부 구현을 알 필요는 없지만, Pod 상태, 트래픽 경로, 설정 주입, readiness 실패 원인은 설명할 수 있어야 한다.
-- YAML 암기보다 장애가 났을 때 어떤 리소스와 이벤트를 확인할지 설명하는 것이 중요하다.
+- Kubernetes는 배포 도구가 아니라, 선언해 둔 상태대로 컨테이너 워크로드를 계속 맞춰 주는 운영 플랫폼이다.
+- 백엔드 개발자가 내부 구현을 다 알 필요는 없다. Pod 상태, 트래픽 경로, 설정 주입, readiness 실패 원인은 설명할 수 있으면 된다.
+- YAML 문법보다 "장애가 나면 어떤 리소스와 이벤트부터 보나"를 말할 수 있는 쪽이 쓸모 있다.
 
 ## 관련 문서
 
-- [[deployment-service-ingress]]
-- [[pod-and-container]]
-- [[configmap-and-secret]]
-- [[readiness-and-liveness-probe]]
-- [[resource-request-and-limit]]
-- [[rolling-update-and-rollback]]
-- [[cronjob]]
-- [[kubernetes-logging-and-metrics]]
 - [[02-practical-backend/ci-cd/ci-cd|ci-cd]]
 - [[02-practical-backend/batch/batch-processing|batch-processing]]
 - [[02-practical-backend/observability/observability|observability]]

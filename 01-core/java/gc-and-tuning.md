@@ -5,27 +5,17 @@ description: Java GC 동작 원리와 실무 튜닝 관점
 
 # GC 동작 원리와 튜닝
 
-## 한 줄 정의
+GC(Garbage Collection)는 더 이상 참조되지 않는 객체의 메모리를 JVM이 자동으로 회수하는 장치다. 대부분은 기본 설정으로 충분하지만, 응답 지연이 튀거나 메모리가 계속 차오르면 원리를 알아야 원인을 가를 수 있다.
 
-GC(Garbage Collection)는 JVM이 더 이상 참조되지 않는 객체의 메모리를 자동으로 회수하는 메커니즘이다.
+GC 원리가 필요해지는 순간은 대개 이렇다. 응답 지연이 간헐적으로 튀는데 원인이 GC pause일 때, Full GC가 반복되며 서비스가 수 초씩 멈출 때, 메모리 사용량이 계속 올라 GC가 점점 잦아질 때, 컨테이너 메모리 한도를 넘겨 프로세스가 kill될 때, 그리고 GC 로그를 보고 원인을 판단해야 할 때다.
 
-## 실무에서 왜 중요한가
+## 안 쓰는 객체를 어떻게 찾나
 
-대부분의 상황에서 GC는 기본 설정으로 충분하다. 하지만 다음 상황에서는 GC 원리를 알아야 문제를 분석할 수 있다.
+GC의 근본 문제는 "어떤 객체가 더 이상 쓰이지 않는가"를 가려내는 것이다.
 
-- 응답 지연이 간헐적으로 튀는데 원인이 GC pause인 경우
-- Full GC가 반복되면서 서비스가 수 초간 멈추는 경우
-- 메모리 사용량이 계속 올라가서 GC가 점점 자주 발생하는 경우
-- 컨테이너 환경에서 메모리 한도를 넘겨 프로세스가 kill되는 경우
-- GC 로그를 보고 원인을 판단해야 하는 경우
+### 도달성 분석(Reachability Analysis)
 
-## GC의 핵심: 안 쓰는 객체를 어떻게 찾는가
-
-GC의 근본 문제는 "어떤 객체가 더 이상 사용되지 않는가"를 판별하는 것이다.
-
-### Reachability Analysis (도달성 분석)
-
-현대 JVM은 **GC Root에서 참조 체인을 따라가며 도달 가능한 객체를 식별**하는 방식을 사용한다. 도달 불가능한 객체가 수거 대상이다.
+현대 JVM은 GC Root에서 참조 체인을 따라가며 도달 가능한 객체를 표시한다. 도달하지 못한 객체가 수거 대상이다.
 
 ```
 GC Roots
@@ -35,7 +25,7 @@ GC Roots
                          객체D → 객체E (도달 불가 → 수거 대상)
 ```
 
-### GC Root가 되는 것들
+GC Root가 되는 것은 다음과 같다.
 
 | GC Root | 예시 |
 |---|---|
@@ -45,9 +35,9 @@ GC Roots
 | 활성 스레드 | Thread 객체 자체 |
 | Synchronized lock 대상 | 현재 모니터를 잡고 있는 객체 |
 
-### Reference Counting은 왜 안 쓰는가
+### Reference Counting을 쓰지 않는 이유
 
-초기 GC 방식인 Reference Counting(참조 횟수 카운팅)은 순환 참조를 해결하지 못한다.
+초기 방식인 Reference Counting(참조 횟수 세기)은 순환 참조를 풀지 못한다.
 
 ```java
 // 순환 참조 예시 - Reference Counting으로는 수거 불가
@@ -64,11 +54,9 @@ b = null;    // b 참조 카운트: 1 (a.next가 여전히 참조)
 // → 둘 다 카운트가 0이 아니라 수거 불가, 하지만 실제로는 접근 불가
 ```
 
-**Reachability Analysis는 GC Root에서 도달할 수 없으면 수거 대상**이므로 순환 참조 문제가 없다.
+도달성 분석은 GC Root에서 닿지 않으면 수거하므로 순환 참조 문제가 없다.
 
-### GC를 직접 만든다면
-
-런타임을 직접 설계할 때 고려해야 할 핵심 판단:
+### 수거 방식의 트레이드오프
 
 | 방식 | 장점 | 단점 |
 |---|---|---|
@@ -77,11 +65,9 @@ b = null;    // b 참조 카운트: 1 (a.next가 여전히 참조)
 | Mark-and-Compact | 단편화 해결 | 이동 비용 |
 | Copying (세대별) | Young Gen에서 빠름 | 메모리 2배 필요 |
 
-실무에서 JVM은 이들을 조합한다: Young Gen은 Copying, Old Gen은 Mark-Compact 계열을 사용한다.
+JVM은 이들을 섞어 쓴다. Young Gen은 Copying, Old Gen은 Mark-Compact 계열이다.
 
-## GC 기본 동작
-
-### 세대별 구조
+## 세대별 구조
 
 JVM Heap은 Young Generation과 Old Generation으로 나뉜다.
 
@@ -99,17 +85,15 @@ Young Generation              Old Generation
 | Minor GC | Eden + 사용 중인 Survivor에서 살아남은 객체를 다른 Survivor로 복사 |
 | 나이 증가 | GC를 살아남을 때마다 age 증가 |
 | Promotion | age가 임계값을 넘으면 Old Generation으로 이동 |
-| Major GC / Full GC | Old Generation이 가득 차면 발생, 시간이 오래 걸림 |
+| Old 영역 회수 | Old가 차면 회수한다. G1은 평소 concurrent marking + Mixed GC로 나눠 치우고, 그걸로 따라가지 못할 때만 Full GC(전체 STW)로 떨어진다 |
 
 ### Stop-the-World
 
-GC가 실행되는 동안 애플리케이션 스레드가 일시 정지되는 현상이다.
+GC가 도는 동안 애플리케이션 스레드가 멈추는 현상이다. Minor GC의 STW는 짧지만 Full GC의 STW는 수 초에 이르기도 한다. 실무에서 "GC 튜닝"이라고 하면 대부분 이 STW 시간을 줄이는 일이다.
 
-Minor GC의 STW는 짧지만, Full GC의 STW는 수 초에 달할 수 있다. 실무에서 "GC 튜닝"이라 하면 대부분 이 STW 시간을 줄이는 것이 목표다.
+## GC 알고리즘
 
-## GC 알고리즘 비교
-
-| GC | 특성 | 적합한 상황 |
+| GC | 특성 | 맞는 상황 |
 |---|---|---|
 | Serial GC | 싱글 스레드 GC | 작은 heap, 테스트 환경 |
 | Parallel GC | 멀티 스레드 GC, 처리량 우선 | 배치, 데이터 처리 |
@@ -117,13 +101,13 @@ Minor GC의 STW는 짧지만, Full GC의 STW는 수 초에 달할 수 있다. �
 | ZGC | 매우 짧은 STW (< 1ms 목표) | 대용량 heap, 지연 민감 서비스 |
 | Shenandoah | ZGC와 유사, OpenJDK 제공 | ZGC 대안 |
 
-## G1 GC 실무 포인트
+## G1 GC
 
-Java 9부터 기본 GC이며, 대부분의 웹 서비스에서 적절한 선택이다.
+Java 9부터 기본 GC이고, 대부분의 웹 서비스에서 무난하다.
 
-### 동작 방식
+단, JVM은 "서버급 머신"일 때만 G1을 고른다. CPU가 2개 미만이거나 메모리가 약 1.8GB 미만이면 Serial GC가 기본이다. CPU 1개, 메모리 1GB짜리 컨테이너에서 GC pause가 유독 길다면 이것부터 의심한다. `java -XX:+PrintCommandLineFlags -version`으로 실제 선택된 GC를 확인하고, 필요하면 `-XX:+UseG1GC`를 명시한다.
 
-Heap을 고정 크기의 region으로 나누고, 가비지가 많은 region부터 우선 수집(Garbage First)한다.
+Heap을 고정 크기 region으로 나누고, 가비지가 많은 region부터 수집한다(Garbage First).
 
 ```
 ┌───┬───┬───┬───┬───┬───┬───┬───┐
@@ -132,7 +116,7 @@ Heap을 고정 크기의 region으로 나누고, 가비지가 많은 region부�
 E: Eden  S: Survivor  O: Old  H: Humongous  (빈칸: Free)
 ```
 
-### 주요 옵션
+주요 옵션:
 
 ```bash
 java \
@@ -143,23 +127,29 @@ java \
   -jar app.jar
 ```
 
-`MaxGCPauseMillis`는 "보장"이 아니라 "목표"다. 너무 낮게 설정하면 GC가 자주 발생하고, 너무 높으면 한 번에 긴 STW가 발생한다.
+`MaxGCPauseMillis`는 보장이 아니라 목표다. 너무 낮으면 GC가 잦아지고, 너무 높으면 한 번에 긴 STW가 생긴다.
 
-## ZGC - 지연 민감 서비스
+## ZGC
 
-Java 21에서 generational ZGC가 도입되어 실무에서도 사용할 수 있는 수준이 되었다.
+ZGC는 Java 15부터 운영용(production)으로 쓸 수 있었다. 초기 ZGC는 세대 구분이 없어 할당이 많은 서비스에서 CPU를 많이 썼는데, Java 21에서 generational 모드가 들어오며 이 약점이 줄었다.
 
 ```bash
+# Java 21~22: generational 모드를 명시해야 한다
 java -XX:+UseZGC -XX:+ZGenerational -jar app.jar
+
+# Java 23+: generational이 기본, Java 24+는 non-generational 모드가 제거됨
+java -XX:+UseZGC -jar app.jar
 ```
+
+STW는 매우 짧지만, GC 작업을 애플리케이션과 동시에 돌리므로 CPU를 더 쓰고 처리량은 G1보다 낮을 수 있다. CPU 여유가 적은 작은 컨테이너에서는 이점이 작다.
 
 | 특성 | 값 |
 |---|---|
 | STW 시간 | < 1ms 목표 |
 | Heap 크기 | 수 TB까지 지원 |
-| 실무 적합성 | 지연 시간이 매우 중요한 서비스 (결제, 실시간 처리) |
+| 맞는 서비스 | 지연 시간이 매우 중요한 서비스 (결제, 실시간 처리) |
 
-## GC 로그 분석
+## GC 로그 보기
 
 ```bash
 # GC 로그 활성화
@@ -168,43 +158,34 @@ java \
   -jar app.jar
 ```
 
-GC 로그에서 확인할 것:
-
 | 항목 | 의미 |
 |---|---|
-| GC 빈도 | 너무 자주 발생하면 객체 생성이 과도하거나 heap이 작다 |
-| Pause 시간 | STW 시간이 응답 지연의 원인인지 확인 |
-| Full GC 발생 여부 | Full GC가 반복되면 메모리 누수 의심 |
-| Heap 사용량 추이 | GC 후에도 줄어들지 않으면 누수 가능성 |
+| GC 빈도 | 너무 잦으면 객체 생성이 과하거나 heap이 작다 |
+| Pause 시간 | STW 시간이 응답 지연의 원인인지 본다 |
+| Full GC 발생 여부 | Full GC가 반복되면 메모리 누수를 의심한다 |
+| Heap 사용량 추이 | GC 후에도 줄지 않으면 누수 가능성이 있다 |
 
-## 실무 튜닝 판단 기준
+## 증상별로 무엇을 하나
 
 | 상황 | 조치 |
 |---|---|
 | Full GC가 반복된다 | 메모리 누수 확인, heap dump 분석 |
-| Minor GC가 너무 자주 발생한다 | Young Generation 크기 확인, 과도한 객체 생성 점검 |
+| Minor GC가 너무 잦다 | Young Generation 크기 확인, 과도한 객체 생성 점검 |
 | STW가 길다 | G1의 `MaxGCPauseMillis` 조정, ZGC 검토 |
 | GC 후에도 메모리가 줄지 않는다 | 메모리 누수 의심, heap dump 분석 |
 | 컨테이너에서 OOM Kill | `-Xmx`를 컨테이너 한도의 70~80% 이하로 설정 |
 
-## 자주 나는 실수
+## 자주 깨지는 곳
 
-- GC 로그를 남기지 않아서 장애 시 분석이 불가능하다.
-- Full GC가 반복되는데 `-Xmx`만 올려서 문제를 미룬다.
-- GC 튜닝 전에 애플리케이션 코드의 과도한 객체 생성을 먼저 줄이지 않는다.
-- `MaxGCPauseMillis`를 너무 낮게 설정해서 GC가 과도하게 자주 발생한다.
-- 운영 환경에서 GC 알고리즘을 변경할 때 충분한 테스트 없이 적용한다.
+- **GC 로그를 남기지 않는다.** 장애가 나도 분석할 근거가 없다.
+- **Full GC가 반복되는데 `-Xmx`만 올린다.** 누수라면 터지는 시점만 미뤄진다.
+- **코드보다 옵션을 먼저 만진다.** 과도한 객체 생성을 줄이는 게 튜닝보다 먼저다.
+- **`MaxGCPauseMillis`를 너무 낮게 잡는다.** GC가 지나치게 자주 돈다.
+- **운영에서 GC 알고리즘을 충분한 테스트 없이 바꾼다.** 처리량과 CPU 사용 패턴이 함께 바뀐다.
 
-## 핵심 요약
+## 면접에서 말하기
 
-GC는 JVM이 참조되지 않는 객체의 메모리를 자동으로 회수하는 메커니즘입니다.
-Heap은 Young과 Old Generation으로 나뉘고, 대부분의 객체는 Young에서 Minor GC로 빠르게 회수됩니다.
-Old Generation이 가득 차면 Full GC가 발생하는데, 이때 Stop-the-World로 인해 응답 지연이 생길 수 있습니다.
-
-Java 9부터 기본인 G1 GC는 Heap을 region으로 나누어 가비지가 많은 영역부터 수집하며, STW 목표 시간을 설정할 수 있습니다.
-
-실무에서 GC 튜닝은 대부분 STW 시간을 줄이는 것이 목표이고, 튜닝 전에 애플리케이션 코드의 과도한 객체 생성을 줄이는 것이 먼저입니다.
-운영에서는 GC 로그를 반드시 남겨야 장애 시 원인 분석이 가능합니다.
+> GC는 GC Root에서 닿지 않는 객체를 찾아 메모리를 회수하는 장치입니다. Heap은 Young과 Old로 나뉘어 대부분의 객체는 Young에서 Minor GC로 빨리 회수되고, Old가 감당이 안 되면 Full GC로 긴 Stop-the-World가 생깁니다. 기본인 G1은 region 단위로 가비지가 많은 곳부터 치우고 STW 목표 시간을 줄 수 있습니다. 튜닝이 필요하면 GC 로그로 빈도와 pause를 먼저 확인하고, 옵션보다 과도한 객체 생성을 줄이는 쪽을 먼저 봅니다.
 
 ## 꼬리 질문
 

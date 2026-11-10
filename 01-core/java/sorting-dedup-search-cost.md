@@ -5,23 +5,11 @@ description: Java 컬렉션의 정렬, 중복 제거, 탐색 비용과 실무 �
 
 # 정렬·중복 제거·탐색의 시간 복잡도
 
-## 한 줄 정의
+정렬, 중복 제거, 탐색은 컬렉션에서 가장 자주 하는 연산이고, 자료구조와 데이터 크기에 따라 비용이 크게 갈린다. 그중 실무에서 가장 자주 문제가 되는 건 **반복문 안의 탐색 비용**이다.
 
-컬렉션에서 정렬, 중복 제거, 탐색은 자주 사용되는 연산이며, 데이터 구조와 크기에 따라 비용이 크게 달라진다.
+수십 건일 때는 무엇을 써도 차이가 없다. 수천~수만 건이 되면 잘못된 선택이 응답 시간으로 바로 드러난다. 흔한 경우는 반복문 안의 `List.contains()`가 O(n^2)이 되는 것, 정렬 기준이 여럿인데 `Comparator` 조합 대신 손으로 비교하는 것, `equals/hashCode`가 없어 중복이 안 빠지는 것, DB에서 정렬할 걸 애플리케이션에서 정렬해 메모리를 낭비하는 것, `TreeSet`에 `Comparable`이 없는 객체를 넣어 `ClassCastException`이 나는 것이다.
 
-## 실무에서 왜 중요한가
-
-데이터가 수십 건일 때는 어떤 방식이든 차이가 없다. 하지만 수천~수만 건이 되면 잘못된 선택이 응답 시간에 직접 영향을 준다.
-
-- `List.contains()`를 반복 호출해서 O(n^2)이 되는 것을 모른다.
-- 정렬 기준이 여러 개인데 `Comparator` 조합을 모르고 수동으로 비교한다.
-- 중복 제거 시 `equals/hashCode`를 재정의하지 않아서 제거가 안 된다.
-- DB에서 정렬해야 할 것을 애플리케이션에서 정렬해서 메모리를 낭비한다.
-- `TreeSet`으로 정렬과 중복 제거를 동시에 하려다 `Comparable` 미구현으로 `ClassCastException`이 발생한다.
-
-## 탐색 비용
-
-### 자료구조별 탐색 시간 복잡도
+## 탐색
 
 | 연산 | ArrayList | HashSet | HashMap | TreeSet/TreeMap |
 |---|---|---|---|---|
@@ -29,7 +17,7 @@ description: Java 컬렉션의 정렬, 중복 제거, 탐색 비용과 실무 �
 | 인덱스 접근 | O(1) | 불가 | 불가 | 불가 |
 | key로 value 조회 | 불가 | 불가 | O(1) 평균 | O(log n) |
 
-### List.contains()의 함정
+### 반복문 안의 List.contains()
 
 ```java
 // 주문마다 처리 완료 목록에서 확인 - O(orders * processed)
@@ -42,7 +30,7 @@ for (Order order : orders) {
 }
 ```
 
-`processedIds`가 1만 건이고 `orders`가 1만 건이면 최악 1억 번 비교한다.
+`processedIds`가 1만 건, `orders`가 1만 건이면 최악 1억 번 비교한다.
 
 ```java
 // Set으로 변환하면 O(orders) - 각 contains가 O(1)
@@ -55,9 +43,9 @@ for (Order order : orders) {
 }
 ```
 
-**판단 기준**: `contains()`를 반복문 안에서 호출하면 `Set`으로 변환을 검토한다.
+반복문 안에서 `contains()`를 부르고 있으면 `Set`으로 바꾼다.
 
-### List에서 반복 조회 vs Map 변환
+### 반복 조회는 Map으로
 
 ```java
 // O(n * m) - 주문마다 사용자 목록을 순회
@@ -79,8 +67,6 @@ for (Order order : orders) {
 
 ## 정렬
 
-### 기본 정렬
-
 ```java
 // 자연 순서 (Comparable 구현 필요)
 List<String> names = new ArrayList<>(List.of("kim", "lee", "park"));
@@ -91,7 +77,7 @@ List<Order> orders = getOrders();
 orders.sort(Comparator.comparing(Order::getCreatedAt));
 ```
 
-### 다중 기준 정렬
+기준이 여럿이면 `thenComparing()`으로 이어 붙인다. if-else 분기가 필요 없다.
 
 ```java
 // 상태 우선, 같으면 생성일 최신순
@@ -101,9 +87,7 @@ orders.sort(
 );
 ```
 
-`thenComparing()`으로 체이닝하면 if-else 분기 없이 다중 정렬을 표현할 수 있다.
-
-### null 안전 정렬
+null이 들어올 수 있는 필드는 `nullsFirst()`나 `nullsLast()`로 감싼다. 안 그러면 null을 만나는 순간 `NullPointerException`이 난다.
 
 ```java
 // null이 포함될 수 있는 필드 정렬
@@ -115,9 +99,7 @@ orders.sort(
 );
 ```
 
-`nullsFirst()` / `nullsLast()`를 사용하지 않으면 null이 있을 때 `NullPointerException`이 발생한다.
-
-### DB 정렬 vs 애플리케이션 정렬
+### DB에서 정렬할까, 애플리케이션에서 할까
 
 | 기준 | DB 정렬 | 애플리케이션 정렬 |
 |---|---|---|
@@ -127,11 +109,11 @@ orders.sort(
 | 페이지네이션과 함께 | ORDER BY + LIMIT | 전체 조회 후 잘라야 해서 비효율 |
 | 여러 API의 결과를 합쳐서 정렬 | 불가능 | 적합 |
 
-**원칙**: 정렬 기준이 DB 컬럼이고 데이터가 크면 DB에서 정렬한다. 애플리케이션 정렬은 이미 메모리에 있는 소규모 데이터에서 사용한다.
+정렬 기준이 DB 컬럼이고 데이터가 크면 DB에서 정렬한다. 애플리케이션 정렬은 이미 메모리에 올라온 작은 데이터에 쓴다.
 
 ## 중복 제거
 
-### 단순 값 중복 제거
+값 타입은 바로 된다.
 
 ```java
 // primitive/wrapper 타입은 바로 가능
@@ -140,17 +122,13 @@ List<Long> uniqueIds = ids.stream().distinct().toList();
 // [1, 2, 3]
 ```
 
-### 객체 중복 제거
-
-`distinct()`는 `equals()`를 기준으로 동작한다. `equals/hashCode`를 재정의하지 않으면 참조 비교가 되어 중복이 제거되지 않는다.
+객체는 다르다. `distinct()`는 `equals()` 기준이라, `equals/hashCode`를 재정의하지 않으면 참조 비교가 돼서 중복이 빠지지 않는다.
 
 ```java
 // equals/hashCode가 없으면 모든 객체가 다르다고 판단
 List<User> users = List.of(new User(1L, "kim"), new User(1L, "kim"));
 users.stream().distinct().toList(); // 2건 그대로
 ```
-
-해결 방법:
 
 ```java
 // 방법 1: equals/hashCode 재정의
@@ -165,7 +143,7 @@ List<User> unique = users.stream()
     .stream()
     .toList();
 
-// 방법 3: 순서를 유지하면서 특정 필드 기준 중복 제거
+// 방법 3: 특정 필드 기준 중복 제거 (결과는 원래 순서가 아니라 id 순으로 정렬된다)
 List<User> unique = users.stream()
     .collect(Collectors.collectingAndThen(
         Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(User::getId))),
@@ -173,7 +151,7 @@ List<User> unique = users.stream()
     ));
 ```
 
-### Set을 이용한 중복 제거
+### Set으로 중복 제거
 
 ```java
 // HashSet: 순서 보장 X, O(1) 삽입/조회
@@ -186,9 +164,9 @@ Set<Long> uniqueIds = new LinkedHashSet<>(idList);
 Set<Long> sortedUniqueIds = new TreeSet<>(idList);
 ```
 
-### TreeSet 주의점
+### TreeSet은 compareTo()로 같은지 본다
 
-`TreeSet`은 `Comparable`을 기준으로 동등성을 판단한다. `equals()`가 아니라 `compareTo()`가 0을 반환하면 같은 원소로 취급한다.
+`TreeSet`은 `equals()`가 아니라 `compareTo()`(또는 넘겨준 `Comparator`)가 0을 반환하면 같은 원소로 친다.
 
 ```java
 // Comparable을 구현하지 않은 객체를 넣으면 ClassCastException
@@ -199,7 +177,7 @@ users.add(new User(1L, "kim")); // ClassCastException
 Set<User> users = new TreeSet<>(Comparator.comparing(User::getId));
 ```
 
-## 시간 복잡도 정리
+## 시간 복잡도 한눈에
 
 | 연산 | 방식 | 시간 복잡도 |
 |---|---|---|
@@ -213,17 +191,7 @@ Set<User> users = new TreeSet<>(Comparator.comparing(User::getId));
 | 탐색 | `List` 반복문 안에서 `List.contains()` | O(n * m) |
 | 탐색 | `List` 반복문 안에서 `Set.contains()` | O(n) |
 
-## 자주 나는 실수
-
-- 반복문 안에서 `List.contains()`를 호출해서 O(n^2)이 되는 것을 모른다.
-- `distinct()`가 `equals()`를 기준으로 동작하는 것을 모르고 객체 중복 제거가 안 된다.
-- `Comparator`에서 null을 처리하지 않아 `NullPointerException`이 발생한다.
-- DB에서 정렬할 수 있는데 전체를 조회해서 애플리케이션에서 정렬한다.
-- `TreeSet`에 `Comparable`을 구현하지 않은 객체를 넣어 `ClassCastException`이 발생한다.
-- 정렬 기준이 여러 개인데 `Comparator` 체이닝을 모르고 if-else로 비교한다.
-- `LinkedHashSet`과 `HashSet`의 순서 보장 차이를 모르고 순서가 달라진다.
-
-## 실무 판단 기준
+## 상황별로 무엇을 쓰나
 
 | 상황 | 권장 |
 |---|---|
@@ -236,17 +204,19 @@ Set<User> users = new TreeSet<>(Comparator.comparing(User::getId));
 | 정렬 + 중복 제거 동시 | `TreeSet` + `Comparator` |
 | 순서 유지 + 중복 제거 | `LinkedHashSet` |
 
-## 핵심 요약
+## 자주 깨지는 곳
 
-컬렉션 연산에서 가장 중요한 것은 탐색 비용입니다.
-`List.contains()`는 O(n)이라서 반복문 안에서 호출하면 O(n^2)이 됩니다.
-이 경우 `Set`으로 변환하면 각 탐색이 O(1)이 되어 전체가 O(n)으로 줄어듭니다.
+- **반복문 안에서 `List.contains()`를 부른다.** 데이터가 늘면 O(n^2)으로 느려진다.
+- **`distinct()`가 `equals()` 기준인 걸 모른다.** 객체 중복이 그대로 남는다.
+- **`Comparator`에서 null을 처리하지 않는다.** null 하나에 정렬 전체가 `NullPointerException`으로 실패한다.
+- **DB에서 정렬할 수 있는데 전부 조회해 애플리케이션에서 정렬한다.** 메모리와 조회 시간이 낭비된다.
+- **`Comparable`이 없는 객체를 `TreeSet`에 넣는다.** `ClassCastException`이 난다.
+- **정렬 기준이 여럿인데 if-else로 비교한다.** `thenComparing()` 체이닝이면 한 줄로 끝난다.
+- **`HashSet`과 `LinkedHashSet`의 순서 차이를 모른다.** 결과 순서가 실행마다 달라진다.
 
-정렬은 `Comparator.comparing()`과 `thenComparing()`으로 다중 기준을 체이닝할 수 있고, null이 있으면 `nullsLast()`를 사용해야 합니다.
+## 면접에서 말하기
 
-중복 제거에서 `distinct()`는 `equals()` 기준이므로 객체에 `equals/hashCode`가 없으면 동작하지 않습니다.
-
-실무에서는 정렬 기준이 DB 컬럼이면 ORDER BY를 쓰는 것이 효율적이고, 애플리케이션 정렬은 이미 메모리에 있는 소규모 데이터에 적합합니다.
+> 컬렉션 연산에서 제가 가장 먼저 보는 건 반복문 안의 탐색 비용입니다. `List.contains()`는 O(n)이라 반복문 안에서 부르면 O(n^2)이 되고, Set으로 바꾸면 탐색이 O(1)이라 전체가 O(n)으로 줄어듭니다. 정렬은 `comparing()`과 `thenComparing()`으로 기준을 잇고 null이 있으면 `nullsLast()`를 씁니다. `distinct()`는 equals 기준이라 객체에는 equals/hashCode가 있어야 하고, 정렬 기준이 DB 컬럼이면 애플리케이션이 아니라 ORDER BY로 처리합니다.
 
 ## 꼬리 질문
 

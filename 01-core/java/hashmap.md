@@ -5,39 +5,46 @@ description: Java HashMap의 동작 원리와 실무 사용 기준
 
 # HashMap 내부 동작과 충돌 처리
 
-## 한 줄 정의
+`HashMap`은 key의 `hashCode()`로 저장 위치를 찾고, `equals()`로 같은 key인지 확인해 값을 넣고 꺼내는 `Map` 구현체다. 그래서 key의 동등성 기준이 틀리면 넣은 값을 다시 못 찾는다.
 
-`HashMap`은 key의 `hashCode()`로 저장 위치를 찾고, `equals()`로 같은 key인지 확인해서 값을 저장하고 조회하는 `Map` 구현체다.
+백엔드에서는 DB 조회 결과를 id로 매핑하고, 여러 목록을 한 응답으로 조립하고, 반복적인 `List` 조회를 줄일 때 늘 쓴다. key의 동등성 기준, 중복 key, 순서, 동시성 요구를 놓치면 조회 실패나 데이터 정합성 문제가 생긴다.
 
-## 실무에서 왜 중요한가
-
-백엔드에서 `HashMap`은 DB 조회 결과를 id 기준으로 매핑하고, 여러 목록을 하나의 응답으로 조립하고, 반복적인 `List` 조회를 줄이는 기본 도구다.
-
-하지만 key의 동등성 기준, 중복 key, 순서, 동시성 요구사항을 놓치면 조회 실패나 데이터 정합성 문제가 생긴다.
-
-## 동작 원리
-
-`HashMap`의 핵심은 두 단계다.
+## 동작
 
 1. `hashCode()`로 bucket 위치를 찾는다.
 2. 같은 bucket 안에서 `equals()`로 같은 key인지 확인한다.
 
-같은 key면 값을 덮어쓰고, 다른 key면 같은 bucket 안에 함께 저장한다. 데이터가 많아지면 내부 배열을 늘리고 다시 배치한다.
+같은 key면 값을 덮어쓰고, 다른 key면 같은 bucket에 함께 둔다. 데이터가 많아지면 내부 배열을 늘리고 다시 배치한다.
 
-## 언제 쓰는가
+### 충돌 처리와 리사이즈 (Java 8+)
+
+| 항목 | 기본 동작 |
+|---|---|
+| bucket 위치 | `(n - 1) & (h ^ (h >>> 16))`. 상위 비트를 섞어 하위 비트만 쓰는 인덱스 계산의 쏠림을 줄인다 |
+| 충돌 | 같은 bucket에 연결 리스트로 붙인다 |
+| treeify | 한 bucket이 8개를 넘고 배열 크기가 64 이상이면 Red-Black Tree로 바꾼다 (64 미만이면 트리 대신 리사이즈) |
+| 리사이즈 | 기본 용량 16, load factor 0.75. 원소 수가 `용량 × 0.75`를 넘으면 배열을 2배로 늘리고 재배치한다 |
+
+이 표가 실무에서 뜻하는 것:
+
+- `hashCode()`가 늘 같은 값을 돌려주면 모든 key가 한 bucket에 몰린다. 트리화가 최악을 줄여 주지만(key가 `Comparable`이면 O(log n)), 정상적인 O(1)보다는 확실히 느리다.
+- 크기를 아는 대량 적재는 초기 용량을 잡아 리사이즈를 피한다. Java 19+는 `HashMap.newHashMap(expectedSize)`가 load factor 계산을 대신해 준다.
+- 여러 스레드가 동시에 `put`하면 값이 유실된다. 이때는 `ConcurrentHashMap`을 쓴다.
+
+## 어떤 Map을 고르나
 
 | 상황 | 선택 |
 |---|---|
-| key로 빠르게 찾아야 함 | `HashMap` |
+| key로 빨리 찾아야 함 | `HashMap` |
 | 입력 순서를 유지해야 함 | `LinkedHashMap` |
 | key 정렬이 필요함 | `TreeMap` |
 | 여러 스레드가 동시에 읽고 씀 | `ConcurrentHashMap` |
 | key가 enum임 | `EnumMap` |
-| 데이터가 작고 한 번만 순회함 | `List` 유지도 가능 |
+| 데이터가 작고 한 번만 훑음 | `List` 그대로 둬도 된다 |
 
-## 실무 패턴: List를 Map으로 바꾸기
+## List를 Map으로 바꾸기
 
-주문 목록을 응답으로 만들 때 사용자 목록을 매번 순회하면 비용이 커진다.
+주문 목록을 응답으로 만들면서 사용자 목록을 매번 훑으면 비용이 커진다.
 
 ```java
 for (Order order : orders) {
@@ -48,7 +55,7 @@ for (Order order : orders) {
 }
 ```
 
-먼저 `HashMap`으로 바꾸면 id로 바로 찾을 수 있다.
+먼저 `HashMap`으로 바꾸면 id로 바로 찾는다.
 
 ```java
 Map<Long, User> userMap = users.stream()
@@ -59,11 +66,11 @@ for (Order order : orders) {
 }
 ```
 
-데이터가 작고 한 번만 순회한다면 `Map` 변환이 오히려 코드를 복잡하게 만들 수 있다. 반복 조회가 있을 때 효과가 크다.
+반복 조회가 있을 때 효과가 크다. 데이터가 작고 한 번만 훑는다면 `Map` 변환이 오히려 코드만 복잡하게 만든다.
 
-## key 설계가 중요하다
+## key 설계
 
-객체를 key로 쓰려면 `equals()`와 `hashCode()`가 올바르게 구현되어야 한다.
+객체를 key로 쓰려면 `equals()`와 `hashCode()`가 제대로 구현돼 있어야 한다.
 
 ```java
 class UserKey {
@@ -81,13 +88,13 @@ map.put(new UserKey(1L), "ACTIVE");
 String status = map.get(new UserKey(1L)); // equals/hashCode가 없으면 null 가능
 ```
 
-실무에서는 객체 key가 꼭 필요하지 않다면 `Long`, `String`, enum처럼 동등성 기준이 명확한 값을 key로 쓰는 편이 안전하다.
+객체 key가 꼭 필요하지 않으면 `Long`, `String`, enum처럼 동등성 기준이 분명한 값을 key로 쓰는 편이 안전하다.
 
-key로 쓰는 값은 저장 후 바뀌면 안 된다. hash 값이 바뀌면 기존 bucket에서 찾지 못할 수 있다.
+key로 쓰는 값은 저장 후 바뀌면 안 된다. hash 값이 바뀌면 기존 bucket에서 찾지 못한다.
 
-## 중복 key 처리
+## 중복 key
 
-`Collectors.toMap()`은 중복 key가 생기면 기본적으로 예외가 발생한다.
+`Collectors.toMap()`은 key가 겹치면 기본적으로 예외를 던진다.
 
 ```java
 Map<Long, Order> latestOrderMap = orders.stream()
@@ -98,24 +105,20 @@ Map<Long, Order> latestOrderMap = orders.stream()
     ));
 ```
 
-merge 전략은 반드시 의도를 설명할 수 있어야 한다. “나중 값”이 최신이라는 보장이 없다면 정렬 기준이나 비교 기준을 먼저 정해야 한다.
+merge 함수는 의도를 설명할 수 있어야 한다. "나중 값"이 최신이라는 보장이 없다면 정렬 기준이나 비교 기준부터 정한다.
 
-## 자주 나는 실수
+## 자주 깨지는 곳
 
-- key 객체의 `equals/hashCode`를 재정의하지 않는다.
-- mutable 객체를 key로 사용하고 저장 후 값을 변경한다.
-- 중복 key 가능성이 있는데 `toMap()` merge 전략을 지정하지 않는다.
-- 순서가 필요한데 `HashMap`을 사용한다.
-- 여러 스레드가 동시에 수정하는데 일반 `HashMap`을 사용한다.
-- 작은 데이터까지 무조건 `Map`으로 바꿔 가독성을 떨어뜨린다.
+- **key 객체의 `equals/hashCode`를 재정의하지 않는다.** 같은 값으로 만든 새 key로는 못 찾는다.
+- **mutable 객체를 key로 쓰고 저장 후 값을 바꾼다.** 엉뚱한 bucket을 뒤져 조회가 실패한다.
+- **중복 key가 가능한데 `toMap()` merge 함수를 넘기지 않는다.** 데이터가 겹치는 순간 예외가 난다.
+- **순서가 필요한데 `HashMap`을 쓴다.** 응답 순서가 보장되지 않는다.
+- **여러 스레드가 동시에 수정하는데 일반 `HashMap`을 쓴다.** 값이 유실된다.
+- **작은 데이터까지 무조건 `Map`으로 바꾼다.** 얻는 것 없이 읽기만 어려워진다.
 
-## 핵심 요약
+## 면접에서 말하기
 
-`HashMap`은 `hashCode()`로 위치를 찾고 `equals()`로 같은 key인지 확인한다. 그래서 key의 동등성 기준이 정확해야 한다.
-
-실무에서는 반복적인 목록 조회를 줄이고 응답을 조립할 때 자주 사용한다. 순서가 필요하면 `LinkedHashMap`, 정렬이 필요하면 `TreeMap`, 동시 수정이 필요하면 `ConcurrentHashMap`을 고려한다.
-
-중복 key, mutable key, 객체 key의 `equals/hashCode`는 코드 리뷰에서 반드시 확인해야 한다.
+> HashMap은 hashCode로 bucket을 찾고 equals로 같은 key인지 확인합니다. 그래서 key의 동등성 기준이 정확해야 하고, 저장 후 key 값이 바뀌면 안 됩니다. 실무에서는 응답 조립에서 반복적인 목록 조회를 줄일 때 많이 쓰고, 순서가 필요하면 LinkedHashMap, 정렬이 필요하면 TreeMap, 동시 수정이 있으면 ConcurrentHashMap을 씁니다. 코드 리뷰에서는 중복 key, mutable key, 객체 key의 equals/hashCode를 꼭 확인합니다.
 
 ## 꼬리 질문
 

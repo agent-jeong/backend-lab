@@ -5,33 +5,18 @@ description: Java primitive type과 reference type의 차이와 실무 주의점
 
 # 기본 타입과 참조 타입의 차이
 
-## 한 줄 정의
+primitive type은 값 자체를 담는 기본 타입이고, reference type은 객체를 가리키는 참조값을 담는 타입이다.
 
-Java의 primitive type은 값 자체를 다루는 기본 타입이고, reference type은 객체에 접근하기 위한 참조값을 다루는 타입이다.
+이 차이를 놓치면 `==`, `equals()`, `null`, wrapper type, 컬렉션에서 버그가 난다. 실무에서 흔한 건 `String`이나 `Integer`·`Long`을 `==`로 비교하는 것, wrapper의 `null`을 잊어 `NullPointerException`이 나는 것, Request DTO에 primitive를 써서 값 누락과 기본값을 구분하지 못하는 것이다.
 
-## 실무에서 왜 중요한가
+## 두 타입의 차이
 
-두 타입의 차이를 모르면 `==`, `equals()`, `null`, wrapper type, 컬렉션 사용에서 버그가 자주 생긴다.
-
-특히 실무에서는 다음 문제가 자주 발생한다.
-
-- `String` 값을 `==`로 비교한다.
-- `Integer`, `Long` 같은 wrapper type을 `==`로 비교한다. 
-- wrapper type의 `null`을 고려하지 않아 `NullPointerException`이 발생한다. 
-- Request DTO에서 primitive를 사용해 값 누락과 기본값을 구분하지 못한다.
-
-## 핵심 개념
-
-- primitive type은 `int`, `long`, `double`, `char`, `boolean` 같은 기본 타입이다.
-- primitive 변수는 실제 값을 가진다.
-- primitive type은 `null`이 될 수 없다.
-- reference type은 `String`, 배열, 클래스, 인터페이스, enum 같은 객체 타입이다.
-- reference 변수는 객체 자체가 아니라 객체를 가리키는 참조값을 가진다.
-- reference type은 `null`이 될 수 있다.
-
-## 비교 방식
-
-primitive type에서 `==`는 값을 비교한다.
+| | primitive type | reference type |
+|---|---|---|
+| 예 | `int`, `long`, `double`, `char`, `boolean` | `String`, 배열, 클래스, 인터페이스, enum |
+| 변수가 담는 것 | 실제 값 | 객체를 가리키는 참조값 |
+| `null` | 될 수 없다 | 될 수 있다 |
+| `==` | 값 비교 | 같은 객체인지 비교 |
 
 ```java
 int a = 100;
@@ -39,8 +24,6 @@ int b = 100;
 
 System.out.println(a == b); // true
 ```
-
-reference type에서 `==`는 같은 객체를 참조하는지 비교한다.
 
 ```java
 String a = new String("java");
@@ -50,13 +33,11 @@ System.out.println(a == b);      // false
 System.out.println(a.equals(b)); // true
 ```
 
-문자열 내용 비교는 `==`가 아니라 `equals()`를 사용한다.
+문자열 내용은 `equals()`로 비교한다.
 
-## Wrapper Type 주의점
+## Wrapper type
 
-`Integer`, `Long`, `Boolean` 같은 wrapper type은 reference type이다.
-
-따라서 wrapper type은 `null`이 될 수 있고, 자동 unboxing 과정에서 `NullPointerException`이 발생할 수 있다.
+`Integer`, `Long`, `Boolean` 같은 wrapper type은 reference type이다. 그래서 `null`이 될 수 있고, 자동 unboxing 순간에 `NullPointerException`이 난다.
 
 ```java
 Integer count = null;
@@ -66,7 +47,7 @@ if (count == 0) {
 }
 ```
 
-또한 wrapper type은 reference type이므로 ==로 값 비교를 하면 안 되고, `Objects.equals()`를 사용하는 것이 안전하다.
+값 비교도 `==`가 아니라 `Objects.equals()`로 한다. `==`는 참조 비교라서 같은 값이어도 false가 나올 수 있다.
 
 ```java
 Integer a = 128;
@@ -76,13 +57,12 @@ System.out.println(a == b); // false일 수 있음
 System.out.println(Objects.equals(a, b)); // true
 ```
 
-## 실무 판단 기준
+## 어떤 타입을 고르나
 
-- 값이 반드시 있어야 하면 primitive type을 우선 고려한다.
-- 값이 없을 수 있거나 DB `NULL`을 표현해야 하면 wrapper type을 사용한다.
-- 객체 내용 비교는 `equals()`를 사용한다.
-- wrapper type의 값 비교는 `Objects.equals()`를 사용한다.
-- `equals()` 호출 대상이 `null`일 수 있으면 상수나 안전한 객체에서 호출한다.
+- 값이 늘 있어야 하면 primitive type을 먼저 쓴다.
+- 값이 없을 수 있거나 DB `NULL`을 표현해야 하면 wrapper type을 쓴다.
+- 객체 내용은 `equals()`, wrapper 값은 `Objects.equals()`로 비교한다.
+- `equals()`를 부르는 쪽이 `null`일 수 있으면 상수나 null이 아닌 객체에서 호출한다.
 
 ```java
 if ("ACTIVE".equals(status)) {
@@ -90,14 +70,9 @@ if ("ACTIVE".equals(status)) {
 }
 ```
 
-## 핵심 요약
+## 면접에서 말하기
 
-Java의 primitive type은 값 자체를 다루는 기본 타입이고, reference type은 객체를 참조하는 타입입니다.
-primitive type은 `null`이 될 수 없고 `==`로 값을 비교합니다.
-
-반면 reference type은 `null`이 될 수 있으며, `==`는 같은 객체인지 비교하고 `equals()`는 객체의 의미상 동등성을 비교할 때 사용합니다.
-
-실무에서는 문자열이나 wrapper type을 `==`로 비교하거나, wrapper type의 `null`을 고려하지 않아 `NullPointerException`이 나는 경우가 많기 때문에 타입 선택과 비교 방식을 명확히 구분해야 합니다.
+> primitive type은 값 자체를, reference type은 객체를 가리키는 참조를 다룹니다. primitive는 `null`이 될 수 없고 `==`로 값을 비교하지만, reference type의 `==`는 같은 객체인지를 보고 의미상 같은지는 `equals()`로 봅니다. 실무에서는 문자열이나 wrapper를 `==`로 비교하거나 wrapper의 `null`을 unboxing하다 NPE가 나는 경우가 많아서, 값이 없을 수 있는지로 타입을 고르고 비교는 `equals()`나 `Objects.equals()`로 합니다.
 
 ## 꼬리 질문
 

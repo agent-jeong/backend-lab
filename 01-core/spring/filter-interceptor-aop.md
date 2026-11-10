@@ -5,14 +5,9 @@ description: Spring 요청 처리 흐름에서 Filter, Interceptor, AOP의 실�
 
 # Filter vs Interceptor vs AOP
 
-## 한 줄 정의
+셋 다 공통 처리를 끼워 넣는 자리지만 끼어드는 층이 다르다. Filter는 서블릿 컨테이너에서 요청과 응답을 가로채고, Interceptor는 DispatcherServlet 이후 Controller 전후에서, AOP는 특정 빈의 메서드 실행 전후에서 동작한다.
 
-Filter는 서블릿 컨테이너 수준에서 요청/응답을 가로채고, Interceptor는 Spring MVC의 DispatcherServlet 이후에 동작하며, AOP는 특정 빈의 메서드 실행 전후에 동작하는 횡단 관심사 처리 기법이다.
-
-## 실무에서 왜 중요한가
-
-- 로깅, 인증, 인코딩 등 공통 처리를 어디에 구현할지 판단하지 못하면 부적절한 위치에 코드를 넣게 된다.
-- Spring Security의 Filter Chain을 이해하려면 Filter의 위치를 알아야 한다.
+어느 층인지 모르고 고르면 로깅, 인증, 인코딩 코드가 엉뚱한 자리에 들어간다. Spring Security의 Filter Chain도 Filter가 어디 있는지 알아야 읽힌다.
 
 ## 실행 흐름
 
@@ -54,11 +49,11 @@ HTTP 요청
 | Request/Response 조작 | 가능 (래핑) | 가능 | 불가 |
 | 적용 대상 | 모든 요청 (정적 리소스 포함) | Spring MVC 요청만 | 지정한 빈의 메서드 |
 
-## 각각의 역할과 예시
+## 각각 무엇에 쓰나
 
 ### Filter
 
-서블릿 스펙이므로 Spring에 의존하지 않는다. 요청/응답 자체를 조작할 수 있다.
+서블릿 스펙이라 Spring에 의존하지 않고, 요청과 응답 객체 자체를 바꿀 수 있다.
 
 ```java
 @Component
@@ -73,16 +68,11 @@ public class EncodingFilter implements Filter {
 }
 ```
 
-**적합한 용도**:
-- 인코딩 설정
-- CORS 처리
-- 요청/응답 로깅 (body 래핑)
-- Spring Security 인증/인가 (FilterChain)
-- XSS 방어
+쓰는 곳: 인코딩 설정, CORS 처리, body를 래핑한 요청/응답 로깅, Spring Security 인증/인가(FilterChain), XSS 방어.
 
 ### Interceptor
 
-Spring MVC에서 제공하며, Controller 호출 전후에 동작한다.
+Spring MVC가 제공하고, Controller 호출 전후에 동작한다.
 
 ```java
 @Component
@@ -113,15 +103,11 @@ public class AuthInterceptor implements HandlerInterceptor {
 }
 ```
 
-**적합한 용도**:
-- 인증/인가 체크 (간단한 경우)
-- API 요청 로깅 (Controller 기준)
-- 요청별 공통 데이터 세팅
-- 실행 시간 측정 (Controller 단위)
+쓰는 곳: 간단한 인증/인가 체크, Controller 기준 API 요청 로깅, 요청별 공통 데이터 세팅, Controller 단위 실행 시간 측정.
 
 ### AOP
 
-Spring 빈의 메서드 수준에서 동작한다. URL이 아닌 클래스/메서드 단위로 적용.
+Spring 빈의 메서드 단위로 동작한다. URL이 아니라 클래스와 메서드를 골라 적용한다.
 
 ```java
 @Aspect
@@ -139,14 +125,9 @@ public class ServiceLoggingAspect {
 }
 ```
 
-**적합한 용도**:
-- 트랜잭션 관리 (`@Transactional`)
-- Service/Repository 메서드 실행 시간 측정
-- 재시도 로직 (`@Retryable`)
-- 메서드 수준 권한 체크
-- 캐싱 (`@Cacheable`)
+쓰는 곳: 트랜잭션 관리(`@Transactional`), Service/Repository 메서드 실행 시간 측정, 재시도(`@Retryable`), 메서드 수준 권한 체크, 캐싱(`@Cacheable`).
 
-## 실무 선택 기준
+## 요구사항별로 고르기
 
 | 요구사항 | 선택 | 이유 |
 |---|---|---|
@@ -158,31 +139,28 @@ public class ServiceLoggingAspect {
 | Service 메서드 실행 시간 | AOP | 메서드 단위 적용 |
 | 트랜잭션, 캐싱, 재시도 | AOP | 메서드 수준 횡단 관심사 |
 
-## 자주 나는 실수
+## 자주 깨지는 곳
 
-- Filter에서 Spring 빈을 주입받으려고 `@Autowired`를 쓰는데 동작하지 않는다 (DelegatingFilterProxy 필요).
-- Interceptor에서 request body를 읽으면 Controller에서 다시 읽을 수 없다 (body는 1회성 스트림).
-- AOP를 URL 기반으로 적용하려고 한다 (AOP는 빈/메서드 기반).
-- 모든 공통 로직을 AOP로 해결하려고 해서 Filter/Interceptor가 더 적합한 경우를 놓친다.
-- Interceptor의 `postHandle`은 Controller 예외 시 호출되지 않는 것을 모른다 (`afterCompletion`은 호출됨).
+- **Filter에 `@Autowired`로 빈을 주입하려 한다.** 동작하지 않는다. `DelegatingFilterProxy`가 필요하다.
+- **Interceptor에서 request body를 읽는다.** body는 한 번만 읽히는 스트림이라 Controller에서 다시 읽지 못한다.
+- **AOP를 URL 기준으로 걸려고 한다.** AOP는 빈과 메서드 기준이다.
+- **공통 로직을 전부 AOP로 해결하려 한다.** Filter나 Interceptor가 맞는 자리를 놓친다.
+- **`postHandle`이 항상 불린다고 믿는다.** Controller에서 예외가 나면 `postHandle`은 호출되지 않고 `afterCompletion`만 호출된다.
 
-## 핵심 요약
+## 면접에서 말하기
 
-Filter는 서블릿 컨테이너 수준에서 모든 요청을 가로채고, Interceptor는 Spring MVC의 Controller 전후에 동작하며, AOP는 빈의 메서드 단위에서 동작합니다.
-
-요청/응답 조작이 필요하면 Filter, URL + Handler 기준 처리는 Interceptor, 메서드 수준 횡단 관심사는 AOP를 사용합니다.
-Spring Security는 Filter 레벨에서 동작하고, `@Transactional`은 AOP로 동작한다는 것을 이해하면 전체 구조가 보입니다.
+> Filter는 서블릿 컨테이너에서 모든 요청을 가로채고, Interceptor는 Spring MVC에서 Controller 전후에, AOP는 빈의 메서드 단위로 동작합니다. 저는 요청과 응답 자체를 바꿔야 하면 Filter, URL과 Handler 기준이면 Interceptor, 메서드 수준 공통 관심사면 AOP를 고릅니다. Spring Security가 Filter에서, `@Transactional`이 AOP에서 동작한다는 걸 알면 전체 구조가 보입니다.
 
 ## 꼬리 질문
 
 > [!question]- Spring Security는 왜 Filter에서 동작하는가?
-> 인증/인가는 DispatcherServlet에 도달하기 전에 처리해야 합니다. 인증 실패한 요청이 Controller까지 도달하면 불필요한 리소스를 소비하고, 보안 위협이 됩니다.
+> 인증/인가는 DispatcherServlet에 도달하기 전에 처리해야 합니다. 인증에 실패한 요청이 Controller까지 가면 쓸데없이 자원을 쓰고, 그 자체로 보안 위협이 됩니다.
 
 > [!question]- Interceptor의 preHandle에서 false를 반환하면?
-> Controller 메서드가 호출되지 않고, postHandle도 호출되지 않습니다. 하지만 afterCompletion은 호출됩니다. 응답 처리는 preHandle에서 직접 해야 합니다.
+> Controller 메서드와 postHandle은 호출되지 않습니다. afterCompletion은 앞에서 true를 반환한 interceptor들만 역순으로 호출되고, false를 반환한 그 interceptor의 afterCompletion은 호출되지 않습니다. 응답은 preHandle에서 직접 써야 합니다.
 
 > [!question]- Filter에서 request body를 로깅하려면?
-> `ContentCachingRequestWrapper`로 request를 래핑해서 body를 여러 번 읽을 수 있게 합니다. 원본 request의 InputStream은 1회성이므로 직접 읽으면 Controller에서 읽을 수 없습니다.
+> `ContentCachingRequestWrapper`로 request를 래핑해서 body를 여러 번 읽을 수 있게 합니다. 원본 request의 InputStream은 한 번만 읽히므로, 직접 읽으면 Controller가 읽을 게 없습니다.
 
 ## 점검 퀴즈
 

@@ -2,7 +2,7 @@
 
 A practical backend lab for learning, organizing, and mastering backend engineering knowledge.
 
-이 저장소는 백엔드 개발자가 알아야 할 핵심 개념, 실무 문제 해결 패턴, 기술 질문 대응, AI 활용 방식을 체계적으로 정리하는 기술 위키입니다.
+백엔드 개발자가 알아야 할 개념, 실무 문제 해결 패턴, 기술 질문 대응, AI 활용 방식을 정리하는 기술 위키입니다.
 
 ## Topics
 
@@ -25,12 +25,12 @@ A practical backend lab for learning, organizing, and mastering backend engineer
 
 ## Writing Principles
 
-- 개념은 실무 문제와 연결해서 정리한다.
-- 장점뿐 아니라 한계와 주의점을 함께 기록한다.
-- 외운 지식이 아니라 설명 가능한 지식으로 만든다.
-- 회사 내부 정보, 민감 정보, 운영 로그 원문은 포함하지 않는다.
-- 공개 가능한 일반화된 사례 중심으로 작성한다.
-- AI 답변은 그대로 믿지 않고 반드시 검증한다.
+- 개념은 실무 문제와 이어서 정리한다.
+- 장점만 쓰지 않고 한계와 깨지는 곳을 같이 쓴다.
+- 외운 지식이 아니라 말로 설명할 수 있는 지식으로 만든다.
+- 회사 내부 정보, 민감 정보, 운영 로그 원문은 넣지 않는다.
+- 사례는 공개해도 되게 일반화해서 쓴다.
+- AI 답변은 그대로 믿지 않고 검증한다.
 
 ## Structure
 

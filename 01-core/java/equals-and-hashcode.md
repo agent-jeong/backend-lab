@@ -5,29 +5,23 @@ description: Java equals와 hashCode의 실무 동등성 기준
 
 # equals와 hashCode를 함께 재정의하는 이유
 
-## 한 줄 정의
+`equals()`는 두 객체가 의미상 같은지 판단하고, `hashCode()`는 `HashMap`·`HashSet` 같은 hash 기반 컬렉션이 객체를 찾을 때 쓰는 값이다. 둘은 같은 기준으로 함께 재정의해야 한다.
 
-`equals()`는 두 객체가 의미상 같은지 판단하는 메서드이고, `hashCode()`는 `HashMap`, `HashSet` 같은 hash 기반 컬렉션에서 객체를 찾기 위해 사용하는 값이다.
+백엔드에서는 객체를 key로 쓰고, 중복을 빼고, 캐시하고, 테스트에서 비교하는 일이 많다. 동등성 기준이 틀리면 같은 값인데 `HashSet`에서 중복이 안 빠지거나, `HashMap`에 넣은 값을 다시 못 찾는다. JPA Entity는 id 할당 시점, 프록시, 연관관계 때문에 더 쉽게 깨진다.
 
-## 실무에서 왜 중요한가
-
-백엔드에서는 객체를 자주 key로 쓰고, 중복 제거하고, 캐시하고, 테스트에서 비교한다.
-
-동등성 기준이 틀리면 같은 값인데도 `HashSet`에서 중복 제거가 안 되거나, `HashMap`에 넣은 값을 다시 찾지 못한다. JPA Entity에서는 id 할당 시점, 프록시, 연관관계 때문에 더 쉽게 문제가 생긴다.
-
-## 반드시 기억할 규칙
+## 지켜야 할 규칙
 
 | 규칙 | 의미 |
 |---|---|
-| `equals()`가 true이면 `hashCode()`도 같아야 한다 | hash 컬렉션에서 같은 bucket을 찾기 위해 필요 |
-| `hashCode()`가 같아도 `equals()`가 true일 필요는 없다 | hash 충돌은 정상 |
-| hash 계산에 쓰는 값은 변경되지 않아야 한다 | 저장 후 key를 찾지 못하는 문제를 막기 위해 필요 |
+| `equals()`가 true이면 `hashCode()`도 같아야 한다 | hash 컬렉션이 같은 bucket을 찾아야 하므로 |
+| `hashCode()`가 같아도 `equals()`가 true일 필요는 없다 | hash 충돌은 정상이다 |
+| hash 계산에 쓰는 값은 바뀌면 안 된다 | 바뀌면 저장한 key를 다시 못 찾는다 |
 
 `HashMap`과 `HashSet`은 먼저 `hashCode()`로 위치를 찾고, 그 안에서 `equals()`로 최종 비교한다.
 
 ## 기본 동작
 
-`equals()`를 재정의하지 않으면 보통 같은 인스턴스인지 비교한다.
+`equals()`를 재정의하지 않으면 보통 같은 인스턴스인지만 본다.
 
 ```java
 User a = new User(1L, "kim");
@@ -37,11 +31,11 @@ System.out.println(a == b);      // false
 System.out.println(a.equals(b)); // equals를 재정의하지 않으면 false
 ```
 
-실무에서는 서로 다른 객체여도 같은 `userId`를 가진 사용자를 같은 사용자로 볼 수 있다. 이 기준을 코드로 표현하는 것이 `equals()`다.
+실무에서는 서로 다른 객체라도 `userId`가 같으면 같은 사용자로 보고 싶을 때가 많다. 그 기준을 코드로 적는 곳이 `equals()`다.
 
-## 좋은 값 객체 예시
+## 값 객체는 작고 바뀌지 않는 필드로
 
-값 객체나 key 객체는 비교 기준을 작고 안정적으로 잡는다.
+값 객체나 key 객체는 비교 기준을 작고, 바뀌지 않는 필드로 잡는다.
 
 ```java
 import java.util.Objects;
@@ -71,18 +65,18 @@ public class UserKey {
 }
 ```
 
-Java 16 이상에서 값 전달이 목적이라면 `record`가 더 간단하다.
+Java 16 이상에서 값 전달이 목적이면 `record`가 더 간단하다.
 
 ```java
 public record UserKey(Long userId) {
 }
 ```
 
-단, `record`는 모든 컴포넌트를 기준으로 `equals()`와 `hashCode()`를 만든다. 일부 필드를 제외해야 한다면 직접 구현하거나 `record`가 맞는지 다시 확인한다.
+`record`는 모든 컴포넌트를 기준으로 `equals()`와 `hashCode()`를 만든다. 일부 필드를 빼야 한다면 직접 구현하거나, `record`가 맞는 선택인지 다시 본다.
 
-## 가장 위험한 실수
+## 넣은 뒤 key를 바꾸면 못 찾는다
 
-hash 기반 컬렉션에 넣은 뒤, `hashCode()` 계산에 쓰이는 값을 바꾸면 안 된다.
+hash 기반 컬렉션에 넣은 뒤 `hashCode()` 계산에 쓰는 값을 바꾸면 안 된다.
 
 ```java
 public class MutableUserKey {
@@ -109,55 +103,47 @@ key.changeUserId(2L);
 keys.contains(key); // false가 될 수 있다.
 ```
 
-객체는 원래 bucket에 저장되어 있는데, 변경된 값으로는 다른 bucket을 찾기 때문이다.
+객체는 원래 bucket에 들어 있는데, 바뀐 값으로는 다른 bucket을 찾기 때문이다.
 
-## JPA Entity에서의 주의점
+## JPA Entity
 
-JPA Entity는 값 객체처럼 모든 필드로 `equals()`와 `hashCode()`를 만들면 위험하다.
-
-주의해야 할 이유:
+Entity는 값 객체처럼 모든 필드로 `equals()`와 `hashCode()`를 만들면 위험하다.
 
 - 저장 전에는 id가 없을 수 있다.
 - 같은 row를 가리키는 다른 객체나 프록시가 생길 수 있다.
-- 연관관계를 포함하면 lazy loading, 순환 참조, 성능 문제가 생길 수 있다.
-- Lombok `@Data`는 모든 필드 기준 메서드를 만들 수 있어 Entity에 부적합한 경우가 많다.
+- 연관관계를 포함하면 lazy loading, 순환 참조, 성능 문제가 생긴다.
+- Lombok `@Data`는 모든 필드 기준 메서드를 만들어서 Entity에 맞지 않는 경우가 많다.
 
-실무에서는 팀 규칙을 정해 id 기반 또는 비즈니스 key 기반으로 제한한다. 중요한 것은 “이 Entity를 무엇으로 같은 객체라고 볼 것인가”를 명확히 정하는 것이다.
+실무에서는 팀 규칙으로 id 기준이나 비즈니스 key 기준 중 하나로 제한한다. 결국 "이 Entity를 무엇으로 같은 객체라고 볼 것인가"를 명확히 정해 두는 일이다.
 
-## 실무 판단 기준
+## 객체 종류별 기준
 
 | 객체 종류 | 권장 기준 |
 |---|---|
-| 값 객체 | 변경 불가능한 핵심 필드 기준 |
+| 값 객체 | 바뀌지 않는 핵심 필드 |
 | `HashMap` key | `String`, `Long`, enum, record처럼 안정적인 key 우선 |
-| DTO | 꼭 필요할 때만 주요 필드 기준 비교 |
+| DTO | 꼭 필요할 때만 주요 필드로 비교 |
 | JPA Entity | 모든 필드 자동 생성 금지, id 또는 비즈니스 key 기준 검토 |
-| 테스트 객체 비교 | 필요하면 AssertJ recursive comparison 고려 |
+| 테스트 객체 비교 | 필요하면 AssertJ recursive comparison |
 
-## 자주 나는 실수
+## 자주 깨지는 곳
 
-- `equals()`만 재정의하고 `hashCode()`를 재정의하지 않는다.
-- mutable 필드를 `equals()`와 `hashCode()`에 포함한다.
-- `HashSet`에 넣은 뒤 비교 기준 필드를 변경한다.
-- 객체 내용을 `==`로 비교한다.
-- `Long`, `Integer` 같은 wrapper type을 `==`로 비교한다.
-- JPA Entity에 Lombok `@Data`를 붙인다.
+- **`equals()`만 재정의한다.** `hashCode()`가 달라 hash 컬렉션에서 같은 객체로 비교조차 안 된다.
+- **mutable 필드를 비교 기준에 넣는다.** `HashSet`에 넣은 뒤 그 필드를 바꾸면 조회와 삭제가 깨진다.
+- **객체 내용을 `==`로 비교한다.** `Long`, `Integer` 같은 wrapper도 마찬가지다.
+- **JPA Entity에 Lombok `@Data`를 붙인다.** 연관관계와 저장 전 null id까지 비교 기준에 들어간다.
 
-## 확인 방법
+## 테스트로 확인할 것
 
-- 같은 값의 새 객체로 `HashSet.contains()`가 true인지 확인한다.
-- 같은 값의 새 key로 `HashMap.get()`이 되는지 확인한다.
-- 비교 기준 필드를 변경할 수 있는지 확인한다.
-- Entity라면 저장 전/후, 프록시, 연관관계 포함 여부를 확인한다.
-- Lombok을 쓰면 `@EqualsAndHashCode`에 포함되는 필드를 확인한다.
+- 같은 값의 새 객체로 `HashSet.contains()`가 true인가.
+- 같은 값의 새 key로 `HashMap.get()`이 되는가.
+- 비교 기준 필드를 바꿀 수 있게 열려 있지 않은가.
+- Entity라면 저장 전·후, 프록시, 연관관계 포함 여부에서도 기준이 유지되는가.
+- Lombok을 쓴다면 `@EqualsAndHashCode`에 어떤 필드가 들어가는가.
 
-## 핵심 요약
+## 면접에서 말하기
 
-`equals()`와 `hashCode()`는 객체의 동등성 기준을 정하는 메서드다. 특히 `HashMap`, `HashSet`, 캐시 key, 중복 제거에서 반드시 함께 봐야 한다.
-
-값 객체는 변경 불가능한 핵심 필드 기준으로 구현한다. hash 기반 컬렉션에 넣은 뒤 비교 기준 값이 바뀌면 조회와 삭제가 깨질 수 있다.
-
-JPA Entity는 id 할당 시점, 프록시, 연관관계 때문에 모든 필드 기준 자동 생성이 위험하다. Entity 동등성은 팀 규칙에 맞게 id 또는 비즈니스 key 기준으로 제한한다.
+> equals와 hashCode는 객체의 동등성 기준을 정하는 메서드라서 HashMap, HashSet, 캐시 key, 중복 제거에서는 같이 봐야 합니다. 값 객체는 바뀌지 않는 핵심 필드로 구현하는데, hash 컬렉션에 넣은 뒤 기준 값이 바뀌면 조회와 삭제가 깨지기 때문입니다. JPA Entity는 id 할당 시점, 프록시, 연관관계 때문에 모든 필드 자동 생성이 위험해서, 팀 규칙으로 id나 비즈니스 key 기준으로 제한합니다.
 
 ## 꼬리 질문
 

@@ -5,20 +5,11 @@ description: Java 메모리 누수와 OOM 실무 원인 분석 및 대응
 
 # 메모리 누수와 OOM 원인 분석
 
-## 한 줄 정의
+메모리 누수는 더 이상 필요 없는 객체가 GC에 회수되지 않고 heap에 계속 남는 현상이다. OOM(OutOfMemoryError)은 JVM이 더 이상 메모리를 할당하지 못할 때 나는 에러이고, 누수가 쌓인 끝에 오는 경우가 많다.
 
-메모리 누수는 더 이상 필요하지 않은 객체가 GC에 의해 회수되지 않고 계속 heap에 남는 현상이고, OOM(OutOfMemoryError)은 JVM이 더 이상 메모리를 할당할 수 없을 때 발생하는 에러다.
+누수는 바로 장애가 나지 않아서 늦게 발견된다. 배포 며칠 뒤에야 OOM이 나 원인 추적이 어렵고, 그 전에는 GC가 점점 잦아지며 응답 시간이 서서히 나빠진다. 컨테이너에서는 OOM Killer가 프로세스를 갑자기 죽인다. 그리고 heap dump가 없으면 어떤 객체가 문제인지 알 방법이 없다.
 
-## 실무에서 왜 중요한가
-
-메모리 누수는 즉시 장애가 나지 않아서 발견이 늦다. 하지만 한번 터지면 서비스 전체가 멈출 수 있다.
-
-- 배포 후 며칠 뒤에야 OOM이 발생해서 원인 추적이 어렵다.
-- GC가 점점 자주 발생하면서 응답 시간이 서서히 나빠진다.
-- 컨테이너 환경에서 OOM Killer에 의해 프로세스가 갑자기 죽는다.
-- heap dump 없이는 어떤 객체가 문제인지 알 수 없다.
-
-## OOM 종류와 원인
+## OOM 메시지별 원인
 
 | 에러 메시지 | 원인 |
 |---|---|
@@ -28,9 +19,9 @@ description: Java 메모리 누수와 OOM 실무 원인 분석 및 대응
 | `unable to create new native thread` | OS 스레드 생성 한도 초과 |
 | `Direct buffer memory` | NIO Direct Buffer 할당 실패 |
 
-## 자주 발생하는 메모리 누수 패턴
+## 흔한 누수 패턴
 
-### 1. 컬렉션에 넣고 빼지 않는다
+### 컬렉션에 넣기만 하고 빼지 않는다
 
 ```java
 // static Map에 계속 추가만 한다
@@ -41,11 +32,9 @@ public void process(String key, Object value) {
 }
 ```
 
-static 컬렉션은 애플리케이션이 살아있는 동안 GC 대상이 되지 않는다. 크기 제한이 없으면 시간이 지날수록 메모리를 잡아먹는다.
+static 컬렉션은 애플리케이션이 살아 있는 동안 GC 대상이 아니다. 크기 제한이 없으면 시간이 갈수록 메모리를 먹는다. 캐시가 목적이라면 크기 제한과 만료 정책이 있는 구현체(Caffeine, Guava Cache 등)를 쓴다.
 
-대응: 캐시라면 크기 제한 + 만료 정책을 가진 구현체를 사용한다 (Caffeine, Guava Cache 등).
-
-### 2. 리소스를 닫지 않는다
+### 리소스를 닫지 않는다
 
 ```java
 // Connection, Stream 등을 닫지 않으면 관련 객체가 회수되지 않을 수 있다
@@ -65,9 +54,9 @@ public String readFile(String path) throws IOException {
 }
 ```
 
-DB Connection, HTTP Connection, InputStream 등이 대표적이다.
+DB Connection, HTTP Connection, InputStream이 대표적이다.
 
-### 3. 리스너/콜백을 등록하고 해제하지 않는다
+### 리스너·콜백을 등록하고 해제하지 않는다
 
 ```java
 // 이벤트 리스너를 등록만 하고 해제하지 않으면
@@ -76,7 +65,7 @@ eventBus.register(this);
 // unregister를 하지 않으면 this가 GC되지 않는다
 ```
 
-### 4. ThreadLocal을 정리하지 않는다
+### ThreadLocal을 정리하지 않는다
 
 ```java
 private static final ThreadLocal<UserContext> context = new ThreadLocal<>();
@@ -88,9 +77,9 @@ public void process() {
 }
 ```
 
-스레드 풀 환경에서 `ThreadLocal`을 `remove()`하지 않으면 스레드가 반환되어도 값이 남아있다.
+스레드 풀에서는 스레드가 반환돼도 `remove()`하지 않은 값이 그대로 남는다.
 
-### 5. 큰 객체를 불필요하게 오래 참조한다
+### 큰 객체를 필요 이상 오래 잡고 있다
 
 ```java
 public class ReportGenerator {
@@ -104,9 +93,9 @@ public class ReportGenerator {
 }
 ```
 
-지역 변수로 충분한 데이터를 필드에 저장하면 객체 생존 시간이 불필요하게 길어진다.
+지역 변수로 충분한 데이터를 필드에 두면 객체가 쓸데없이 오래 산다.
 
-## 실무 분석 절차
+## 분석 순서
 
 ### 1. 증상 확인
 
@@ -120,7 +109,7 @@ jstat -gc <pid> 1000
 # - GC 후에도 사용률이 줄지 않는가
 ```
 
-### 2. Heap Dump 생성
+### 2. Heap dump 생성
 
 ```bash
 # 수동 생성
@@ -132,9 +121,11 @@ java -XX:+HeapDumpOnOutOfMemoryError \
      -jar app.jar
 ```
 
-### 3. Heap Dump 분석
+운영에서는 `-XX:+HeapDumpOnOutOfMemoryError`를 미리 켜 둔다. OOM이 난 뒤에는 dump를 뜰 기회가 없다.
 
-Eclipse MAT이나 VisualVM으로 분석한다.
+### 3. Heap dump 분석
+
+Eclipse MAT이나 VisualVM으로 연다.
 
 | 확인 항목 | 의미 |
 |---|---|
@@ -143,7 +134,7 @@ Eclipse MAT이나 VisualVM으로 분석한다.
 | Histogram | 클래스별 인스턴스 수와 크기 |
 | GC Roots | 특정 객체가 왜 GC되지 않는지 참조 경로 추적 |
 
-## 컨테이너 환경 주의점
+## 컨테이너에서 메모리 잡기
 
 ```bash
 # 잘못된 설정: JVM이 컨테이너 한도를 넘길 수 있다
@@ -155,31 +146,24 @@ Eclipse MAT이나 VisualVM으로 분석한다.
 java -Xmx1400m -jar app.jar
 ```
 
-Java 10+에서는 `-XX:MaxRAMPercentage`를 사용할 수 있다.
+Java 10+에서는 `-XX:MaxRAMPercentage`로 비율을 줄 수 있다.
 
 ```bash
 java -XX:MaxRAMPercentage=75.0 -jar app.jar
 ```
 
-## 자주 나는 실수
+## 자주 깨지는 곳
 
-- `-XX:+HeapDumpOnOutOfMemoryError`를 설정하지 않아서 OOM 발생 시 분석이 불가능하다.
-- heap dump 없이 `-Xmx`만 올려서 누수를 임시로 가린다.
-- `ThreadLocal`을 `remove()`하지 않는다.
-- static 컬렉션에 크기 제한 없이 데이터를 계속 추가한다.
-- 리소스(Connection, Stream)를 try-with-resources 없이 사용한다.
-- 컨테이너 메모리 한도와 JVM 메모리 설정의 관계를 고려하지 않는다.
+- **`-XX:+HeapDumpOnOutOfMemoryError`를 켜 두지 않는다.** OOM이 나도 분석할 dump가 없다.
+- **heap dump 없이 `-Xmx`만 올린다.** 누수는 그대로고 터지는 시점만 미뤄진다.
+- **`ThreadLocal`을 `remove()`하지 않는다.** 재사용된 스레드에 이전 요청 값이 남는다.
+- **static 컬렉션에 크기 제한 없이 계속 넣는다.** 시간이 지날수록 heap을 다 차지한다.
+- **Connection, Stream을 try-with-resources 없이 쓴다.** 예외 경로에서 닫히지 않는다.
+- **컨테이너 한도와 JVM 메모리 설정을 따로 본다.** heap 밖 메모리까지 합쳐 한도를 넘는다.
 
-## 핵심 요약
+## 면접에서 말하기
 
-메모리 누수는 더 이상 필요 없는 객체가 GC에 의해 회수되지 않고 heap에 남는 현상입니다.
-대표적인 원인으로는 static 컬렉션에 제거 없이 추가만 하는 경우, 리소스를 닫지 않는 경우, ThreadLocal을 remove하지 않는 경우가 있습니다.
-
-누수가 쌓이면 GC가 점점 자주 발생하다가 결국 OOM이 발생합니다.
-운영에서는 반드시 `-XX:+HeapDumpOnOutOfMemoryError`를 설정해서 OOM 발생 시 heap dump가 자동 생성되도록 해야 합니다.
-
-분석은 Eclipse MAT으로 Dominator Tree와 GC Roots를 확인해서 어떤 객체가 왜 회수되지 않는지 추적합니다.
-컨테이너 환경에서는 JVM 메모리 총합이 컨테이너 한도를 넘지 않도록 `-Xmx`를 한도의 70~80% 이하로 설정해야 합니다.
+> 메모리 누수는 필요 없는 객체가 GC에 회수되지 않고 heap에 남는 현상이고, 쌓이면 GC가 점점 잦아지다 OOM으로 끝납니다. 흔한 원인은 제거 없는 static 컬렉션, 닫지 않은 리소스, remove하지 않은 ThreadLocal입니다. 그래서 운영에는 HeapDumpOnOutOfMemoryError를 미리 켜 두고, 문제가 나면 Eclipse MAT에서 Dominator Tree와 GC Roots로 무엇이 왜 안 지워지는지 추적합니다. 컨테이너에서는 heap 밖 메모리를 감안해 `-Xmx`를 한도의 70~80% 이하로 둡니다.
 
 ## 꼬리 질문
 

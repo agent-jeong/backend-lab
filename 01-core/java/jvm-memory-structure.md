@@ -5,23 +5,13 @@ description: JVM 메모리 구조와 실무 트러블슈팅 연결
 
 # JVM 메모리 구조와 각 영역의 역할
 
-## 한 줄 정의
+JVM은 `javac`가 만든 바이트코드를 class loading, 메모리 할당, 실행, GC를 거쳐 실행하는 가상 머신이다. 메모리 영역마다 터지는 에러가 달라서, 어느 영역이 무엇을 담는지 알아야 에러 메시지만 보고 방향을 잡는다.
 
-JVM은 Java 코드를 바이트코드로 컴파일한 뒤, class loading, 메모리 할당, 실행, GC를 거쳐 프로그램을 실행하는 가상 머신이다.
+`OutOfMemoryError: Java heap space`면 heap 크기와 객체 생존 패턴을, `StackOverflowError`면 재귀 깊이와 스택 크기를, `OutOfMemoryError: Metaspace`면 class loading 구조를 봐야 한다. 누수가 의심되면 heap dump를 읽어야 하고, `-Xmx`, `-Xms`, `-XX:MetaspaceSize` 같은 옵션도 각 영역의 의미를 알아야 제대로 잡는다.
 
-## 실무에서 왜 중요한가
+## Runtime Data Area
 
-JVM 구조를 모르면 다음 상황에서 원인을 파악할 수 없다.
-
-- `OutOfMemoryError: Java heap space` 발생 시 heap 크기와 객체 생존 패턴을 분석해야 한다.
-- `StackOverflowError` 발생 시 재귀 호출 깊이와 스택 크기의 관계를 알아야 한다.
-- `OutOfMemoryError: Metaspace` 발생 시 class loading 구조를 이해해야 한다.
-- 메모리 누수가 의심될 때 heap dump를 분석할 수 있어야 한다.
-- JVM 옵션(`-Xmx`, `-Xms`, `-XX:MetaspaceSize`)을 설정할 때 각 영역의 의미를 알아야 한다.
-
-## Runtime Data Area 구조
-
-JVM이 프로그램을 실행하면서 사용하는 메모리 영역이다.
+JVM이 프로그램을 실행하며 쓰는 메모리 영역이다.
 
 ```
 ┌───────────────────────────────────────┐
@@ -41,11 +31,9 @@ JVM이 프로그램을 실행하면서 사용하는 메모리 영역이다.
 └───────────────────────────────────────┘
 ```
 
-## 각 영역과 실무 연결
+## Heap
 
-### Heap
-
-모든 객체가 생성되는 영역이다. GC의 대상이 된다.
+모든 객체가 만들어지는 곳이고, GC 대상이다.
 
 | 구분 | 설명 | 실무 관련 |
 |---|---|---|
@@ -60,11 +48,11 @@ java -Xms512m -Xmx2g -jar app.jar
 # -Xmx: 최대 heap 크기
 ```
 
-`-Xms`와 `-Xmx`를 같은 값으로 설정하면 heap 확장/축소에 따른 오버헤드를 줄일 수 있다. 컨테이너 환경에서는 이렇게 설정하는 경우가 많다.
+`-Xms`와 `-Xmx`를 같은 값으로 두면 heap이 늘고 줄며 생기는 오버헤드가 없다. 컨테이너 환경에서 흔히 이렇게 둔다.
 
-### Stack
+## Stack
 
-스레드마다 독립적으로 존재하며, 메서드 호출 시 프레임이 push되고 반환 시 pop된다.
+스레드마다 따로 있다. 메서드를 호출하면 프레임이 push되고, 반환하면 pop된다.
 
 | 상황 | 증상 |
 |---|---|
@@ -76,11 +64,11 @@ java -Xms512m -Xmx2g -jar app.jar
 java -Xss512k -jar app.jar
 ```
 
-### Method Area (Metaspace)
+## Method Area (Metaspace)
 
-클래스 메타데이터, 런타임 상수 풀이 저장되는 영역이다. Java 8+에서 static 변수의 참조는 Heap의 `java.lang.Class` 객체에 저장된다.
+클래스 메타데이터와 런타임 상수 풀이 들어간다. Java 8+에서 static 변수의 참조는 Heap의 `java.lang.Class` 객체에 저장된다.
 
-Java 8부터 PermGen이 Metaspace로 대체되었다. Metaspace는 Native Memory를 사용하므로 heap과 별도로 관리된다.
+Java 8부터 PermGen이 Metaspace로 바뀌었다. Metaspace는 Native Memory를 쓰므로 heap과 따로 관리된다.
 
 | 상황 | 증상 |
 |---|---|
@@ -92,17 +80,15 @@ Java 8부터 PermGen이 Metaspace로 대체되었다. Metaspace는 Native Memory
 java -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=256m -jar app.jar
 ```
 
-## Class Loading 과정
+## Class Loading
 
 ```
 .java → javac → .class → ClassLoader → JVM 메모리
 ```
 
-1. **Loading**: .class 파일을 읽어서 Method Area에 클래스 정보를 저장한다.
-2. **Linking**: 검증(Verify) → 준비(Prepare, static 변수 기본값) → 해석(Resolve, 심볼릭 참조를 실제 참조로). Resolution은 필요 시점에 지연될 수 있다.
-3. **Initialization**: static 초기화 블록과 static 변수에 실제 값 할당
-
-ClassLoader 계층 구조:
+1. **Loading**: .class 파일을 읽어 Method Area에 클래스 정보를 저장한다.
+2. **Linking**: 검증(Verify) → 준비(Prepare, static 변수 기본값) → 해석(Resolve, 심볼릭 참조를 실제 참조로). Resolution은 필요한 시점까지 미뤄질 수 있다.
+3. **Initialization**: static 초기화 블록을 실행하고 static 변수에 실제 값을 넣는다.
 
 | ClassLoader | 역할 |
 |---|---|
@@ -116,11 +102,11 @@ JVM은 바이트코드를 인터프리터로 실행하다가, 자주 호출되�
 
 | 관점 | 실무 영향 |
 |---|---|
-| 워밍업 | 애플리케이션 시작 직후에는 JIT 최적화가 안 되어 있어 느릴 수 있다 |
-| 최적화 해제 | 런타임 조건이 바뀌면 최적화가 해제(deoptimization)될 수 있다 |
-| 컨테이너 환경 | 짧은 생명주기의 컨테이너에서는 JIT 효과를 못 볼 수 있다 |
+| 워밍업 | 시작 직후에는 JIT 최적화 전이라 느릴 수 있다 |
+| 최적화 해제 | 런타임 조건이 바뀌면 최적화가 풀린다(deoptimization) |
+| 컨테이너 환경 | 생명주기가 짧은 컨테이너는 JIT 효과를 못 볼 수 있다 |
 
-## 실무 트러블슈팅 도구
+## 문제를 볼 때 쓰는 도구
 
 | 도구 | 용도 |
 |---|---|
@@ -131,21 +117,16 @@ JVM은 바이트코드를 인터프리터로 실행하다가, 자주 호출되�
 | Eclipse MAT, VisualVM | heap dump 분석 |
 | Arthas | 운영 중인 JVM에 붙어서 실시간 진단 |
 
-## 자주 나는 실수
+## 자주 깨지는 곳
 
-- `-Xmx`를 컨테이너 메모리 한도와 같게 설정해서 OOM Killer에 의해 프로세스가 죽는다.
-- heap dump 분석 없이 `-Xmx`만 올려서 메모리 누수를 임시로 가린다.
-- 스레드 수를 과도하게 늘려서 스택 메모리 전체 합이 시스템 메모리를 넘긴다.
-- Metaspace 크기를 설정하지 않아서 동적 프록시 생성 시 무한 증가한다.
+- **`-Xmx`를 컨테이너 메모리 한도와 같게 잡는다.** heap 밖 메모리까지 더해져 OOM Killer가 프로세스를 죽인다.
+- **heap dump 없이 `-Xmx`만 올린다.** 누수는 그대로고 터지는 시점만 늦어진다.
+- **스레드 수를 과하게 늘린다.** 스레드별 스택 메모리 합이 시스템 메모리를 넘긴다.
+- **Metaspace 상한을 두지 않는다.** 동적 프록시가 계속 생기면 끝없이 늘어난다.
 
-## 핵심 요약
+## 면접에서 말하기
 
-JVM의 Runtime Data Area는 크게 Heap, Stack, Method Area(Metaspace)로 나뉩니다.
-Heap은 모든 객체가 생성되는 영역으로 GC의 대상이 되고, Stack은 스레드마다 독립적으로 메서드 호출 프레임을 관리합니다.
-Metaspace는 Java 8부터 PermGen을 대체한 영역으로 클래스 메타데이터를 저장합니다.
-
-실무에서는 `-Xmx`로 Heap 크기를, `-Xss`로 스레드 스택 크기를, `-XX:MaxMetaspaceSize`로 Metaspace 크기를 설정합니다.
-컨테이너 환경에서는 JVM 메모리 총합이 컨테이너 한도를 넘지 않도록 주의해야 하고, 메모리 문제 발생 시 heap dump와 `jstat` 같은 도구로 분석합니다.
+> JVM 메모리는 크게 Heap, Stack, Method Area(Metaspace)로 나뉩니다. Heap은 객체가 생기는 GC 대상 영역이고, Stack은 스레드마다 메서드 호출 프레임을 관리하며, Metaspace는 Java 8부터 PermGen을 대체해 클래스 메타데이터를 Native Memory에 둡니다. 각각 `-Xmx`, `-Xss`, `-XX:MaxMetaspaceSize`로 크기를 정하는데, 컨테이너에서는 이 합이 한도를 넘지 않게 잡고, 문제가 생기면 heap dump와 jstat으로 먼저 확인합니다.
 
 ## 꼬리 질문
 

@@ -5,21 +5,11 @@ description: JPA Entity와 테이블 매핑의 실무 규칙과 주의점
 
 # 엔티티-테이블 매핑 기본
 
-## 한 줄 정의
+Entity는 JPA가 관리하는 객체다. 데이터베이스 테이블과 1:1로 매핑되고, 영속성 컨텍스트가 관리한다.
 
-Entity는 JPA가 관리하는 객체로, 데이터베이스 테이블과 1:1로 매핑되어 영속성 컨텍스트의 관리 대상이 된다.
+매핑은 몇 줄짜리 어노테이션이지만 잘못 잡으면 나중에 되돌리기 어렵다. id 생성 전략은 batch insert 가능 여부를, enum 저장 방식은 기존 데이터의 의미를 결정한다.
 
-## 실무에서 왜 중요한가
-
-Entity 매핑이 잘못되면 다음 문제가 생긴다.
-
-- 기본 생성자가 없어서 JPA가 객체를 생성하지 못한다.
-- `@Column` 설정이 누락되어 DDL 자동 생성 시 의도와 다른 스키마가 만들어진다.
-- `@Id` 생성 전략을 잘못 선택해서 배치 insert 성능이 나빠진다.
-- `@Enumerated(ORDINAL)`을 써서 enum 순서 변경 시 데이터가 깨진다.
-- Entity를 API 응답으로 직접 반환해서 순환 참조, 민감 정보 노출 문제가 생긴다.
-
-## 기본 매핑 규칙
+## 기본 매핑
 
 ```java
 @Entity
@@ -52,7 +42,7 @@ public class User {
 }
 ```
 
-### Entity 필수 조건
+Entity가 되려면 아래 네 가지를 갖춰야 한다.
 
 | 조건 | 이유 |
 |---|---|
@@ -70,9 +60,9 @@ public class User {
 | `TABLE` | 별도 테이블로 시퀀스 흉내 | 성능이 나빠서 실무에서 거의 사용하지 않음 |
 | `AUTO` | DB 방언에 따라 자동 선택 | 예측이 어려워 명시적 전략이 안전 |
 
-MySQL 환경에서는 `IDENTITY`가 일반적이다. 단, `IDENTITY`는 insert 시점에 DB에서 id를 받아와야 하므로 JDBC batch insert가 동작하지 않는다.
+MySQL에서는 `IDENTITY`가 일반적이다. 다만 `IDENTITY`는 insert 시점에 DB에서 id를 받아와야 해서 JDBC batch insert가 동작하지 않는다.
 
-## @Column 실무 설정
+## @Column 설정
 
 ```java
 @Column(nullable = false, length = 100)  // NOT NULL, VARCHAR(100)
@@ -88,7 +78,7 @@ private LocalDateTime createdAt;
 private LocalDateTime dbCreatedAt;
 ```
 
-`@Column`을 생략하면 JPA가 필드명을 그대로 컬럼명으로 사용한다. Spring Boot의 기본 네이밍 전략은 camelCase를 snake_case로 변환한다 (`userName` → `user_name`).
+`@Column`을 생략하면 필드명이 그대로 컬럼명이 된다. Spring Boot의 기본 네이밍 전략은 camelCase를 snake_case로 바꾼다(`userName` → `user_name`).
 
 ## Enum 매핑
 
@@ -102,7 +92,7 @@ private UserStatus status; // 0, 1, 2...
 private UserStatus status; // "ACTIVE", "INACTIVE"...
 ```
 
-`ORDINAL`은 enum 상수의 선언 순서가 바뀌면 기존 데이터와 매핑이 깨진다. 반드시 `STRING`을 사용해야 한다.
+`ORDINAL`은 enum 상수의 선언 순서가 바뀌면 기존 데이터와 매핑이 깨진다. 항상 `STRING`을 쓴다. `@Enumerated`를 붙이기만 하고 값을 안 주면 기본값이 `ORDINAL`이라는 점도 기억한다.
 
 ## 날짜/시간 매핑
 
@@ -113,7 +103,7 @@ private LocalDateTime createdAt;
 private LocalDate birthDate;
 ```
 
-`@CreatedDate`, `@LastModifiedDate`를 사용하면 자동으로 생성/수정 시간을 관리할 수 있다. 단, Configuration 클래스에 `@EnableJpaAuditing`을 추가해야 동작한다.
+생성/수정 시간은 `@CreatedDate`, `@LastModifiedDate`로 자동 관리한다. Configuration 클래스에 `@EnableJpaAuditing`을 붙여야 동작한다.
 
 ```java
 @EntityListeners(AuditingEntityListener.class)
@@ -135,23 +125,19 @@ public abstract class BaseEntity {
 public class JpaConfig { }
 ```
 
-## 자주 나는 실수
+## 자주 깨지는 곳
 
-- 기본 생성자를 만들지 않아서 `InstantiationException`이 발생한다.
-- `@Enumerated`의 기본값이 `ORDINAL`인 것을 모르고 사용한다.
-- Entity를 API 응답으로 직접 반환한다.
-- `@Column(nullable = false)`를 DB 제약조건으로 착각하고, DDL 자동 생성을 안 쓰면 아무 효과 없다고 생각한다.
-- `@GeneratedValue` 전략을 이해하지 않고 기본값을 사용한다.
-- `@Id` 타입을 primitive(`long`)로 써서 null 체크가 안 된다.
+- **기본 생성자를 만들지 않는다.** JPA가 객체를 만들지 못해 `InstantiationException`이 난다.
+- **`@Enumerated` 기본값이 `ORDINAL`인 걸 모른다.** enum 순서를 바꾸는 순간 기존 데이터의 의미가 바뀐다.
+- **Entity를 API 응답으로 그대로 반환한다.** 순환 참조, 민감 정보 노출, lazy loading 문제가 생긴다. DTO로 바꿔서 내보낸다.
+- **`@Column(nullable = false)`를 DB 제약조건과 혼동한다.** 이 설정은 DDL 자동 생성 때만 스키마에 반영된다. DDL 자동 생성을 쓰지 않으면 DB에는 제약이 없다. 그렇다고 효과가 전혀 없는 것도 아니다. Hibernate는 Bean Validation이 없으면 INSERT 전에 null을 검사해 `PropertyValueException`을 던진다(`hibernate.check_nullability`).
+- **`@Column` 설정을 빠뜨린다.** DDL 자동 생성 시 의도와 다른 스키마가 만들어진다.
+- **`@GeneratedValue` 전략을 이해하지 않고 기본값을 쓴다.** 잘못 고르면 batch insert 성능이 나빠진다.
+- **`@Id` 타입을 primitive(`long`)로 쓴다.** null 체크가 안 돼 저장 전 상태를 구분하지 못한다.
 
-## 핵심 요약
+## 면접에서 말하기
 
-JPA Entity는 `@Entity`, `@Id`, 기본 생성자가 필수이며, 테이블과 1:1로 매핑됩니다.
-
-`@Id` 생성 전략은 MySQL에서는 `IDENTITY`가 일반적이지만, batch insert가 안 되는 제약이 있습니다.
-enum은 반드시 `@Enumerated(STRING)`을 사용해야 순서 변경에 안전합니다.
-
-Entity를 API 응답으로 직접 반환하면 순환 참조, 민감 정보 노출, lazy loading 문제가 생기므로 DTO로 변환해야 합니다.
+> Entity는 `@Entity`, `@Id`, 기본 생성자가 있어야 하고 테이블과 1:1로 매핑됩니다. id 전략은 MySQL에서 `IDENTITY`를 주로 쓰는데, insert 시점에 id를 받아와야 해서 batch insert가 안 된다는 제약을 알고 씁니다. enum은 순서 변경에 안전하도록 `@Enumerated(STRING)`으로 저장하고, Entity는 API 응답으로 직접 내보내지 않고 DTO로 바꿉니다.
 
 ## 꼬리 질문
 

@@ -5,23 +5,13 @@ description: Java Stream과 Optional의 실무 사용 패턴과 남용 사례
 
 # Stream과 Optional 활용 기준
 
-## 한 줄 정의
+Stream은 컬렉션 데이터를 선언적으로 거르고, 바꾸고, 집계하는 파이프라인이다. Optional은 값이 없을 수 있다는 사실을 반환 타입으로 드러내는 컨테이너다. 둘 다 Java 8 이후 가장 많이 쓰는 기능이지만, 남용하면 오히려 코드가 나빠진다.
 
-Stream은 컬렉션 데이터를 선언적으로 변환하고 집계하는 파이프라인이고, Optional은 값이 없을 수 있는 상황을 명시적으로 표현하는 컨테이너다.
+흔한 사고는 이렇다. Stream을 길게 이어 붙여 디버깅이 어려워진다. `Optional`을 필드나 파라미터에 써서 쓸데없이 복잡해진다. `Optional.get()`을 검사 없이 불러 `NoSuchElementException`이 난다. Stream 안에서 외부 상태를 바꿔 동시성 문제가 생긴다. for문이면 충분한 로직을 Stream으로 바꿔 더 읽기 어려워진다.
 
-## 실무에서 왜 중요한가
+## Stream
 
-Stream과 Optional은 Java 8 이후 가장 많이 쓰이는 기능이지만, 남용하면 오히려 코드 품질이 떨어진다.
-
-- Stream을 과도하게 체이닝해서 디버깅이 어려워진다.
-- `Optional`을 필드나 파라미터에 사용해서 의도와 다르게 복잡해진다.
-- `Optional.get()`을 검사 없이 호출해서 `NoSuchElementException`이 발생한다.
-- Stream 안에서 외부 상태를 변경해서 동시성 문제가 생긴다.
-- 단순 for문이면 충분한 로직을 Stream으로 바꿔서 가독성이 나빠진다.
-
-## Stream 실무 패턴
-
-### 적절한 사용
+필터링, 변환, 집계처럼 데이터 흐름이 분명할 때 Stream이 읽기 좋다.
 
 ```java
 // 주문 목록에서 특정 상태의 주문 금액 합계
@@ -38,9 +28,7 @@ List<UserResponse> responses = users.stream()
     .toList();
 ```
 
-필터링, 변환, 집계처럼 데이터 흐름이 명확한 경우에 Stream이 읽기 좋다.
-
-### 남용 사례
+### 안에서 외부 상태를 바꾸지 않는다
 
 ```java
 // Stream 안에서 외부 상태 변경 - 위험
@@ -50,7 +38,7 @@ items.stream()
     .forEach(item -> results.add(item.getName())); // side effect
 ```
 
-`forEach` 안에서 외부 리스트를 변경하는 것은 Stream의 의도에 맞지 않고, parallelStream 사용 시 동시성 문제가 생긴다.
+`forEach` 안에서 외부 리스트를 바꾸는 건 Stream의 의도와 맞지 않고, parallelStream에서는 동시성 문제가 된다. 결과는 반환으로 받는다.
 
 ```java
 // 올바른 방식
@@ -60,17 +48,17 @@ List<String> results = items.stream()
     .toList();
 ```
 
-### Stream을 쓰지 않는 것이 나은 경우
+### for문이 나은 경우
 
-- 단순 for문으로 충분한 한두 줄 로직
-- 반복 중 인덱스가 필요한 경우
-- 중간에 break나 continue가 필요한 경우
-- 예외 처리가 복잡한 경우
-- Stream 체이닝이 5단계 이상으로 길어지는 경우
+- 한두 줄짜리 단순 로직
+- 반복 중 인덱스가 필요할 때
+- 중간에 break나 continue가 필요할 때
+- 예외 처리가 복잡할 때
+- 체이닝이 5단계 이상으로 길어질 때
 
-## Optional 실무 패턴
+## Optional
 
-### 적절한 사용
+메서드 반환 타입에 쓰고, 호출부에서 처리한다.
 
 ```java
 // 메서드 반환 타입으로 사용
@@ -83,7 +71,7 @@ User user = userService.findByEmail(email)
     .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 ```
 
-### 잘못된 사용
+필드, 파라미터에는 쓰지 않고, `get()`을 검사 없이 부르지 않는다.
 
 ```java
 // 필드로 사용 - 금지
@@ -100,17 +88,17 @@ Optional<User> user = findById(id);
 user.get(); // NoSuchElementException 가능
 ```
 
-### Optional 처리 메서드 선택
+### 어떤 메서드로 꺼내나
 
-| 메서드 | 사용 시점 |
+| 메서드 | 쓰는 때 |
 |---|---|
 | `orElseThrow()` | 값이 없으면 예외를 던져야 할 때 |
-| `orElse(기본값)` | 기본값이 항상 준비되어 있을 때 |
+| `orElse(기본값)` | 기본값이 이미 준비되어 있을 때 |
 | `orElseGet(() -> ...)` | 기본값 생성 비용이 클 때 (lazy) |
 | `ifPresent(consumer)` | 값이 있을 때만 처리하고 없으면 무시할 때 |
 | `map()` / `flatMap()` | 값을 변환할 때 |
 
-주의: `orElse()`는 값이 있어도 인자가 항상 실행된다. 비용이 큰 연산은 `orElseGet()`을 써야 한다.
+`orElse()`의 인자는 값이 있어도 항상 실행된다. 비용이 큰 연산은 `orElseGet()`으로 넘긴다.
 
 ```java
 // orElse - createDefault()가 항상 실행됨
@@ -120,25 +108,19 @@ User user = findById(id).orElse(createDefault());
 User user = findById(id).orElseGet(() -> createDefault());
 ```
 
-## 자주 나는 실수
+## 자주 깨지는 곳
 
-- Stream에서 외부 상태를 변경한다.
-- `Optional.get()`을 검사 없이 호출한다.
-- `Optional`을 필드, 파라미터, 컬렉션 원소로 사용한다.
-- `orElse()`와 `orElseGet()`의 차이를 모르고 사용한다.
-- 단순 null 체크를 `Optional`로 감싸서 코드만 늘린다.
-- Stream 체이닝이 길어져서 어디서 문제가 생기는지 추적이 어렵다.
-- `parallelStream()`을 성능 개선 목적으로 무분별하게 사용한다.
+- **Stream에서 외부 상태를 바꾼다.** parallelStream으로 바뀌는 순간 결과가 깨진다.
+- **`Optional.get()`을 검사 없이 부른다.** 값이 없을 때 `NoSuchElementException`이 난다.
+- **`Optional`을 필드, 파라미터, 컬렉션 원소로 쓴다.** 직렬화 문제와 호출부 복잡도만 늘어난다.
+- **`orElse()`와 `orElseGet()`을 구분하지 않는다.** 값이 있는데도 비싼 기본값 생성이 매번 돈다.
+- **단순 null 체크를 `Optional`로 감싼다.** 코드만 길어진다.
+- **체이닝을 너무 길게 한다.** 어느 단계에서 문제가 났는지 추적이 어렵다.
+- **`parallelStream()`을 성능 개선용으로 아무 데나 쓴다.** 데이터가 적거나 공유 pool이 붐비면 오히려 느려진다.
 
-## 핵심 요약
+## 면접에서 말하기
 
-Stream은 컬렉션 데이터를 선언적으로 필터링, 변환, 집계하는 파이프라인입니다.
-가독성이 좋지만, 외부 상태를 변경하는 side effect를 넣으면 안 되고, 단순 로직에서는 for문이 나을 수 있습니다.
-
-Optional은 메서드 반환 타입에서 값이 없을 수 있음을 명시적으로 표현할 때 사용합니다.
-필드나 파라미터에는 사용하지 않고, `get()` 대신 `orElseThrow()`나 `orElseGet()`을 사용하는 것이 안전합니다.
-
-주의할 점으로 `orElse()`는 값이 있어도 인자가 항상 실행되므로, 비용이 큰 연산은 `orElseGet()`을 써야 합니다.
+> Stream은 컬렉션을 선언적으로 필터링, 변환, 집계하는 파이프라인이라 데이터 흐름이 분명할 때 씁니다. 다만 안에서 외부 상태를 바꾸지 않고, 단순 로직이나 break가 필요한 곳은 for문으로 둡니다. Optional은 반환 타입에서 값이 없을 수 있음을 드러낼 때만 쓰고, 필드나 파라미터에는 쓰지 않습니다. 꺼낼 때는 get() 대신 orElseThrow()나 orElseGet()을 쓰는데, orElse()는 값이 있어도 인자가 실행되기 때문입니다.
 
 ## 꼬리 질문
 
