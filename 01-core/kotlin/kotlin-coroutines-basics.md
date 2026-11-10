@@ -89,7 +89,7 @@ cancellation은 협력적으로 동작한다. 취소 신호를 확인하는 지�
 - **dispatcher 없이 CPU 작업과 I/O 작업을 섞는다.** 한쪽이 다른 쪽 스레드를 잡아먹는다. dispatcher별 스레드 사용량과 queue 지표를 본다.
 - **timeout과 cancellation 전파를 테스트하지 않는다.** 장애가 나야 취소가 안 먹는다는 걸 안다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Coroutine은 thread가 아니라 중단했다가 재개할 수 있는 비동기 작업 단위입니다. `suspend`는 새 스레드를 만들지 않고, non-blocking API와 함께 쓸 때 효과가 큽니다. blocking JDBC나 HTTP client를 그대로 부르면 coroutine만으로는 빨라지지 않아서, 그럴 땐 `Dispatchers.IO`로 옮깁니다. 서버 코드에서는 `GlobalScope`를 피하고 structured concurrency로 생명주기를 묶은 뒤, timeout과 cancellation, 예외 전파를 같이 설계합니다.
 

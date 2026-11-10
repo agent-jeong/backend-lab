@@ -58,7 +58,7 @@ int increaseIssuedCount(Long couponId);
 - 실패율보다 최종 데이터 불변식 위반 count를 본다.
 - DB에서 update 조건, unique key, lock wait 로그를 확인한다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Race Condition은 요청 실행 순서에 따라 결과가 달라지는 문제이고, Critical Section은 동시에 실행되면 안 되는 공유 자원 접근 구간입니다. 저는 임계 구역을 코드 줄이 아니라 DB row, business key, 상태 전이 기준으로 찾습니다. 검증과 변경을 분리하면 그 사이에 다른 요청이 끼어들기 때문에 조건부 update로 묶고, 임계 구역에는 외부 API나 긴 작업을 넣지 않습니다.
 

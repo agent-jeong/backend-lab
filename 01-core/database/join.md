@@ -114,7 +114,7 @@ MySQL 옵티마이저는 대부분의 서브쿼리를 JOIN으로 바꿔 실행�
 - **ON 조건과 WHERE 조건을 헷갈린다.** OUTER JOIN 결과가 의도와 달라진다.
 - **JOIN이 늘어나는데 실행 계획을 안 본다.** 어느 단계에서 Full Scan이 나는지 모른다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > JOIN은 테이블을 공통 컬럼으로 묶는 연산이고, 실무에서는 INNER JOIN과 LEFT JOIN을 주로 씁니다. LEFT JOIN은 매칭되지 않는 행도 NULL로 남기고, INNER JOIN은 매칭되는 행만 돌려줍니다. MySQL은 기본적으로 Nested Loop Join이라서 저는 드리븐 테이블의 JOIN 컬럼에 인덱스가 있는지부터 확인하고, JOIN이 들어간 쿼리는 실행 계획으로 인덱스를 타는지 봅니다.
 

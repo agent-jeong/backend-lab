@@ -95,7 +95,7 @@ pool 크기는 CPU, I/O 대기, DB connection pool, 외부 API 제한을 같이 
 - timeout, 예외, cancel 상황에서 결과가 의도대로 처리되는지 테스트한다.
 - 스레드 덤프에서 작업이 blocked, waiting 상태로 쌓이는지 본다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > 동시 작업은 Thread를 직접 만들지 않고 ExecutorService로 실행 수와 queue를 제어합니다. thread pool은 빠르게 하려는 도구라기보다 동시 실행 수를 제한해 시스템을 보호하는 장치라서, 크기는 CPU, I/O 대기, DB connection pool, 외부 API 제한을 같이 보고 정합니다. Future.get()은 timeout을 꼭 주고, CompletableFuture는 executor와 예외 처리를 명시합니다. 공유 상태 문제는 실행 모델과 별개라서 Java Memory Model까지 같이 봅니다.
 

@@ -53,7 +53,7 @@ HTTP Header:
 - 메트릭에서 error exemplar나 trace link가 연결되는지 본다.
 - 서비스 경계와 비동기 경계에서 trace가 끊기지 않는지 본다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > traceId는 한 요청의 기술적 흐름을, correlationId는 여러 요청과 비동기 작업을 포함한 업무 흐름을 묶을 때 씁니다. 저는 들어온 trace id가 있으면 이어 쓰고, HTTP뿐 아니라 메시지 header와 async 작업까지 전파되는지 테스트합니다. 사용자 개인정보나 토큰은 추적 식별자로 쓰지 않습니다.
 

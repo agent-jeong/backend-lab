@@ -53,7 +53,7 @@ API 기본 지표:
 - 대시보드는 RED 또는 USE 기준으로 구성한다.
 - 지표가 나빠진 dependency 구간은 trace로 확인한다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > 메트릭은 시스템 상태를 숫자로 보여 주는 운영 신호이고, 저는 장애 판단에 latency, traffic, error, saturation을 같이 봅니다. 평균만 보면 일부 사용자의 큰 지연이 가려져서 p95/p99를 봅니다. label에는 user id 같은 high cardinality 값을 넣지 않고, 영향 범위는 메트릭으로, 구체적인 원인은 로그와 트레이스로 좁힙니다.
 

@@ -46,7 +46,7 @@ Kotlin은 Java를 대체한다기보다, JVM 백엔드에서 Java의 불편한 �
 - **`val`만 쓰면 완전히 불변이라고 생각한다.** 가리키는 객체가 mutable이면 내용은 바뀐다.
 - **coroutine을 쓰면 자동으로 빨라진다고 생각한다.** blocking I/O를 그대로 부르면 효과가 없다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Kotlin은 Java 생태계를 그대로 쓰면서 null 안정성, data class, 컬렉션 처리, coroutine을 제공합니다. 저는 문법이 짧은 것보다 타입으로 오류 가능성을 줄이는 점을 더 큰 장점으로 봅니다. 다만 Java interop, JPA, Jackson, Spring proxy 경계에서는 Kotlin 특성이 오히려 주의점이 됩니다. 도입할 때는 한 번에 전환하기보다 DTO, 테스트, 신규 모듈처럼 위험이 낮은 곳부터 시작합니다.
 

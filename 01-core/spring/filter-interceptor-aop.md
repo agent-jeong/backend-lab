@@ -148,7 +148,7 @@ public class ServiceLoggingAspect {
 - **공통 로직을 전부 AOP로 해결하려 한다.** Filter나 Interceptor가 맞는 자리를 놓친다.
 - **`postHandle`이 항상 불린다고 믿는다.** Controller에서 예외가 나면 `postHandle`은 호출되지 않고 `afterCompletion`만 호출된다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Filter는 서블릿 컨테이너에서 모든 요청을 가로채고, Interceptor는 Spring MVC에서 Controller 전후에, AOP는 빈의 메서드 단위로 동작합니다. 저는 요청과 응답 자체를 바꿔야 하면 Filter, URL과 Handler 기준이면 Interceptor, 메서드 수준 공통 관심사면 AOP를 고릅니다. Spring Security가 Filter에서, `@Transactional`이 AOP에서 동작한다는 걸 알면 전체 구조가 보입니다.
 

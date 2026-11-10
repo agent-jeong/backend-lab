@@ -232,7 +232,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 - **`CompletableFuture.supplyAsync()`에서 MDC traceId가 사라진다.** 호출 스레드의 MDC가 복사되지 않아서다.
 - **`InheritableThreadLocal`이면 해결된다고 생각한다.** 스레드 생성 시점에만 상속되므로, 스레드 풀에서 재사용될 때는 전파되지 않는다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Spring의 트랜잭션, SecurityContext, MDC는 모두 ThreadLocal에 묶여 있어서 `@Async`나 `CompletableFuture`로 스레드가 바뀌면 전파되지 않습니다. 그래서 비동기 메서드에서 DB 작업이 필요하면 자체 `@Transactional`을 선언하고, traceId나 인증 정보는 파라미터로 넘기거나 TaskDecorator로 복사합니다. 스레드 풀은 스레드를 재사용하기 때문에, ThreadLocal은 `afterCompletion()`이나 `finally`에서 꼭 `remove()`합니다. 안 그러면 이전 사용자의 정보가 다음 요청에 남습니다.
 

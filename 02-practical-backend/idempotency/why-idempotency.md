@@ -67,7 +67,7 @@ public PaymentResponse approve(PaymentRequest request) {
 - duplicate request count, idempotency hit count, retry count를 본다.
 - pending이나 result-unknown 상태가 오래 남지 않는지 본다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > 멱등성은 같은 요청이 여러 번 와도 최종 결과가 한 번 처리한 것과 같게 만드는 설계입니다. 중복 클릭, timeout 뒤 재시도, 메시지 재전달은 운영에서 실제로 일어납니다. lock은 동시에 겹친 실행만 막고 이미 처리된 요청은 알아보지 못하기 때문에, 저는 결제·쿠폰·포인트·재고처럼 상태를 바꾸는 기능에 처리 이력과 DB 제약을 둬서 다시 와도 같은 결과가 나오게 합니다.
 

@@ -64,7 +64,7 @@ API timeout budget: 1s
 - 인스턴스 수 × 인스턴스별 pool max가 DB max connection과 운영 여유분 안에 있는지 확인한다.
 - thread dump로 많은 스레드가 DB/HTTP/Redis 대기 중인지 본다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Connection pool 고갈은 실제 DB나 외부 API 호출 전 대기 시간으로 나타나서, 저는 성능을 볼 때 pool wait time과 execution time을 나눠 봅니다. pool 크기를 늘리기 전에 커넥션을 오래 잡는 트랜잭션, 외부 호출, 느린 쿼리를 먼저 찾고, 크기는 인스턴스 수와 DB max connection을 같이 보고 정합니다. timeout은 의존성 장애를 오래 기다리지 않게 하는 장치이고, retry는 timeout budget, 멱등성, backoff, 최대 횟수와 함께 설계합니다.
 

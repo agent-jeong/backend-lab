@@ -54,7 +54,7 @@ strategy:
 - `kubectl describe deployment`로 strategy와 event를 확인한다.
 - error rate, latency, restart count, readiness failure를 배포 전후로 비교한다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Rolling update는 새 Pod를 늘리고 기존 Pod를 줄이며 버전을 점진적으로 바꾸는 방식입니다. 무중단이 되려면 readiness가 정확해야 하고, replica 수와 `maxUnavailable`이 배포 중 가용성을 정합니다. 저는 종료되는 Pod를 위해 graceful shutdown과 `preStop` 지연을 두고, 배포 뒤에는 rollout 상태와 함께 오류율, 지연, 재시작 수를 봅니다. rollback은 Pod template만 되돌리므로 DB 변경은 하위 호환되게 따로 설계합니다.
 

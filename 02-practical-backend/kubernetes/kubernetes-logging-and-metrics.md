@@ -42,7 +42,7 @@ Kubernetes에서 장애를 볼 때는 Pod 로그, event, resource 사용량, rol
 
 이렇게 하려면 클러스터 접근 권한과 관측 도구가 있어야 한다. 메트릭 보관 기간이 짧으면 지난 장애는 분석하기 어렵다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Kubernetes 장애는 로그, event, metric, rollout 상태를 같이 봐야 합니다. Pod가 Running이라고 서비스 가능한 건 아니어서, 503이 늘면 저는 애플리케이션 오류보다 readiness, endpoint, ingress를 먼저 봅니다. 재시작이 반복되면 `logs --previous`와 종료 사유를 확인하고, 지연이 늘면 CPU throttling과 OOMKilled처럼 코드 문제로 보이는 리소스 문제부터 걸러 냅니다.
 

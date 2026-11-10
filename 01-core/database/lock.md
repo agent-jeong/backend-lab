@@ -118,7 +118,7 @@ TX-B: UPDATE orders SET status = 'SHIPPED' WHERE id = 1;    → 대기 (TX-A가 
 - **트랜잭션 범위가 넓다.** 락을 오래 쥐어 경합이 커진다.
 - **`SELECT FOR UPDATE` 없이 조회 후 업데이트한다.** 동시 요청끼리 덮어써서 Lost Update가 난다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > 락은 동시 수정을 막는 장치이고, 읽기용 Shared Lock과 쓰기용 Exclusive Lock이 있습니다. InnoDB는 Row Lock이 기본이지만 인덱스를 못 타면 넓은 범위가 잠기기 때문에, 저는 UPDATE 조건에 인덱스가 있는지부터 봅니다. 재고나 좌석처럼 충돌이 잦으면 비관적 락, 프로필처럼 드물면 낙관적 락을 씁니다. 데드락은 접근 순서를 통일하고 트랜잭션 범위를 줄여서 예방합니다.
 

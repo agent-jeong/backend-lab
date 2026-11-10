@@ -60,7 +60,7 @@ Non-blocking I/O 자체와 async/reactive 프로그래밍 모델은 별개다. �
 - 메트릭은 active threads, event loop latency, pending tasks, connection pool usage를 본다.
 - thread dump, async profiler, event loop blocked 경고로 어디서 막히는지 찾는다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Blocking은 I/O가 끝날 때까지 스레드가 기다리고, Non-blocking은 바로 반환해서 그 스레드가 다른 일을 하게 합니다. 일반 CRUD API라면 저는 blocking 모델에 pool 크기를 맞추는 것으로 충분하다고 보고, 대기가 긴 외부 호출이 많을 때 Non-blocking을 검토합니다. Non-blocking을 쓸 때는 event loop에서 blocking 호출이 섞이지 않게 하고, timeout과 backpressure로 downstream에 보내는 양을 제한합니다.
 

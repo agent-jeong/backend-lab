@@ -60,7 +60,7 @@ page cache 덕에 빨랐던 조회를 보고 디스크가 빠르다고 판단하
 - 메트릭은 disk read/write throughput, IOPS, await, util, iowait를 본다.
 - 명령어는 `iostat -x 1`, `vmstat 1`, `pidstat -d 1`, `df -h`.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > File I/O는 page cache에 있으면 빠르지만, cache miss나 flush 지연이 생기면 API 응답 시간이 늘어납니다. 그래서 CPU 사용률이 낮은데 느리면 저는 disk throughput, IOPS, await, iowait를 같이 봅니다. 일반 write는 page cache에만 반영되고 반환될 수 있어서 내구성이 필요하면 fsync 비용을 따로 따지고, 대용량 파일은 스트리밍이나 별도 worker로 요청 스레드에서 떼어 냅니다.
 

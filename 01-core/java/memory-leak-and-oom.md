@@ -162,7 +162,7 @@ java -XX:MaxRAMPercentage=75.0 -jar app.jar
 - **Connection, Stream을 try-with-resources 없이 쓴다.** 예외 경로에서 닫히지 않는다.
 - **컨테이너 한도와 JVM 메모리 설정을 따로 본다.** heap 밖 메모리까지 합쳐 한도를 넘는다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > 메모리 누수는 필요 없는 객체가 GC에 회수되지 않고 heap에 남는 현상이고, 쌓이면 GC가 점점 잦아지다 OOM으로 끝납니다. 흔한 원인은 제거 없는 static 컬렉션, 닫지 않은 리소스, remove하지 않은 ThreadLocal입니다. 그래서 운영에는 HeapDumpOnOutOfMemoryError를 미리 켜 두고, 문제가 나면 Eclipse MAT에서 Dominator Tree와 GC Roots로 무엇이 왜 안 지워지는지 추적합니다. 컨테이너에서는 heap 밖 메모리를 감안해 `-Xmx`를 한도의 70~80% 이하로 둡니다.
 

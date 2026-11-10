@@ -63,7 +63,7 @@ public void completeOrder(Long orderId) {
 - outbox pending count, publish failure count, retry age를 본다.
 - 오래된 pending 이벤트와 보상 실패 건을 조회하는 운영 쿼리를 준비해 둔다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Outbox는 DB 변경과 이벤트를 보내야 한다는 기록을 같은 트랜잭션에 넣어서 이벤트 유실을 막는 패턴입니다. 중복 발행까지 막지는 못하기 때문에 소비자는 멱등하게 만듭니다. 보상 트랜잭션은 rollback이 아니라 업무적으로 되돌리는 새 작업이고, 저는 분산 환경에서는 상태 전이, 재시도, 보상, 그리고 오래된 pending과 보상 실패 건 모니터링을 조합해 최종 정합성을 맞춥니다.
 

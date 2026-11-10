@@ -136,7 +136,7 @@ public class JpaConfig { }
 - **`@GeneratedValue` 전략을 이해하지 않고 기본값을 쓴다.** 잘못 고르면 batch insert 성능이 나빠진다.
 - **`@Id` 타입을 primitive(`long`)로 쓴다.** null 체크가 안 돼 저장 전 상태를 구분하지 못한다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Entity는 `@Entity`, `@Id`, 기본 생성자가 있어야 하고 테이블과 1:1로 매핑됩니다. id 전략은 MySQL에서 `IDENTITY`를 주로 쓰는데, insert 시점에 id를 받아와야 해서 batch insert가 안 된다는 제약을 알고 씁니다. enum은 순서 변경에 안전하도록 `@Enumerated(STRING)`으로 저장하고, Entity는 API 응답으로 직접 내보내지 않고 DTO로 바꿉니다.
 

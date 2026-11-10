@@ -72,7 +72,7 @@ return summary;
 - 메트릭: hit ratio, latency, memory usage, evicted keys, expired keys, connected clients. hit ratio 옆에 DB QPS를 둔다.
 - 주기 점검: key prefix, TTL 분포, big key, hot key.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Redis는 메모리 기반 저장소라 빠르지만, 저는 무엇을 Redis로 풀지부터 정합니다. 캐시, 세션, 분산 락, 카운터처럼 사라져도 DB나 기본값으로 복구되는 보조 상태만 두고, 원본 데이터는 DB에 둡니다. 도입할 때는 TTL, key 설계, 메모리 사용량, 장애 시 fallback을 같이 설계합니다. 빠르다는 이유로 모든 조회를 Redis로 옮기면 정합성과 운영 복잡도가 커집니다.
 

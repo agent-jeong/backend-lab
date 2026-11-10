@@ -34,7 +34,7 @@ controller는 클러스터 상태와 Git 상태가 어긋나는 drift를 감지�
 - drift가 생겼을 때 감지하고 복구하는지 확인한다.
 - 승인, 리뷰, rollback 절차가 Git history와 이어지는지 확인한다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > GitOps는 Git을 운영 desired state의 기준으로 삼고, controller가 실제 상태를 거기에 맞추는 방식입니다. 변경 이력과 리뷰가 Git workflow에 남고, drift도 감지해 되돌립니다. 그래서 저는 수동 변경은 다음 동기화에서 사라진다는 전제로 원칙을 정하고, secret은 평문으로 두지 않도록 별도 도구로 관리합니다.
 

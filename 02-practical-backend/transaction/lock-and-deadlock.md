@@ -70,7 +70,7 @@ pessimistic lock은 충돌을 미리 막지만 보유 시간이 길면 처리량
 - lock wait time, deadlock count, slow query, active transaction 수를 본다.
 - update/delete 조건이 인덱스를 타는지 실행 계획으로 확인한다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > 락은 같은 데이터를 동시에 수정할 때 정합성을 지키는 장치이고, 데드락은 여러 트랜잭션이 서로의 락을 기다리는 순환 대기 상태입니다. 저는 트랜잭션을 짧게 두고, 조건이 인덱스를 타게 하고, 자원 접근 순서를 고정해서 위험을 줄입니다. 경합이 높은 기능은 pessimistic lock, optimistic lock, 조건부 update, 큐잉 중 업무 특성에 맞는 것을 고릅니다.
 

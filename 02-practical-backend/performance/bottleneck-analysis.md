@@ -55,7 +55,7 @@ API p95 1.2s
 - latency, error rate, pool active/wait, CPU, GC, DB QPS를 같은 시간축에 맞춰 본다.
 - CPU profile, thread dump, DB execution plan, slowlog를 확인한다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > 병목 분석은 전체 응답 시간을 구간별로 나눠 가장 큰 지연을 찾는 작업입니다. 느린 원인은 코드가 아니라 pool 대기, DB 실행 계획, Redis timeout, 외부 API, OS 자원일 수 있어서, 저는 특히 DB query time과 connection wait time을 나눠 봅니다. 개선은 한 번에 하나씩 하고 같은 조건에서 다시 측정해, 어떤 지표로 병목을 좁혔고 무엇이 효과였는지 설명할 수 있게 합니다.
 

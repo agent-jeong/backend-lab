@@ -80,7 +80,7 @@ val user = userRepository.findByIdOrNull(id)
 - **빈 컬렉션이면 될 자리에 nullable collection을 쓴다.** 호출부마다 null 처리가 붙는다.
 - **검증 전 request DTO를 domain 객체처럼 쓴다.** 누락된 값이 도메인 안으로 들어온다. 테스트에서는 누락 필드, null 필드, 빈 문자열을 구분해 검증한다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Kotlin null safety는 null 가능성을 타입으로 표현해서 null 처리 누락을 컴파일 시점에 줄입니다. NPE를 완전히 없애지는 못하고, Java의 platform type, `!!`, JPA나 Jackson 경계에서는 여전히 납니다. 저는 외부 입력 DTO는 nullable로 받고, 검증한 뒤 내부 모델은 non-null로 바꿉니다. 빈 목록은 null 대신 empty list로 돌려줘서 호출부를 단순하게 합니다.
 

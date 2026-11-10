@@ -246,7 +246,7 @@ public record ExternalApiResponse(String userName, String emailAddress) {
 - **`@JsonIgnore`가 한쪽 방향만 막는다고 생각한다.** getter에만 붙여도 Jackson은 property 전체를 무시해서 역직렬화에서도 빠진다. 한 방향만 막으려면 `@JsonProperty(access = ...)`를 쓴다.
 - **외부 API의 snake_case를 필드마다 손으로 매핑한다.** 빠뜨린 필드가 null로 들어온다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Spring Boot에서 요청과 응답의 JSON 변환은 Jackson이 맡고, 직렬화는 getter, 역직렬화는 기본 생성자와 setter 또는 `@JsonCreator`를 기준으로 동작합니다. 제가 가장 먼저 지키는 원칙은 Entity를 API 응답으로 직접 반환하지 않는 것입니다. 순환 참조로 StackOverflowError가 나거나 민감 정보가 노출되고 lazy loading 문제도 생기기 때문에 record DTO로 바꿔서 내보냅니다. 그 외에 날짜 포맷과 enum 대소문자 불일치를 설정으로 맞춰 두고, `ObjectMapper`를 직접 만들어 Boot 기본 설정을 덮어쓰지 않습니다.
 

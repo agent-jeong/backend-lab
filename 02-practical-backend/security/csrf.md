@@ -58,7 +58,7 @@ Authorization header 기반 API는 CSRF 위험이 상대적으로 낮다. 대신
 - 코드 리뷰: GET 요청이 상태를 바꾸지 않는지 확인한다.
 - 보안 점검: 쿠키의 SameSite, Secure, HttpOnly 설정을 확인한다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > CSRF는 브라우저가 인증 쿠키를 자동으로 붙여 보내는 점을 악용해, 사용자가 의도하지 않은 상태 변경 요청을 보내게 하는 공격입니다. CORS는 응답 접근을 제어하는 것이라 CSRF 방어와 목적이 다릅니다. 쿠키 기반 인증이라면 상태 변경 요청에 CSRF token, SameSite, Origin 검증을 함께 두고, GET으로는 상태를 바꾸지 않게 합니다. Authorization header 방식은 CSRF 위험은 낮지만 토큰 저장 위치에 따른 다른 위험을 따로 봅니다.
 

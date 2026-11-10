@@ -58,7 +58,7 @@ public List<OrderSummary> findMyOrders(AuthenticatedUser user, OrderSearchCondit
 - 코드 리뷰: 권한 조건이 Controller, Service, Query 중 어디에서 보장되는지 따라간다.
 - 로그: 권한 실패 때 사용자 id, 리소스 id, 정책 이름, trace id를 남긴다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > 권한 검증은 한 곳에 두는 문제가 아니라 계층별로 나눠 두는 문제라고 봅니다. 로그인 여부는 공통 필터에서, 기능 role은 Controller나 method security에서, 리소스 소유권은 업무 규칙과 함께 Service에서 확인합니다. 목록 조회는 가져온 뒤 거르지 않고 query 조건에 권한 범위를 넣습니다. 권한 실패는 403으로 응답하고 감사에 필요한 최소 정보만 로그로 남깁니다.
 

@@ -179,7 +179,7 @@ public class Order {
 - **enum을 상수로만 쓴다.** 분기 로직이 호출부 곳곳의 if-else로 흩어진다.
 - **record를 JPA Entity로 쓰려 한다.** 프록시 생성에서 실패한다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > 데이터 전달은 record, 고정된 선택지는 enum, 행위 계약은 interface, 식별자와 상태 변경이 있는 객체는 class를 먼저 떠올립니다. JPA Entity는 생명주기와 상태 변경이 있어서 class로 만들고, record는 DTO나 값 객체에 씁니다. enum을 DB에 저장할 때는 ORDINAL을 피하고, STRING도 이름 변경에 약하기 때문에 오래 남는 값이면 별도 code 필드와 converter를 둡니다.
 

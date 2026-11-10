@@ -34,7 +34,7 @@ tags: [concept, ci-cd]
 - 배포된 Pod가 의도한 설정 값을 쓰는지 확인한다.
 - secret 접근 권한과 rotation 절차를 확인한다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > 설정과 secret은 코드와 이미지에서 분리하고 배포 시점에 주입합니다. 민감 정보는 Git, 로그, 이미지 layer에 남기지 않고, secret에는 접근 권한과 rotation 기준을 둡니다. Kubernetes에서는 ConfigMap과 Secret을 주입 수단으로 쓰되, 설정 변경도 배포 이력과 rollback 절차에 넣어 CI/CD 관점에서 같이 관리합니다.
 

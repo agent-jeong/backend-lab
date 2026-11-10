@@ -68,7 +68,7 @@ DB 제약은 다중 서버에서도 똑같이 동작한다. 대신 업무별로 
 - constraint name, business key, affected row count, current status를 로그로 남긴다.
 - duplicate key violation, state transition failure count를 본다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > 멱등성은 애플리케이션 코드만으로는 지키기 어렵습니다. 저는 중복되면 안 되는 데이터에 business key 기반 unique 제약을 걸고, 상태 변경은 현재 상태를 조건으로 넣어 이미 처리된 요청이 다시 반영되지 않게 합니다. constraint violation과 update count 0은 장애가 아니라 업무 응답으로 바꾸고, idempotency key와 함께 써서 어느 한쪽이 뚫려도 막히게 합니다.
 

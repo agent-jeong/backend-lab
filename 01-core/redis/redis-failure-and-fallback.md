@@ -48,7 +48,7 @@ Redis 장애 대응은 Redis timeout, 연결 실패, 지연 증가가 애플리�
 - 메트릭: Redis latency, timeout count, pool usage, fallback count, DB QPS를 같이 본다.
 - 점검: slowlog, big key, hot key, memory usage, evicted keys.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Redis 장애 대응은 Redis가 느리거나 죽었을 때 애플리케이션이 같이 망가지지 않게 실패 정책을 정하는 일입니다. 저는 Redis timeout을 API timeout보다 짧게 두고, connection pool과 circuit breaker로 장애 전파를 끊습니다. 캐시는 DB fallback을 쓰되 fallback이 몰려 DB가 넘어가지 않게 제한하고, 세션·락·rate limit은 기능별로 실패 정책을 따로 정합니다. 확인할 때는 Redis 지표와 함께 API latency, DB QPS, fallback count를 봅니다.
 

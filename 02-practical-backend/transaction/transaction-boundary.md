@@ -61,7 +61,7 @@ DB 변경만 `createOrder` 트랜잭션 안에 두고 결제 요청은 바깥에
 - transaction duration, connection active time, lock wait를 본다.
 - 코드 리뷰에서 트랜잭션 안에 외부 I/O가 있는지 확인한다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > 트랜잭션 경계는 함께 commit되거나 rollback되어야 하는 DB 작업의 범위입니다. 좁으면 부분 성공이 생기고 넓으면 락과 커넥션 점유가 늘어납니다. 저는 유스케이스 단위로 경계를 잡되 외부 I/O는 가능한 한 빼고, DB가 rollback할 수 없는 작업은 commit 이후 실행하거나 보상 트랜잭션으로 다룹니다.
 

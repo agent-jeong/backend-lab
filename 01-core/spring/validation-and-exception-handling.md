@@ -189,7 +189,7 @@ public record ErrorResponse(String code, String message) { }
 - **비즈니스 예외와 시스템 예외를 구분하지 않는다.** 잔액 부족도 500으로 나간다.
 - **`@ExceptionHandler` 우선순위를 모른다.** 구체적인 예외 타입 핸들러가 먼저 선택된다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > 입력 검증은 Controller 계층에서 `@Valid`와 Bean Validation으로 하고, 중첩 객체에도 `@Valid`를 붙입니다. 재고 확인처럼 DB가 필요한 비즈니스 규칙은 Service에서 검증합니다. 예외는 `@RestControllerAdvice` 한곳에서 일관된 형식으로 바꿉니다. 비즈니스 예외는 커스텀 예외와 ErrorCode로 상태 코드를 나누고, 예상하지 못한 예외는 로그를 남긴 뒤 500으로 응답합니다.
 

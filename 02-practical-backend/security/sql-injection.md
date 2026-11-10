@@ -57,7 +57,7 @@ List<Order> findOrders(long userId, OrderStatus status);
 - 정적 분석: native query, raw query, 문자열 기반 동적 query를 점검한다.
 - 로그: SQL 에러가 외부 응답으로 나가지 않는지 확인한다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > SQL Injection은 사용자 입력이 값이 아니라 SQL 문법으로 해석될 때 생깁니다. 그래서 값은 parameter binding으로 SQL 구조와 분리합니다. ORM을 써도 native query나 동적 정렬처럼 문자열로 조립하는 곳은 위험이 남기 때문에, 컬럼명이나 정렬 방향처럼 binding할 수 없는 입력은 allowlist로 제한합니다. SQL 에러 원문은 응답에 노출하지 않고, 내부 도구에도 같은 기준을 적용합니다.
 

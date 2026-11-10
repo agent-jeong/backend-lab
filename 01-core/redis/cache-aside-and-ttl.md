@@ -82,7 +82,7 @@ public void updateProductName(Long productId, String name) {
 - 캐시 삭제 실패, Redis timeout, fallback 실행은 로그로 남긴다.
 - Redis 연결을 끊거나 캐시를 전부 비운 상태에서 DB와 API가 버티는지 한 번은 실험해 본다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Cache Aside는 캐시를 먼저 보고 없으면 DB를 읽어 캐시에 넣는 방식입니다. 대신 DB와 캐시가 잠깐 다를 수 있어서, 저는 TTL을 정할 때 이 데이터가 틀린 채로 몇 분까지 보여도 되는지부터 확인합니다. 원본이 바뀌면 커밋 뒤에 key를 지우고, 삭제가 실패해도 TTL이 지나면 맞춰지게 합니다. 인기 key가 만료될 때 DB로 요청이 몰리는 것과 Redis 장애 때의 대안도 같이 설계합니다.
 

@@ -85,7 +85,7 @@ java -XX:StringTableSize=120011 -jar app.jar
 - **"String Pool은 PermGen에 있다"는 Java 6 이전 정보를 그대로 믿는다.** Java 7+에서는 Heap에 있고 GC 대상이다.
 - **`new String("hello")`가 객체를 2개 만들 수 있다는 걸 모른다.** Pool에 1개, Heap에 1개다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > String 리터럴은 String Pool에 저장돼 같은 값이면 같은 참조를 받고, `new String()`은 항상 Heap에 새 객체를 만들어서 `==` 비교가 false가 됩니다. `intern()`은 Pool에 등록하거나 기존 Pool 참조를 돌려주는데, 중복이 많은 문자열에는 메모리 절감이 되지만 고유 문자열이 많으면 오히려 부담입니다. Java 7부터 Pool은 Heap에 있어서 GC 대상이고, 저는 문자열 비교는 항상 `equals()`로 합니다.
 

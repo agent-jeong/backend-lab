@@ -63,7 +63,7 @@ startup probe는 초기화 시간만 처리한다. 실제로 트래픽을 받아
 - 배포 중 초기화가 끝나기 전 요청이 들어가지 않는지 테스트한다.
 - 메트릭은 restart count, readiness failure, liveness failure.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Readiness는 트래픽을 받아도 되는지, Liveness는 재시작이 필요한지를 판단합니다. readiness가 실패하면 endpoint에서 빠지고 liveness가 실패하면 재시작되기 때문에, 저는 외부 의존성 상태를 liveness에 넣지 않습니다. 구동이 긴 애플리케이션은 startup probe를 두어 그게 성공할 때까지 다른 probe가 돌지 않게 합니다. probe 설정이 곧 배포 안정성과 장애 복구 방식을 정한다고 봅니다.
 

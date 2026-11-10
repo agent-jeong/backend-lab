@@ -215,7 +215,7 @@ Set<User> users = new TreeSet<>(Comparator.comparing(User::getId));
 - **정렬 기준이 여럿인데 if-else로 비교한다.** `thenComparing()` 체이닝이면 한 줄로 끝난다.
 - **`HashSet`과 `LinkedHashSet`의 순서 차이를 모른다.** 결과 순서가 실행마다 달라진다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > 컬렉션 연산에서 제가 가장 먼저 보는 건 반복문 안의 탐색 비용입니다. `List.contains()`는 O(n)이라 반복문 안에서 부르면 O(n^2)이 되고, Set으로 바꾸면 탐색이 O(1)이라 전체가 O(n)으로 줄어듭니다. 정렬은 `comparing()`과 `thenComparing()`으로 기준을 잇고 null이 있으면 `nullsLast()`를 씁니다. `distinct()`는 equals 기준이라 객체에는 equals/hashCode가 있어야 하고, 정렬 기준이 DB 컬럼이면 애플리케이션이 아니라 ORDER BY로 처리합니다.
 

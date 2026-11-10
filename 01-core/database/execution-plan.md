@@ -108,7 +108,7 @@ EXPLAIN ANALYZE SELECT * FROM orders WHERE user_id = 1;
 - **rows가 예상보다 큰데 원인을 보지 않는다.**
 - **rows를 정확한 값으로 믿는다.** 통계 기반 추정치라 실제와 다르다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > 실행 계획은 `EXPLAIN`으로 보고, `type`, `key`, `rows`, `Extra` 순서로 읽습니다. `type`이 `ALL`이면 Full Table Scan이라 인덱스를 검토하고, `Using filesort`가 나오면 정렬에 맞는 인덱스가 필요한지 봅니다. `rows`는 추정치라서, 정확한 수치가 필요하면 MySQL 8.0 이상에서 `EXPLAIN ANALYZE`로 실제 실행 결과를 확인합니다.
 

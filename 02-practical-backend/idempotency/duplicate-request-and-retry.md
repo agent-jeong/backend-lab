@@ -60,7 +60,7 @@ retry는 일시 장애를 흡수하지만 멱등성 없이는 중복 처리 위�
 - timeout 후 성공률, retry storm, duplicate request count를 본다.
 - 같은 업무 key로 짧은 시간에 반복 요청이 들어오는지 확인한다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > timeout은 실패가 아니라 성공, 실패, 결과 불명 중 하나입니다. 그래서 저는 같은 의도의 재시도에는 같은 idempotency key나 request key를 쓰게 하고, 서버는 그 key로 기존 결과를 돌려주거나 pending 상태를 조회해 복구합니다. retry 자체에는 backoff, 최대 횟수, circuit breaker를 붙여 장애 때 부하를 키우지 않게 합니다.
 

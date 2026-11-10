@@ -125,7 +125,7 @@ JVM은 바이트코드를 인터프리터로 실행하다가, 자주 호출되�
 - **스레드 수를 과하게 늘린다.** 스레드별 스택 메모리 합이 시스템 메모리를 넘긴다.
 - **Metaspace 상한을 두지 않는다.** 동적 프록시가 계속 생기면 끝없이 늘어난다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > JVM 메모리는 크게 Heap, Stack, Method Area(Metaspace)로 나뉩니다. Heap은 객체가 생기는 GC 대상 영역이고, Stack은 스레드마다 메서드 호출 프레임을 관리하며, Metaspace는 Java 8부터 PermGen을 대체해 클래스 메타데이터를 Native Memory에 둡니다. 각각 `-Xmx`, `-Xss`, `-XX:MaxMetaspaceSize`로 크기를 정하는데, 컨테이너에서는 이 합이 한도를 넘지 않게 잡고, 문제가 생기면 heap dump와 jstat으로 먼저 확인합니다.
 

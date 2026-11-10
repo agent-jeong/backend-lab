@@ -72,7 +72,7 @@ public void completePayment(Long orderId) {
 - constraint violation, affected row count, 기존 상태를 로그로 남긴다.
 - 중복 요청 수, 상태 전이 실패 수, 멱등 응답 수를 본다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > 동시성 문제를 항상 락으로 풀 필요는 없습니다. 중복 생성은 unique 제약이 가장 강한 최종 방어선이고, 상태 변경은 현재 상태를 조건으로 건 update로 잘못된 순서를 막습니다. 저는 unique 제약을 business key 기준으로 잡고 nullable column과 soft delete 정책까지 확인하며, 제약 위반과 update 실패는 장애가 아니라 업무 응답으로 처리합니다. 락은 이렇게 막을 수 없는 곳에만 씁니다.
 

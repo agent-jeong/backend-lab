@@ -125,7 +125,7 @@ spring:
 | Java 8에 묶여 있는 프로젝트 | 라이브러리 호환성 확인 후 17로 먼저 올리기 |
 | Virtual Thread 도입 | I/O 바운드 서비스에서 Java 21 + Spring Boot 3.2+ |
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Java 8의 Lambda, Stream, Optional이 지금 Java 코드의 기반이고, Java 17의 record와 sealed class로 불변 객체와 타입 제한을 쉽게 표현하게 됐습니다. 가장 큰 변화는 Java 21의 virtual thread인데, OS 스레드 1:1 모델에서 JVM이 관리하는 경량 스레드로 바뀌어 I/O 바운드 서비스가 적은 자원으로 수만 개의 동시 요청을 처리할 수 있습니다. 다만 CPU 바운드에는 이점이 없고, synchronized pinning과 ThreadLocal은 따로 확인합니다. 새 프로젝트는 Java 21 이상(최신 LTS는 25), 기존 프로젝트는 17 이상을 기준으로 올립니다.
 

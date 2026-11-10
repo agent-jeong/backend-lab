@@ -75,7 +75,7 @@ update count가 0이면 이유를 나눠 본다. 이미 `PAID`라면 같은 결�
 - order id, payment key, idempotency key, 상태 전이, external request id를 로그로 남긴다.
 - duplicate payment attempt, pending payment age, compensation count를 본다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > 결제와 주문은 주문 생성, 결제 승인, 재고 차감, 이벤트 발행, 메시지 소비가 각각 중복될 수 있는 영역입니다. 저는 주문 상태 전이, payment key unique, idempotency key, outbox, 소비자 멱등성을 같이 씁니다. 결제 timeout은 실패가 아니라 결과 불명이라서 같은 payment key로 외부 상태를 조회해 확정합니다. 목표는 중복을 막는 게 아니라 중복이 와도 같은 결과로 수렴하게 하는 것입니다.
 

@@ -153,7 +153,7 @@ JPA가 변경 감지(dirty checking)를 건너뛰어 스냅샷 비교 비용이 
 - **조회 메서드에 `readOnly = true`를 붙이지 않는다.** 쓸데없는 변경 감지 비용을 낸다.
 - **트랜잭션 범위를 너무 넓게 잡는다.** DB 커넥션을 오래 쥐고 있게 된다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > `@Transactional`은 프록시가 메서드 앞뒤에서 트랜잭션을 열고 닫는 구조입니다. 기본 롤백 대상은 RuntimeException과 Error이고, checked 예외는 `rollbackFor`로 추가합니다. 전파에서 실수가 많은 곳은 두 군데입니다. REQUIRED로 참여한 내부 메서드가 예외를 던지면 바깥에서 잡아도 rollback-only가 되어 `UnexpectedRollbackException`이 나고, REQUIRES_NEW는 트랜잭션만 나눌 뿐 예외 전파는 막지 않아서 호출부에서 잡아야 합니다.
 

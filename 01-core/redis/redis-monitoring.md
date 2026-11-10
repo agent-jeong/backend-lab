@@ -65,7 +65,7 @@ slow command, big key, hot key는 Redis 서버 지표만으로는 원인이 바�
 - 대시보드: Redis 지표와 API latency, DB QPS, error rate, fallback count를 한 화면에 둔다.
 - 알림: 평균값이 아니라 timeout 급증, evicted keys 증가, memory threshold 초과, p99 latency 상승에 건다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Redis 모니터링은 Redis가 살아 있는지보다 Redis 지연이 애플리케이션과 DB로 어떻게 번지는지를 보는 일입니다. 그래서 저는 Redis latency, eviction, timeout을 API p99, DB QPS, fallback count와 같은 화면에 둡니다. hit ratio가 높아도 timeout이나 p99가 나쁘면 장애로 보고, 원인은 slowlog, hot key, big key, memory usage로 좁힙니다. 알림도 평균이 아니라 p99, timeout, eviction 증가에 겁니다.
 

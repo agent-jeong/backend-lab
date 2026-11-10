@@ -184,7 +184,7 @@ Postman → 서버: CORS 헤더 무관하게 요청 성공
 - **개발 환경에서 프록시로 우회한다.** 운영에 가서야 CORS 문제를 발견한다.
 - **`Access-Control-Max-Age`를 설정하지 않는다.** 매 요청마다 Preflight가 나간다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > CORS는 브라우저가 다른 Origin으로의 요청을 제한하는 정책이고, 허용 여부는 서버가 응답 헤더로 정합니다. `application/json` 요청은 OPTIONS로 Preflight가 먼저 나가기 때문에, 저는 서버가 OPTIONS를 막지 않는지부터 봅니다. 쿠키를 실어야 하면 `Allow-Origin: *` 대신 특정 Origin을 지정하고, Spring Security를 쓰면 `CorsConfigurationSource`를 Security에 등록합니다.
 

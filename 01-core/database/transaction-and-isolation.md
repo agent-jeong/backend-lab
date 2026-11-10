@@ -86,7 +86,7 @@ public void transferMoney(Long fromId, Long toId, BigDecimal amount) { }
 - **MVCC를 모르고 "읽기에도 락이 걸린다"고 설명한다.**
 - **Serializable을 쓰면 데드락이 잦아진다는 걸 모른다.**
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > 격리 수준은 동시 트랜잭션이 서로 얼마나 영향을 주는지 정하는 설정이고, Dirty Read, Non-Repeatable Read, Phantom Read를 어디까지 막느냐로 나뉩니다. MySQL InnoDB는 Repeatable Read가 기본이고, MVCC 덕분에 일반 읽기와 쓰기가 서로 막지 않습니다. 다만 재고 차감 같은 Lost Update는 격리 수준으로 안 막히기 때문에, 저는 원자적 UPDATE나 `SELECT ... FOR UPDATE`, `@Version`으로 처리합니다.
 

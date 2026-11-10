@@ -107,7 +107,7 @@ public class GlobalExceptionHandler {
 - **`@Controller`에서 JSON을 반환하면서 `@ResponseBody`를 빠뜨린다.** 반환값이 View 이름으로 해석된다.
 - **Filter와 Interceptor를 구분 없이 쓴다.** 같은 처리가 두 곳에 흩어진다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Spring MVC는 DispatcherServlet이 모든 요청을 받아 HandlerMapping으로 Controller를 찾고, 결과를 ViewResolver나 MessageConverter로 응답에 씁니다. 실행 순서는 Filter, Interceptor, AOP, Controller입니다. `@ExceptionHandler`는 Controller 쪽 예외만 잡기 때문에, Filter에서 나는 예외는 따로 처리합니다.
 

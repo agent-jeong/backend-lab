@@ -57,7 +57,7 @@ tags: [concept, performance]
 - p50/p95/p99 latency, throughput, error rate, saturation을 본다.
 - CPU, thread, DB query, external call 중 어디서 시간을 쓰는지 프로파일링한다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > 성능 문제는 느린 느낌이 아니라 목표 지표를 만족하지 못하는 상태라고 봅니다. 그래서 저는 먼저 p95/p99, error rate, saturation 같은 목표와, 요청량·데이터 크기·캐시 상태·외부 의존성 같은 재현 조건을 정합니다. 병목을 확인한 뒤 하나씩 개선하고, 개선 전후를 같은 조건에서 숫자로 비교해 증명합니다.
 

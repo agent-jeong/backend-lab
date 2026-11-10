@@ -57,7 +57,7 @@ log.warn("payment retry traceId={} orderId={} attempt={} reason={}",
 - 메트릭은 로그량, error log rate, ingestion 실패율.
 - 토큰, 비밀번호, 주민번호, 이메일 같은 민감정보가 없는지 보안 점검한다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > 로그는 장애 당시의 구체적인 상태와 실패 원인을 확인하려고 남기는 기록입니다. 저는 request id, endpoint, 상태, 결과, elapsed time을 구조화해 남기고, 민감정보는 남기지 않거나 마스킹합니다. ERROR만 남기지 않고 정상 흐름도 요약해 남겨 실패와 비교할 수 있게 하고, 전체 영향 범위는 로그 대신 메트릭으로 판단합니다.
 

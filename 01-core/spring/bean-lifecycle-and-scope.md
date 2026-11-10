@@ -172,7 +172,7 @@ public class SingletonService {
 - **prototype의 `@PreDestroy`를 믿는다.** 호출되지 않는다. 정리는 쓰는 쪽이 직접 한다.
 - **웹 스코프 Bean을 `proxyMode` 없이 singleton에 주입한다.** 주입 시점에 요청이 없어 실패한다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Bean은 생성, 의존성 주입, `@PostConstruct` 초기화, 사용, `@PreDestroy` 소멸 순으로 관리됩니다. 주입된 의존성을 쓰는 초기화는 생성자가 아니라 `@PostConstruct`에 둡니다. 기본 Scope인 singleton은 모든 요청이 한 인스턴스를 공유하므로 상태를 두지 않습니다. prototype을 singleton에 주입하면 처음 하나만 생성되기 때문에, 매번 새 인스턴스가 필요하면 `ObjectProvider`를 씁니다.
 

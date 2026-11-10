@@ -56,7 +56,7 @@ public void placeOrder(Long userId, Long productId, int quantity) {
 - transaction begin, commit, rollback, 예외 발생 지점을 로그로 추적한다.
 - DB 커넥션 점유 시간, lock wait, deadlock, slow query를 본다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > 트랜잭션은 여러 DB 작업을 하나의 정합성 단위로 묶어 성공하면 commit, 실패하면 rollback해서 부분 성공을 막습니다. 다만 커넥션, 락, undo/redo 로그 비용이 들기 때문에 저는 어디까지 반드시 함께 성공해야 하는지부터 정하고 범위를 최소로 잡습니다. 외부 API나 메시지 발행처럼 DB가 rollback할 수 없는 작업은 트랜잭션 밖으로 빼거나 보상 전략을 둡니다.
 

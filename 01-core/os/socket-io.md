@@ -57,7 +57,7 @@ Socket I/O는 프로세스가 네트워크 연결로 데이터를 주고받는 �
 - 명령어는 `ss -tan`, `netstat`, `lsof -i`, `sar -n TCP,ETCP 1`.
 - 네트워크 지표와 애플리케이션 thread/pool 지표는 같이 놓고 본다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Socket I/O는 OS socket으로 연결을 맺고 데이터를 주고받는 작업입니다. 연결 실패는 refused, connection timeout, read timeout, reset이 각각 원인이 달라서 저는 어떤 실패인지부터 구분합니다. 서버가 살아 있어도 SYN queue, accept queue, thread pool, connection pool, LB 설정 때문에 요청이 실패할 수 있으니, 네트워크 지표와 애플리케이션 pool 지표를 같이 봅니다.
 

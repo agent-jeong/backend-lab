@@ -66,7 +66,7 @@ limit 20;
 - execution plan, rows examined, index usage, sort 방식, temporary table을 본다.
 - DB CPU, buffer hit ratio, slow query count, connection usage를 본다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > DB 조회 성능은 쿼리 수, 실행 계획, 인덱스, 반환 데이터 크기를 같이 봐야 합니다. 저는 먼저 느린 API의 SQL과 쿼리 수를 보고 N+1인지 확인한 뒤, explain으로 인덱스가 where와 order by 조건에 맞게 쓰이는지 봅니다. 큰 offset은 keyset pagination을 검토하고, 목록이 빨라도 count나 group by가 병목일 수 있어 따로 확인합니다. 추측이 아니라 explain과 실제 측정으로 판단합니다.
 

@@ -202,7 +202,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 - **WebSocket 연결에 인증을 안 건다.** 누구나 접속할 수 있다.
 - **Heartbeat 없이 운영한다.** 실제로는 끊겼지만 서버는 모르는 유령 연결이 쌓인다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > WebSocket은 HTTP Upgrade로 시작해서 TCP 연결 하나로 양방향 실시간 통신을 하는 프로토콜입니다. 저는 서버에서 클라이언트로만 보내면 SSE를, 채팅처럼 양방향이 필요할 때만 WebSocket을 고릅니다. Spring에서는 STOMP로 pub/sub 구조를 잡고, 서버가 여러 대면 Redis Pub/Sub 같은 외부 브로커로 메시지를 중계합니다. 재연결과 Heartbeat도 같이 둡니다.
 

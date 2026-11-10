@@ -93,7 +93,7 @@ JPA는 Entity를 프록시로 감싸거나 필드 값을 읽어 변경 감지를
 - reflection을 쓰는 곳은 테스트로 런타임 오류를 미리 잡는다.
 - 반복 호출되는 reflection metadata는 캐싱하는지 본다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Reflection은 런타임에 클래스와 멤버 정보를 조회하거나 호출하는 기능이고, Annotation은 프레임워크가 읽을 메타데이터를 코드에 붙이는 방식입니다. Spring, JPA, Jackson은 annotation을 스캔하고 reflection으로 객체 생성, 필드 접근, 메서드 호출을 합니다. annotation 자체가 동작하는 게 아니라 그걸 읽는 코드가 있어야 하고, 런타임에 읽으려면 RetentionPolicy.RUNTIME이 필요합니다. reflection은 컴파일 타임 검사가 약하고 캡슐화와 성능 비용이 있어서 비즈니스 코드에서는 직접 쓰지 않습니다.
 

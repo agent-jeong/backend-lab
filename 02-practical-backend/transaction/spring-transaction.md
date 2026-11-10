@@ -80,7 +80,7 @@ checked exception에서도 rollback해야 하면 `rollbackFor = Exception.class`
 - transaction duration, connection pool active count를 본다.
 - 코드 리뷰에서 self-invocation, private method, catch 후 미전파 패턴을 찾는다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Spring의 `@Transactional`은 기본 설정에서 프록시가 메서드 호출을 감싸는 선언적 트랜잭션입니다. 기본 전파는 `REQUIRED`라 기존 트랜잭션이 있으면 참여하고, 기본 rollback 대상은 runtime exception과 error라서 checked exception은 rollback되지 않습니다. 기대와 다르게 동작하는 대표 원인은 self-invocation, private method, 예외를 잡고 다시 던지지 않는 경우이고, 저는 이 셋을 먼저 확인합니다.
 

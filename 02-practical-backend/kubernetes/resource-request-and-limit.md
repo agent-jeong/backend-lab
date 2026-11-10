@@ -59,7 +59,7 @@ resources:
 - peak 트래픽에서 latency와 자원 사용량을 같이 본다.
 - limit에 JVM heap, metaspace, native memory가 다 들어가는지 리뷰한다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Request는 스케줄링 기준이고, limit은 쓸 수 있는 최대치입니다. CPU limit은 throttling으로 지연을 늘리고, memory limit을 넘으면 OOMKilled가 나며, request를 과하게 잡으면 Pod가 Pending에 걸립니다. 저는 값을 실제 메트릭과 peak 부하 기준으로 잡고, JVM 애플리케이션이면 heap뿐 아니라 native memory까지 limit 안에 넣어 계산합니다.
 

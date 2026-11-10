@@ -59,7 +59,7 @@ public void handle(OrderCompletedEvent event) {
 - event id, aggregate id, consumer name, 중복 여부를 로그로 남긴다.
 - duplicate event count, consumer retry count, DLQ count를 본다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > at-least-once 전달에서는 소비자가 같은 메시지를 여러 번 받는다고 가정해야 합니다. 저는 처리 이력 테이블에 event id를 unique로 저장하고, 그 저장과 업무 변경을 같은 트랜잭션으로 묶습니다. event id만으로는 부족할 때가 있어서 업무 결과 쪽에도 business key unique를 두고, 외부 API를 부르면 그 호출에도 별도 멱등키를 씁니다.
 

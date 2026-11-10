@@ -69,7 +69,7 @@ public OrderResponse createOrder(CreateOrderCommand command) {
 - key, payload hash, status, 응답 재사용 여부를 로그로 남긴다.
 - key hit count, conflict count, 만료된 key로 들어온 재시도 수를 본다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Idempotency key는 같은 의도의 요청을 알아보는 기준입니다. 같은 key에 같은 payload면 저장된 결과를 돌려주고, 같은 key에 다른 payload면 409로 거절합니다. 저는 key 저장과 업무 처리를 같은 트랜잭션에 두고, 동시 요청은 unique 제약 기반 조건부 insert로 하나만 통과시킵니다. 보관 기간은 클라이언트 재시도 가능 시간과 운영 복구 시간을 기준으로 정합니다.
 

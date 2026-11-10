@@ -197,7 +197,7 @@ spring:
 - **`@ConfigurationProperties`에 getter/setter를 빠뜨린다.** 바인딩이 되지 않는다.
 - **Profile을 지정하지 않는다.** 운영 환경이 기본 설정으로 뜬다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > 설정은 `application.yml`에 두고 환경별 값은 `application-{profile}.yml`로 나눕니다. 값 하나면 `@Value`, 관련 설정 묶음이면 `@ConfigurationProperties`로 받습니다. 운영에서는 Profile을 환경 변수로 켜고, 비밀번호 같은 민감 정보는 설정 파일에 쓰지 않고 환경 변수나 시크릿 관리 도구로 주입합니다.
 

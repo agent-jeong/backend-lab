@@ -34,7 +34,7 @@ Transactional Test는 테스트 메서드를 트랜잭션으로 감싸고, 끝�
 - commit 이후 동작은 별도 테스트에서 실제로 commit되게 구성한다.
 - 제약 조건 검증은 예외가 나는 시점을 확인한다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > `@Transactional` 테스트는 rollback으로 DB 정리를 쉽게 해 주지만 실제 운영 트랜잭션과 차이를 만듭니다. JPA 1차 캐시에서 읽으면 DB를 검증한 게 아니어서 저는 flush/clear 후 다시 조회하고, DB 제약은 flush 시점에 예외가 나는지 봅니다. after commit 이벤트나 비동기 처리는 rollback 테스트에서 놓치기 쉬워 실제로 commit되는 테스트를 따로 둡니다.
 

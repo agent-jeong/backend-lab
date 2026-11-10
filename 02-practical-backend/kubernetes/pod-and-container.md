@@ -60,7 +60,7 @@ spec:
 - `kubectl logs pod-name -c container-name`으로 container별 로그를 본다.
 - Pod 내부 저장소에 영속 데이터가 남는 설계는 아닌지 점검한다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Pod는 Kubernetes가 스케줄링하는 최소 단위이고, 그 안의 container들은 네트워크를 공유합니다. Pod는 언제든 다시 만들어지니 저는 Pod IP나 로컬 파일에 기대지 않게 설계합니다. 재시작이 반복되면 로그만 보지 않고 event, last state, probe 결과를 같이 보고, multi-container Pod라면 어떤 container를 보고 있는지부터 확인합니다.
 

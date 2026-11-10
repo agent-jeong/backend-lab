@@ -146,7 +146,7 @@ public class NotificationService {
 - **`REQUIRES_NEW`를 남용한다.** 트랜잭션과 커넥션이 필요 이상으로 늘어난다.
 - **auto flush를 모른다.** 방금 바꾼 데이터가 JPQL 결과에 왜 들어 있는지 헷갈린다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Spring의 `@Transactional`은 AOP 프록시로 동작해서, 같은 클래스 내부 호출이나 private 메서드에서는 적용되지 않습니다. 기본 롤백은 unchecked exception만이라 checked exception도 롤백하려면 `rollbackFor`를 명시합니다. flush는 변경 내용을 SQL로 보내는 것이지 확정이 아니고, 커밋할 때와 JPQL 실행 전에 자동으로 일어납니다. 읽기 전용 작업에는 `readOnly = true`를 붙여 불필요한 flush를 막습니다.
 

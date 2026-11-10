@@ -98,7 +98,7 @@ happens-before는 한 작업의 결과가 다른 작업에 보이도록 보장�
 - 동시성 테스트는 `CountDownLatch`로 스레드 시작 시점을 맞춘다.
 - thread dump와 메트릭으로 lock contention이나 blocked thread를 본다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Java Memory Model은 여러 스레드가 공유 데이터를 볼 때 visibility와 실행 순서를 정하는 규칙입니다. volatile은 변경이 보이는 것은 보장하지만 count++ 같은 복합 연산의 원자성은 보장하지 않고, synchronized는 같은 monitor 기준으로 가시성과 임계 영역의 원자성을 함께 줍니다. 한 스레드의 변경이 언제 다른 스레드에 보이는지는 happens-before 관계로 설명합니다. 실무에서는 공유 상태부터 줄이고, 필요한 곳에만 atomic class, lock, 불변 객체를 골라 씁니다.
 

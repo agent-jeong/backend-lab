@@ -36,7 +36,7 @@ rollback은 배포 도구의 버튼 하나가 아니다. 되돌릴 대상은 코
 - rollback rehearsal이나 staging 검증을 해 둔다.
 - DB 변경이 expand/contract 방식으로 호환되는지 확인한다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Rollback은 이전 버전으로 빠르게 돌아가기 위한 운영 절차이고, 대상은 코드뿐 아니라 설정, DB, 외부 연동 상태까지입니다. 저는 이전 artifact를 새로 빌드하지 않고 이미 검증된 것을 재사용하고, DB schema 변경은 expand/contract로 하위 호환되게 합니다. rollback 기준은 오류율, latency, 핵심 기능 실패처럼 배포 전에 정해 둡니다.
 

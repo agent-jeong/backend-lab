@@ -34,7 +34,7 @@ DB dialect, migration, lock, transaction 검증에 특히 쓸모 있다. 모든 
 - 테스트 시작 때 migration이 적용되는지 확인한다.
 - CI에서 매번 깨지지 않고 도는지 확인한다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Testcontainers는 실제 DB나 Redis를 container로 띄워 운영에 가까운 통합 테스트를 하는 도구입니다. 인메모리 DB와 운영 DB의 문법, lock, 트랜잭션 차이로 생기는 오류를 줄여 주기 때문에, 저는 DB dialect, migration, lock 검증에 씁니다. 느리고 CI 비용이 들어서 단순 로직에는 쓰지 않고, 데이터 격리와 container 재사용 전략을 같이 정합니다.
 

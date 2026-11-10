@@ -110,7 +110,7 @@ int bulkUpdateStatus(@Param("ids") List<Long> ids, @Param("status") UserStatus s
 - **벌크 연산 뒤 영속성 컨텍스트를 비우지 않는다.** 캐시에 남은 이전 데이터를 읽는다.
 - **`@DynamicUpdate`를 모든 Entity에 붙인다.** PreparedStatement 캐시 효과만 잃는 경우가 많다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Dirty Checking은 영속 상태 Entity의 스냅샷과 현재 상태를 비교해서 바뀐 것을 커밋 시점에 자동으로 UPDATE하는 방식입니다. 그래서 `@Transactional` 안에서 필드만 바꾸면 `save()` 없이도 반영되고, 반대로 트랜잭션 밖의 준영속 Entity는 반영되지 않습니다. 대량 수정은 한 건씩 UPDATE가 나가므로 `@Modifying` 벌크 연산을 쓰고, 그 뒤에는 영속성 컨텍스트를 비웁니다.
 

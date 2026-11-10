@@ -59,7 +59,7 @@ batch, API, 스트리밍 작업은 성능 목표가 서로 다르다. latency는
 - p50/p95/p99, RPS, error rate, active threads, pool wait를 본다.
 - 대시보드에서 throughput이 한계에 닿은 뒤 latency가 급증하는 지점을 찾는다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Latency는 요청 하나의 완료 시간이고 throughput은 단위 시간 처리량입니다. 자원이 포화되면 throughput은 더 늘지 않고 대기 시간이 늘어 latency가 급격히 나빠지기 때문에, 저는 latency, throughput, error rate를 같이 보고 평균보다 p95/p99를 봅니다. 개선을 시작하기 전에 처리량을 높이는 건지 응답 시간을 줄이는 건지 먼저 정하고, SLO나 Apdex 같은 사용자 기준에 연결해서 설명합니다.
 

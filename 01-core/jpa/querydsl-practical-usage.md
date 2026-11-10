@@ -288,7 +288,7 @@ public Slice<OrderSummaryResponse> searchOrdersSlice(
 - **QueryDSL을 썼으니 됐다고 실행 계획 확인을 건너뛴다.** 느린 SQL은 그대로다.
 - **벌크 연산 뒤 영속성 컨텍스트를 정리하지 않는다.** 이미 로딩된 Entity와 DB 값이 어긋난다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > 실무에서는 Spring Data JPA Repository에 Custom Repository를 붙이고, 구현체에서 `JPAQueryFactory`로 선택 검색 조건이 많은 목록 API를 작성합니다. 동적 조건은 `BooleanExpression` helper로 나눠 `where`가 null을 무시하는 특성을 이용합니다. 목록 쿼리와 count query는 분리하고, 전체 개수가 필요 없으면 `Slice`로 count를 피합니다. 성능은 QueryDSL이 아니라 실행 SQL, 인덱스, join, 정렬, count 설계로 검증합니다.
 

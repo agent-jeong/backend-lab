@@ -143,7 +143,7 @@ factory.setHttpClient(httpClient);
 - **Keep-Alive timeout과 서버 idle timeout이 어긋난다.** 상대가 먼저 닫은 연결로 요청을 보내 연결 에러가 난다.
 - **DB 커넥션 풀을 근거 없이 크게 잡는다.** DB 부하만 늘어난다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > TCP는 3-way handshake로 연결을 맺고 4-way handshake로 끊습니다. 먼저 끊은 쪽에는 TIME_WAIT이 남아서, 짧은 연결을 대량으로 만들면 포트가 고갈됩니다. 그래서 저는 Keep-Alive와 커넥션 풀로 연결을 재사용하고, 풀 크기는 동시 요청 수와 요청당 점유 시간, 대상 서버의 커넥션 제한을 보고 정합니다. max-lifetime은 서버 쪽 timeout보다 짧게 잡습니다.
 

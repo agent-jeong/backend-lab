@@ -117,7 +117,7 @@ merge 함수는 의도를 설명할 수 있어야 한다. "나중 값"이 최신
 - **여러 스레드가 동시에 수정하는데 일반 `HashMap`을 쓴다.** 값이 유실된다.
 - **작은 데이터까지 무조건 `Map`으로 바꾼다.** 얻는 것 없이 읽기만 어려워진다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > HashMap은 hashCode로 bucket을 찾고 equals로 같은 key인지 확인합니다. 그래서 key의 동등성 기준이 정확해야 하고, 저장 후 key 값이 바뀌면 안 됩니다. 실무에서는 응답 조립에서 반복적인 목록 조회를 줄일 때 많이 쓰고, 순서가 필요하면 LinkedHashMap, 정렬이 필요하면 TreeMap, 동시 수정이 있으면 ConcurrentHashMap을 씁니다. 코드 리뷰에서는 중복 key, mutable key, 객체 key의 equals/hashCode를 꼭 확인합니다.
 

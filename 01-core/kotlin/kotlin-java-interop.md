@@ -116,7 +116,7 @@ Entity를 `data class`로 만드는 문제는 플러그인으로 해결되지 �
 - **`kotlin("plugin.spring")`, `kotlin("plugin.jpa")` 없이 proxy 문제를 만난다.** proxy가 필요한 class가 final로 남는다. Entity는 no-arg 생성자와 open 처리가 둘 다 적용됐는지 따로 확인한다.
 - **Java와 Kotlin DTO의 nullability annotation이 어긋난다.** 한쪽에서는 필수, 다른 쪽에서는 선택이 된다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Kotlin은 Java와 잘 섞이지만 그 경계에서는 Kotlin의 null 안전성이 약해집니다. Java 반환 타입은 nullability를 모르는 platform type이라 Kotlin에서도 NPE가 날 수 있어서, 저는 Java API를 부르는 자리에서 null을 명시적으로 막습니다. Spring/JPA에서는 Kotlin class가 기본 final이고 no-arg 생성자가 없어서 plugin.spring, plugin.jpa가 필요하고, Entity에는 allOpen을 따로 겁니다.
 

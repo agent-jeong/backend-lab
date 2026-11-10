@@ -63,7 +63,7 @@ stampede 위험이 있는 key는 TTL jitter, mutex/single-flight, stale-while-re
 - Redis timeout이나 장애 시 API가 fallback하는지 장애 실험으로 확인한다.
 - cache cold 상태에서 miss가 몰릴 때 DB QPS와 latency가 버티는지 부하 테스트로 확인한다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > 캐시는 반복 조회 비용을 줄이는 대신 정합성 비용을 만드는 도구입니다. 저는 적용 전에 옛 값을 얼마나 허용할지와 무효화 기준을 먼저 정하고, hit ratio만이 아니라 Redis latency, timeout, DB fallback, eviction을 같이 봅니다. Redis 장애가 API 장애로 번지지 않게 timeout과 fallback을 두고, miss가 몰려 DB가 넘어가는 stampede는 TTL jitter와 single-flight로 완화합니다.
 

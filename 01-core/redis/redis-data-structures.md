@@ -48,7 +48,7 @@ Redis는 String 말고도 Hash, Set, Sorted Set, List, Stream, Pub/Sub을 제공
 - 메트릭: memory usage, command latency, hot key, big key, network input/output.
 - 주기 점검: scan으로 key를 조사하고, TTL 분포와 큰 자료구조 크기를 확인한다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Redis는 단순 캐시가 아니라 자료구조와 원자 명령을 함께 제공합니다. String은 캐시와 카운터, Hash는 객체 필드, Set은 중복 없는 집합, Sorted Set은 랭킹에 씁니다. 고를 때는 데이터가 얼마나 커질지와 유실돼도 되는지를 먼저 보는데, 크기가 계속 자라면 big key가 되고, Pub/Sub은 메시지가 유실될 수 있어서 재처리가 필요한 이벤트에는 Stream이나 메시지 브로커를 씁니다.
 

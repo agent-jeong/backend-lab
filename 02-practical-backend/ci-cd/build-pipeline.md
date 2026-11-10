@@ -36,7 +36,7 @@ Build Pipeline은 소스 코드를 가져와 정적 검증, 테스트, 빌드, �
 - artifact tag와 commit SHA가 연결되는지 확인한다.
 - build log에 secret이나 민감 값이 찍히지 않는지 확인한다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Build Pipeline은 변경을 검증된 artifact로 만드는 과정입니다. 저는 테스트, 정적 분석, 이미지 생성, 저장 단계를 나누고, 결과물이 commit SHA와 이어지게 해서 무엇이 배포됐는지 추적합니다. secret은 build log와 image layer에 남지 않게 하고, 배포는 소스가 아니라 이렇게 검증된 artifact로 합니다.
 

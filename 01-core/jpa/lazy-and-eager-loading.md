@@ -108,7 +108,7 @@ Optional<User> findByIdWithOrders(@Param("id") Long id);
 - **반복문 안에서 지연 로딩을 부른다.** N+1이 생긴다.
 - **프록시의 `getClass()`로 타입을 비교한다.** 프록시 클래스가 나와서 실제 클래스와 다르다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > 실무에서는 모든 연관관계를 LAZY로 두고, 필요한 데이터만 fetch join으로 조회합니다. EAGER는 안 쓰는 데이터까지 항상 JOIN해서 성능 문제를 만들고, LAZY는 프록시로 접근 시점에 쿼리를 날리지만 트랜잭션 밖에서는 `LazyInitializationException`이 납니다. 그래서 Entity를 API 응답으로 내보내지 않고 서비스 계층 트랜잭션 안에서 DTO로 바꿔서 이 문제를 원천적으로 막습니다.
 

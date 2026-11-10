@@ -66,7 +66,7 @@ public void decreaseStock(Long productId, int quantity) {
 - lock wait timeout, deadlock, transaction duration 로그를 본다.
 - lock wait time, active transaction, DB connection active count를 본다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > 비관적 락은 row를 먼저 잠가 동시 변경을 기다리게 하는 방식이라, 경합이 높고 충돌 시 실패 비용이 큰 곳에 씁니다. 대가는 lock wait와 데드락이어서, 저는 트랜잭션을 짧게 두고 인덱스를 타는 조건으로 잠그고 여러 자원은 같은 순서로 잠급니다. 단순 수량 차감이라면 조건부 update가 더 단순합니다.
 

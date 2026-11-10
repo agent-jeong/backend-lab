@@ -150,7 +150,7 @@ private PaymentResult paymentFallback(PaymentRequest request, Exception e) {
 - **서버 측 timeout을 안 맞춘다.** 클라이언트는 끊었는데 서버는 계속 처리한다.
 - **모든 외부 API에 같은 timeout을 쓴다.** 결제와 검색은 응답 시간이 다르다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Timeout은 연결을 맺기까지의 Connection timeout, 응답을 기다리는 Read timeout, 요청을 보내는 Write timeout으로 나뉩니다. 설정하지 않으면 외부 API 하나가 느려질 때 스레드가 모두 묶여 전체 서비스가 멈춥니다. 저는 Connection timeout은 1~3초로 짧게, Read timeout은 API마다 예상 응답 시간을 보고 따로 잡습니다. 여기에 Circuit Breaker와 Bulkhead를 붙여 장애가 번지지 않게 합니다.
 

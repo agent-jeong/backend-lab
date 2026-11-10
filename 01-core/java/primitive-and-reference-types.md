@@ -71,7 +71,7 @@ if ("ACTIVE".equals(status)) {
 }
 ```
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > primitive type은 값 자체를, reference type은 객체를 가리키는 참조를 다룹니다. primitive는 `null`이 될 수 없고 `==`로 값을 비교하지만, reference type의 `==`는 같은 객체인지를 보고 의미상 같은지는 `equals()`로 봅니다. 실무에서는 문자열이나 wrapper를 `==`로 비교하거나 wrapper의 `null`을 unboxing하다 NPE가 나는 경우가 많아서, 값이 없을 수 있는지로 타입을 고르고 비교는 `equals()`나 `Objects.equals()`로 합니다.
 

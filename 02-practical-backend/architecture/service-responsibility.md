@@ -38,7 +38,7 @@ Controller는 HTTP 경계, Service는 유스케이스와 트랜잭션 경계, Re
 - DB 접근 방식이 바뀔 때 Controller까지 고쳐야 하는지 본다.
 - 같은 업무 규칙이 Controller와 Service에 중복돼 있는지 확인한다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Controller는 HTTP 요청을 애플리케이션 명령으로 바꾸는 경계이고, Service는 도메인 객체와 Repository를 조합해 유스케이스 하나를 수행하며, Repository는 저장소 세부사항을 숨깁니다. 저는 어떤 코드를 어디에 둘지 변경 이유로 판단합니다. 권한 검증과 트랜잭션 경계는 유스케이스 성격에 맞춰 한 곳에 일관되게 둡니다.
 

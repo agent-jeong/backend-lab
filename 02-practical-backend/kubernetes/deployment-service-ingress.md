@@ -81,7 +81,7 @@ Service의 selector와 Deployment Pod label이 일치해야 Service endpoint가 
 - 배포 중 readiness를 통과한 Pod에만 트래픽이 가는지 테스트한다.
 - Ingress Controller 로그와 애플리케이션 access log를 같이 본다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Deployment는 Pod 복제본과 배포 상태를 유지하고, Service는 계속 바뀌는 Pod 앞에 고정된 접근점을 주고, Ingress는 외부 HTTP 요청을 host와 path로 Service에 보냅니다. API 장애가 나면 저는 애플리케이션 로그만 보지 않고 Ingress, Service endpoint, Pod event를 같이 확인합니다. 롤링 배포는 replica 수, readiness probe, update strategy가 함께 맞아야 안전하다고 봅니다.
 

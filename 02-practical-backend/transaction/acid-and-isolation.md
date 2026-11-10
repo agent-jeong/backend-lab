@@ -76,7 +76,7 @@ public OrderSummary getOrderSummary(Long orderId) {
 - lock wait time, deadlock count, transaction duration을 본다.
 - 사용하는 DB의 기본 isolation level과 MVCC 구현을 확인한다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > ACID는 트랜잭션이 보장하는 정합성의 기본 성질이고, 격리 수준은 동시에 도는 트랜잭션 사이에서 어떤 읽기 현상을 허용할지 정하는 기준입니다. 낮추면 처리량에 유리하고 높이면 락 대기와 데드락 비용이 커집니다. 저는 DB 기본값과 그 DB의 구현을 먼저 확인하고, 업무 불변식은 격리 수준이 아니라 unique key, 조건부 update, 락으로 명시적으로 보호합니다.
 

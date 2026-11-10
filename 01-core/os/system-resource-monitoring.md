@@ -62,7 +62,7 @@ OS 지표만으로는 heap, native memory, thread, GC 문제를 구분하지 못
 - 메트릭은 p95/p99 latency, CPU, memory available, iowait, network retransmit, fd count. 장애 판단에는 평균보다 p95/p99, 순간 포화, error rate, queue 대기 시간이 더 쓸모 있을 때가 많다.
 - 명령어는 `top`, `vmstat 1`, `iostat -x 1`, `sar`, `ss`, `lsof`, `dmesg`.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > 서버가 느리면 저는 먼저 CPU가 높은지 낮은지 봅니다. 높으면 계산, GC, busy loop를 의심하고, 낮은데 느리면 I/O wait, lock wait, 외부 의존성 대기를 봅니다. load average는 일부 I/O 대기도 포함하니 CPU 사용률과 같이 해석하고, Java 서버라면 heap, native memory, GC 지표를 OS 지표와 같은 시간축에 놓고 비교합니다.
 

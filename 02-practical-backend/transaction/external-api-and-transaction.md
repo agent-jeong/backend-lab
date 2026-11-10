@@ -73,7 +73,7 @@ public Order markPaymentPending(Long orderId) {
 - 외부 API latency, timeout, retry count, compensation count를 본다.
 - pending 상태로 오래 남은 데이터를 조회할 수 있게 해 둔다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > 외부 API 호출은 DB 트랜잭션으로 rollback할 수 없어서, 트랜잭션 안에서 호출하면 락과 커넥션 점유가 길어지고 불일치가 생깁니다. 저는 상태를 먼저 pending으로 남기고, 외부 호출은 트랜잭션 밖에서 짧은 timeout과 멱등키로 처리합니다. 외부는 성공했는데 내부 반영이 실패한 경우는 pending 상태를 기준으로 재조회, 보상, 운영 복구 흐름으로 맞춥니다.
 

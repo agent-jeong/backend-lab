@@ -67,7 +67,7 @@ public void unsafeDecreaseStock(Long productId, int quantity) {
 - lock wait, deadlock, retry count, 중복 실패 count를 본다.
 - unique key, version column, check constraint가 있는지 확인한다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > 동시성 문제는 여러 요청이 같은 공유 자원을 동시에 바꿀 때 생깁니다. 저는 먼저 어떤 자원이 공유되고 어떤 불변식이 깨지는지를 찾습니다. 해결책은 락만 보지 않고 DB 제약, 조건부 update, 상태 전이, 멱등성을 같이 놓고, 정합성 요구사항과 경합 빈도, 재시도 가능성에 따라 고릅니다.
 

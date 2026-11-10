@@ -124,7 +124,7 @@ Long total = queryFactory
 - 실행 계획: where, join, order by, limit에 인덱스가 쓰이는지.
 - 성능: 목록 쿼리와 count query의 실행 시간과 row scan 수를 따로 본다.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > QueryDSL은 JPQL을 Java 코드로 타입 안전하게 쓰게 해 주는 도구이고, 가장 큰 장점은 동적 검색 조건을 조립하기 쉽다는 점입니다. 하지만 JPA 위에서 동작하므로 N+1, fetch join, 벌크 연산의 주의점은 그대로 남습니다. 그래서 저는 QueryDSL을 쿼리 작성 편의 도구로 보고, 실행 SQL과 실행 계획을 꼭 확인하며, 페이징에서는 count query를 따로 단순하게 만듭니다.
 

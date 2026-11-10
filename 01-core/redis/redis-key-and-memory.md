@@ -69,7 +69,7 @@ maxmemory와 eviction policy를 모르고 운영하면 중요한 캐시가 예�
 - 메트릭: memory usage, used memory peak, evicted keys, expired keys, command latency.
 - 점검: `SCAN` 기반 key 조사, big key 분석, hot key 분석, TTL 분포.
 
-## 면접에서 말하기
+## 한 번에 설명하기
 
 > Redis key는 운영 단위라서 prefix, 식별자, 조회 조건, 버전을 일관되게 넣습니다. 그래야 장애 때 추적하고 범위를 정해 지울 수 있습니다. 캐시 key에는 TTL을 기본으로 두고, hot key는 요청 집중으로 latency를, big key는 전송·삭제·복제 비용을 만든다는 점을 봅니다. eviction policy는 그 Redis에 어떤 데이터를 섞었느냐에 따라 위험이 달라서, 중요도가 다른 데이터는 인스턴스를 나눕니다.
 
