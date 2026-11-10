@@ -68,6 +68,13 @@ Observability는 밖에서 볼 수 있는 신호만으로 시스템 내부 상�
 - 로그, 메트릭, 트레이스는 각각 어떤 질문에 답하나?
 - 장애 후 계측을 보완해야 하는 이유는?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [OpenTelemetry: Observability primer](https://opentelemetry.io/docs/concepts/observability-primer/)
+- [Google SRE Book: Monitoring Distributed Systems](https://sre.google/sre-book/monitoring-distributed-systems/)
+
 ## 관련 문서
 
 - [[observability]]

@@ -43,4 +43,4 @@ Kotlin을 Spring·JPA 백엔드에서 쓸 때 맞닿는 주제만 다룬다. Jav
 - [[01-core/jpa/jpa|jpa]]
 - [[02-practical-backend/concurrency/concurrency|concurrency]]
 - [[02-practical-backend/performance/performance|performance]]
-- [[04-interview-cases/interview-questions|technical-questions]]
+- [[04-design-cases/interview-questions|technical-questions]]

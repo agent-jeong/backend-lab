@@ -44,6 +44,13 @@ controller는 클러스터 상태와 Git 상태가 어긋나는 drift를 감지�
 - 운영에서 수동 변경하면 어떤 문제가 생기나?
 - GitOps에서 secret은 어떻게 관리하나?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [OpenGitOps Principles](https://opengitops.dev/)
+- [Argo CD Documentation](https://argo-cd.readthedocs.io/en/stable/)
+
 ## 관련 문서
 
 - [[ci-cd]]

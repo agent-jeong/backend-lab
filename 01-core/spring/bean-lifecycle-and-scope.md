@@ -225,6 +225,13 @@ public class SingletonService {
   </div>
 </div>
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Spring Framework: Bean Scopes](https://docs.spring.io/spring-framework/reference/core/beans/factory-scopes.html)
+- [Spring Framework: Customizing the Nature of a Bean](https://docs.spring.io/spring-framework/reference/core/beans/factory-nature.html)
+
 ## 관련 문서
 
 - [[01-core/spring/spring|spring]]

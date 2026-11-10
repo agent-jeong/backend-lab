@@ -68,6 +68,12 @@ salt는 같은 비밀번호가 같은 해시로 보이는 문제를 없애 rainb
 - salt와 비용 계수는 각각 어떤 문제를 줄이나?
 - 비밀번호 재설정 기능에서 조심할 점은?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [OWASP: Password Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)
+
 ## 관련 문서
 
 - [[security]]

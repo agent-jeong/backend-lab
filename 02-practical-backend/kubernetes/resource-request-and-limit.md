@@ -69,6 +69,12 @@ resources:
 - CPU throttling은 어떤 증상으로 나타나나?
 - Java 애플리케이션의 memory limit을 잡을 때 무엇을 따지나?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Kubernetes: Resource Management for Pods and Containers](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/)
+
 ## 관련 문서
 
 - [[kubernetes]]

@@ -72,6 +72,13 @@ page cache 덕에 빨랐던 조회를 보고 디스크가 빠르다고 판단하
 - `iowait`가 높다는 것은 무엇을 뜻하나?
 - write 반환과 디스크 내구성 보장은 어떻게 다른가?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [read(2)](https://man7.org/linux/man-pages/man2/read.2.html)
+- [fsync(2)](https://man7.org/linux/man-pages/man2/fsync.2.html)
+
 ## 관련 문서
 
 - [[01-core/os/os|os]]

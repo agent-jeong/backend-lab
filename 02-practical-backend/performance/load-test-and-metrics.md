@@ -80,6 +80,13 @@ closed model과 open model의 차이를 알고 써야 한다. 사용자가 응�
 
 - [[slow-admin-query-tuning|5초 걸리던 조회를 실행계획으로 고치기]]: 합격 기준을 코드로 둔 부하 테스트, p95
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Gatling Documentation](https://docs.gatling.io/)
+- [Google SRE Book: Service Level Objectives](https://sre.google/sre-book/service-level-objectives/)
+
 ## 관련 문서
 
 - [[02-practical-backend/performance/performance|performance]]

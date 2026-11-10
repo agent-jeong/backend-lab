@@ -158,6 +158,12 @@ public class GlobalExceptionHandler {
 > [!question]- 429 응답에는 어떻게 대응해야 하는가?
 > `Retry-After` 헤더의 값만큼 대기한 후 재시도합니다. 헤더가 없으면 지수 백오프로 재시도합니다. Rate Limit은 API 사용량을 초과한 것이므로, 요청 빈도를 줄이는 근본적인 조치도 필요합니다.
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [RFC 9110: Status Codes](https://www.rfc-editor.org/rfc/rfc9110#name-status-codes)
+
 ## 관련 문서
 
 - [[01-core/network/network|network]]

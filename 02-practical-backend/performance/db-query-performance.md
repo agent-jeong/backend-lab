@@ -80,6 +80,13 @@ limit 20;
 
 - [[slow-admin-query-tuning|5초 걸리던 조회를 실행계획으로 고치기]]: 서브쿼리와 함수 때문에 못 탄 인덱스
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [MySQL 8.4: Optimizing SELECT Statements](https://dev.mysql.com/doc/refman/8.4/en/select-optimization.html)
+- [MySQL 8.4: EXPLAIN Output Format](https://dev.mysql.com/doc/refman/8.4/en/explain-output.html)
+
 ## 관련 문서
 
 - [[02-practical-backend/performance/performance|performance]]

@@ -145,6 +145,12 @@ JVM은 자체 truststore(`cacerts`)로 인증서를 검증한다. 사내 CA를 �
 > [!question]- mTLS(상호 TLS)란?
 > 일반 TLS는 서버만 인증서를 제시하지만, mTLS는 클라이언트도 인증서를 제시합니다. 서버가 클라이언트의 신원도 검증하므로, 마이크로서비스 간 통신이나 API 인증에 사용됩니다.
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [RFC 8446: TLS 1.3](https://www.rfc-editor.org/rfc/rfc8446)
+
 ## 관련 문서
 
 - [[01-core/network/network|network]]

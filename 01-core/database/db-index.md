@@ -191,6 +191,13 @@ WHERE created_at >= '2024-01-01' AND created_at < '2025-01-01'
 
 - [[slow-admin-query-tuning|5초 걸리던 조회를 실행계획으로 고치기]]: 등호 → 범위 → GROUP BY 순 복합 인덱스
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [MySQL 8.4: Optimization and Indexes](https://dev.mysql.com/doc/refman/8.4/en/optimization-indexes.html)
+- [MySQL 8.4: Multiple-Column Indexes](https://dev.mysql.com/doc/refman/8.4/en/multiple-column-indexes.html)
+
 ## 관련 문서
 
 - [[01-core/database/database|database]]

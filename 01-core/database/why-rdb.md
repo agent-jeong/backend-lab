@@ -75,6 +75,12 @@ WHERE o.status = 'COMPLETED';
 > [!question]- 반정규화는 언제 하는가?
 > 조회 빈도가 높고 JOIN 비용이 병목일 때 적용합니다. 읽기 비율이 쓰기보다 훨씬 높은 테이블이 대상입니다. 반정규화 후에는 데이터 동기화 로직이 추가로 필요합니다.
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [MySQL 8.4: InnoDB and the ACID Model](https://dev.mysql.com/doc/refman/8.4/en/mysql-acid.html)
+
 ## 관련 문서
 
 - [[01-core/database/database|database]]

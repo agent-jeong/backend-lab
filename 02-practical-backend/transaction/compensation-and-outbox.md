@@ -78,6 +78,13 @@ public void completeOrder(Long orderId) {
 
 - [[webhook-once-without-loss|웹훅을 잃지 않고 한 번만 처리하기]]: 원문을 먼저 저장하고 커밋 뒤에 처리
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [microservices.io: Transactional outbox](https://microservices.io/patterns/data/transactional-outbox.html)
+- [microservices.io: Saga](https://microservices.io/patterns/data/saga.html)
+
 ## 관련 문서
 
 - [[02-practical-backend/transaction/transaction|transaction]]

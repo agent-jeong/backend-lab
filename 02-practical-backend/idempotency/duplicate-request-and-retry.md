@@ -75,6 +75,13 @@ retry는 일시 장애를 흡수하지만 멱등성 없이는 중복 처리 위�
 - [[irreversible-approval-once|되돌릴 수 없는 승인을 한 번만 보내기]]: 결과를 모르면 다시 보내지 않기
 - [[webhook-once-without-loss|웹훅을 잃지 않고 한 번만 처리하기]]: 같은 웹훅 재전송
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Amazon Builders' Library: Making retries safe with idempotent APIs](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/)
+- [Amazon Builders' Library: Timeouts, retries, and backoff with jitter](https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/)
+
 ## 관련 문서
 
 - [[02-practical-backend/idempotency/idempotency|idempotency]]

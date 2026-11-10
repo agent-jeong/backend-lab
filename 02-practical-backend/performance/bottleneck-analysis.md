@@ -69,6 +69,12 @@ API p95 1.2s
 
 - [[file-storage-migration|첨부파일 18만 건 이관]]: dry-run으로 고정 비용 분리하기
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Brendan Gregg: The USE Method](https://www.brendangregg.com/usemethod.html)
+
 ## 관련 문서
 
 - [[02-practical-backend/performance/performance|performance]]

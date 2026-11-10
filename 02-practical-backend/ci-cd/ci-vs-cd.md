@@ -44,6 +44,13 @@ CI가 약하면 깨진 코드를 늦게 발견하고, CD가 약하면 배포 절
 - 배포 자동화 전에 무엇이 준비돼야 하나?
 - 배포 성공은 어떤 기준으로 판단하나?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Martin Fowler: Continuous Integration](https://martinfowler.com/articles/continuousIntegration.html)
+- [Martin Fowler: Continuous Delivery](https://martinfowler.com/bliki/ContinuousDelivery.html)
+
 ## 관련 문서
 
 - [[ci-cd]]

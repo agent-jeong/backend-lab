@@ -44,6 +44,12 @@ tags: [concept, batch]
 - 프로세스 성공과 업무 성공은 어떻게 다른가?
 - 배치 알림은 어떤 기준으로 거나?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Spring Batch: Observability](https://docs.spring.io/spring-batch/reference/spring-batch-observability.html)
+
 ## 관련 문서
 
 - [[batch-processing]]

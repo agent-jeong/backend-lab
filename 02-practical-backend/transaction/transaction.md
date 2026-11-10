@@ -47,4 +47,4 @@ ACID와 격리 수준, 트랜잭션 경계, Spring 트랜잭션, 락과 데드�
 - [[01-core/database/database|database]]
 - [[02-practical-backend/concurrency/concurrency|concurrency]]
 - [[02-practical-backend/idempotency/idempotency|idempotency]]
-- [[04-interview-cases/interview-questions|technical-questions]]
+- [[04-design-cases/interview-questions|technical-questions]]

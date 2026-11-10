@@ -44,6 +44,12 @@ Mock, Stub, Fake는 테스트에서 실제 의존성을 대신하는 객체다. 
 - Mock을 과하게 쓰면 어떤 문제가 생기나?
 - Fake repository는 언제 위험한가?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Martin Fowler: Mocks Aren't Stubs](https://martinfowler.com/articles/mocksArentStubs.html)
+
 ## 관련 문서
 
 - [[testing]]

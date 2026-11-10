@@ -127,6 +127,13 @@ EXPLAIN ANALYZE SELECT * FROM orders WHERE user_id = 1;
 
 - [[slow-admin-query-tuning|5초 걸리던 조회를 실행계획으로 고치기]]: 풀 스캔을 실행계획으로 찾은 과정
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [MySQL 8.4: EXPLAIN Output Format](https://dev.mysql.com/doc/refman/8.4/en/explain-output.html)
+- [MySQL 8.4: Index Hints](https://dev.mysql.com/doc/refman/8.4/en/index-hints.html)
+
 ## 관련 문서
 
 - [[01-core/database/database|database]]

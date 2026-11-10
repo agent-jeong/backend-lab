@@ -77,6 +77,13 @@ public PaymentResponse approve(PaymentRequest request) {
 - timeout 이후 재시도할 때 어떤 위험이 있는가?
 - lock을 사용해도 멱등성이 필요한 이유는 무엇인가?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [RFC 9110: Idempotent Methods](https://www.rfc-editor.org/rfc/rfc9110#name-idempotent-methods)
+- [Amazon Builders' Library: Making retries safe with idempotent APIs](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/)
+
 ## 관련 문서
 
 - [[02-practical-backend/idempotency/idempotency|idempotency]]

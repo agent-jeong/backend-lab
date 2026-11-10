@@ -159,6 +159,12 @@ Shard0 Shard1 Shard2 Shard3
 > [!question]- Sharding 없이 확장할 수 있는 방법은?
 > 인덱스/쿼리 최적화, 캐시(Redis), Read Replica, 테이블 수직 분할, 아카이빙 등으로 단일 DB의 한계를 최대한 늘린 뒤에 Sharding을 검토합니다.
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [MySQL 8.4: Replication](https://dev.mysql.com/doc/refman/8.4/en/replication.html)
+
 ## 관련 문서
 
 - [[01-core/database/database|database]]

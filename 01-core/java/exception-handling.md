@@ -353,6 +353,13 @@ public class GlobalExceptionHandler {
   </div>
 </div>
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [JLS 21: Exceptions](https://docs.oracle.com/javase/specs/jls/se21/html/jls-11.html)
+- [Spring Framework: Rolling Back a Declarative Transaction](https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/rolling-back.html)
+
 ## 관련 문서
 
 - [[01-core/java/java|java]]

@@ -66,6 +66,13 @@ Trace:
 - span과 trace는 어떻게 다른가?
 - sampling 때문에 생길 수 있는 문제는?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [OpenTelemetry: Traces](https://opentelemetry.io/docs/concepts/signals/traces/)
+- [W3C Trace Context](https://www.w3.org/TR/trace-context/)
+
 ## 관련 문서
 
 - [[observability]]

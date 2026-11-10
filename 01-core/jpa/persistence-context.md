@@ -142,6 +142,13 @@ public void process() {
   </div>
 </div>
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Hibernate ORM 6.6 User Guide: Persistence Context](https://docs.hibernate.org/orm/6.6/userguide/html_single/Hibernate_User_Guide.html#pc)
+- [Jakarta Persistence 3.1](https://jakarta.ee/specifications/persistence/3.1/)
+
 ## 관련 문서
 
 - [[01-core/jpa/jpa|jpa]]

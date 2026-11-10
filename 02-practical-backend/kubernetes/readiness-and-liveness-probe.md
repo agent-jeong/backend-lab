@@ -73,6 +73,13 @@ startup probe는 초기화 시간만 처리한다. 실제로 트래픽을 받아
 - DB 장애를 liveness 실패로 처리하면 어떤 문제가 생기나?
 - 배포 중 503이 나면 probe와 Service에서 무엇을 확인하나?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Kubernetes: Configure Liveness, Readiness and Startup Probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/)
+- [Spring Boot: Kubernetes Probes](https://docs.spring.io/spring-boot/reference/actuator/endpoints.html)
+
 ## 관련 문서
 
 - [[kubernetes]]

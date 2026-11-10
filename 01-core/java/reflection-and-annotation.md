@@ -146,6 +146,13 @@ JPA는 Entity를 프록시로 감싸거나 필드 값을 읽어 변경 감지를
   </div>
 </div>
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Java SE 21 API: java.lang.reflect](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/reflect/package-summary.html)
+- [JLS 21: Annotations](https://docs.oracle.com/javase/specs/jls/se21/html/jls-9.html#jls-9.6)
+
 ## 관련 문서
 
 - [[java]]

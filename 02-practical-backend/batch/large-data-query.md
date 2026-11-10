@@ -43,6 +43,13 @@ keyset 방식은 마지막으로 처리한 key 다음 범위를 읽는다. 그 k
 - 마지막 처리 위치는 무엇으로 저장하나?
 - Stream 조회와 chunk 조회는 어떻게 고르나?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Spring Batch: Item Readers](https://docs.spring.io/spring-batch/reference/readers-and-writers/item-reader.html)
+- [MySQL 8.4: LIMIT Query Optimization](https://dev.mysql.com/doc/refman/8.4/en/limit-optimization.html)
+
 ## 관련 문서
 
 - [[batch-processing]]

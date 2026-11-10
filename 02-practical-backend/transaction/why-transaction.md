@@ -66,6 +66,12 @@ public void placeOrder(Long userId, Long productId, int quantity) {
 - 주문 생성과 결제 요청은 하나의 트랜잭션으로 묶을 수 있는가?
 - DB 제약 조건 없이 애플리케이션 로직만으로 정합성을 지키면 어떤 문제가 있는가?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [MySQL 8.4: InnoDB and the ACID Model](https://dev.mysql.com/doc/refman/8.4/en/mysql-acid.html)
+
 ## 관련 문서
 
 - [[02-practical-backend/transaction/transaction|transaction]]

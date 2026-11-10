@@ -198,6 +198,12 @@ Entity는 값 객체처럼 모든 필드로 `equals()`와 `hashCode()`를 만들
   </div>
 </div>
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Java SE 21 API: Object.equals / hashCode](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html)
+
 ## 관련 문서
 
 - [[01-core/java/java|java]]

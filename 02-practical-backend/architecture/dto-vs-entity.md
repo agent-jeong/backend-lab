@@ -45,6 +45,12 @@ Entity를 응답으로 그대로 내보내면 내부 필드와 연관관계가 A
 - Request DTO와 Response DTO를 나누는 이유는?
 - DTO가 너무 많아지는 문제는 어떻게 관리하나?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Martin Fowler: Data Transfer Object](https://martinfowler.com/eaaCatalog/dataTransferObject.html)
+
 ## 관련 문서
 
 - [[architecture]]

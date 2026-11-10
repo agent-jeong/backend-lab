@@ -170,6 +170,12 @@ private PaymentResult paymentFallback(PaymentRequest request, Exception e) {
 - [[irreversible-approval-once|되돌릴 수 없는 승인을 한 번만 보내기]]: 타임아웃 = "모름"으로 다루기
 - [[inherited-access-system-incidents|이어받은 출입 시스템의 장애 추적]]: deadline을 늘려도 안 되면 연결을 본다
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Amazon Builders' Library: Timeouts, retries, and backoff with jitter](https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/)
+
 ## 관련 문서
 
 - [[01-core/network/network|network]]

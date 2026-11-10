@@ -52,6 +52,12 @@ Layered Architecture는 애플리케이션을 표현, 비즈니스, 데이터 �
 - Service가 너무 커지는 이유는?
 - 단순 CRUD에서도 항상 같은 계층 구조가 필요한가?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Martin Fowler: Presentation Domain Data Layering](https://martinfowler.com/bliki/PresentationDomainDataLayering.html)
+
 ## 관련 문서
 
 - [[architecture]]

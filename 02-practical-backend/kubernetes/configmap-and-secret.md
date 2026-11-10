@@ -69,6 +69,13 @@ env:
 - Secret을 안전하게 관리하려면 무엇이 더 필요한가?
 - 설정 변경 후 Pod 재시작이 필요한지 어떻게 판단하나?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Kubernetes: ConfigMaps](https://kubernetes.io/docs/concepts/configuration/configmap/)
+- [Kubernetes: Secrets](https://kubernetes.io/docs/concepts/configuration/secret/)
+
 ## 관련 문서
 
 - [[kubernetes]]

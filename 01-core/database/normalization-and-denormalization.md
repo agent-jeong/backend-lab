@@ -124,6 +124,12 @@ JOIN 많음                          중복 데이터
 > [!question]- 1NF, 2NF, 3NF를 한 문장씩 설명하면?
 > 1NF: 한 셀에 하나의 값. 2NF: 복합키 일부에만 종속되는 컬럼 분리. 3NF: 비키 컬럼 간의 종속 제거.
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [MySQL 8.4: Optimizing Database Structure](https://dev.mysql.com/doc/refman/8.4/en/optimizing-database-structure.html)
+
 ## 관련 문서
 
 - [[01-core/database/database|database]]

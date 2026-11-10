@@ -74,6 +74,13 @@ OS 지표만으로는 heap, native memory, thread, GC 문제를 구분하지 못
 - p99 latency가 나빠질 때 어떤 OS 지표를 같이 보나?
 - thread dump와 OS 지표를 같이 봐야 하는 상황은?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [vmstat(8)](https://man7.org/linux/man-pages/man8/vmstat.8.html)
+- [top(1)](https://man7.org/linux/man-pages/man1/top.1.html)
+
 ## 관련 문서
 
 - [[01-core/os/os|os]]

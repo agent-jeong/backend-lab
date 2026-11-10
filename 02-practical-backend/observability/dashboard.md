@@ -64,6 +64,13 @@ Dashboard는 서비스 상태, 사용자 영향, 원인 후보를 빨리 판단�
 - 대시보드에 배포 marker가 필요한 이유는?
 - 평균 latency만 있는 대시보드는 무엇을 놓치나?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Grafana: Dashboard best practices](https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/best-practices/)
+- [Google SRE Book: Monitoring Distributed Systems](https://sre.google/sre-book/monitoring-distributed-systems/)
+
 ## 관련 문서
 
 - [[observability]]

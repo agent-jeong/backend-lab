@@ -62,6 +62,13 @@ CPU나 메모리 같은 자원 지표만으로는 사용자 영향을 판단하�
 - 좋은 알림과 나쁜 알림의 차이는?
 - error budget burn rate는 왜 쓰나?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Google SRE Book: Service Level Objectives](https://sre.google/sre-book/service-level-objectives/)
+- [Google SRE Workbook: Alerting on SLOs](https://sre.google/workbook/alerting-on-slos/)
+
 ## 관련 문서
 
 - [[observability]]

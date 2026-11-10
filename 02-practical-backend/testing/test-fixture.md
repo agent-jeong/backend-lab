@@ -44,6 +44,12 @@ fixture는 테스트의 전제 조건이다. 좋은 fixture는 짧고, 검증하
 - Test Data Builder는 언제 유용한가?
 - 테스트 데이터 공유는 왜 위험한가?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [JUnit 5 User Guide](https://junit.org/junit5/docs/current/user-guide/)
+
 ## 관련 문서
 
 - [[testing]]

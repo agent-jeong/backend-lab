@@ -73,6 +73,13 @@ public void handle(OrderCompletedEvent event) {
 
 - [[webhook-once-without-loss|웹훅을 잃지 않고 한 번만 처리하기]]: 중복 수신을 조건부 UPDATE로 거르기
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Apache Kafka: Message Delivery Semantics](https://kafka.apache.org/documentation/#semantics)
+- [microservices.io: Idempotent Consumer](https://microservices.io/patterns/communication-style/idempotent-consumer.html)
+
 ## 관련 문서
 
 - [[02-practical-backend/idempotency/idempotency|idempotency]]

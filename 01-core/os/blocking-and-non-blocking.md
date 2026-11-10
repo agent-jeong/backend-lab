@@ -72,6 +72,13 @@ Non-blocking I/O 자체와 async/reactive 프로그래밍 모델은 별개다. �
 - CPU-bound 작업과 I/O-bound 작업은 스레드 전략이 어떻게 다른가?
 - Non-blocking I/O와 async/reactive 프로그래밍은 어떻게 다른가?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [epoll(7)](https://man7.org/linux/man-pages/man7/epoll.7.html)
+- [JEP 444: Virtual Threads](https://openjdk.org/jeps/444)
+
 ## 관련 문서
 
 - [[01-core/os/os|os]]

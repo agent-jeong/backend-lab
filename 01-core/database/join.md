@@ -129,6 +129,13 @@ MySQL 옵티마이저는 대부분의 서브쿼리를 JOIN으로 바꿔 실행�
 > [!question]- JOIN을 많이 하면 성능이 나빠지는가?
 > JOIN 자체보다 인덱스 유무와 결과 행 수가 성능을 결정합니다. JOIN 컬럼에 맞는 인덱스가 있으면 3~4개 테이블 JOIN도 빠르게 동작합니다. 실행 계획으로 확인해야 합니다.
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [MySQL 8.4: Nested-Loop Join Algorithms](https://dev.mysql.com/doc/refman/8.4/en/nested-loop-joins.html)
+- [MySQL 8.4: Hash Join Optimization](https://dev.mysql.com/doc/refman/8.4/en/hash-joins.html)
+
 ## 관련 문서
 
 - [[01-core/database/database|database]]

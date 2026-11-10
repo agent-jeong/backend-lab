@@ -36,7 +36,7 @@ comments: false
 
 **설계와 품질**: [[02-practical-backend/architecture/architecture|아키텍처]] · [[02-practical-backend/security/security|보안]] · [[02-practical-backend/testing/testing|테스트]]
 
-**면접**: [[04-interview-cases/interview-questions|기술 질문]] · [[04-interview-cases/design-cases|면접 설계 문제]]: [[first-come-limited-stock|선착순 한정 수량]], [[like-count|좋아요 수]]
+**설계 사례**: [[04-design-cases/design-cases|설계 사례]] ([[first-come-limited-stock|선착순 한정 수량]], [[like-count|좋아요 수]]) · [[04-design-cases/interview-questions|기술 질문 모음]]
 
 **AI**: [[05-ai-workflows/ai-workflows|AI 활용]]
 

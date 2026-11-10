@@ -71,6 +71,13 @@ tags: [concept, observability]
 
 - [[inherited-access-system-incidents|이어받은 출입 시스템의 장애 추적]]: 9일치 로그 대조로 원인 좁히기
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Google SRE Book: Effective Troubleshooting](https://sre.google/sre-book/effective-troubleshooting/)
+- [Google SRE Book: Postmortem Culture](https://sre.google/sre-book/postmortem-culture/)
+
 ## 관련 문서
 
 - [[observability]]

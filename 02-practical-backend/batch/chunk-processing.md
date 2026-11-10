@@ -44,6 +44,12 @@ chunk 크기는 처리량, 메모리, 외부 API 비용을 보고 정한다. 너
 - Offset 기반 batch 조회는 왜 위험한가?
 - Chunk별 트랜잭션의 장점과 한계는?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Spring Batch: Chunk-oriented Processing](https://docs.spring.io/spring-batch/reference/step/chunk-oriented-processing.html)
+
 ## 관련 문서
 
 - [[batch-processing]]

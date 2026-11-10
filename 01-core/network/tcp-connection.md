@@ -158,6 +158,12 @@ factory.setHttpClient(httpClient);
 > [!question]- 3-way handshake가 실패하면 어떻게 되는가?
 > SYN을 보내고 SYN+ACK를 받지 못하면 OS가 일정 횟수 재시도 후 `Connection timed out` 에러가 발생합니다. 서버가 SYN을 거부하면 RST를 응답하고 `Connection refused` 에러가 발생합니다.
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [RFC 9293: Transmission Control Protocol](https://www.rfc-editor.org/rfc/rfc9293)
+
 ## 관련 문서
 
 - [[01-core/network/network|network]]

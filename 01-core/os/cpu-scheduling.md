@@ -114,6 +114,13 @@ Throttling은 로그에 남지 않아 찾기 어렵다. 응답 시간이 불규�
 > [!question]- Context Switching 비용은 얼마나 되는가?
 > 일반적으로 수 마이크로초(µs) 수준이지만, 캐시 무효화(Cache Invalidation)까지 고려하면 간접 비용이 더 큽니다. 스레드가 너무 많으면 이 비용이 누적되어 처리량이 오히려 떨어집니다.
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Linux kernel: EEVDF Scheduler](https://docs.kernel.org/scheduler/sched-eevdf.html)
+- [sched(7)](https://man7.org/linux/man-pages/man7/sched.7.html)
+
 ## 관련 문서
 
 - [[01-core/os/os|os]]

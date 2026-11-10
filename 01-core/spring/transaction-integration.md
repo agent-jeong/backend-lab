@@ -10,6 +10,10 @@ Spring은 `@Transactional`을 AOP로 처리한다. 프록시가 메서드 앞뒤
 
 어노테이션을 붙였다고 끝이 아니다. checked 예외는 기본으로 롤백되지 않고, 같은 클래스 안에서 부른 메서드에는 트랜잭션이 걸리지 않고, 전파 설정을 잘못 잡으면 의도하지 않은 커밋이나 롤백이 생긴다. 여기서는 롤백 규칙과 전파를 중심으로 본다.
 
+> [!tip] 함께 읽기
+> - [[transactional-pitfalls]]: `@Transactional`이 적용되지 않을 때 원인을 찾는 체크리스트
+> - [[spring-transaction]]: 트랜잭션 주제 안에서 본 짧은 요약
+
 ## 동작
 
 ```
@@ -201,6 +205,14 @@ JPA가 변경 감지(dirty checking)를 건너뛰어 스냅샷 비교 비용이 
     <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
   </div>
 </div>
+
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Spring Framework: Declarative Transaction Management](https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative.html)
+- [Spring Framework: Transaction Propagation](https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/tx-propagation.html)
+- [Spring Framework: Rolling Back a Declarative Transaction](https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/rolling-back.html)
 
 ## 관련 문서
 

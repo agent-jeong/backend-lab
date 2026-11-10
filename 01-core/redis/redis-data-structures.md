@@ -61,6 +61,12 @@ Redis는 String 말고도 Hash, Set, Sorted Set, List, Stream, Pub/Sub을 제공
 - 모든 값을 큰 JSON String으로 저장하면 어떤 한계가 있나?
 - Hash에 저장한 field별 생명주기는 어떻게 관리하나?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Redis Docs: Data types](https://redis.io/docs/latest/develop/data-types/)
+
 ## 관련 문서
 
 - [[01-core/redis/redis|redis]]

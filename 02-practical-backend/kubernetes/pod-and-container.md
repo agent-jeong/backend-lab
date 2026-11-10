@@ -70,6 +70,13 @@ spec:
 - Pod가 계속 재시작되면 무엇부터 확인하나?
 - Pod IP에 직접 의존하면 왜 위험한가?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Kubernetes: Pods](https://kubernetes.io/docs/concepts/workloads/pods/)
+- [Kubernetes: Pod Lifecycle](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/)
+
 ## 관련 문서
 
 - [[kubernetes]]

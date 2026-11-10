@@ -52,6 +52,13 @@ Kubernetes에서 장애를 볼 때는 Pod 로그, event, resource 사용량, rol
 - 503이 늘면 Kubernetes에서 무엇부터 보나?
 - CPU throttling은 어떤 지표와 증상으로 확인하나?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Kubernetes: Logging Architecture](https://kubernetes.io/docs/concepts/cluster-administration/logging/)
+- [Kubernetes: Resource Metrics Pipeline](https://kubernetes.io/docs/tasks/debug/debug-cluster/resource-metrics-pipeline/)
+
 ## 관련 문서
 
 - [[kubernetes]]

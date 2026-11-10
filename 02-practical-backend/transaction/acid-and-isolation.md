@@ -10,6 +10,9 @@ ACID는 트랜잭션이 지켜야 하는 원자성, 일관성, 격리성, 지속
 
 격리 수준을 낮추면 dirty read, non-repeatable read, phantom read 같은 현상이 생기고, 높이면 정합성은 강해지는 대신 락 경합, 대기, 데드락이 늘어난다. 그런데 격리 수준을 올린다고 업무 불변식이 지켜지지는 않는다. 금액, 재고, 상태 전이는 제약 조건과 락 전략으로 따로 보호한다.
 
+> [!tip] 함께 읽기
+> - [[transaction-and-isolation]]: 격리 수준별로 무엇이 보이고 막히는지(MVCC, 갭 락) 자세히 다룬 글
+
 ## 동작
 
 1. 트랜잭션은 변경 내용을 commit 전까지 임시 상태로 둔다.
@@ -82,6 +85,13 @@ public OrderSummary getOrderSummary(Long orderId) {
 - dirty read, non-repeatable read, phantom read의 차이는 무엇인가?
 - 격리 수준을 높였는데도 중복 데이터가 생길 수 있는 이유는 무엇인가?
 - unique key와 isolation level은 각각 어떤 문제를 해결하는가?
+
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [MySQL 8.4: InnoDB and the ACID Model](https://dev.mysql.com/doc/refman/8.4/en/mysql-acid.html)
+- [MySQL 8.4: Transaction Isolation Levels](https://dev.mysql.com/doc/refman/8.4/en/innodb-transaction-isolation-levels.html)
 
 ## 관련 문서
 

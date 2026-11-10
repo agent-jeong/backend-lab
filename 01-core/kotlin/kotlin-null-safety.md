@@ -130,6 +130,12 @@ val user = userRepository.findByIdOrNull(id)
   </div>
 </div>
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Kotlin: Null safety](https://kotlinlang.org/docs/null-safety.html)
+
 ## 관련 문서
 
 - [[kotlin]]

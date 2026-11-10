@@ -67,6 +67,12 @@ tags: [concept, performance]
 - 성능 개선 전 어떤 기준을 먼저 정해야 하는가?
 - 캐시나 인덱스를 적용하기 전에 무엇을 확인해야 하는가?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Brendan Gregg: The USE Method](https://www.brendangregg.com/usemethod.html)
+
 ## 관련 문서
 
 - [[02-practical-backend/performance/performance|performance]]

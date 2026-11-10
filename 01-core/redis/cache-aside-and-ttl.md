@@ -95,6 +95,13 @@ public void updateProductName(Long productId, String name) {
 - 캐시를 쓰면 안 되는 데이터는?
 - hit ratio가 높은데도 장애가 날 수 있는 이유는?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Redis Docs: EXPIRE](https://redis.io/docs/latest/commands/expire/)
+- [Redis Docs: Key eviction](https://redis.io/docs/latest/develop/reference/eviction/)
+
 ## 관련 문서
 
 - [[01-core/redis/redis|redis]]

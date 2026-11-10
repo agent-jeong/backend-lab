@@ -41,4 +41,4 @@ Pod, Deployment·Service·Ingress, 프로브, 리소스, 롤링 업데이트, Cr
 - [[02-practical-backend/ci-cd/ci-cd|ci-cd]]
 - [[02-practical-backend/batch/batch-processing|batch-processing]]
 - [[02-practical-backend/observability/observability|observability]]
-- [[04-interview-cases/interview-questions|technical-questions]]
+- [[04-design-cases/interview-questions|technical-questions]]

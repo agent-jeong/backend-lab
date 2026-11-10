@@ -88,6 +88,13 @@ public Order markPaymentPending(Long orderId) {
 
 - [[irreversible-approval-once|되돌릴 수 없는 승인을 한 번만 보내기]]: 취소할 수 없는 외부 승인 앞뒤의 트랜잭션 경계
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Spring Framework: Transaction-bound Events](https://docs.spring.io/spring-framework/reference/data-access/transaction/event.html)
+- [microservices.io: Transactional outbox](https://microservices.io/patterns/data/transactional-outbox.html)
+
 ## 관련 문서
 
 - [[02-practical-backend/transaction/transaction|transaction]]

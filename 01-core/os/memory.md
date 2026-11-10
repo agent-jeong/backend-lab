@@ -169,6 +169,13 @@ Mem:           16G     12G     200M    100M    3.8G        3.5G
 > [!question]- Swap을 아예 비활성화하면 안 되는가?
 > 가능하지만, 메모리 부족 시 바로 OOM Killer가 동작합니다. DB 서버처럼 Swap 성능 저하가 치명적인 경우 swappiness를 낮추거나 Swap을 비활성화하기도 합니다. 일반 애플리케이션 서버는 소량의 Swap을 유지하는 것이 안전합니다.
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Linux kernel: Control Group v2 (memory)](https://docs.kernel.org/admin-guide/cgroup-v2.html)
+- [proc_meminfo(5)](https://man7.org/linux/man-pages/man5/proc_meminfo.5.html)
+
 ## 관련 문서
 
 - [[01-core/os/os|os]]

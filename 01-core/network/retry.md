@@ -150,6 +150,13 @@ Retry-After: 30
 > [!question]- 멱등키는 어디에 저장하는가?
 > 서버에서 Redis나 DB에 저장합니다. TTL을 설정해서 일정 시간 후 자동 삭제합니다. 멱등키가 존재하면 이전 처리 결과를 반환하고, 없으면 새로 처리합니다.
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Amazon Builders' Library: Timeouts, retries, and backoff with jitter](https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/)
+- [RFC 9110: Idempotent Methods](https://www.rfc-editor.org/rfc/rfc9110#name-idempotent-methods)
+
 ## 관련 문서
 
 - [[01-core/network/network|network]]

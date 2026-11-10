@@ -138,6 +138,13 @@ java -XX:StringTableSize=120011 -jar app.jar
   </div>
 </div>
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Java SE 21 API: String.intern](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html)
+- [JLS 21: String Literals](https://docs.oracle.com/javase/specs/jls/se21/html/jls-3.html#jls-3.10.5)
+
 ## 관련 문서
 
 - [[01-core/java/java|java]]

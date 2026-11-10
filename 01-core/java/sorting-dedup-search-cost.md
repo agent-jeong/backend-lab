@@ -271,6 +271,13 @@ Set<User> users = new TreeSet<>(Comparator.comparing(User::getId));
   </div>
 </div>
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Java SE 21 API: List.sort](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html)
+- [Java SE 21 API: Collections](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Collections.html)
+
 ## 관련 문서
 
 - [[01-core/java/java|java]]

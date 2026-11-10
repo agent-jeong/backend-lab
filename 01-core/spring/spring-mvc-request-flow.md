@@ -157,6 +157,12 @@ public class GlobalExceptionHandler {
   </div>
 </div>
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Spring Framework: DispatcherServlet](https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet.html)
+
 ## 관련 문서
 
 - [[01-core/spring/spring|spring]]

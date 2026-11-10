@@ -126,6 +126,12 @@ Stream<Order> findByStatusAsStream(@Param("status") String status);
 
 - [[slow-admin-query-tuning|5초 걸리던 조회를 실행계획으로 고치기]]: `ROW_NUMBER()` 페이징을 `LIMIT/OFFSET`으로
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [MySQL 8.4: LIMIT Query Optimization](https://dev.mysql.com/doc/refman/8.4/en/limit-optimization.html)
+
 ## 관련 문서
 
 - [[01-core/database/database|database]]

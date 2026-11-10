@@ -69,6 +69,13 @@ JPA의 `@Version`은 엔티티를 수정할 때 version 조건을 붙여 동시 
 - 낙관적 락 충돌이 발생하면 어떻게 응답해야 하는가?
 - 어떤 경우에 낙관적 락보다 비관적 락이 나은가?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Hibernate ORM 6.6 User Guide: Locking](https://docs.hibernate.org/orm/6.6/userguide/html_single/Hibernate_User_Guide.html#locking)
+- [Jakarta Persistence 3.1](https://jakarta.ee/specifications/persistence/3.1/)
+
 ## 관련 문서
 
 - [[02-practical-backend/concurrency/concurrency|concurrency]]

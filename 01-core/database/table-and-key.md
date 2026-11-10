@@ -113,6 +113,13 @@ ALTER TABLE users ADD UNIQUE KEY uk_email (email);
 > [!question]- 복합 PK를 피하는 이유는?
 > JOIN 조건이 복잡해지고, FK가 여러 컬럼을 참조해야 하며, JPA 매핑도 복잡해집니다. 대리 키 하나로 식별하고 비즈니스 유일성은 UK로 보장하는 것이 실무에서 관리하기 쉽습니다.
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [MySQL 8.4: Clustered and Secondary Indexes](https://dev.mysql.com/doc/refman/8.4/en/innodb-index-types.html)
+- [MySQL 8.4: FOREIGN KEY Constraints](https://dev.mysql.com/doc/refman/8.4/en/create-table-foreign-keys.html)
+
 ## 관련 문서
 
 - [[01-core/database/database|database]]

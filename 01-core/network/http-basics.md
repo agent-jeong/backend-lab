@@ -143,6 +143,12 @@ HTTP는 기본적으로 무상태다. 요청은 서로 독립적이고, 서버�
 > [!question]- 멱등성이 왜 중요한가?
 > 네트워크 장애로 응답을 받지 못했을 때, 멱등한 요청은 안전하게 재시도할 수 있습니다. 결제, 주문 같은 비멱등 요청은 멱등키(Idempotency Key)를 사용해서 중복 처리를 방지해야 합니다.
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [RFC 9110: HTTP Semantics](https://www.rfc-editor.org/rfc/rfc9110)
+
 ## 관련 문서
 
 - [[01-core/network/network|network]]

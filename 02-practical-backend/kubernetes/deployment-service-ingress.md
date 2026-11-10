@@ -91,6 +91,14 @@ Service의 selector와 Deployment Pod label이 일치해야 Service endpoint가 
 - Pod가 Running인데 Service로 요청이 가지 않는다면 무엇을 확인하나?
 - 롤링 배포 중 순간 장애를 줄이려면 어떤 설정이 필요한가?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Kubernetes: Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
+- [Kubernetes: Service](https://kubernetes.io/docs/concepts/services-networking/service/)
+- [Kubernetes: Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/)
+
 ## 관련 문서
 
 - [[kubernetes]]

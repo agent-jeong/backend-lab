@@ -137,6 +137,12 @@ order-service → 192.168.1.10:8080, 192.168.1.11:8080
 > [!question]- JVM DNS 캐시는 어떻게 동작하는가?
 > `InetAddress`가 내부적으로 DNS 결과를 캐시합니다. 보안 매니저가 설정된 경우 기본 TTL이 무한대(-1)가 될 수 있어 IP 변경이 영원히 반영되지 않습니다. `networkaddress.cache.ttl` 속성으로 제어할 수 있습니다.
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [RFC 1035: Domain Names](https://www.rfc-editor.org/rfc/rfc1035)
+
 ## 관련 문서
 
 - [[01-core/network/network|network]]

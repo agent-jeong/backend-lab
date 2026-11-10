@@ -238,6 +238,14 @@ public class Order {
   </div>
 </div>
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [JEP 395: Records](https://openjdk.org/jeps/395)
+- [JEP 409: Sealed Classes](https://openjdk.org/jeps/409)
+- [JLS 21: Enum Classes](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html#jls-8.9)
+
 ## 관련 문서
 
 - [[01-core/java/java|java]]

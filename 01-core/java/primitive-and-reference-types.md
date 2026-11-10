@@ -124,6 +124,13 @@ if ("ACTIVE".equals(status)) {
   </div>
 </div>
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [JLS 21: Types, Values, and Variables](https://docs.oracle.com/javase/specs/jls/se21/html/jls-4.html)
+- [JLS 21: Boxing Conversion](https://docs.oracle.com/javase/specs/jls/se21/html/jls-5.html#jls-5.1.7)
+
 ## 관련 문서
 
 - [[01-core/java/java|java]]

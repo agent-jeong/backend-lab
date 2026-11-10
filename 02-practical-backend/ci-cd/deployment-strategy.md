@@ -44,6 +44,13 @@ Rolling은 가장 흔하지만 readiness와 replica가 받쳐 줘야 무중단�
 - Canary 배포에서 어떤 지표를 보나?
 - DB 변경이 있는 배포는 왜 더 조심해야 하나?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Kubernetes: Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
+- [Martin Fowler: Blue Green Deployment](https://martinfowler.com/bliki/BlueGreenDeployment.html)
+
 ## 관련 문서
 
 - [[ci-cd]]

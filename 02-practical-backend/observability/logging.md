@@ -71,6 +71,13 @@ log.warn("payment retry traceId={} orderId={} attempt={} reason={}",
 
 - [[inherited-access-system-incidents|이어받은 출입 시스템의 장애 추적]]: 삼켜지던 비동기 에러에 로그 붙이기
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Spring Boot: Logging](https://docs.spring.io/spring-boot/reference/features/logging.html)
+- [OWASP: Logging Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html)
+
 ## 관련 문서
 
 - [[observability]]

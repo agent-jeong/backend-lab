@@ -43,6 +43,12 @@ tags: [concept, architecture]
 - 순환 의존이 생기면 어떤 문제가 생기나?
 - 인터페이스 분리는 언제 의미가 있나?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Robert C. Martin: The Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
+
 ## 관련 문서
 
 - [[architecture]]

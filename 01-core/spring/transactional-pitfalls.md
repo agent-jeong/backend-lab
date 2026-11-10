@@ -10,6 +10,9 @@ tags: [concept, spring]
 
 이 실패는 컴파일 에러 없이 런타임에만 드러나서 코드 리뷰로 걸러내기 어렵다. 어노테이션이 붙어 있으니 원인 후보에서 빠지고, 테스트에서는 되는데 운영에서 데이터가 어긋나는 식으로 나타난다. 아래 여섯 가지를 순서대로 확인한다.
 
+> [!tip] 함께 읽기
+> - [[transaction-integration]]: `@Transactional`의 동작 원리를 다룬 글
+
 ## 원인 여섯 가지
 
 ### 1. 같은 클래스 내부 호출 (Self-Invocation)
@@ -178,6 +181,13 @@ public class OrderService {
 ## 내 사례
 
 - [[inherited-access-system-incidents|이어받은 출입 시스템의 장애 추적]]: `parallelStream` 안 저장에 적용되지 않은 `@Transactional`
+
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Spring Framework: Using @Transactional](https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/annotations.html)
+- [Spring Framework: Proxying Mechanisms](https://docs.spring.io/spring-framework/reference/core/aop/proxying.html)
 
 ## 관련 문서
 

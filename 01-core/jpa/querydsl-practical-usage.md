@@ -10,6 +10,9 @@ tags: [concept, jpa]
 
 가장 흔한 용도는 선택 검색 조건이 많은 목록 API다. 코드는 길어도 구조는 단순하다. 성능은 QueryDSL이 아니라 **목록 쿼리와 count query를 어떻게 나누고, 정렬과 인덱스를 어떻게 맞추느냐**에서 갈린다.
 
+> [!tip] 함께 읽기
+> - [[querydsl]]: QueryDSL을 왜, 언제 쓰는지와 동적 쿼리 설계
+
 ## 파일 구조
 
 ```text
@@ -340,6 +343,14 @@ public Slice<OrderSummaryResponse> searchOrdersSlice(
     <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
   </div>
 </div>
+
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Querydsl Reference](http://querydsl.com/static/querydsl/latest/reference/html/)
+- [Querydsl (OpenFeign fork, maintained)](https://github.com/OpenFeign/querydsl)
+- [Spring Data JPA: Querydsl Extension](https://docs.spring.io/spring-data/jpa/reference/repositories/core-extensions.html)
 
 ## 관련 문서
 

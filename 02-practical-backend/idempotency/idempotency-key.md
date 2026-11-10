@@ -83,6 +83,13 @@ public OrderResponse createOrder(CreateOrderCommand command) {
 
 - [[irreversible-approval-once|되돌릴 수 없는 승인을 한 번만 보내기]]: 상대가 멱등키를 받지 않을 때
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Stripe API: Idempotent requests](https://docs.stripe.com/api/idempotent_requests)
+- [IETF draft: The Idempotency-Key HTTP Header Field](https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/)
+
 ## 관련 문서
 
 - [[02-practical-backend/idempotency/idempotency|idempotency]]

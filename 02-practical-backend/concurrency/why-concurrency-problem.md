@@ -77,6 +77,13 @@ public void unsafeDecreaseStock(Long productId, int quantity) {
 - `synchronized`는 다중 서버 환경에서 왜 한계가 있는가?
 - 조회 후 저장 패턴이 위험한 경우는 무엇인가?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [JLS 21: Threads and Locks](https://docs.oracle.com/javase/specs/jls/se21/html/jls-17.html)
+- [MySQL 8.4: Transaction Isolation Levels](https://dev.mysql.com/doc/refman/8.4/en/innodb-transaction-isolation-levels.html)
+
 ## 관련 문서
 
 - [[02-practical-backend/concurrency/concurrency|concurrency]]

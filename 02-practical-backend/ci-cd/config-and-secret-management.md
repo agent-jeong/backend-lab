@@ -44,6 +44,13 @@ tags: [concept, ci-cd]
 - Secret이 이미지 layer에 남으면 왜 위험한가?
 - 설정 변경으로 생긴 장애는 어떻게 원인을 좁히나?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [The Twelve-Factor App: Config](https://12factor.net/config)
+- [Kubernetes: Secrets](https://kubernetes.io/docs/concepts/configuration/secret/)
+
 ## 관련 문서
 
 - [[ci-cd]]

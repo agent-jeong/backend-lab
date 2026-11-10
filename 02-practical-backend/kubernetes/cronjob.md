@@ -77,6 +77,12 @@ CronJob은 Kubernetes 안에서 주기 작업을 선언적으로 관리하고 Jo
 - 배치 중복 실행을 어떻게 막나?
 - 실패한 배치를 중간부터 다시 처리하려면 무엇을 기록해야 하나?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Kubernetes: CronJob](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/)
+
 ## 관련 문서
 
 - [[kubernetes]]

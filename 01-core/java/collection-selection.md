@@ -160,6 +160,12 @@ JPA N+1을 줄인 뒤 메모리에서 데이터를 조립할 때 자주 쓰는 �
   </div>
 </div>
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Java SE 21: Collections Framework Overview](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/doc-files/coll-overview.html)
+
 ## 관련 문서
 
 - [[01-core/java/java|java]]

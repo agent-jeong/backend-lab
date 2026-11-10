@@ -81,6 +81,13 @@ maxmemory와 eviction policy를 모르고 운영하면 중요한 캐시가 예�
 - `KEYS *` 대신 `SCAN`을 써야 하는 이유는?
 - eviction policy를 잘못 고르면 어떤 데이터가 사라지나?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Redis Docs: Keys and values](https://redis.io/docs/latest/develop/using-commands/keyspace/)
+- [Redis Docs: Key eviction](https://redis.io/docs/latest/develop/reference/eviction/)
+
 ## 관련 문서
 
 - [[01-core/redis/redis|redis]]

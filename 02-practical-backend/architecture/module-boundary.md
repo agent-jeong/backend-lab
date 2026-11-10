@@ -42,6 +42,12 @@ tags: [concept, architecture]
 - common 모듈이 커지면 어떤 문제가 생기나?
 - 모듈 경계와 트랜잭션 경계는 어떤 관계인가?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Spring Modulith Reference](https://docs.spring.io/spring-modulith/reference/)
+
 ## 관련 문서
 
 - [[architecture]]

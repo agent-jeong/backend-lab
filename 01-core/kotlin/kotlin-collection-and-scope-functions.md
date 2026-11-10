@@ -141,6 +141,13 @@ scope function은 짧은 블록에서만 읽기 좋다. 중첩되면 일반 변�
   </div>
 </div>
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Kotlin: Scope functions](https://kotlinlang.org/docs/scope-functions.html)
+- [Kotlin: Sequences](https://kotlinlang.org/docs/sequences.html)
+
 ## 관련 문서
 
 - [[kotlin]]

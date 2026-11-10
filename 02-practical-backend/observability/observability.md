@@ -45,4 +45,4 @@ comments: false
 - [[02-practical-backend/performance/performance|performance]]
 - [[02-practical-backend/kubernetes/kubernetes-logging-and-metrics|kubernetes-logging-and-metrics]]
 - [[03-work-cases/work-cases|work-cases]]
-- [[04-interview-cases/interview-questions|technical-questions]]
+- [[04-design-cases/interview-questions|technical-questions]]

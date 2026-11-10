@@ -46,6 +46,12 @@ Build Pipeline은 소스 코드를 가져와 정적 검증, 테스트, 빌드, �
 - latest tag만 쓰면 어떤 문제가 생기나?
 - 빌드 과정에서 secret 노출을 어떻게 막나?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)
+
 ## 관련 문서
 
 - [[ci-cd]]

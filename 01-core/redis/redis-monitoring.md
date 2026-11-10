@@ -77,6 +77,13 @@ slow command, big key, hot key는 Redis 서버 지표만으로는 원인이 바�
 - Redis timeout 증가와 DB QPS 증가는 어떻게 연결되나?
 - slowlog에서 느린 명령을 찾은 뒤 무엇을 확인할 것인가?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Redis Docs: INFO](https://redis.io/docs/latest/commands/info/)
+- [Redis Docs: SLOWLOG GET](https://redis.io/docs/latest/commands/slowlog-get/)
+
 ## 관련 문서
 
 - [[01-core/redis/redis|redis]]

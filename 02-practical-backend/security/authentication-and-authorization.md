@@ -69,6 +69,13 @@ public OrderDetail getOrder(long orderId, AuthenticatedUser user) {
 - 로그인한 사용자가 다른 사용자의 주문을 조회하지 못하게 하려면 어디서 검증하나?
 - 401과 403은 각각 언제 반환하나?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [OWASP: Authentication Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html)
+- [OWASP: Authorization Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html)
+
 ## 관련 문서
 
 - [[security]]

@@ -68,6 +68,13 @@ public List<OrderSummary> findMyOrders(AuthenticatedUser user, OrderSearchCondit
 - 목록 조회에서 권한 검증을 어떻게 보장하나?
 - 공통 보안 어노테이션으로 해결하기 어려운 권한은?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [OWASP: Authorization Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html)
+- [Spring Security: Method Security](https://docs.spring.io/spring-security/reference/servlet/authorization/method-security.html)
+
 ## 관련 문서
 
 - [[security]]

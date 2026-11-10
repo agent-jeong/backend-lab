@@ -61,6 +61,13 @@ Redis 장애 대응은 Redis timeout, 연결 실패, 지연 증가가 애플리�
 - 캐시 fallback은 항상 좋은 선택인가?
 - fallback이 정상 동작해도 장애로 봐야 하는 기준은?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Redis Docs: Redis replication](https://redis.io/docs/latest/operate/oss_and_stack/management/replication/)
+- [Redis Docs: Persistence](https://redis.io/docs/latest/operate/oss_and_stack/management/persistence/)
+
 ## 관련 문서
 
 - [[01-core/redis/redis|redis]]

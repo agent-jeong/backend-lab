@@ -72,7 +72,7 @@ TOP_FOLDERS = {
     "01-core": ("기본기", "Java, Spring, JPA, DB, Redis, 네트워크, OS"),
     "02-practical-backend": ("실무 백엔드", "트랜잭션, 동시성, 멱등성, 성능, 운영"),
     "03-work-cases": ("내 실무 사례", "직접 겪은 문제를 일반화한 사례"),
-    "04-interview-cases": ("면접 준비", "기술 질문과 면접 설계 문제"),
+    "04-design-cases": ("설계 사례", "자주 부딪히는 설계 문제를 풀어 본 사례"),
     "05-ai-workflows": ("AI 활용", "AI를 개발에 쓰는 방법과 사례"),
 }
 

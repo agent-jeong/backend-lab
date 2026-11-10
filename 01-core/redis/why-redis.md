@@ -86,6 +86,12 @@ return summary;
 - Redis에 저장하면 안 되는 데이터는?
 - Redis latency가 갑자기 오르면 어떤 지표부터 볼 것인가?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Redis Docs: Develop with Redis](https://redis.io/docs/latest/develop/)
+
 ## 관련 문서
 
 - [[01-core/redis/redis|redis]]

@@ -149,6 +149,13 @@ Java 웹 서버(Tomcat)는 하나의 프로세스 안에서 멀티스레드로 �
 > [!question]- Virtual Thread(Java 21)는 기존 스레드와 무엇이 다른가?
 > Virtual Thread는 OS 스레드에 1:1로 매핑되지 않고, JVM이 관리하는 경량 스레드입니다. I/O 대기 시 OS 스레드를 반환하므로, 수만 개의 동시 요청을 적은 OS 스레드로 처리할 수 있습니다.
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [pthreads(7)](https://man7.org/linux/man-pages/man7/pthreads.7.html)
+- [JEP 444: Virtual Threads](https://openjdk.org/jeps/444)
+
 ## 관련 문서
 
 - [[01-core/os/os|os]]

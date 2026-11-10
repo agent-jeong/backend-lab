@@ -139,6 +139,12 @@ cancellation은 협력적으로 동작한다. 취소 신호를 확인하는 지�
   </div>
 </div>
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Kotlin: Coroutines](https://kotlinlang.org/docs/coroutines-overview.html)
+
 ## 관련 문서
 
 - [[kotlin]]

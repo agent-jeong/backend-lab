@@ -67,6 +67,12 @@ List<Order> findOrders(long userId, OrderStatus status);
 - ORM을 쓰는데도 SQL Injection이 생기는 경우는?
 - 동적 정렬 조건은 어떻게 안전하게 처리하나?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [OWASP: SQL Injection Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html)
+
 ## 관련 문서
 
 - [[security]]

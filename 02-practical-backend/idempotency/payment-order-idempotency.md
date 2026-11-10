@@ -89,6 +89,13 @@ update count가 0이면 이유를 나눠 본다. 이미 `PAID`라면 같은 결�
 
 - [[irreversible-approval-once|되돌릴 수 없는 승인을 한 번만 보내기]]: 송금 승인 중복 방지
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Stripe API: Idempotent requests](https://docs.stripe.com/api/idempotent_requests)
+- [Amazon Builders' Library: Making retries safe with idempotent APIs](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/)
+
 ## 관련 문서
 
 - [[02-practical-backend/idempotency/idempotency|idempotency]]

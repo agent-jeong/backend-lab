@@ -10,6 +10,9 @@ tags: [concept, concurrency]
 
 애플리케이션에서 먼저 조회하고 없으면 insert하는 방식은 동시에 들어오면 중복을 만든다. 상태 전이 조건이 없으면 재시도와 중복 요청이 같은 결과를 여러 번 반영하고, 이미 취소된 주문이 배송되는 식으로 상태가 꼬인다. 중복 가입, 중복 쿠폰 발급, 중복 결제 요청은 DB 제약으로 막는 게 가장 강하다.
 
+> [!tip] 함께 읽기
+> - [[state-transition-and-unique-constraint]]: 같은 도구를 멱등성 관점(재시도·중복 요청)에서 본 글
+
 ## 동작
 
 1. 중복되면 안 되는 business key를 정한다.
@@ -83,6 +86,13 @@ public void completePayment(Long orderId) {
 
 - [[webhook-once-without-loss|웹훅을 잃지 않고 한 번만 처리하기]]: 조건부 UPDATE 상태 전이
 - [[point-balance-and-idempotent-batch|포인트 잔액 계산과 멱등 지급 배치]]: UNIQUE로 막는 중복 지급
+
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [MySQL 8.4: Locks Set by Different SQL Statements in InnoDB](https://dev.mysql.com/doc/refman/8.4/en/innodb-locks-set.html)
+- [MySQL 8.4: INSERT ... ON DUPLICATE KEY UPDATE](https://dev.mysql.com/doc/refman/8.4/en/insert-on-duplicate.html)
 
 ## 관련 문서
 

@@ -69,6 +69,13 @@ Socket I/O는 프로세스가 네트워크 연결로 데이터를 주고받는 �
 - accept queue가 가득 차면 어떤 증상이 나타나나?
 - 외부 API 지연이 서버 스레드 고갈로 이어지는 이유는?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [socket(7)](https://man7.org/linux/man-pages/man7/socket.7.html)
+- [tcp(7)](https://man7.org/linux/man-pages/man7/tcp.7.html)
+
 ## 관련 문서
 
 - [[01-core/os/os|os]]

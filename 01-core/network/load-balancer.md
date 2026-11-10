@@ -145,6 +145,12 @@ LB에서 Server A 제외 시:
 > [!question]- 502 Bad Gateway는 언제 발생하는가?
 > LB가 백엔드 서버에 요청을 전달했는데 서버가 잘못된 응답을 반환하거나, 서버 프로세스가 죽어있는 경우입니다. 배포 중에 서버가 아직 준비되지 않았을 때도 발생합니다.
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [NGINX: HTTP Load Balancing](https://nginx.org/en/docs/http/load_balancing.html)
+
 ## 관련 문서
 
 - [[01-core/network/network|network]]

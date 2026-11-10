@@ -106,6 +106,12 @@ Virtual Thread:
 > [!question]- Virtual Thread가 컨텍스트 스위칭을 줄이는 원리는?
 > Virtual Thread는 I/O 대기 시 OS 스레드(carrier)를 반환하고, JVM 내부에서 다른 Virtual Thread를 같은 carrier에 배정합니다. OS 레벨의 전환 없이 JVM 내부에서 경량 전환이 일어나므로 비용이 훨씬 작습니다.
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [sched(7)](https://man7.org/linux/man-pages/man7/sched.7.html)
+
 ## 관련 문서
 
 - [[01-core/os/os|os]]

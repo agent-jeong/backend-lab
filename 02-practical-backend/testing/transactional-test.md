@@ -44,6 +44,12 @@ Transactional Test는 테스트 메서드를 트랜잭션으로 감싸고, 끝�
 - 왜 flush/clear가 필요한가?
 - after commit 이벤트는 어떻게 테스트하나?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Spring Framework: Transaction Management in Tests](https://docs.spring.io/spring-framework/reference/testing/testcontext-framework/tx.html)
+
 ## 관련 문서
 
 - [[testing]]

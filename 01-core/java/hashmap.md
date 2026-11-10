@@ -170,6 +170,12 @@ merge 함수는 의도를 설명할 수 있어야 한다. "나중 값"이 최신
   </div>
 </div>
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Java SE 21 API: HashMap](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/HashMap.html)
+
 ## 관련 문서
 
 - [[01-core/java/java|java]]

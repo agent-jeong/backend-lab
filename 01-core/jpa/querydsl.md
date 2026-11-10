@@ -10,6 +10,9 @@ QueryDSL은 JPQL을 문자열 대신 Java 코드로, 타입 안전하게 쓰게 
 
 검색 조건이 늘수록 JPQL 문자열 조합은 복잡해지고 런타임 오류가 늘어난다. QueryDSL은 이걸 컴파일 단계로 끌어온다. 다만 **JPA 위에서 도는 쿼리 작성 도구일 뿐**이라 N+1, fetch join, 영속성 컨텍스트 문제는 그대로 남는다.
 
+> [!tip] 함께 읽기
+> - [[querydsl-practical-usage]]: Repository에서 자주 쓰는 코드 패턴 모음
+
 ## 왜 쓰나
 
 | 이유 | 설명 |
@@ -176,6 +179,13 @@ Long total = queryFactory
     <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
   </div>
 </div>
+
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Querydsl Reference](http://querydsl.com/static/querydsl/latest/reference/html/)
+- [Querydsl (OpenFeign fork, maintained)](https://github.com/OpenFeign/querydsl)
 
 ## 관련 문서
 

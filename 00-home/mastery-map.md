@@ -13,7 +13,7 @@ comments: false
 | 활동 | 목표 | 산출물 |
 |---|---|---|
 | 개념 학습 | 한 개념을 실무 문제와 연결 | 개념 문서 1개 보강 |
-| 질문 압축 | 기술 질문으로 압축 | [기술 질문](../04-interview-cases/interview-questions.md) 답변 1개 |
+| 질문 압축 | 기술 질문으로 압축 | [기술 질문](../04-design-cases/interview-questions.md) 답변 1개 |
 | 사례 연결 | 개념을 내 사례와 잇기 | [내 실무 사례](../03-work-cases/work-cases.md)와 개념 노트의 "내 사례" 연결 1개 |
 | 레벨 점검 | 부족한 영역 재배치 | 현재 레벨 업데이트 |
 

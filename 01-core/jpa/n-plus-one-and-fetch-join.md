@@ -195,6 +195,13 @@ JPQL 없이 fetch join과 같은 효과를 낸다. 간단한 경우엔 편하지
   </div>
 </div>
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Hibernate ORM 6.6 User Guide: Fetching](https://docs.hibernate.org/orm/6.6/userguide/html_single/Hibernate_User_Guide.html#fetching)
+- [Spring Data JPA: Entity Graphs](https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html)
+
 ## 관련 문서
 
 - [[01-core/jpa/jpa|jpa]]

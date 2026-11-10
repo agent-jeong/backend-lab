@@ -48,6 +48,13 @@ tags: [concept, batch]
 
 - [[file-storage-migration|첨부파일 18만 건 이관]]: 중간에 멈춰도 남은 것만 다시 옮기기
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Spring Batch: Retry](https://docs.spring.io/spring-batch/reference/retry.html)
+- [Amazon Builders' Library: Making retries safe with idempotent APIs](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/)
+
 ## 관련 문서
 
 - [[batch-processing]]

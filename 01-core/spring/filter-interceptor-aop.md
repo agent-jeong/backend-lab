@@ -198,6 +198,13 @@ public class ServiceLoggingAspect {
   </div>
 </div>
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Spring Framework: Interceptors](https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-config/interceptors.html)
+- [Spring Framework: Filters](https://docs.spring.io/spring-framework/reference/web/webmvc/filters.html)
+
 ## 관련 문서
 
 - [[01-core/spring/spring|spring]]

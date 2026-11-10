@@ -39,4 +39,4 @@ comments: false
 - [[02-practical-backend/transaction/transaction|transaction]]
 - [[02-practical-backend/testing/testing|testing]]
 - [[03-work-cases/work-cases|work-cases]]
-- [[04-interview-cases/interview-questions|technical-questions]]
+- [[04-design-cases/interview-questions|technical-questions]]

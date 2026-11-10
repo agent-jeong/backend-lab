@@ -10,6 +10,10 @@ tags: [concept, database]
 
 재고가 음수가 되거나, 데드락이 났는데 원인을 못 찾거나, 락 경합으로 응답이 느려지는 일은 대부분 락이 어디에 얼마나 오래 걸리는지 몰라서 생긴다. 애플리케이션에서만 동시성을 처리하고 `SELECT FOR UPDATE`를 모르는 경우도 같은 결과를 낸다.
 
+> [!tip] 함께 읽기
+> - [[lock-and-deadlock]]: 락 경합과 데드락에 대응하는 기준
+> - [[pessimistic-lock]]: 충돌이 잦을 때 행을 먼저 잠그는 방식
+
 ## 락의 종류
 
 ### Shared Lock과 Exclusive Lock
@@ -131,6 +135,14 @@ TX-B: UPDATE orders SET status = 'SHIPPED' WHERE id = 1;    → 대기 (TX-A가 
 
 > [!question]- Gap Lock이란?
 > InnoDB의 Repeatable Read에서 범위 조건에 대해 "행 사이의 간격"에 걸리는 락입니다. 다른 트랜잭션이 해당 범위에 INSERT하는 것을 방지해서 Phantom Read를 막습니다.
+
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [MySQL 8.4: InnoDB Locking](https://dev.mysql.com/doc/refman/8.4/en/innodb-locking.html)
+- [MySQL 8.4: Locks Set by Different SQL Statements in InnoDB](https://dev.mysql.com/doc/refman/8.4/en/innodb-locks-set.html)
+- [MySQL 8.4: Deadlocks in InnoDB](https://dev.mysql.com/doc/refman/8.4/en/innodb-deadlocks.html)
 
 ## 관련 문서
 

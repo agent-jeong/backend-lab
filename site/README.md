@@ -63,7 +63,7 @@ The build scripts copy only public-safe folders into Quartz's temporary `content
 - `01-core`
 - `02-practical-backend`
 - `03-work-cases`
-- `04-interview-cases`
+- `04-design-cases`
 - `05-ai-workflows`
 - `_assets`
 

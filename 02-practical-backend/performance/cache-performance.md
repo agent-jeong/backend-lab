@@ -73,6 +73,13 @@ stampede 위험이 있는 key는 TTL jitter, mutex/single-flight, stale-while-re
 - cache hit ratio가 높아도 API가 느릴 수 있는 이유는 무엇인가?
 - Redis 장애가 발생하면 API는 어떻게 동작해야 하는가?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Spring Framework: Cache Abstraction](https://docs.spring.io/spring-framework/reference/integration/cache.html)
+- [Redis Docs: Key eviction](https://redis.io/docs/latest/develop/reference/eviction/)
+
 ## 관련 문서
 
 - [[02-practical-backend/performance/performance|performance]]

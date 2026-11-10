@@ -64,6 +64,12 @@ strategy:
 - Rollback이 어려운 배포는 어떤 경우인가?
 - 배포 성공 여부를 어떤 지표로 확인하나?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Kubernetes: Deployments (rolling update, rollback)](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
+
 ## 관련 문서
 
 - [[kubernetes]]

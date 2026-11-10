@@ -129,6 +129,13 @@ class Cart(
   </div>
 </div>
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Kotlin: Data classes](https://kotlinlang.org/docs/data-classes.html)
+- [Kotlin: No-arg compiler plugin (JPA)](https://kotlinlang.org/docs/no-arg-plugin.html)
+
 ## 관련 문서
 
 - [[kotlin]]

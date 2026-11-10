@@ -181,6 +181,12 @@ JVM은 바이트코드를 인터프리터로 실행하다가, 자주 호출되�
   </div>
 </div>
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [JVMS 21: Run-Time Data Areas](https://docs.oracle.com/javase/specs/jvms/se21/html/jvms-2.html#jvms-2.5)
+
 ## 관련 문서
 
 - [[01-core/java/java|java]]

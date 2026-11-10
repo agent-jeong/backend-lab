@@ -96,6 +96,13 @@ Kotlin은 Java를 대체한다기보다, JVM 백엔드에서 Java의 불편한 �
   </div>
 </div>
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Kotlin for server side](https://kotlinlang.org/docs/server-overview.html)
+- [Spring Framework: Kotlin](https://docs.spring.io/spring-framework/reference/languages/kotlin.html)
+
 ## 관련 문서
 
 - [[kotlin]]

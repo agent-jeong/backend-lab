@@ -302,6 +302,13 @@ public record ExternalApiResponse(String userName, String emailAddress) {
   </div>
 </div>
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Spring Boot: JSON](https://docs.spring.io/spring-boot/reference/features/json.html)
+- [Jackson Databind](https://github.com/FasterXML/jackson-databind)
+
 ## 관련 문서
 
 - [[01-core/java/java|java]]

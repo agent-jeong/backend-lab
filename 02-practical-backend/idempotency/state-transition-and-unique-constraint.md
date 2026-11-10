@@ -10,6 +10,9 @@ tags: [concept, idempotency]
 
 멱등성은 애플리케이션 코드만으로 지키기 어렵다. 먼저 조회하고 insert하면 동시에 들어온 요청이 중복 row를 만든다. 이미 결제가 끝난 주문을 다시 완료 처리하면 후속 이벤트와 정산이 중복된다. idempotency key가 있어도 DB에 최종 방어선이 없으면 버그나 우회 경로로 중복이 생긴다.
 
+> [!tip] 함께 읽기
+> - [[unique-constraint-and-state-transition]]: 같은 도구를 동시성 관점(동시 요청 경합)에서 본 글
+
 ## 동작
 
 1. 중복되면 안 되는 business key를 정한다.
@@ -79,6 +82,13 @@ DB 제약은 다중 서버에서도 똑같이 동작한다. 대신 업무별로 
 
 - [[webhook-once-without-loss|웹훅을 잃지 않고 한 번만 처리하기]]: 상태 전이로 한 번만 처리
 - [[point-balance-and-idempotent-batch|포인트 잔액 계산과 멱등 지급 배치]]: UNIQUE로 한 번만 지급
+
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [MySQL 8.4: Locks Set by Different SQL Statements in InnoDB](https://dev.mysql.com/doc/refman/8.4/en/innodb-locks-set.html)
+- [Amazon Builders' Library: Making retries safe with idempotent APIs](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/)
 
 ## 관련 문서
 

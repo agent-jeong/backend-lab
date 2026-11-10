@@ -63,6 +63,13 @@ HTTP Header:
 - 비동기 처리에서 trace id가 끊기는 이유는?
 - request id를 로그에 남길 때 민감정보 측면에서 무엇을 조심하나?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [W3C Trace Context](https://www.w3.org/TR/trace-context/)
+- [Spring Boot: Tracing](https://docs.spring.io/spring-boot/reference/actuator/tracing.html)
+
 ## 관련 문서
 
 - [[observability]]

@@ -10,6 +10,10 @@ tags: [concept, transaction]
 
 프록시 기반이라는 점에서 대부분의 사고가 난다. self-invocation이면 붙였는데도 적용되지 않고, 기본 rollback 규칙을 모르면 checked exception에서 commit되고, 전파 옵션을 잘못 쓰면 의도와 다르게 같은 트랜잭션에 참여하거나 따로 commit된다. 옵션 목록보다 트랜잭션 경계, 예외 전파, 독립 commit 여부를 정확히 아는 게 먼저다.
 
+> [!tip] 함께 읽기
+> - [[transaction-integration]]: 프록시, 전파, 롤백 규칙까지 자세히 다룬 글
+> - [[transactional-pitfalls]]: 적용되지 않을 때의 진단 체크리스트
+
 ## 동작
 
 1. Spring이 `@Transactional`이 붙은 Bean을 프록시로 감싼다.
@@ -90,6 +94,13 @@ checked exception에서도 rollback해야 하면 `rollbackFor = Exception.class`
 ## 내 사례
 
 - [[webhook-once-without-loss|웹훅을 잃지 않고 한 번만 처리하기]]: `REQUIRES_NEW`로 상태 변경만 따로 커밋
+
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Spring Framework: Declarative Transaction Management](https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative.html)
+- [Spring Framework: Transaction Propagation](https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/tx-propagation.html)
 
 ## 관련 문서
 

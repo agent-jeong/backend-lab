@@ -46,6 +46,12 @@ rollback은 배포 도구의 버튼 하나가 아니다. 되돌릴 대상은 코
 - 이전 artifact를 새로 빌드하면 왜 위험한가?
 - rollback 판단 기준은 어떻게 정하나?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Kubernetes: Rolling Back a Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#rolling-back-a-deployment)
+
 ## 관련 문서
 
 - [[ci-cd]]

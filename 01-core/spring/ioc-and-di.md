@@ -209,6 +209,13 @@ public class ServiceB {
   </div>
 </div>
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Spring Framework: The IoC Container](https://docs.spring.io/spring-framework/reference/core/beans.html)
+- [Spring Framework: Dependency Injection](https://docs.spring.io/spring-framework/reference/core/beans/dependencies/factory-collaborators.html)
+
 ## 관련 문서
 
 - [[01-core/spring/spring|spring]]

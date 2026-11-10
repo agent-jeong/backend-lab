@@ -73,6 +73,13 @@ public AuthenticatedUser authenticate(String accessToken) {
 - JWT 로그아웃은 왜 단순하지 않은가?
 - access token과 refresh token의 역할은 어떻게 나누나?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [OWASP: Session Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html)
+- [RFC 7519: JSON Web Token](https://www.rfc-editor.org/rfc/rfc7519)
+
 ## 관련 문서
 
 - [[security]]

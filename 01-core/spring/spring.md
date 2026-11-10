@@ -47,4 +47,4 @@ IoC/DI, 빈 생명주기, AOP와 프록시, MVC 요청 흐름, 트랜잭션을 �
 ## 관련 문서
 
 - [[02-practical-backend/performance/performance|performance]]
-- [[04-interview-cases/interview-questions|technical-questions]]
+- [[04-design-cases/interview-questions|technical-questions]]

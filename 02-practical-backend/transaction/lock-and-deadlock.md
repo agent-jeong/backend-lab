@@ -10,6 +10,10 @@ tags: [concept, transaction]
 
 락 문제는 응답 지연, lock wait timeout, deadlock rollback으로 드러난다. 인기 상품 재고, 쿠폰 발급, 포인트 차감처럼 같은 row에 쓰기가 몰리면 경합이 커지고, 단일 요청 테스트에서는 안 보이다가 운영 트래픽에서 갑자기 나타난다.
 
+> [!tip] 함께 읽기
+> - [[lock]]: DB 락의 종류와 동작
+> - [[pessimistic-lock]]: 행을 먼저 잠그는 방식을 언제 고르나
+
 ## 동작
 
 1. 트랜잭션이 특정 row나 index range를 읽거나 수정한다.
@@ -80,6 +84,13 @@ pessimistic lock은 충돌을 미리 막지만 보유 시간이 길면 처리량
 ## 내 사례
 
 - [[point-balance-and-idempotent-batch|포인트 잔액 계산과 멱등 지급 배치]]: 겹쳐 돈 스케줄러의 데드락
+
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [MySQL 8.4: Deadlocks in InnoDB](https://dev.mysql.com/doc/refman/8.4/en/innodb-deadlocks.html)
+- [MySQL 8.4: Locks Set by Different SQL Statements in InnoDB](https://dev.mysql.com/doc/refman/8.4/en/innodb-locks-set.html)
 
 ## 관련 문서
 

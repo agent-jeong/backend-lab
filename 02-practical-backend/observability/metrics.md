@@ -63,6 +63,13 @@ API 기본 지표:
 - p95/p99 latency를 보는 이유는?
 - metric label cardinality가 높으면 왜 문제인가?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Prometheus: Metric types](https://prometheus.io/docs/concepts/metric_types/)
+- [Micrometer Documentation](https://docs.micrometer.io/micrometer/reference/)
+
 ## 관련 문서
 
 - [[observability]]

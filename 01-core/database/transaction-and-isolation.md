@@ -10,6 +10,9 @@ tags: [concept, database]
 
 격리 수준을 알아야 같은 데이터를 읽었는데 결과가 다른 이유를 설명할 수 있다. 다만 재고가 음수가 되는 문제는 격리 수준을 올려도 대개 안 풀린다. 그건 락이나 원자적 UPDATE로 푼다. MySQL과 PostgreSQL은 기본 격리 수준부터 다르다.
 
+> [!tip] 함께 읽기
+> - [[acid-and-isolation]]: ACID와 격리 수준을 고르는 기준
+
 ## 동시성 문제
 
 | 문제 | 설명 | 예시 |
@@ -100,6 +103,14 @@ public void transferMoney(Long fromId, Long toId, BigDecimal amount) { }
 
 > [!question]- Read Committed와 Repeatable Read의 실무적 차이는?
 > Read Committed는 쿼리마다 최신 커밋된 데이터를 읽고, Repeatable Read는 첫 조회 시점의 스냅샷을 트랜잭션 끝까지 유지합니다. 같은 쿼리를 두 번 실행했을 때 결과가 달라질 수 있느냐가 핵심 차이입니다.
+
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [MySQL 8.4: Transaction Isolation Levels](https://dev.mysql.com/doc/refman/8.4/en/innodb-transaction-isolation-levels.html)
+- [MySQL 8.4: Consistent Nonlocking Reads](https://dev.mysql.com/doc/refman/8.4/en/innodb-consistent-read.html)
+- [PostgreSQL: Transaction Isolation](https://www.postgresql.org/docs/current/transaction-iso.html)
 
 ## 관련 문서
 

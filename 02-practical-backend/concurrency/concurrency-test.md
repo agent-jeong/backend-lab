@@ -94,6 +94,13 @@ void 동시에_재고를_차감해도_초과_판매되지_않는다() throws Exc
 - 테스트 트랜잭션이 동시성 테스트를 방해할 수 있는 이유는 무엇인가?
 - in-memory DB 동시성 테스트의 한계는 무엇인가?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Java SE 21 API: CountDownLatch](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/CountDownLatch.html)
+- [Testcontainers for Java](https://java.testcontainers.org/)
+
 ## 관련 문서
 
 - [[02-practical-backend/concurrency/concurrency|concurrency]]

@@ -14,7 +14,7 @@ PUBLIC_PATHS=(
   "01-core"
   "02-practical-backend"
   "03-work-cases"
-  "04-interview-cases"
+  "04-design-cases"
   "05-ai-workflows"
   "_assets"
 )

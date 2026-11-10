@@ -181,6 +181,14 @@ spring:
   </div>
 </div>
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [JDK Release Notes (OpenJDK projects)](https://openjdk.org/projects/jdk/)
+- [JEP 444: Virtual Threads](https://openjdk.org/jeps/444)
+- [JEP 491: Synchronize Virtual Threads without Pinning](https://openjdk.org/jeps/491)
+
 ## 관련 문서
 
 - [[01-core/java/java|java]]

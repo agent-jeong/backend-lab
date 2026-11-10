@@ -139,6 +139,13 @@ JPA는 단순 CRUD와 객체 그래프 탐색에 강하다. 그 밖에서는 다
   </div>
 </div>
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Jakarta Persistence 3.1](https://jakarta.ee/specifications/persistence/3.1/)
+- [Spring Data JPA Reference](https://docs.spring.io/spring-data/jpa/reference/)
+
 ## 관련 문서
 
 - [[01-core/jpa/jpa|jpa]]

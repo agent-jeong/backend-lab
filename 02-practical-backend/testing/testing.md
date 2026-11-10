@@ -42,4 +42,4 @@ comments: false
 - [[02-practical-backend/concurrency/concurrency-test|concurrency-test]]
 - [[02-practical-backend/transaction/spring-transaction|spring-transaction]]
 - [[03-work-cases/work-cases|work-cases]]
-- [[04-interview-cases/interview-questions|technical-questions]]
+- [[04-design-cases/interview-questions|technical-questions]]

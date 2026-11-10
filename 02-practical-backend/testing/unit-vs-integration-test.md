@@ -45,6 +45,13 @@ Unit Test는 작은 단위의 로직을 빠르게 검증한다. Integration Test
 - 어떤 로직은 단위 테스트로 충분하고 어떤 로직은 통합 테스트가 필요한가?
 - `@SpringBootTest`를 남용하면 어떤 문제가 생기나?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Martin Fowler: The Practical Test Pyramid](https://martinfowler.com/articles/practical-test-pyramid.html)
+- [Spring Framework: Testing](https://docs.spring.io/spring-framework/reference/testing.html)
+
 ## 관련 문서
 
 - [[testing]]

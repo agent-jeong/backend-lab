@@ -10,6 +10,9 @@ tags: [concept, concurrency]
 
 서버가 여러 대면 `synchronized`나 in-memory lock은 각 서버 안에서만 동작한다. 스케줄러, 쿠폰 발급, 재고 예약, 배치처럼 한 번만 돌아야 하는 작업에 분산 락을 쓴다. 다만 락을 얻었다고 DB 정합성까지 보장되지는 않는다. 분산 락은 동시 실행을 줄이는 장치이지 최종 방어선이 아니다.
 
+> [!tip] 함께 읽기
+> - [[redis-distributed-lock]]: Redis로 구현할 때의 동작과 실패 모드
+
 ## 동작
 
 1. Redis 같은 외부 저장소에 lock key를 원자적으로 만든다.
@@ -77,6 +80,13 @@ try {
 
 - [[irreversible-approval-once|되돌릴 수 없는 승인을 한 번만 보내기]]: `GET_LOCK`과 ShedLock 비교
 - [[point-balance-and-idempotent-batch|포인트 잔액 계산과 멱등 지급 배치]]: 분산 락의 틈
+
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Redis Docs: Distributed Locks with Redis](https://redis.io/docs/latest/develop/clients/patterns/distributed-locks/)
+- [Martin Kleppmann: How to do distributed locking](https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html)
 
 ## 관련 문서
 

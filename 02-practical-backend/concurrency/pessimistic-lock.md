@@ -10,6 +10,10 @@ tags: [concept, concurrency]
 
 재고, 쿠폰, 포인트처럼 같은 row에 쓰기가 몰리는 곳에서 충돌을 미리 막는다. 대가는 lock wait, timeout, deadlock이다. 그래서 락을 잡은 시간을 짧게 유지하는 것이 설계의 대부분이다.
 
+> [!tip] 함께 읽기
+> - [[lock]]: DB 락의 종류와 동작
+> - [[optimistic-lock]]: 충돌을 저장 시점에 감지하는 반대 선택
+
 ## 동작
 
 1. 트랜잭션이 `select ... for update` 또는 JPA lock mode로 row lock을 얻는다.
@@ -71,6 +75,13 @@ public void decreaseStock(Long productId, int quantity) {
 - 비관적 락은 언제 낙관적 락보다 적합한가?
 - 비관적 락을 사용할 때 데드락을 줄이는 방법은 무엇인가?
 - `select for update`를 쓸 때 인덱스가 중요한 이유는 무엇인가?
+
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Hibernate ORM 6.6 User Guide: Locking](https://docs.hibernate.org/orm/6.6/userguide/html_single/Hibernate_User_Guide.html#locking)
+- [MySQL 8.4: Locking Reads](https://dev.mysql.com/doc/refman/8.4/en/innodb-locking-reads.html)
 
 ## 관련 문서
 

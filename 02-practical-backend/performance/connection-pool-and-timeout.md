@@ -74,6 +74,13 @@ API timeout budget: 1s
 - connect timeout과 read timeout은 어떻게 다른가?
 - pool 크기를 늘리는 것이 항상 해결책이 아닌 이유는 무엇인가?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [HikariCP: About Pool Sizing](https://github.com/brettwooldridge/HikariCP/wiki/About-Pool-Sizing)
+- [Amazon Builders' Library: Timeouts, retries, and backoff with jitter](https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/)
+
 ## 관련 문서
 
 - [[02-practical-backend/performance/performance|performance]]

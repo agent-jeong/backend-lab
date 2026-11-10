@@ -76,6 +76,13 @@ DB 변경만 `createOrder` 트랜잭션 안에 두고 결제 요청은 바깥에
 - [[irreversible-approval-once|되돌릴 수 없는 승인을 한 번만 보내기]]: 전송 기록 선커밋 후 외부 호출
 - [[webhook-once-without-loss|웹훅을 잃지 않고 한 번만 처리하기]]: 저장·응답·발급을 나눈 경계
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Spring Framework: Declarative Transaction Management](https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative.html)
+- [Spring Framework: Transaction-bound Events](https://docs.spring.io/spring-framework/reference/data-access/transaction/event.html)
+
 ## 관련 문서
 
 - [[02-practical-backend/transaction/transaction|transaction]]

@@ -64,4 +64,4 @@ comments: false
 - [[02-practical-backend/concurrency/concurrency|concurrency]]
 - [[01-core/spring/spring|spring]]
 - [[01-core/jpa/jpa|jpa]]
-- [[04-interview-cases/interview-questions|technical-questions]]
+- [[04-design-cases/interview-questions|technical-questions]]

@@ -10,6 +10,9 @@ Redis 분산 락은 Redis key 하나를 원자적으로 선점해서, 여러 서
 
 다만 분산 락은 동시 실행을 **줄이는** 도구이지, DB 정합성을 대신하지 않는다. 중복되면 안 되는 작업은 결국 DB에서 막는다.
 
+> [!tip] 함께 읽기
+> - [[distributed-lock]]: 분산 락이 필요한지부터 판단하는 기준
+
 ## 동작
 
 1. 작업 시작 전 `SET key value NX PX milliseconds`로 lock key를 저장한다.
@@ -74,6 +77,12 @@ Redis 분산 락은 Redis key 하나를 원자적으로 선점해서, 여러 서
 ## 내 사례
 
 - [[point-balance-and-idempotent-batch|포인트 잔액 계산과 멱등 지급 배치]]: Redisson 락 안에 넣은 잔액 검사와 남은 틈
+
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Redis Docs: Distributed Locks with Redis](https://redis.io/docs/latest/develop/clients/patterns/distributed-locks/)
 
 ## 관련 문서
 

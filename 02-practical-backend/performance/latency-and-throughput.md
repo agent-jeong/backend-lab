@@ -73,6 +73,12 @@ batch, API, 스트리밍 작업은 성능 목표가 서로 다르다. latency는
 
 - [[file-storage-migration|첨부파일 18만 건 이관]]: 작은 파일은 대역폭보다 왕복 지연이 병목
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Google SRE Book: Monitoring Distributed Systems (four golden signals)](https://sre.google/sre-book/monitoring-distributed-systems/)
+
 ## 관련 문서
 
 - [[02-practical-backend/performance/performance|performance]]

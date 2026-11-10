@@ -38,4 +38,4 @@ comments: false
 - [[02-practical-backend/kubernetes/rolling-update-and-rollback|rolling-update-and-rollback]]
 - [[02-practical-backend/kubernetes/configmap-and-secret|configmap-and-secret]]
 - [[03-work-cases/work-cases|work-cases]]
-- [[04-interview-cases/interview-questions|technical-questions]]
+- [[04-design-cases/interview-questions|technical-questions]]

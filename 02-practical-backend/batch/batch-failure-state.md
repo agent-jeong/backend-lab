@@ -50,6 +50,13 @@ tags: [concept, batch]
 
 - [[inherited-access-system-incidents|이어받은 출입 시스템의 장애 추적]]: 한 건 오류가 배치 전체를 멈춘 사례
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Spring Batch: Configuring a Job (restartability)](https://docs.spring.io/spring-batch/reference/job/configuring-job.html)
+- [Spring Batch: The Domain Language of Batch](https://docs.spring.io/spring-batch/reference/domain.html)
+
 ## 관련 문서
 
 - [[batch-processing]]

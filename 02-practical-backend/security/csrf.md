@@ -68,6 +68,13 @@ Authorization header 기반 API는 CSRF 위험이 상대적으로 낮다. 대신
 - 쿠키 기반 인증에서 CSRF를 어떻게 막나?
 - GET 요청으로 상태를 바꾸면 왜 위험한가?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [OWASP: CSRF Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html)
+- [Spring Security: CSRF](https://docs.spring.io/spring-security/reference/servlet/exploits/csrf.html)
+
 ## 관련 문서
 
 - [[security]]

@@ -72,6 +72,13 @@ int increaseIssuedCount(Long couponId);
 
 - [[point-balance-and-idempotent-batch|포인트 잔액 계산과 멱등 지급 배치]]: 잔액 검사와 사용 사이의 틈
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Java SE 21 API: java.util.concurrent.atomic](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/atomic/package-summary.html)
+- [MySQL 8.4: Locks Set by Different SQL Statements in InnoDB](https://dev.mysql.com/doc/refman/8.4/en/innodb-locks-set.html)
+
 ## 관련 문서
 
 - [[02-practical-backend/concurrency/concurrency|concurrency]]

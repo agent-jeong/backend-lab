@@ -50,4 +50,4 @@ comments: false
 - [[01-core/os/os|os]]
 - [[02-practical-backend/observability/observability|observability]]
 - [[03-work-cases/work-cases|work-cases]]
-- [[04-interview-cases/interview-questions|technical-questions]]
+- [[04-design-cases/interview-questions|technical-questions]]

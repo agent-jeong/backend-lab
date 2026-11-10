@@ -72,6 +72,12 @@ public String maskHeader(String name, String value) {
 - Authorization header를 로그에 남기면 어떤 위험이 생기나?
 - request body 로깅을 해야 한다면 어떤 기준으로 제한하나?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [OWASP: Logging Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html)
+
 ## 관련 문서
 
 - [[security]]

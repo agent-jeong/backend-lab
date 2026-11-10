@@ -166,6 +166,13 @@ Entity를 `data class`로 만드는 문제는 플러그인으로 해결되지 �
   </div>
 </div>
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Kotlin: Calling Java from Kotlin](https://kotlinlang.org/docs/java-interop.html)
+- [Kotlin: All-open compiler plugin](https://kotlinlang.org/docs/all-open-plugin.html)
+
 ## 관련 문서
 
 - [[kotlin]]

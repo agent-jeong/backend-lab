@@ -48,6 +48,12 @@ Controller는 HTTP 경계, Service는 유스케이스와 트랜잭션 경계, Re
 - Service와 Domain의 책임은 어떻게 나누나?
 - Repository가 업무 규칙을 알면 어떤 문제가 생기나?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Martin Fowler: Service Layer](https://martinfowler.com/eaaCatalog/serviceLayer.html)
+
 ## 관련 문서
 
 - [[architecture]]

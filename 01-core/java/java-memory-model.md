@@ -151,6 +151,12 @@ happens-before는 한 작업의 결과가 다른 작업에 보이도록 보장�
   </div>
 </div>
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [JLS 21: Threads and Locks (Memory Model)](https://docs.oracle.com/javase/specs/jls/se21/html/jls-17.html)
+
 ## 관련 문서
 
 - [[java]]

@@ -290,6 +290,13 @@ public class AuthInterceptor implements HandlerInterceptor {
 - [[webhook-once-without-loss|웹훅을 잃지 않고 한 번만 처리하기]]: 커밋 후 전용 스레드풀에서 발급
 - [[inherited-access-system-incidents|이어받은 출입 시스템의 장애 추적]]: `parallelStream` 안에서 풀린 트랜잭션
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Spring Framework: Task Execution and Scheduling](https://docs.spring.io/spring-framework/reference/integration/scheduling.html)
+- [Spring Framework: Transaction-bound Events](https://docs.spring.io/spring-framework/reference/data-access/transaction/event.html)
+
 ## 관련 문서
 
 - [[01-core/spring/spring|spring]]

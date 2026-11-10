@@ -44,6 +44,13 @@ DB dialect, migration, lock, transaction 검증에 특히 쓸모 있다. 모든 
 - Testcontainers는 어떤 테스트에 맞나?
 - CI에서 Testcontainers를 쓸 때 무엇을 확인하나?
 
+## 참고
+
+공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+
+- [Testcontainers for Java](https://java.testcontainers.org/)
+- [Spring Boot: Testcontainers](https://docs.spring.io/spring-boot/reference/testing/testcontainers.html)
+
 ## 관련 문서
 
 - [[testing]]
