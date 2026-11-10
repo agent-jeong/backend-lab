@@ -1,6 +1,7 @@
 ---
 title: "@Transactional 동작 원리와 롤백"
 description: Spring의 트랜잭션 관리와 @Transactional 동작 원리
+tags: [concept, spring]
 ---
 
 # @Transactional 동작 원리와 롤백

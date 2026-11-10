@@ -1,6 +1,7 @@
 ---
 title: Config와 Secret 관리
 description: 배포 환경별 설정과 민감 정보를 안전하게 분리하는 기준
+tags: [concept, ci-cd]
 ---
 
 # Config와 Secret 관리

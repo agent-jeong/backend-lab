@@ -1,15 +1,15 @@
 ---
 title: Kotlin
 description: Kotlin 백엔드 실무 필수 개념 학습 인덱스
+tags: [kotlin]
 comments: false
 ---
 
 # Kotlin
 
-> 학습 인덱스다. 상세 내용은 `01-core/kotlin/` 아래 개념 문서에 둔다.
-> 문법 나열은 하지 않는다. Java, Spring, JPA와 맞닿는 주제만 고르고, 각 문서는 "Java 대비 무엇이 줄어드는가 → Spring/JPA/Jackson에서 무엇이 깨지는가" 순으로 쓴다.
+Kotlin을 Spring·JPA 백엔드에서 쓸 때 맞닿는 주제만 다룬다. Java보다 무엇이 줄고, Spring·JPA·Jackson 경계에서 무엇이 깨지는지가 중심이다.
 
-## 학습 순서
+## 읽는 순서
 
 1. [[kotlin-why-backend|Kotlin을 백엔드에서 사용하는 이유]]
 2. [[kotlin-null-safety|Null Safety]]

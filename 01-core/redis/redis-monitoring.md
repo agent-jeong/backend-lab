@@ -1,6 +1,7 @@
 ---
 title: Redis 운영 모니터링
 description: Redis 장애 징후를 보기 위한 latency, memory, command, connection 지표
+tags: [concept, redis]
 ---
 
 # Redis 운영 모니터링

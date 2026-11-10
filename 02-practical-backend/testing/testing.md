@@ -1,15 +1,15 @@
 ---
 title: 테스트
 description: 변경 위험을 줄이는 테스트 전략 학습 인덱스
+tags: [testing]
 comments: false
 ---
 
 # 테스트
 
-> 학습 인덱스다. 상세 내용은 `02-practical-backend/testing/` 아래 개념 문서에 둔다.
-> 개념 문서는 테스트 목적, 범위, 격리, 유지보수 비용을 다루고, 증상·원인·확인 방법 → 해결책의 장점과 한계 → 꼬리 질문 순으로 쓴다. 아직 학습하지 않은 내용은 미리 채우지 않는다.
+단위·통합 테스트, Mock·Stub·Fake, 픽스처, Testcontainers, 트랜잭션 테스트를 다룬다. 어떤 위험을 어떤 테스트로 막을지가 중심이다.
 
-## 학습 순서
+## 읽는 순서
 
 1. 테스트가 필요한 이유
 2. [[unit-vs-integration-test|Unit Test와 Integration Test]]

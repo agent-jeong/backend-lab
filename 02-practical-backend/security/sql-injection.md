@@ -1,6 +1,7 @@
 ---
 title: SQL Injection
 description: 사용자 입력이 SQL 구조를 바꾸는 취약점과 방어 기준
+tags: [concept, security]
 ---
 
 # SQL Injection

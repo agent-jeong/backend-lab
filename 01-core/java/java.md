@@ -1,14 +1,15 @@
 ---
 title: Java
 description: Java Core 학습 인덱스
+tags: [java]
 comments: false
 ---
 
 # Java
 
-Java Core 학습 인덱스다. 상세 내용은 `01-core/java/` 아래 개념 문서에 있다. 각 문서는 동작 원리와 실무에서 깨지는 곳을 중심으로 쓰고, 아직 공부하지 않은 내용은 미리 채우지 않는다.
+타입과 컬렉션, JVM 메모리와 GC, 동시성 기초를 다룬다. 문법보다 어떤 선택이 어떤 버그와 성능 문제로 이어지는지가 중심이다.
 
-## 학습 순서
+## 읽는 순서
 
 1. Java 언어 기본기
    - [[primitive-and-reference-types]]

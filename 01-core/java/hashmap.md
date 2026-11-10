@@ -1,6 +1,7 @@
 ---
 title: HashMap 내부 동작과 충돌 처리
 description: Java HashMap의 동작 원리와 실무 사용 기준
+tags: [concept, java]
 ---
 
 # HashMap 내부 동작과 충돌 처리

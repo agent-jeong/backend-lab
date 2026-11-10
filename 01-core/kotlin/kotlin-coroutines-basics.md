@@ -1,6 +1,7 @@
 ---
 title: Kotlin Coroutine 기본
 description: Kotlin coroutine의 기본 개념과 Spring 백엔드에서의 실무 주의점
+tags: [concept, kotlin]
 ---
 
 # Kotlin Coroutine 기본

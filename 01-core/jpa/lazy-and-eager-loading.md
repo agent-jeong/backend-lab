@@ -1,6 +1,7 @@
 ---
 title: "지연 로딩과 즉시 로딩의 차이"
 description: JPA 지연 로딩과 즉시 로딩의 실무 선택 기준
+tags: [concept, jpa]
 ---
 
 # 지연 로딩과 즉시 로딩의 차이

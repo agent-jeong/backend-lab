@@ -3,6 +3,7 @@ import * as ExternalPlugin from "./.quartz/plugins"
 import { FileTrieNode } from "./quartz/util/fileTrie"
 
 ExternalPlugin.Explorer({
+  title: "글 목록",
   filterFn: (node: FileTrieNode) => {
     const hidden = new Set(["tags"])
     const segment = node.slugSegment ?? ""
@@ -176,6 +177,13 @@ ExternalPlugin.Explorer({
     const aParts = a.slug.split("/")
     const bParts = b.slug.split("/")
     const parentFolder = a.isFolder ? (aParts.at(-3) ?? "") : (aParts.at(-2) ?? "")
+
+    // 폴더 안내 글(폴더와 같은 이름의 글, 예: transaction/transaction)은 맨 위에 둔다.
+    // 이 함수는 브라우저로 직렬화되므로 안에서 보조 함수를 선언하지 않는다.
+    const hubNames = ["batch-processing", "work-cases", "design-cases"]
+    const aHub = !a.isFolder && (aParts.at(-1) === aParts.at(-2) || hubNames.includes(aParts.at(-1) ?? ""))
+    const bHub = !b.isFolder && (bParts.at(-1) === bParts.at(-2) || hubNames.includes(bParts.at(-1) ?? ""))
+    if (aHub !== bHub) return aHub ? -1 : 1
     const order = orderMap[parentFolder]
 
     if (order) {
@@ -195,7 +203,7 @@ ExternalPlugin.Explorer({
   },
   mapFn: (node: FileTrieNode) => {
     const labels: Record<string, string> = {
-      "00-home": "00 홈",
+      "00-home": "00 소개",
       "01-core": "01 기본기",
       "02-practical-backend": "02 실무 백엔드",
       "03-work-cases": "03 내 실무 사례",

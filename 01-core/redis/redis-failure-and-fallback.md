@@ -1,6 +1,7 @@
 ---
 title: Redis 장애 대응과 fallback
 description: Redis 장애가 서비스 장애로 전파되지 않게 설계하는 기준
+tags: [concept, redis]
 ---
 
 # Redis 장애 대응과 fallback

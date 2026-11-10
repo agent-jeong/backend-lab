@@ -1,15 +1,15 @@
 ---
 title: 동시성
 description: 동시성 문제와 경쟁 조건 해결 학습 인덱스
+tags: [concurrency]
 comments: false
 ---
 
 # 동시성
 
-> 학습 인덱스다. 상세 내용은 `02-practical-backend/concurrency/` 아래 개념 문서에 둔다.
-> 개념 문서는 race condition, lock, 트랜잭션, 멱등성을 다루고, 증상·원인·확인 방법 → 해결책의 장점과 한계 → 꼬리 질문 순으로 쓴다. 아직 학습하지 않은 내용은 미리 채우지 않는다.
+경쟁 조건, 낙관적·비관적 락, 분산 락, UNIQUE 제약과 상태 전이, 동시성 테스트를 다룬다. 같은 요청이 동시에 들어올 때 무엇이 깨지는지가 중심이다.
 
-## 학습 순서
+## 읽는 순서
 
 1. [[why-concurrency-problem|동시성 문제가 생기는 이유]]
 2. [[race-condition-and-critical-section|Race Condition과 Critical Section]]

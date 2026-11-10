@@ -1,6 +1,7 @@
 ---
 title: 락과 데드락
 description: 트랜잭션에서 발생하는 락 경합과 데드락 대응 기준
+tags: [concept, transaction]
 ---
 
 # 락과 데드락

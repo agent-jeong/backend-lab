@@ -1,6 +1,7 @@
 ---
 title: 보상 트랜잭션과 Outbox
 description: 분산 환경에서 최종 정합성을 맞추는 보상 처리와 outbox 패턴
+tags: [concept, transaction]
 ---
 
 # 보상 트랜잭션과 Outbox

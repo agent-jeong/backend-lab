@@ -1,6 +1,7 @@
 ---
 title: Resource Request와 Limit
 description: Kubernetes에서 CPU와 메모리 자원 예약과 제한을 설정하는 기준
+tags: [concept, kubernetes]
 ---
 
 # Resource Request와 Limit

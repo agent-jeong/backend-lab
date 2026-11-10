@@ -1,6 +1,7 @@
 ---
 title: 제네릭과 타입 소거
 description: Java 제네릭과 타입 소거의 실무 사용 기준과 한계
+tags: [concept, java]
 ---
 
 # 제네릭과 타입 소거

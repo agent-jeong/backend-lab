@@ -1,6 +1,7 @@
 ---
 title: 좋아요 수를 빠르고 틀리지 않게 세기
 description: 한 사람 한 번, 목록에서 빠른 조회, 인기 글에 몰리는 쓰기를 함께 만족시키는 좋아요 수 설계 문제
+tags: [interview, concurrency, redis, database]
 comments: true
 ---
 

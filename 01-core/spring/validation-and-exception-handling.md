@@ -1,6 +1,7 @@
 ---
 title: 요청 검증과 예외 처리
 description: Spring의 입력 검증과 예외 처리 전략
+tags: [concept, spring]
 ---
 
 # 요청 검증과 예외 처리

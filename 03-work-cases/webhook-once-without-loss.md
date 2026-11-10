@@ -1,6 +1,7 @@
 ---
 title: 60초 안에 답해야 하는 웹훅을 잃지 않고 한 번만 처리하기
 description: 외부 플랫폼 웹훅을 받아 디지털 사원증을 발급한 사례. 저장 후 응답, 커밋 후 비동기, 조건부 UPDATE로 중복 차단
+tags: [work-case, idempotency, transaction, spring, concurrency]
 comments: true
 ---
 

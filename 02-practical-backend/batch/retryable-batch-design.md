@@ -1,6 +1,7 @@
 ---
 title: 재처리 설계
 description: 실패한 배치를 안전하게 다시 실행하기 위한 상태와 멱등성 기준
+tags: [concept, batch]
 ---
 
 # 재처리 설계

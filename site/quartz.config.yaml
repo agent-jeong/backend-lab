@@ -160,6 +160,8 @@ plugins:
       group: toolbar
   - source: github:quartz-community/breadcrumbs
     enabled: true
+    options:
+      rootName: 홈
     layout:
       position: beforeBody
       priority: 5
@@ -182,11 +184,9 @@ plugins:
     options:
       includeAll: false
       includedProperties:
-        - description
         - tags
-        - aliases
       excludedProperties: []
-      hidePropertiesView: true
+      hidePropertiesView: false
       delimiters: ---
       language: yaml
     order: 5

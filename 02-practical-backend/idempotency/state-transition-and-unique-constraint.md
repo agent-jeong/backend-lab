@@ -1,6 +1,7 @@
 ---
 title: 상태 전이와 Unique 제약
 description: 멱등성을 DB 제약과 상태 변경 조건으로 보강하는 방법
+tags: [concept, idempotency]
 ---
 
 # 상태 전이와 Unique 제약

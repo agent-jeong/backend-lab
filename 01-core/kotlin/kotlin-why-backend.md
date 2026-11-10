@@ -1,6 +1,7 @@
 ---
 title: Kotlin을 백엔드에서 사용하는 이유
 description: Kotlin이 Java 백엔드의 어떤 실무 문제를 줄이는지 정리
+tags: [concept, kotlin]
 ---
 
 # Kotlin을 백엔드에서 사용하는 이유

@@ -1,15 +1,15 @@
 ---
 title: 트랜잭션
 description: 데이터 정합성과 트랜잭션 경계 학습 인덱스
+tags: [transaction]
 comments: false
 ---
 
 # 트랜잭션
 
-> 학습 인덱스다. 상세 내용은 `02-practical-backend/transaction/` 아래 개념 문서에 둔다.
-> 개념 문서는 정합성, 격리 수준, 락, 실패 복구를 다루고, 증상·원인·확인 방법 → 해결책의 장점과 한계 → 꼬리 질문 순으로 쓴다. 아직 학습하지 않은 내용은 미리 채우지 않는다.
+ACID와 격리 수준, 트랜잭션 경계, Spring 트랜잭션, 락과 데드락, 외부 API, 보상과 Outbox를 다룬다. 정합성과 락 경합 사이에서 경계를 어디에 둘지가 중심이다.
 
-## 학습 순서
+## 읽는 순서
 
 1. [[why-transaction|트랜잭션이 필요한 이유]]
 2. [[acid-and-isolation|ACID와 격리 수준]]

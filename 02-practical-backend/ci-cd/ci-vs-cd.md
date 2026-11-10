@@ -1,6 +1,7 @@
 ---
 title: CI와 CD
 description: 코드 통합 검증과 배포 자동화의 차이
+tags: [concept, ci-cd]
 ---
 
 # CI와 CD

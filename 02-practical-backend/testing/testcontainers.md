@@ -1,6 +1,7 @@
 ---
 title: Testcontainers
 description: 실제 인프라에 가까운 통합 테스트 환경을 코드로 구성하는 기준
+tags: [concept, testing]
 ---
 
 # Testcontainers

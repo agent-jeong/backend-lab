@@ -1,6 +1,7 @@
 ---
 title: Kotlin Data Class와 불변성
 description: Kotlin data class, val, copy, 불변 컬렉션의 실무 사용 기준
+tags: [concept, kotlin]
 ---
 
 # Kotlin Data Class와 불변성

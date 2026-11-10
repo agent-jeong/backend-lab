@@ -1,6 +1,7 @@
 ---
 title: CORS
 description: CORS 동작 원리와 Preflight, Spring에서의 설정 방법
+tags: [concept, network]
 ---
 
 # CORS

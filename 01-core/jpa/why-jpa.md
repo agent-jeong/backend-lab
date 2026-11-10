@@ -1,6 +1,7 @@
 ---
 title: "JPA를 사용하는 이유"
 description: JPA를 사용하는 이유와 JDBC 대비 실무 이점
+tags: [concept, jpa]
 ---
 
 # JPA를 사용하는 이유

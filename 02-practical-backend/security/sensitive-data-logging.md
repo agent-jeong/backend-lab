@@ -1,6 +1,7 @@
 ---
 title: 민감 정보 로깅 방지
 description: 로그, 이벤트, 에러 응답에서 민감 정보 노출을 줄이는 기준
+tags: [concept, security]
 ---
 
 # 민감 정보 로깅 방지

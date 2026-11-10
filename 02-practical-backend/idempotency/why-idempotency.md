@@ -1,6 +1,7 @@
 ---
 title: 멱등성이 필요한 이유
 description: 같은 요청이 여러 번 처리되어도 업무 결과가 깨지지 않게 만드는 기준
+tags: [concept, idempotency]
 ---
 
 # 멱등성이 필요한 이유

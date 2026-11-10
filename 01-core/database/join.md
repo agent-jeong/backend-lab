@@ -1,6 +1,7 @@
 ---
 title: "JOIN의 종류와 동작 원리"
 description: SQL JOIN의 종류와 동작 방식별 성능 차이
+tags: [concept, database]
 ---
 
 # JOIN의 종류와 동작 원리

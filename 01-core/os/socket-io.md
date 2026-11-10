@@ -1,6 +1,7 @@
 ---
 title: 소켓 I/O
 description: 네트워크 소켓, connection backlog, socket buffer와 서버 지연
+tags: [concept, os]
 ---
 
 # 소켓 I/O

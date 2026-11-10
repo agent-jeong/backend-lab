@@ -1,6 +1,7 @@
 ---
 title: "트랜잭션 격리 수준과 동시성 문제"
 description: DB 트랜잭션 격리 수준과 동시성 문제
+tags: [concept, database]
 ---
 
 # 트랜잭션 격리 수준과 동시성 문제

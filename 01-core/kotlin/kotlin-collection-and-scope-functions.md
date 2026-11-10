@@ -1,6 +1,7 @@
 ---
 title: Kotlin Collection과 Scope Functions
 description: Kotlin 컬렉션 처리와 scope function의 실무 사용 기준
+tags: [concept, kotlin]
 ---
 
 # Kotlin Collection과 Scope Functions

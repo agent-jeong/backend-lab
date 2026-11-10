@@ -1,6 +1,7 @@
 ---
 title: Deployment, Service, Ingress
 description: Kubernetes에서 백엔드 애플리케이션을 배포하고 외부 트래픽을 전달하는 기본 경로
+tags: [concept, kubernetes]
 ---
 
 # Deployment, Service, Ingress

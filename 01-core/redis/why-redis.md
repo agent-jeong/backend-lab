@@ -1,6 +1,7 @@
 ---
 title: Redis를 사용하는 이유
 description: Redis를 실무에서 사용하는 이유와 주의점
+tags: [concept, redis]
 ---
 
 # Redis를 사용하는 이유

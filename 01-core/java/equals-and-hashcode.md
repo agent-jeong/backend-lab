@@ -1,6 +1,7 @@
 ---
 title: equals와 hashCode
 description: Java equals와 hashCode의 실무 동등성 기준
+tags: [concept, java]
 ---
 
 # equals와 hashCode를 함께 재정의하는 이유

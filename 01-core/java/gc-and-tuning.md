@@ -1,6 +1,7 @@
 ---
 title: GC 동작 원리와 튜닝
 description: Java GC 동작 원리와 실무 튜닝 관점
+tags: [concept, java]
 ---
 
 # GC 동작 원리와 튜닝

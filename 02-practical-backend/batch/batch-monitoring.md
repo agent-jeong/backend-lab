@@ -1,6 +1,7 @@
 ---
 title: 배치 모니터링
 description: 배치 성공 여부와 데이터 처리 결과를 관측하는 기준
+tags: [concept, batch]
 ---
 
 # 배치 모니터링

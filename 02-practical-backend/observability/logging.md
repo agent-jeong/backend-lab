@@ -1,6 +1,7 @@
 ---
 title: 로깅
 description: 장애 분석에 도움이 되는 로그의 기준과 실무 주의점
+tags: [concept, observability]
 ---
 
 # 로깅

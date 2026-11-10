@@ -1,6 +1,7 @@
 ---
 title: Spring MVC 요청 처리 흐름
 description: Spring MVC의 요청 처리 흐름과 각 컴포넌트의 역할
+tags: [concept, spring]
 ---
 
 # Spring MVC 요청 처리 흐름

@@ -1,6 +1,7 @@
 ---
 title: 메시지 소비 멱등성
 description: 중복 전달될 수 있는 메시지를 안전하게 처리하는 소비자 설계
+tags: [concept, idempotency]
 ---
 
 # 메시지 소비 멱등성

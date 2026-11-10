@@ -1,6 +1,7 @@
 ---
 title: "HTTP 기초와 요청/응답 구조"
 description: HTTP 요청/응답 구조와 메서드, 헤더, 버전별 차이
+tags: [concept, network]
 ---
 
 # HTTP 기초와 요청/응답 구조

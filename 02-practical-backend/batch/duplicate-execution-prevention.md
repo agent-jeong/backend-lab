@@ -1,6 +1,7 @@
 ---
 title: 중복 실행 방지
 description: 같은 배치가 동시에 실행되어 데이터가 중복 처리되는 것을 막는 기준
+tags: [concept, batch]
 ---
 
 # 중복 실행 방지

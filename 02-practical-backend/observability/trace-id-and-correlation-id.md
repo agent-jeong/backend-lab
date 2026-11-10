@@ -1,6 +1,7 @@
 ---
 title: traceId와 correlationId
 description: 요청 흐름을 로그, 트레이스, 메시지 처리까지 연결하는 식별자 설계
+tags: [concept, observability]
 ---
 
 # traceId와 correlationId

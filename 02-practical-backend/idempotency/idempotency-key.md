@@ -1,6 +1,7 @@
 ---
 title: 멱등키
 description: 같은 의도의 요청을 식별해 중복 처리를 막는 키 설계
+tags: [concept, idempotency]
 ---
 
 # 멱등키

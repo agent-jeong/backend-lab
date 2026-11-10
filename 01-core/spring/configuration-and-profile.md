@@ -1,6 +1,7 @@
 ---
 title: 설정 관리와 Profile 분리
 description: Spring의 설정 관리와 Profile 기반 환경 분리
+tags: [concept, spring]
 ---
 
 # 설정 관리와 Profile 분리

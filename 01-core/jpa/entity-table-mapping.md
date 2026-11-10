@@ -1,6 +1,7 @@
 ---
 title: "엔티티-테이블 매핑 기본"
 description: JPA Entity와 테이블 매핑의 실무 규칙과 주의점
+tags: [concept, jpa]
 ---
 
 # 엔티티-테이블 매핑 기본

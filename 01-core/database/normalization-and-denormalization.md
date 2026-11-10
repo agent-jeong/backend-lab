@@ -1,6 +1,7 @@
 ---
 title: "정규화와 반정규화 판단 기준"
 description: 정규화와 반정규화의 정의, 판단 기준, 실무 트레이드오프
+tags: [concept, database]
 ---
 
 # 정규화와 반정규화 판단 기준

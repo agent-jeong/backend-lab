@@ -1,6 +1,7 @@
 ---
 title: Redis 자료구조
 description: Redis 자료구조별 실무 사용처와 주의점
+tags: [concept, redis]
 ---
 
 # Redis 자료구조

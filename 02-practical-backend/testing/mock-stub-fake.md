@@ -1,6 +1,7 @@
 ---
 title: Mock, Stub, Fake
 description: 테스트 대역을 목적에 맞게 선택하는 기준
+tags: [concept, testing]
 ---
 
 # Mock, Stub, Fake

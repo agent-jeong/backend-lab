@@ -1,6 +1,7 @@
 ---
 title: "트랜잭션과 flush 시점"
 description: JPA 트랜잭션 경계와 flush 동작의 실무 이해
+tags: [concept, jpa]
 ---
 
 # 트랜잭션과 flush 시점

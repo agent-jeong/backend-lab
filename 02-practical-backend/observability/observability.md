@@ -1,15 +1,15 @@
 ---
 title: 관측성
 description: 로그, 메트릭, 트레이스 기반 장애 분석 학습 인덱스
+tags: [observability]
 comments: false
 ---
 
 # 관측성
 
-> 학습 인덱스다. 상세 내용은 `02-practical-backend/observability/` 아래 개념 문서에 둔다.
-> 개념 문서는 로그, 메트릭, 트레이스, 알림, 장애 분석을 다루고, 증상·원인·확인 방법 → 해결책의 장점과 한계 → 꼬리 질문 순으로 쓴다. 아직 학습하지 않은 내용은 미리 채우지 않는다.
+로그, 메트릭, 분산 추적, traceId, 알림과 SLO, 장애 분석 순서를 다룬다. 장애가 나기 전에 어떤 신호를 남길지가 중심이다.
 
-## 학습 순서
+## 읽는 순서
 
 1. [[why-observability|Observability가 필요한 이유]]
 2. [[logging|Logging]]

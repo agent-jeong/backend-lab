@@ -1,6 +1,7 @@
 ---
 title: Spring을 사용하는 이유
 description: Spring Framework를 사용하는 이유와 핵심 설계 철학
+tags: [concept, spring]
 ---
 
 # Spring을 사용하는 이유

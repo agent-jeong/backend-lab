@@ -1,6 +1,7 @@
 ---
 title: QueryDSL
 description: QueryDSL을 이용한 타입 안전 동적 쿼리와 조회 성능 설계
+tags: [concept, jpa]
 ---
 
 # QueryDSL

@@ -1,6 +1,7 @@
 ---
 title: Spring 트랜잭션
 description: Spring @Transactional 동작 방식과 실무 주의점
+tags: [concept, transaction]
 ---
 
 # Spring 트랜잭션

@@ -1,6 +1,7 @@
 ---
 title: 장애 분석 흐름
 description: 장애 발생 시 영향 범위, 원인 후보, 복구 우선순위를 좁히는 절차
+tags: [concept, observability]
 ---
 
 # 장애 분석 흐름

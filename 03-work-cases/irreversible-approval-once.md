@@ -1,6 +1,7 @@
 ---
 title: 되돌릴 수 없는 승인을 한 번만 보내기
 description: 외부 ERP 지급 승인을 중복·미확정 없이 처리한 사례. 잠금, 선기록 후 재확인, 결과 모름 상태 설계
+tags: [work-case, idempotency, concurrency, transaction, network]
 comments: true
 ---
 

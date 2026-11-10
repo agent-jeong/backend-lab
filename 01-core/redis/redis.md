@@ -1,14 +1,15 @@
 ---
 title: Redis
 description: Redis 캐시 전략과 장애 대응 학습 인덱스
+tags: [redis]
 comments: false
 ---
 
 # Redis
 
-Redis 학습 인덱스다. 상세 내용은 `01-core/redis/` 아래 문서에 둔다. 초점은 캐시 전략, 정합성, 장애 상황이고, 아직 학습하지 않은 내용은 미리 채우지 않는다.
+캐시 전략과 TTL, 자료구조, 분산 락, 장애 대응을 다룬다. 캐시가 정합성과 장애 전파에 만드는 비용이 중심이다.
 
-## 학습 순서
+## 읽는 순서
 
 1. [[why-redis|Redis를 사용하는 이유]]
 2. [[cache-aside-and-ttl|Cache Aside와 TTL]]

@@ -1,15 +1,15 @@
 ---
 title: 성능
 description: 백엔드 성능 문제 분석과 개선 학습 인덱스
+tags: [performance]
 comments: false
 ---
 
 # 성능
 
-> 학습 인덱스다. 상세 내용은 `02-practical-backend/performance/` 아래 개념 문서에 둔다.
-> 개념 문서는 병목 원인, 측정 방법, 개선 방법과 한계를 다루고, 증상·원인·확인 방법 → 해결책의 장점과 한계 → 꼬리 질문 순으로 쓴다. 아직 학습하지 않은 내용은 미리 채우지 않는다.
+지연과 처리량, 병목 분석, DB 쿼리, 캐시, 커넥션 풀, 부하 테스트를 다룬다. 병목을 측정하고 개선 전후를 증명하는 것이 중심이다.
 
-## 학습 순서
+## 읽는 순서
 
 1. [[why-performance-problem|성능 문제를 정의하는 기준]]
 2. [[latency-and-throughput|Latency와 Throughput]]

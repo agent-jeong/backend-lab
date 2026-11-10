@@ -1,15 +1,15 @@
 ---
 title: 보안
 description: 인증, 인가, 민감 정보 보호 학습 인덱스
+tags: [security]
 comments: false
 ---
 
 # 보안
 
-> 학습 인덱스다. 상세 내용은 `02-practical-backend/security/` 아래 개념 문서에 둔다.
-> 개념 문서는 인증, 인가, 입력 검증, 민감 정보 보호를 다룬다. 순서는 증상·원인·확인 방법 → 해결책의 장점과 한계 → 꼬리 질문이다. 아직 공부하지 않은 내용은 미리 채우지 않는다.
+인증과 인가, 세션과 토큰, 비밀번호 저장, CSRF, SQL 인젝션, 로그 속 민감 정보를 다룬다. 권한 누락과 정보 노출을 어디서 막는지가 중심이다.
 
-## 학습 순서
+## 읽는 순서
 
 1. [[authentication-and-authorization|인증과 인가]]
 2. [[session-and-token|Session과 Token]]

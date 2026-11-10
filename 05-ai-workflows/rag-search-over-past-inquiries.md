@@ -1,6 +1,7 @@
 ---
 title: 쌓인 문의 글로 과거 사례 찾는 RAG 검색 만들기
 description: 1만 건이 넘는 운영 문의 글을 의미 검색과 키워드 검색으로 찾고, 평가 세트로 원인을 하나씩 찾아 고친 사례
+tags: [work-case, ai, database]
 comments: true
 ---
 

@@ -1,6 +1,7 @@
 ---
 title: 실패 상태 관리
 description: 배치 실패 원인과 재시도 가능성을 기록하는 기준
+tags: [concept, batch]
 ---
 
 # 실패 상태 관리

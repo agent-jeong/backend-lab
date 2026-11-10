@@ -3,6 +3,7 @@ title: 기술 질문
 aliases:
   - 04-interview/interview-questions
 description: 기술 질문과 개념 노트 연결
+tags: [interview]
 comments: false
 ---
 
@@ -40,32 +41,32 @@ comments: false
 - primitive type과 reference type의 차이는 무엇인가? [[primitive-and-reference-types]]
 - equals와 hashCode를 함께 재정의해야 하는 이유는 무엇인가? [[equals-and-hashcode]]
 - List, Set, Map은 각각 어떤 상황에서 선택하나요? [[collection-selection]]
-- Java 버전별 차이는 무엇인가?
+- Java 버전별 차이는 무엇인가? [[java-version-features]]
 - HashMap은 내부적으로 어떻게 동작하고 언제 성능이 나빠질 수 있나요? [[hashmap]]
 - String을 리터럴로 할당하는 것과 new로 할당하는 것의 차이는? [[string-and-intern]]
 - String의 intern() 메서드는 무엇이고 언제 유용한가? [[string-and-intern]]
 - GC는 어떻게 안 쓰는 객체를 찾아내는가? (Reachability Analysis) [[gc-and-tuning]]
 - GC 같은 런타임을 직접 만든다면 안 쓰는 객체를 어떻게 찾을 것인가? [[gc-and-tuning]]
-- GC가 애플리케이션 지연 시간에 영향을 주는 경우를 어떻게 확인하나요?
+- GC가 애플리케이션 지연 시간에 영향을 주는 경우를 어떻게 확인하나요? [[gc-and-tuning]]
 
 ## Spring
 
-- Spring을 왜 사용하나요?
-- DI는 왜 필요한가요?
-- @Transactional은 어떻게 동작하나요?
+- Spring을 왜 사용하나요? [[why-spring]]
+- DI는 왜 필요한가요? [[ioc-and-di]]
+- @Transactional은 어떻게 동작하나요? [[transaction-integration]]
 - @Transactional이 동작하지 않는 경우와 원인은? [[transactional-pitfalls]]
-- Spring AOP가 적용되지 않는 대표적인 경우는 무엇인가요?
+- Spring AOP가 적용되지 않는 대표적인 경우는 무엇인가요? [[aop]] [[transactional-pitfalls]]
 - Filter, Interceptor, AOP의 차이와 선택 기준은? [[filter-interceptor-aop]]
 - @Async에서 트랜잭션이 동작하는가? ThreadLocal과의 관계는? [[threadlocal-and-async-transaction]]
 - 스레드 풀에서 ThreadLocal 누수가 발생하는 이유와 대응은? [[threadlocal-and-async-transaction]]
-- Controller, Service, Repository 책임을 어떻게 나누나요?
+- Controller, Service, Repository 책임을 어떻게 나누나요? [[layered-architecture]] [[service-responsibility]]
 
 ## JPA
 
-- JPA를 왜 사용하나요?
-- N+1은 왜 발생하나요?
-- 영속성 컨텍스트는 어떤 이점을 주고 어떤 혼란을 만들 수 있나요?
-- flush는 언제 발생하고 성능이나 정합성에 어떤 영향을 주나요?
+- JPA를 왜 사용하나요? [[why-jpa]]
+- N+1은 왜 발생하나요? [[n-plus-one-and-fetch-join]]
+- 영속성 컨텍스트는 어떤 이점을 주고 어떤 혼란을 만들 수 있나요? [[persistence-context]]
+- flush는 언제 발생하고 성능이나 정합성에 어떤 영향을 주나요? [[transaction-and-flush]]
 - OSIV란 무엇이고 왜 끄는가? [[osiv]]
 
 ## Database
@@ -78,14 +79,14 @@ comments: false
 - Replication과 Sharding의 차이와 도입 시점은? [[replication-and-sharding]]
 - 실행 계획에서 무엇을 확인하나요? (EXPLAIN) [[execution-plan]]
 - 작업이 느릴 때 어디가 느린지 탐지하고 성능을 개선하는 방법은? [[bottleneck-analysis]]
-- 트랜잭션 격리 수준은 어떤 문제를 막기 위한 것인가요?
-- Deadlock이 발생하면 어떤 순서로 원인을 좁히나요?
+- 트랜잭션 격리 수준은 어떤 문제를 막기 위한 것인가요? [[transaction-and-isolation]]
+- Deadlock이 발생하면 어떤 순서로 원인을 좁히나요? [[lock-and-deadlock]]
 
 ## Redis
 
-- Redis 캐싱 적용 시 정합성 문제를 어떻게 다루나요?
-- Cache Aside 패턴의 장점과 한계는 무엇인가요?
-- Redis 장애가 나도 서비스가 계속 동작해야 한다면 어떻게 설계하나요?
+- Redis 캐싱 적용 시 정합성 문제를 어떻게 다루나요? [[cache-aside-and-ttl]]
+- Cache Aside 패턴의 장점과 한계는 무엇인가요? [[cache-aside-and-ttl]]
+- Redis 장애가 나도 서비스가 계속 동작해야 한다면 어떻게 설계하나요? [[redis-failure-and-fallback]]
 
 ## Security
 
@@ -99,14 +100,14 @@ comments: false
 
 ## Concurrency
 
-- 멱등성은 어떻게 보장하나요?
-- 낙관적 락과 비관적 락은 언제 각각 선택하나요?
-- 동시성 버그를 테스트로 어떻게 재현하나요?
+- 멱등성은 어떻게 보장하나요? [[why-idempotency]] [[idempotency-key]]
+- 낙관적 락과 비관적 락은 언제 각각 선택하나요? [[optimistic-lock]] [[pessimistic-lock]]
+- 동시성 버그를 테스트로 어떻게 재현하나요? [[concurrency-test]]
 
 ## Batch
 
-- Kubernetes CronJob을 왜 사용하나요?
-- 실패한 배치를 재처리 가능하게 만들려면 무엇을 기록해야 하나요?
+- Kubernetes CronJob을 왜 사용하나요? [[cronjob]]
+- 실패한 배치를 재처리 가능하게 만들려면 무엇을 기록해야 하나요? [[batch-failure-state]] [[retryable-batch-design]]
 - Chunk 크기는 어떤 기준으로 정하나요? [[chunk-processing]]
 - 배치 중복 실행은 어떻게 막나요? [[duplicate-execution-prevention]]
 - 배치 성공 여부는 어떤 지표로 판단하나요? [[batch-monitoring]]
@@ -140,8 +141,8 @@ comments: false
 
 ## CI/CD
 
-- GitOps의 장점은 무엇인가요?
-- 배포 실패 시 롤백 전략을 어떻게 설계하나요?
+- GitOps의 장점은 무엇인가요? [[gitops]]
+- 배포 실패 시 롤백 전략을 어떻게 설계하나요? [[rollback-strategy]]
 - CI와 CD는 무엇이 다른가요? [[ci-vs-cd]]
 - Build Pipeline에서 어떤 단계를 검증해야 하나요? [[build-pipeline]]
 - 배포 전략은 어떤 기준으로 선택하나요? [[deployment-strategy]]
@@ -150,6 +151,6 @@ comments: false
 
 ## Observability
 
-- 장애가 발생하면 어떤 순서로 원인을 좁히나요?
-- traceId는 왜 필요한가요?
-- 로그, 메트릭, 트레이스는 각각 어떤 질문에 답하나요?
+- 장애가 발생하면 어떤 순서로 원인을 좁히나요? [[incident-analysis-flow]]
+- traceId는 왜 필요한가요? [[trace-id-and-correlation-id]]
+- 로그, 메트릭, 트레이스는 각각 어떤 질문에 답하나요? [[why-observability]]

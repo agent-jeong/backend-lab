@@ -1,6 +1,7 @@
 ---
 title: "로드 밸런서 동작과 분산 전략"
 description: 로드밸런서 동작 원리와 알고리즘, 헬스체크
+tags: [concept, network]
 ---
 
 # 로드 밸런서 동작과 분산 전략

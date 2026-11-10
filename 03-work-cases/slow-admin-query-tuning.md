@@ -1,6 +1,7 @@
 ---
 title: 5초 걸리던 관리자 조회를 실행계획으로 고치기
 description: 예약 관리 화면의 풀 스캔을 실행계획으로 찾아 쿼리 재작성과 복합 인덱스로 고치고, 부하 테스트로 확인한 사례
+tags: [work-case, database, performance]
 comments: true
 ---
 

@@ -1,6 +1,7 @@
 ---
 title: Session과 Token
 description: 서버 세션과 토큰 기반 인증의 차이와 선택 기준
+tags: [concept, security]
 ---
 
 # Session과 Token

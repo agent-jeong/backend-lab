@@ -1,6 +1,7 @@
 ---
 title: Race Condition과 Critical Section
 description: 실행 순서에 따라 결과가 달라지는 코드 구간을 찾고 보호하는 기준
+tags: [concept, concurrency]
 ---
 
 # Race Condition과 Critical Section

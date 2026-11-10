@@ -1,6 +1,7 @@
 ---
 title: 동시성 테스트와 재현
 description: 단일 요청 테스트로 드러나지 않는 경쟁 조건을 재현하는 방법
+tags: [concept, concurrency]
 ---
 
 # 동시성 테스트와 재현

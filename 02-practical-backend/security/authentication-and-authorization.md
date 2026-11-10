@@ -1,6 +1,7 @@
 ---
 title: 인증과 인가
 description: 사용자를 식별하는 인증과 권한을 확인하는 인가의 차이
+tags: [concept, security]
 ---
 
 # 인증과 인가

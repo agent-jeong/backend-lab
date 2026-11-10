@@ -1,6 +1,7 @@
 ---
 title: Chunk 처리
 description: 대량 데이터를 작은 단위로 나누어 안정적으로 처리하는 기준
+tags: [concept, batch]
 ---
 
 # Chunk 처리

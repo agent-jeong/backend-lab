@@ -1,6 +1,7 @@
 ---
 title: Stream과 Optional 활용 기준
 description: Java Stream과 Optional의 실무 사용 패턴과 남용 사례
+tags: [concept, java]
 ---
 
 # Stream과 Optional 활용 기준

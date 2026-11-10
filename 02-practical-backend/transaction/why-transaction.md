@@ -1,6 +1,7 @@
 ---
 title: 트랜잭션이 필요한 이유
 description: 여러 데이터 변경을 하나의 정합성 단위로 다루는 실무 기준
+tags: [concept, transaction]
 ---
 
 # 트랜잭션이 필요한 이유

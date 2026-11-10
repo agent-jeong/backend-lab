@@ -1,6 +1,7 @@
 ---
 title: Latency와 Throughput
 description: 응답 시간과 처리량을 구분해 성능 목표를 잡는 기준
+tags: [concept, performance]
 ---
 
 # Latency와 Throughput

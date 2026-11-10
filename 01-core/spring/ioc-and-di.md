@@ -1,6 +1,7 @@
 ---
 title: IoC 컨테이너와 의존성 주입
 description: Spring IoC 컨테이너의 동작 원리와 DI 방식별 특징
+tags: [concept, spring]
 ---
 
 # IoC 컨테이너와 의존성 주입

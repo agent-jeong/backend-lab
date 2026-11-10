@@ -1,6 +1,7 @@
 ---
 title: 직렬화와 Jackson 동작 원리
 description: Java 직렬화와 Jackson 기반 JSON 처리의 실무 주의점
+tags: [concept, java]
 ---
 
 # 직렬화와 Jackson 동작 원리

@@ -1,6 +1,7 @@
 ---
 title: "연관관계 매핑 전략"
 description: JPA 연관관계 매핑의 실무 설계와 주의점
+tags: [concept, jpa]
 ---
 
 # 연관관계 매핑 전략

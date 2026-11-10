@@ -1,6 +1,7 @@
 ---
 title: 권한 검증 위치
 description: Controller, Service, Query 경계에서 권한 검증을 배치하는 기준
+tags: [concept, security]
 ---
 
 # 권한 검증 위치

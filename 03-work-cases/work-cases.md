@@ -3,6 +3,7 @@ title: 내 실무 사례
 aliases:
   - 03-case-studies/case-studies
 description: 직접 겪은 문제를 회사·시스템 이름 없이 일반화한 사례
+tags: [work-case]
 comments: false
 ---
 

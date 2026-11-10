@@ -1,6 +1,7 @@
 ---
 title: 분산 락
 description: 다중 인스턴스 환경에서 특정 작업의 동시 실행을 제한하는 기준
+tags: [concept, concurrency]
 ---
 
 # 분산 락

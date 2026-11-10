@@ -1,6 +1,7 @@
 ---
 title: Password 저장
 description: 비밀번호를 안전하게 저장하기 위한 해시, salt, 비용 계수 기준
+tags: [concept, security]
 ---
 
 # Password 저장

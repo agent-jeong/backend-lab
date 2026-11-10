@@ -1,6 +1,7 @@
 ---
 title: 부하 테스트와 지표 해석
 description: 부하 테스트로 처리 한계와 병목을 검증하는 실무 기준
+tags: [concept, performance]
 ---
 
 # 부하 테스트와 지표 해석

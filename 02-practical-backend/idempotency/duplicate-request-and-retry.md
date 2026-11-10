@@ -1,6 +1,7 @@
 ---
 title: 중복 요청과 재시도
 description: timeout과 retry가 중복 처리로 이어지는 실무 흐름
+tags: [concept, idempotency]
 ---
 
 # 중복 요청과 재시도

@@ -1,6 +1,7 @@
 ---
 title: 배포 전략
 description: 서비스 중단과 변경 위험을 줄이는 배포 전략 선택 기준
+tags: [concept, ci-cd]
 ---
 
 # 배포 전략

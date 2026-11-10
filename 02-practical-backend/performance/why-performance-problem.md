@@ -1,6 +1,7 @@
 ---
 title: 성능 문제를 정의하는 기준
 description: 느림을 성능 문제로 판단하기 전에 목표, 영향, 재현 조건을 정하는 방법
+tags: [concept, performance]
 ---
 
 # 성능 문제를 정의하는 기준

@@ -1,6 +1,7 @@
 ---
 title: OSIV (Open Session In View)
 description: OSIV의 동작 원리, Spring Boot 기본값, 실무에서 끄는 판단 기준
+tags: [concept, jpa]
 ---
 
 # OSIV (Open Session In View)

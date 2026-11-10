@@ -1,6 +1,7 @@
 ---
 title: Blocking과 Non-blocking
 description: Blocking I/O와 Non-blocking I/O의 차이와 서버 스레드 모델
+tags: [concept, os]
 ---
 
 # Blocking과 Non-blocking

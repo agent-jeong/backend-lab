@@ -1,6 +1,7 @@
 ---
 title: 의존성 방향
 description: 변경이 잦은 세부사항이 핵심 정책을 흔들지 않게 하는 의존성 기준
+tags: [concept, architecture]
 ---
 
 # 의존성 방향

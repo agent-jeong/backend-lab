@@ -1,6 +1,7 @@
 ---
 title: Kubernetes 로그와 메트릭 확인
 description: Pod, Deployment, Service 문제를 로그와 메트릭으로 좁히는 기준
+tags: [concept, kubernetes]
 ---
 
 # Kubernetes 로그와 메트릭 확인

@@ -1,6 +1,7 @@
 ---
 title: 테스트와 @Transactional
 description: 테스트 트랜잭션과 실제 트랜잭션 동작 차이를 이해하는 기준
+tags: [concept, testing]
 ---
 
 # 테스트와 @Transactional

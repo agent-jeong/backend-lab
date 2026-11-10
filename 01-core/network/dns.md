@@ -1,6 +1,7 @@
 ---
 title: DNS
 description: DNS 동작 원리와 TTL, 장애 시 영향 분석
+tags: [concept, network]
 ---
 
 # DNS

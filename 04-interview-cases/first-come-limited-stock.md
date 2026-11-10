@@ -1,6 +1,7 @@
 ---
 title: 선착순 한정 수량을 초과 없이 팔기
 description: 시작 직후 요청이 몰리는 선착순 판매에서 초과 판매와 중복 구매를 막는 설계 문제
+tags: [interview, concurrency, redis, database]
 comments: true
 ---
 

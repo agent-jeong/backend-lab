@@ -1,6 +1,7 @@
 ---
 title: 파일 I/O
 description: 파일 읽기/쓰기, page cache, disk wait가 서버 성능에 미치는 영향
+tags: [concept, os]
 ---
 
 # 파일 I/O

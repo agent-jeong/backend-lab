@@ -1,6 +1,7 @@
 ---
 title: Readiness Probe와 Liveness Probe
 description: Kubernetes에서 트래픽 수신 가능 상태와 재시작 필요 상태를 구분하는 기준
+tags: [concept, kubernetes]
 ---
 
 # Readiness Probe와 Liveness Probe

@@ -1,6 +1,7 @@
 ---
 title: GitOps
 description: Git을 선언적 운영 상태의 단일 변경 경로로 사용하는 방식
+tags: [concept, ci-cd]
 ---
 
 # GitOps

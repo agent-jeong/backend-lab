@@ -1,6 +1,7 @@
 ---
 title: Java 버전별 핵심 변화
 description: Java 버전별 핵심 변화와 실무 적용 판단
+tags: [concept, java]
 ---
 
 # Java 버전별 핵심 변화

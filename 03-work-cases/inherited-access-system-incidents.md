@@ -1,6 +1,7 @@
 ---
 title: 이어받은 출입 시스템의 장애를 숫자로 좁히기
 description: 방문자 출입 시스템을 이어받아 운영하면서 배치 시각 충돌, 한 건이 멈추는 배치, 다시 맺어지지 않는 gRPC 연결을 추적한 사례
+tags: [work-case, batch, spring, observability, network, testing]
 comments: true
 ---
 

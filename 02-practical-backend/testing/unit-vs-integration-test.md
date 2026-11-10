@@ -1,6 +1,7 @@
 ---
 title: Unit Test와 Integration Test
 description: 테스트 범위와 신뢰도, 속도, 유지보수 비용을 나누는 기준
+tags: [concept, testing]
 ---
 
 # Unit Test와 Integration Test

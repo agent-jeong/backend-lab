@@ -1,6 +1,7 @@
 ---
 title: 계층형 아키텍처
 description: 계층별 책임을 나누어 변경 비용과 의존성 혼란을 줄이는 설계
+tags: [concept, architecture]
 ---
 
 # 계층형 아키텍처

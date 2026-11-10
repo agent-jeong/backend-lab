@@ -1,6 +1,7 @@
 ---
 title: "TLS/SSL 동작 원리"
 description: TLS 동작 원리와 인증서, HTTPS 적용 실무
+tags: [concept, network]
 ---
 
 # TLS/SSL 동작 원리

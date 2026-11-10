@@ -1,6 +1,7 @@
 ---
 title: 분산 추적
 description: 분산 시스템에서 요청 흐름과 의존성 지연을 추적하는 방법
+tags: [concept, observability]
 ---
 
 # 분산 추적

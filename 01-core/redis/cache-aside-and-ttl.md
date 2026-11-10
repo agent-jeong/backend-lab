@@ -1,6 +1,7 @@
 ---
 title: Cache Aside와 TTL
 description: Redis 캐시 적용 시 정합성과 만료 정책을 다루는 실무 기준
+tags: [concept, redis]
 ---
 
 # Cache Aside와 TTL

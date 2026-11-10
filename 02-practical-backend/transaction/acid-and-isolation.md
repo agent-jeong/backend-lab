@@ -1,6 +1,7 @@
 ---
 title: ACID와 격리 수준
 description: 트랜잭션의 ACID 속성과 isolation level 선택 기준
+tags: [concept, transaction]
 ---
 
 # ACID와 격리 수준

@@ -1,18 +1,18 @@
 ---
 title: 아키텍처
 description: 책임 분리와 변경 비용을 줄이는 설계 학습 인덱스
+tags: [architecture]
 comments: false
 ---
 
 # 아키텍처
 
-> 학습 인덱스다. 상세 내용은 `02-practical-backend/architecture/` 아래 개념 문서에 둔다.
-> 개념 문서는 책임 분리, 의존성 방향, 변경 비용을 다룬다. 순서는 증상·원인·확인 방법 → 해결책의 장점과 한계 → 꼬리 질문이다. 아직 공부하지 않은 내용은 미리 채우지 않는다.
+계층 구조, 의존성 방향, 모듈 경계, 서비스 책임을 다룬다. 자주 바뀌는 요구사항을 어느 책임에 둘지가 중심이다.
 
-## 학습 순서
+## 읽는 순서
 
 1. [[layered-architecture|Layered Architecture]]
-2. [[service-responsibility|Controller / Service / Repository 책임]]
+2. [[service-responsibility|Controller · Service · Repository 책임]]
 3. Domain Model
 4. [[dto-vs-entity|DTO와 Entity 분리]]
 5. [[dependency-direction|의존성 방향]]

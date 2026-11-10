@@ -1,6 +1,7 @@
 ---
 title: Observability가 필요한 이유
 description: 장애 원인을 빠르게 좁히기 위해 로그, 메트릭, 트레이스를 준비하는 이유
+tags: [concept, observability]
 ---
 
 # Observability가 필요한 이유

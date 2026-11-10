@@ -1,6 +1,7 @@
 ---
 title: 모듈 경계
 description: 변경 이유와 소유권을 기준으로 모듈을 나누는 기준
+tags: [concept, architecture]
 ---
 
 # 모듈 경계

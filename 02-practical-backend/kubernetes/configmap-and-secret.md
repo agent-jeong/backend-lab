@@ -1,6 +1,7 @@
 ---
 title: ConfigMap과 Secret
 description: 컨테이너 이미지와 환경별 설정, 민감 정보를 분리하는 기준
+tags: [concept, kubernetes]
 ---
 
 # ConfigMap과 Secret

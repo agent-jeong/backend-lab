@@ -1,15 +1,15 @@
 ---
 title: CI/CD
 description: 반복 가능하고 되돌릴 수 있는 배포 학습 인덱스
+tags: [ci-cd]
 comments: false
 ---
 
 # CI/CD
 
-> 학습 인덱스다. 상세 내용은 `02-practical-backend/ci-cd/` 아래 개념 문서에 둔다.
-> 개념 문서는 빌드, 테스트, 배포, 롤백을 다루고, 증상·원인·확인 방법 → 해결책의 장점과 한계 → 꼬리 질문 순으로 쓴다. 아직 학습하지 않은 내용은 미리 채우지 않는다.
+빌드 파이프라인, 배포 전략, 롤백, 설정과 비밀값, GitOps를 다룬다. 배포 실패를 빨리 알아채고 되돌리는 것이 중심이다.
 
-## 학습 순서
+## 읽는 순서
 
 1. [[ci-vs-cd|CI와 CD의 차이]]
 2. [[build-pipeline|Build Pipeline]]

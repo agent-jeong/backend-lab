@@ -1,6 +1,7 @@
 ---
 title: Controller, Service, Repository 책임
 description: 웹 요청 처리, 유스케이스 조합, 데이터 접근 책임을 나누는 기준
+tags: [concept, architecture]
 ---
 
 # Controller, Service, Repository 책임

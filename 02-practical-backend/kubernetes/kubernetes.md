@@ -1,15 +1,15 @@
 ---
 title: Kubernetes
 description: 컨테이너 기반 백엔드 서비스를 배포하고 운영하기 위한 Kubernetes 학습 인덱스
+tags: [kubernetes]
 comments: false
 ---
 
 # Kubernetes
 
-> 학습 인덱스다. 상세 내용은 `02-practical-backend/kubernetes/` 아래 개념 문서에 둔다.
-> 개념 문서는 배포 단위, 트래픽 경로, 설정, 장애 복구를 다루고, 증상·원인·확인 방법 → 해결책의 장점과 한계 → 꼬리 질문 순으로 쓴다. 아직 학습하지 않은 내용은 미리 채우지 않는다.
+Pod, Deployment·Service·Ingress, 프로브, 리소스, 롤링 업데이트, CronJob을 다룬다. 배포한 서비스가 트래픽을 받지 못할 때 무엇부터 볼지가 중심이다.
 
-## 학습 순서
+## 읽는 순서
 
 1. [[deployment-service-ingress|Deployment, Service, Ingress]]
 2. [[pod-and-container|Pod와 Container]]

@@ -1,6 +1,7 @@
 ---
 title: "N+1 문제와 Fetch Join 해결"
 description: JPA N+1 문제의 원인과 fetch join 기반 해결 전략
+tags: [concept, jpa]
 ---
 
 # N+1 문제와 Fetch Join 해결

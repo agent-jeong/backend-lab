@@ -1,6 +1,7 @@
 ---
 title: Rollback 전략
 description: 배포 실패를 빠르게 되돌리기 위한 조건과 한계
+tags: [concept, ci-cd]
 ---
 
 # Rollback 전략

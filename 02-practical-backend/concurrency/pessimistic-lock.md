@@ -1,6 +1,7 @@
 ---
 title: 비관적 락
 description: 충돌 가능성이 높은 상황에서 DB row를 선점해 동시 변경을 막는 방식
+tags: [concept, concurrency]
 ---
 
 # 비관적 락

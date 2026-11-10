@@ -1,6 +1,7 @@
 ---
 title: Cache 적용
 description: 캐시로 성능을 개선할 때 hit ratio, 정합성, 장애 전파를 함께 보는 기준
+tags: [concept, performance]
 ---
 
 # Cache 적용

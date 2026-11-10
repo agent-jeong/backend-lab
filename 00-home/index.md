@@ -1,12 +1,14 @@
 ---
 title: Backend Lab
-description: 실무 중심 백엔드 CS 학습과 기술 질문 대응을 위한 학습 노트
+description: 백엔드 개념을 실무 판단 기준으로 정리하고, 직접 겪은 문제를 사례로 남기는 블로그
 comments: false
 ---
 
 # Backend Lab
 
-백엔드 개념을 실무에서 어떻게 판단하는지, 그리고 면접에서 어떻게 말할지로 정리하는 위키다. 개념 노트와 직접 겪은 사례가 서로 이어져 있다.
+백엔드 개념을 "실무에서 어떻게 판단하는가"로 정리하고, 직접 겪은 문제를 사례로 남기는 블로그다. 개념 노트와 실무 사례가 서로 이어져 있어서, 개념을 읽다가 그 개념이 실제로 쓰인 사례로 넘어갈 수 있다.
+
+처음이라면 아래 실무 사례 하나를 먼저 읽어 보길 권한다. 어떤 기준으로 쓰는지는 [[00-home/about|이 블로그에 대해]]에 있다.
 
 ## 내 실무 사례
 
@@ -30,32 +32,18 @@ comments: false
 
 **정합성**: [[02-practical-backend/transaction/transaction|트랜잭션]] · [[02-practical-backend/concurrency/concurrency|동시성]] · [[02-practical-backend/idempotency/idempotency|멱등성]]
 
-**운영**: [[02-practical-backend/performance/performance|성능]] · [[02-practical-backend/observability/observability|관측성]] · [[02-practical-backend/batch/batch-processing|배치]] · [[02-practical-backend/kubernetes/kubernetes|Kubernetes]] · [[02-practical-backend/ci-cd/ci-cd|CI/CD]]
+**운영**: [[02-practical-backend/performance/performance|성능]] · [[02-practical-backend/observability/observability|관측성]] · [[02-practical-backend/batch/batch-processing|배치]] · [[02-practical-backend/kubernetes/kubernetes|Kubernetes]] · [[02-practical-backend/ci-cd/ci-cd|CI·CD]]
 
 **설계와 품질**: [[02-practical-backend/architecture/architecture|아키텍처]] · [[02-practical-backend/security/security|보안]] · [[02-practical-backend/testing/testing|테스트]]
 
-**면접**: [[04-interview-cases/interview-questions|기술 질문]] · [[04-interview-cases/design-cases|면접 설계 문제]]
+**면접**: [[04-interview-cases/interview-questions|기술 질문]] · [[04-interview-cases/design-cases|면접 설계 문제]]: [[first-come-limited-stock|선착순 한정 수량]], [[like-count|좋아요 수]]
 
 **AI**: [[05-ai-workflows/ai-workflows|AI 활용]]
 
-주제마다 인덱스 문서가 있고, 인덱스는 학습 순서 → 핵심 질문 → 실무에서 보는 것 → 내 사례 → 관련 문서 순서로 되어 있다.
+주제마다 안내 글이 있다. 읽는 순서, 핵심 질문, 그 주제가 쓰인 내 사례가 정리돼 있다.
 
-## 공부하는 법
+## 더 보기
 
-1. [[00-home/daily-study-board|학습 보드]]에서 주제 하나를 고른다.
-2. 그 주제 인덱스에서 질문 하나를 골라 개념 노트를 보강한다.
-3. 노트 끝의 "면접에서 말하기"를 소리 내어 말해 본다.
-4. 이어진 내 사례가 있으면 같이 읽고, 개념과 경험을 한 답변으로 묶는다.
-
-노트 하나가 끝났다고 보는 기준은 네 가지다.
-
-- 무엇을 해결하는 개념인지 첫 문단에 보인다.
-- 실무에서 깨지는 상황과 판단 기준이 있다.
-- 장점만이 아니라 한계와 대가가 있다.
-- 1분 안에 말할 답변과 꼬리 질문이 있다.
-
-## 참고
-
-- [[00-home/mastery-map|숙련도 지도]]: 주제별 목표 수준
-- [[00-home/learning-principles|학습 원칙]]: 문서 작성 기준과 완료 조건
-- [[00-home/glossary|용어집]]: 실무 핵심 용어
+- [[00-home/glossary|용어집]]: 자주 나오는 용어와 그 용어를 다룬 글
+- [[00-home/about|이 블로그에 대해]]: 쓰는 기준, 날짜의 의미, 틀린 곳 알리기
+- [RSS](https://agent-jeong.github.io/backend-lab/index.xml): 새 글 받아 보기

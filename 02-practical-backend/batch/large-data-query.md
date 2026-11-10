@@ -1,6 +1,7 @@
 ---
 title: 대용량 조회
 description: 배치에서 많은 데이터를 안정적으로 읽는 기준
+tags: [concept, batch]
 ---
 
 # 대용량 조회

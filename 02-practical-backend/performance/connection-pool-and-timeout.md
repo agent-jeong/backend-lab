@@ -1,6 +1,7 @@
 ---
 title: Connection Pool과 Timeout
 description: pool 고갈과 timeout이 API 지연과 장애 전파로 이어지는 흐름
+tags: [concept, performance]
 ---
 
 # Connection Pool과 Timeout

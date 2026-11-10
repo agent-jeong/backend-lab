@@ -1,15 +1,15 @@
 ---
 title: 네트워크
 description: HTTP, timeout, retry, 네트워크 장애 분석 학습 인덱스
+tags: [network]
 comments: false
 ---
 
 # 네트워크
 
-> 학습 인덱스다. 상세 내용은 `01-core/network/` 아래 개념 문서에 둔다.
-> 초점은 요청 흐름, 장애 원인 분석, timeout/retry 판단이다. 증상·원인·확인 방법 → 해결책의 장점과 한계 → 꼬리 질문 순으로 쓰고, 아직 학습하지 않은 내용은 미리 채우지 않는다.
+HTTP, DNS, TCP 연결, TLS, 타임아웃과 재시도를 다룬다. 외부 호출 장애를 어느 구간부터 의심할지가 중심이다.
 
-## 학습 순서
+## 읽는 순서
 
 1. [[http-basics|HTTP 기본 구조]]
 2. [[tcp-connection|TCP와 연결]]

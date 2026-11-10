@@ -1,6 +1,7 @@
 ---
 title: Pod와 Container
 description: Kubernetes에서 애플리케이션이 실행되는 최소 단위와 컨테이너 경계
+tags: [concept, kubernetes]
 ---
 
 # Pod와 Container

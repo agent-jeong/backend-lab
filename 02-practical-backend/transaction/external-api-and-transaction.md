@@ -1,6 +1,7 @@
 ---
 title: 외부 API와 트랜잭션
 description: 외부 시스템 호출과 DB 트랜잭션을 함께 다룰 때의 실패 대응 기준
+tags: [concept, transaction]
 ---
 
 # 외부 API와 트랜잭션

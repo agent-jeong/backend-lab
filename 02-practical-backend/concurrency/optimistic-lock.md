@@ -1,6 +1,7 @@
 ---
 title: 낙관적 락
 description: 충돌이 드문 상황에서 version으로 동시 변경을 감지하는 방식
+tags: [concept, concurrency]
 ---
 
 # 낙관적 락

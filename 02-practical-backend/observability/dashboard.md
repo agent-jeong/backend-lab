@@ -1,6 +1,7 @@
 ---
 title: 대시보드
 description: 장애 판단과 원인 분석에 바로 사용할 수 있는 대시보드 설계
+tags: [concept, observability]
 ---
 
 # 대시보드

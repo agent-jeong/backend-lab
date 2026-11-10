@@ -1,6 +1,7 @@
 ---
 title: DTO와 Entity 분리
 description: API 입출력 모델과 영속성 모델을 분리하는 기준
+tags: [concept, architecture]
 ---
 
 # DTO와 Entity 분리

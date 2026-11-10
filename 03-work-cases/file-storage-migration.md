@@ -1,6 +1,7 @@
 ---
 title: 첨부파일 18만 건을 26분에 누락 없이 옮기기
 description: 오브젝트 스토리지 이관에서 측정으로 병목을 찾고, 누락 검사 기준을 다시 세우고, 되돌릴 수 없는 작업에 안전장치를 건 사례
+tags: [work-case, performance, batch]
 comments: true
 ---
 

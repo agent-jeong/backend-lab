@@ -1,6 +1,7 @@
 ---
 title: "Java 동시성 기초"
 description: Java 스레드, ExecutorService, Future, CompletableFuture의 실무 사용 기준
+tags: [concept, java]
 ---
 
 # Java 동시성 기초 (스레드, synchronized, volatile)

@@ -1,6 +1,7 @@
 ---
 title: "DB 락의 종류와 동작"
 description: DB 락의 종류와 데드락 원인 및 해결
+tags: [concept, database]
 ---
 
 # DB 락의 종류와 동작

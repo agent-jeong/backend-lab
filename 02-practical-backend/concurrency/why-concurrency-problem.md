@@ -1,6 +1,7 @@
 ---
 title: 동시성 문제가 생기는 이유
 description: 여러 요청이 같은 공유 자원을 동시에 변경할 때 발생하는 정합성 문제
+tags: [concept, concurrency]
 ---
 
 # 동시성 문제가 생기는 이유

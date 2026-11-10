@@ -1,6 +1,7 @@
 ---
 title: 클래스·인터페이스·이넘·레코드
 description: Java 타입 선택 기준과 실무 설계 판단
+tags: [concept, java]
 ---
 
 # 클래스·인터페이스·이넘·레코드 선택 기준

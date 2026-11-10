@@ -1,6 +1,7 @@
 ---
 title: Rolling Update와 Rollback
 description: Kubernetes 배포 중 가용성을 유지하고 실패 시 되돌리는 기준
+tags: [concept, kubernetes]
 ---
 
 # Rolling Update와 Rollback

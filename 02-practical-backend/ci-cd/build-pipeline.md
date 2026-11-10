@@ -1,6 +1,7 @@
 ---
 title: 빌드 파이프라인
 description: 소스 변경을 검증 가능한 artifact로 만드는 단계
+tags: [concept, ci-cd]
 ---
 
 # 빌드 파이프라인

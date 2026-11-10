@@ -1,6 +1,7 @@
 ---
 title: Filter vs Interceptor vs AOP
 description: Spring 요청 처리 흐름에서 Filter, Interceptor, AOP의 실행 시점과 선택 기준
+tags: [concept, spring]
 ---
 
 # Filter vs Interceptor vs AOP

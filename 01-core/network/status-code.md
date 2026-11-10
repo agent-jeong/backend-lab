@@ -1,6 +1,7 @@
 ---
 title: "HTTP 상태 코드 사용 기준"
 description: HTTP 상태 코드의 의미와 API 설계 시 올바른 사용법
+tags: [concept, network]
 ---
 
 # HTTP 상태 코드 사용 기준

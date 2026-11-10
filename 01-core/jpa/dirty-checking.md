@@ -1,6 +1,7 @@
 ---
 title: "변경 감지 동작 원리"
 description: JPA 변경 감지의 동작 원리와 실무에서의 주의점
+tags: [concept, jpa]
 ---
 
 # 변경 감지(Dirty Checking) 동작 원리

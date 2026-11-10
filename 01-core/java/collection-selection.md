@@ -1,6 +1,7 @@
 ---
 title: 컬렉션 선택 기준 (List, Set, Map)
 description: Java List, Set, Map 선택 기준과 실무 사용 패턴
+tags: [concept, java]
 ---
 
 # 컬렉션 선택 기준 (List, Set, Map)

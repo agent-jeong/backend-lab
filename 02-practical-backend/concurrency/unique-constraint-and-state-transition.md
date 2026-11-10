@@ -1,6 +1,7 @@
 ---
 title: Unique 제약과 상태 전이
 description: 락 없이도 동시성 문제를 줄이는 DB 제약과 상태 변경 설계
+tags: [concept, concurrency]
 ---
 
 # Unique 제약과 상태 전이

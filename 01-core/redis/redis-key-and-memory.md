@@ -1,6 +1,7 @@
 ---
 title: Redis Key 설계와 메모리 관리
 description: Redis key naming, TTL, hot key, big key, memory eviction 관리 기준
+tags: [concept, redis]
 ---
 
 # Redis Key 설계와 메모리 관리

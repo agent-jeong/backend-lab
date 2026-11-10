@@ -1,6 +1,7 @@
 ---
 title: Alert와 SLO
 description: 사용자 영향 기준으로 알림을 설계하고 운영 피로를 줄이는 방법
+tags: [concept, observability]
 ---
 
 # Alert와 SLO

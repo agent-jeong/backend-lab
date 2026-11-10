@@ -1,6 +1,7 @@
 ---
 title: "시스템 자원 모니터링"
 description: CPU, memory, disk, network 지표로 서버 병목을 좁히는 방법
+tags: [concept, os]
 ---
 
 # 시스템 자원 모니터링 (CPU, 메모리, 디스크)

@@ -1,14 +1,15 @@
 ---
 title: JPA
 description: JPA 동작 원리와 성능 문제 학습 인덱스
+tags: [jpa]
 comments: false
 ---
 
 # JPA
 
-JPA 학습 인덱스다. 상세 내용은 `01-core/jpa/` 아래 문서에 둔다. 초점은 동작 원리, 성능 문제, 트랜잭션 경계이고, 아직 학습하지 않은 내용은 미리 채우지 않는다.
+영속성 컨텍스트, flush, 지연 로딩, N+1, QueryDSL을 다룬다. 쿼리 수와 트랜잭션 경계를 어떻게 확인하는지가 중심이다.
 
-## 학습 순서
+## 읽는 순서
 
 1. [[why-jpa|JPA를 사용하는 이유]]
 2. [[entity-table-mapping|Entity와 Table 매핑]]

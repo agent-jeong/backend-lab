@@ -1,22 +1,22 @@
 ---
 title: 운영체제
 description: 운영체제 기본기와 서버 리소스 분석 학습 인덱스
+tags: [os]
 comments: false
 ---
 
 # 운영체제
 
-> 학습 인덱스다. 상세 내용은 `01-core/os/` 아래 개념 문서에 둔다.
-> 초점: 프로세스·스레드, 메모리, I/O, 장애 분석. 증상·원인·확인 방법 → 해결책의 장점과 한계 → 꼬리 질문 순으로 쓰고, 아직 학습하지 않은 내용은 미리 채우지 않는다.
+프로세스와 스레드, 메모리, I/O, CPU 스케줄링을 다룬다. 애플리케이션 문제가 서버 자원 병목인지 가려내는 것이 중심이다.
 
-## 학습 순서
+## 읽는 순서
 
 1. [[process-and-thread|Process와 Thread]]
 2. [[context-switching|Context Switching]]
 3. [[memory|Memory]]
 4. [[cpu-scheduling|CPU Scheduling]]
-5. [[file-io|File I/O]]
-6. [[socket-io|Socket I/O]]
+5. [[file-io|파일 입출력]]
+6. [[socket-io|소켓 입출력]]
 7. [[blocking-and-non-blocking|Blocking과 Non-blocking]]
 8. [[system-resource-monitoring|System Resource Monitoring]]
 

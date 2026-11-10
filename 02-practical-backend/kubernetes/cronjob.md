@@ -1,6 +1,7 @@
 ---
 title: CronJob
 description: Kubernetes에서 주기적 배치 작업을 실행하고 실패를 관리하는 기준
+tags: [concept, kubernetes]
 ---
 
 # CronJob

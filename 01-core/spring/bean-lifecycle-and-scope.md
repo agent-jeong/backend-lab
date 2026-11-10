@@ -1,6 +1,7 @@
 ---
 title: Bean 생명주기와 Scope
 description: Spring Bean의 생명주기와 Scope별 동작 차이
+tags: [concept, spring]
 ---
 
 # Bean 생명주기와 Scope

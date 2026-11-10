@@ -1,6 +1,7 @@
 ---
 title: "CPU 스케줄링 알고리즘"
 description: CPU 스케줄링 알고리즘과 서버 성능에 미치는 영향
+tags: [concept, os]
 ---
 
 # CPU 스케줄링 알고리즘

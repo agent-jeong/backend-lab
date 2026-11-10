@@ -1,6 +1,7 @@
 ---
 title: "OS 메모리 관리 (가상 메모리, 페이징)"
 description: OS 메모리 관리, 가상 메모리, 페이징과 OOM
+tags: [concept, os]
 ---
 
 # OS 메모리 관리 (가상 메모리, 페이징)

@@ -1,15 +1,15 @@
 ---
 title: Spring
 description: Spring 핵심 개념과 실무 학습 인덱스
+tags: [spring]
 comments: false
 ---
 
 # Spring
 
-> 학습 인덱스다. 상세 내용은 `01-core/spring/` 아래 개념 문서에 둔다.
-> 초점: 동작 원리, 실무 주의점. 증상·원인·확인 방법 → 해결책의 장점과 한계 → 꼬리 질문 순으로 쓰고, 아직 학습하지 않은 내용은 미리 채우지 않는다.
+IoC/DI, 빈 생명주기, AOP와 프록시, MVC 요청 흐름, 트랜잭션을 다룬다. 요청 하나가 어떤 객체와 프록시를 지나 처리되는지가 중심이다.
 
-## 학습 순서
+## 읽는 순서
 
 1. [[why-spring|Spring을 사용하는 이유]]
 2. [[ioc-and-di|IoC와 DI]]

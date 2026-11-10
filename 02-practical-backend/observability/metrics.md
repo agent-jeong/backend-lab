@@ -1,6 +1,7 @@
 ---
 title: 메트릭
 description: 장애 판단과 성능 분석에 필요한 운영 지표의 기준
+tags: [concept, observability]
 ---
 
 # 메트릭

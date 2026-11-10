@@ -1,6 +1,7 @@
 ---
 title: 결제와 주문 멱등성
 description: 주문 생성과 결제 승인에서 중복 요청을 안전하게 처리하는 실무 예시
+tags: [concept, idempotency]
 ---
 
 # 결제와 주문 멱등성

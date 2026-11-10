@@ -1,6 +1,7 @@
 ---
 title: 병목 분석 순서
 description: API 지연을 애플리케이션, DB, 캐시, 외부 API, OS 관점에서 좁히는 절차
+tags: [concept, performance]
 ---
 
 # 병목 분석 순서

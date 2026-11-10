@@ -1,6 +1,7 @@
 ---
 title: DB 조회 성능
 description: 느린 조회를 쿼리 수, 실행 계획, 인덱스, 데이터 크기로 분석하는 기준
+tags: [concept, performance]
 ---
 
 # DB 조회 성능

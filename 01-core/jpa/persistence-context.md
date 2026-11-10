@@ -1,6 +1,7 @@
 ---
 title: "영속성 컨텍스트의 역할과 생명주기"
 description: JPA 영속성 컨텍스트의 동작 원리와 실무 영향
+tags: [concept, jpa]
 ---
 
 # 영속성 컨텍스트의 역할과 생명주기

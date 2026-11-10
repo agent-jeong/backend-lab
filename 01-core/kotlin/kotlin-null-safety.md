@@ -1,6 +1,7 @@
 ---
 title: Kotlin null 안전성
 description: Kotlin nullable 타입과 Java interop에서 발생하는 null 처리 기준
+tags: [concept, kotlin]
 ---
 
 # Kotlin null 안전성

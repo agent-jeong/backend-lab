@@ -1,6 +1,7 @@
 ---
 title: Redis 분산 락
 description: Redis 분산 락을 사용할 때의 동작 원리와 실패 모드
+tags: [concept, redis]
 ---
 
 # Redis 분산 락

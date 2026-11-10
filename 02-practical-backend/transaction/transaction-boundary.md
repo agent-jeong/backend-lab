@@ -1,6 +1,7 @@
 ---
 title: 트랜잭션 경계 설정
 description: 트랜잭션 범위를 어디서 시작하고 끝낼지 정하는 실무 기준
+tags: [concept, transaction]
 ---
 
 # 트랜잭션 경계 설정

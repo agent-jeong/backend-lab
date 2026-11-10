@@ -1,6 +1,7 @@
 ---
 title: CSRF
 description: 브라우저 자동 인증 정보 전송을 악용한 요청 위조와 대응 기준
+tags: [concept, security]
 ---
 
 # CSRF

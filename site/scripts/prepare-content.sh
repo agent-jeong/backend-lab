@@ -23,9 +23,12 @@ for path in "${PUBLIC_PATHS[@]}"; do
   if [ -d "$ROOT_DIR/$path" ]; then
     mkdir -p "$CONTENT_DIR/$path"
     if [ "$path" = "00-home" ]; then
-      rsync -a --exclude ".DS_Store" --exclude "index.md" "$ROOT_DIR/$path/" "$CONTENT_DIR/$path/"
+      # 작업용 문서는 저장소에만 두고 블로그에는 올리지 않는다
+      rsync -a --exclude ".DS_Store" --exclude "index.md" --exclude "daily-study-board.md" --exclude "mastery-map.md" --exclude "learning-principles.md" "$ROOT_DIR/$path/" "$CONTENT_DIR/$path/"
     else
       rsync -a --exclude ".DS_Store" "$ROOT_DIR/$path/" "$CONTENT_DIR/$path/"
     fi
   fi
 done
+
+python3 "$ROOT_DIR/site/scripts/inject-dates.py" "$ROOT_DIR" "$CONTENT_DIR"

@@ -1,6 +1,7 @@
 ---
 title: WebSocket
 description: WebSocket 동작 원리와 HTTP 차이, 실무 적용 패턴
+tags: [concept, network]
 ---
 
 # WebSocket

@@ -1,6 +1,7 @@
 ---
 title: "TCP 연결과 3-way 핸드셰이크"
 description: TCP 3-way/4-way handshake와 커넥션 풀, keep-alive
+tags: [concept, network]
 ---
 
 # TCP 연결과 3-way 핸드셰이크

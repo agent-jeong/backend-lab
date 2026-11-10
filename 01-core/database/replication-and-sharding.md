@@ -1,6 +1,7 @@
 ---
 title: "DB 복제(Replication)와 샤딩"
 description: DB 복제와 샤딩의 동작 원리, 선택 기준, 실무 트레이드오프
+tags: [concept, database]
 ---
 
 # DB 복제(Replication)와 샤딩
