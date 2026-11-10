@@ -45,5 +45,6 @@ comments: false
 | [[webhook-once-without-loss]] | 커밋 후 비동기, 조건부 UPDATE, `REQUIRES_NEW` 경계 | 60초 안에 답해야 하는 웹훅을 잃지 않고 한 번만 처리하려면? |
 | [[slow-admin-query-tuning]] | 실행계획, 함수와 인덱스, 복합 인덱스 순서, p95 | 5초 걸리던 조회의 원인을 어떻게 좁혔나? |
 | [[file-storage-migration]] | 지연과 처리량, 고정 비용 분리, 누락 검사 기준, 되돌릴 수 없는 작업의 안전장치 | 100시간 추정을 어떻게 26분으로 바꾸고, 누락 0건을 무엇으로 확인했나? |
+| [[inherited-access-system-incidents]] | 장애 대조, `@Scheduled` 스레드, `parallelStream`과 트랜잭션, gRPC deadline | 이어받은 시스템의 장애 원인을 어떻게 좁혔나? |
 | [[point-balance-and-idempotent-batch]] | 잔액 계산, 분산 락의 틈, UNIQUE 멱등 배치, 데드락 | 잔액이 틀리지 않고 지급이 두 번 되지 않게 하려면? |
 
