@@ -43,6 +43,7 @@ comments: false
 
 ## 관련 문서
 
+- [[first-come-limited-stock|선착순 한정 수량을 초과 없이 팔기]] (면접 설계 문제)
 - [[02-practical-backend/transaction/transaction|transaction]]
 - [[02-practical-backend/idempotency/idempotency|idempotency]]
 - [[01-core/database/lock|lock]]
