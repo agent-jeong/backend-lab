@@ -78,6 +78,10 @@ public OrderResponse createOrder(CreateOrderCommand command) {
 - 같은 key에 다른 payload가 들어오면 어떻게 처리해야 하는가?
 - idempotency key를 얼마나 오래 보관해야 하는가?
 
+## 내 사례
+
+- [[irreversible-approval-once|되돌릴 수 없는 승인을 한 번만 보내기]]: 상대가 멱등키를 받지 않을 때
+
 ## 관련 문서
 
 - [[02-practical-backend/idempotency/idempotency|idempotency]]

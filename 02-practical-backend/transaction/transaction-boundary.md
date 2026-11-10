@@ -70,6 +70,11 @@ DB 변경만 `createOrder` 트랜잭션 안에 두고 결제 요청은 바깥에
 - Service 메서드마다 `@Transactional`을 붙이면 안전한가?
 - commit 이후 알림 발송이 실패하면 어떻게 처리할 것인가?
 
+## 내 사례
+
+- [[irreversible-approval-once|되돌릴 수 없는 승인을 한 번만 보내기]]: 전송 기록 선커밋 후 외부 호출
+- [[webhook-once-without-loss|웹훅을 잃지 않고 한 번만 처리하기]]: 저장·응답·발급을 나눈 경계
+
 ## 관련 문서
 
 - [[02-practical-backend/transaction/transaction|transaction]]

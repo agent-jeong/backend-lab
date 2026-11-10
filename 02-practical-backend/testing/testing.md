@@ -33,6 +33,10 @@ comments: false
 - 범위가 넓은 테스트일수록 믿을 만해지지만, 느려지고 유지보수 비용이 커진다.
 - 면접에서는 어떤 로직을 왜 단위/통합 테스트로 나눴는지 말한다.
 
+## 내 사례
+
+- [[inherited-access-system-incidents|이어받은 출입 시스템의 장애 추적]]: 재현 테스트를 먼저 쓰고 변이로 테스트가 실제로 잡는지 확인
+
 ## 관련 문서
 
 - [[02-practical-backend/concurrency/concurrency-test|concurrency-test]]

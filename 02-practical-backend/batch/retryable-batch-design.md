@@ -43,6 +43,10 @@ description: 실패한 배치를 안전하게 다시 실행하기 위한 상태�
 - 재처리 때 중복 처리를 어떻게 막나?
 - retryable 실패와 non-retryable 실패를 어떻게 구분하나?
 
+## 내 사례
+
+- [[file-storage-migration|첨부파일 18만 건 이관]]: 중간에 멈춰도 남은 것만 다시 옮기기
+
 ## 관련 문서
 
 - [[batch-processing]]

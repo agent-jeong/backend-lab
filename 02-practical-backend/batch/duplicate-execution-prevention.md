@@ -49,6 +49,11 @@ description: 같은 배치가 동시에 실행되어 데이터가 중복 처리�
 - Distributed lock만으로 충분하지 않은 이유는?
 - 중복 실행 테스트는 어떻게 하나?
 
+## 내 사례
+
+- [[point-balance-and-idempotent-batch|포인트 잔액 계산과 멱등 지급 배치]]: 두 번 돌아도 한 번만 지급
+- [[file-storage-migration|첨부파일 18만 건 이관]]: `flock`으로 중복 실행 막기
+
 ## 관련 문서
 
 - [[batch-processing]]

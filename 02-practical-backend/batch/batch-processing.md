@@ -34,6 +34,12 @@ comments: false
 - 배치는 정해진 시간에 대량 작업을 끝내는 일이다. 빨리 끝내는 것보다 실패 뒤 어디서부터 다시 시작할 수 있는지가 먼저다.
 - 설명할 때도 처리량보다 재처리 가능성과 데이터 정합성을 앞에 둔다.
 
+## 내 사례
+
+- [[point-balance-and-idempotent-batch|포인트 잔액 계산과 멱등 지급 배치]]: 멱등 지급 배치와 스케줄러 데드락
+- [[file-storage-migration|첨부파일 18만 건 이관]]: 중복 실행 차단, 끊겨도 이어 가는 대량 작업
+- [[inherited-access-system-incidents|이어받은 출입 시스템의 장애 추적]]: 배치 시작 시각 충돌, 한 건이 전체를 멈추는 배치
+
 ## 관련 문서
 
 - [[02-practical-backend/kubernetes/cronjob|cronjob]]

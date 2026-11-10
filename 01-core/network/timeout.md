@@ -164,6 +164,11 @@ private PaymentResult paymentFallback(PaymentRequest request, Exception e) {
 > [!question]- Circuit Breaker는 어떻게 동작하는가?
 > 연속 실패가 임계치를 넘으면 OPEN 상태로 전환되어 요청을 보내지 않고 즉시 실패를 반환합니다. 일정 시간 후 HALF_OPEN으로 전환되어 일부 요청을 시도하고, 성공하면 CLOSED로 복구합니다.
 
+## 내 사례
+
+- [[irreversible-approval-once|되돌릴 수 없는 승인을 한 번만 보내기]]: 타임아웃 = "모름"으로 다루기
+- [[inherited-access-system-incidents|이어받은 출입 시스템의 장애 추적]]: deadline을 늘려도 안 되면 연결을 본다
+
 ## 관련 문서
 
 - [[01-core/network/network|network]]

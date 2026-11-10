@@ -39,6 +39,11 @@ comments: false
 - 성능 문제는 실행 계획, 인덱스 선택도, 조인 방식, 조회 범위를 한꺼번에 본다.
 - 정합성 문제는 트랜잭션 경계, 격리 수준, 동시 요청을 같이 본다.
 
+## 내 사례
+
+- [[slow-admin-query-tuning|5초 걸리던 조회를 실행계획으로 고치기]]: 함수와 인덱스, 복합 인덱스 컬럼 순서
+- [[point-balance-and-idempotent-batch|포인트 잔액 계산과 멱등 지급 배치]]: UNIQUE 제약과 데드락
+
 ## 관련 문서
 
 - [[02-practical-backend/performance/performance|performance]]

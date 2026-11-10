@@ -35,6 +35,12 @@ comments: false
 - DB 작업과 외부 API 호출을 같은 사고방식으로 묶지 않는다.
 - 설명할 때는 ACID 암기보다 정합성 요구사항에 맞는 경계 설정을 먼저 말한다.
 
+## 내 사례
+
+- [[irreversible-approval-once|되돌릴 수 없는 승인을 한 번만 보내기]]: 외부 호출 전에 전송 기록을 먼저 커밋한 경계
+- [[webhook-once-without-loss|웹훅을 잃지 않고 한 번만 처리하기]]: 커밋 후 비동기, `REQUIRES_NEW`로 나눈 경계
+- [[point-balance-and-idempotent-batch|포인트 잔액 계산과 멱등 지급 배치]]: 여러 서버에서 겹친 스케줄러의 데드락
+
 ## 관련 문서
 
 - [[01-core/jpa/jpa|jpa]]

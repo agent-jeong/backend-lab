@@ -186,6 +186,10 @@ WHERE created_at >= '2024-01-01' AND created_at < '2025-01-01'
 > [!question]- PK가 BIGINT여야 하는 이유는?
 > PK는 Clustered Index이자 모든 Secondary Index의 리프에 저장되는 값입니다. UUID(16~36 bytes)보다 BIGINT(8 bytes)가 인덱스 크기가 작아 캐시 효율과 조회 성능이 좋습니다.
 
+## 내 사례
+
+- [[slow-admin-query-tuning|5초 걸리던 조회를 실행계획으로 고치기]]: 등호 → 범위 → GROUP BY 순 복합 인덱스
+
 ## 관련 문서
 
 - [[01-core/database/database|database]]

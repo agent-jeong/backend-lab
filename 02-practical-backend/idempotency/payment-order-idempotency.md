@@ -84,6 +84,10 @@ update count가 0이면 이유를 나눠 본다. 이미 `PAID`라면 같은 결�
 - 주문 상태 모델이 멱등성에 왜 중요한가?
 - 주문 완료 이벤트가 중복 소비되면 어떻게 막을 수 있는가?
 
+## 내 사례
+
+- [[irreversible-approval-once|되돌릴 수 없는 승인을 한 번만 보내기]]: 송금 승인 중복 방지
+
 ## 관련 문서
 
 - [[02-practical-backend/idempotency/idempotency|idempotency]]

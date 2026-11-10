@@ -39,6 +39,11 @@ comments: false
 - annotation 이름보다 "언제, 어떤 객체(프록시, 컨테이너, DispatcherServlet)가 끼어드는가"를 설명할 수 있게 공부한다.
 - 실무 장애는 대부분 Bean 주입, 프록시, 트랜잭션, 예외 처리의 경계에서 난다. 같은 클래스 안에서 호출한 `@Transactional` 메서드가 프록시를 거치지 않아 트랜잭션이 안 걸리는 게 대표적이다.
 
+## 내 사례
+
+- [[webhook-once-without-loss|웹훅을 잃지 않고 한 번만 처리하기]]: `AFTER_COMMIT` 비동기와 `REQUIRES_NEW`
+- [[inherited-access-system-incidents|이어받은 출입 시스템의 장애 추적]]: `@Scheduled` 단일 스레드, `parallelStream`과 `@Transactional`
+
 ## 관련 문서
 
 - [[02-practical-backend/performance/performance|performance]]

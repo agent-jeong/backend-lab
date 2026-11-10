@@ -73,6 +73,10 @@ public void completeOrder(Long orderId) {
 - 보상 트랜잭션과 rollback은 어떻게 다른가?
 - 이벤트 발행 후 소비자 처리가 실패하면 어떻게 해야 하는가?
 
+## 내 사례
+
+- [[webhook-once-without-loss|웹훅을 잃지 않고 한 번만 처리하기]]: 원문을 먼저 저장하고 커밋 뒤에 처리
+
 ## 관련 문서
 
 - [[02-practical-backend/transaction/transaction|transaction]]

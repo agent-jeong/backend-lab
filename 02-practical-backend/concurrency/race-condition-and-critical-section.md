@@ -67,6 +67,10 @@ int increaseIssuedCount(Long couponId);
 - 검증과 변경을 하나의 SQL로 묶으면 어떤 장점이 있는가?
 - 임계 구역을 넓게 잡으면 어떤 문제가 생기는가?
 
+## 내 사례
+
+- [[point-balance-and-idempotent-batch|포인트 잔액 계산과 멱등 지급 배치]]: 잔액 검사와 사용 사이의 틈
+
 ## 관련 문서
 
 - [[02-practical-backend/concurrency/concurrency|concurrency]]

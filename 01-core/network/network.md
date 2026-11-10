@@ -46,6 +46,11 @@ comments: false
 - retry는 일시 장애를 숨겨 주지만, 이미 느린 서버에는 부하를 몇 배로 늘린다.
 - 장애가 나면 클라이언트, 서버, DNS, LB, 방화벽, 외부 API 중 어느 구간의 문제인지부터 나눈다.
 
+## 내 사례
+
+- [[irreversible-approval-once|되돌릴 수 없는 승인을 한 번만 보내기]]: 응답 타임아웃을 "안 감"과 "모름"으로 나누기
+- [[inherited-access-system-incidents|이어받은 출입 시스템의 장애 추적]]: gRPC deadline을 바꿔도 안 될 때 연결 상태 보기
+
 ## 관련 문서
 
 - [[02-practical-backend/performance/performance|performance]]

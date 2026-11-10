@@ -35,6 +35,12 @@ comments: false
 - 최종 방어선은 DB다. idempotency key 저장소가 있어도 업무 테이블의 unique 제약과 조건부 update를 같이 둔다.
 - 설명할 때는 API 레벨(key), DB 제약, 상태 전이를 한 흐름으로 묶는다.
 
+## 내 사례
+
+- [[irreversible-approval-once|되돌릴 수 없는 승인을 한 번만 보내기]]: 멱등키 없는 외부 승인을 한 번만 보내기
+- [[webhook-once-without-loss|웹훅을 잃지 않고 한 번만 처리하기]]: 같은 웹훅이 두 번 와도 한 번만 처리
+- [[point-balance-and-idempotent-batch|포인트 잔액 계산과 멱등 지급 배치]]: 두 번 돌아도 한 번만 지급하는 배치
+
 ## 관련 문서
 
 - [[02-practical-backend/transaction/transaction|transaction]]

@@ -72,6 +72,11 @@ try {
 - 락 TTL은 어떻게 정해야 하는가?
 - 분산 락이 있어도 멱등성이 필요한 이유는 무엇인가?
 
+## 내 사례
+
+- [[irreversible-approval-once|되돌릴 수 없는 승인을 한 번만 보내기]]: `GET_LOCK`과 ShedLock 비교
+- [[point-balance-and-idempotent-batch|포인트 잔액 계산과 멱등 지급 배치]]: 분산 락의 틈
+
 ## 관련 문서
 
 - [[02-practical-backend/concurrency/concurrency|concurrency]]

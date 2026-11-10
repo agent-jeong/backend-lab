@@ -83,6 +83,10 @@ public Order markPaymentPending(Long orderId) {
 - 외부 API 성공 후 DB 반영이 실패하면 어떻게 복구할 것인가?
 - idempotency key는 왜 필요한가?
 
+## 내 사례
+
+- [[irreversible-approval-once|되돌릴 수 없는 승인을 한 번만 보내기]]: 취소할 수 없는 외부 승인 앞뒤의 트랜잭션 경계
+
 ## 관련 문서
 
 - [[02-practical-backend/transaction/transaction|transaction]]

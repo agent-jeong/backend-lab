@@ -78,6 +78,11 @@ public void completePayment(Long orderId) {
 - 상태 전이 update에서 현재 상태 조건을 넣는 이유는 무엇인가?
 - constraint violation은 항상 서버 오류로 처리해야 하는가?
 
+## 내 사례
+
+- [[webhook-once-without-loss|웹훅을 잃지 않고 한 번만 처리하기]]: 조건부 UPDATE 상태 전이
+- [[point-balance-and-idempotent-batch|포인트 잔액 계산과 멱등 지급 배치]]: UNIQUE로 막는 중복 지급
+
 ## 관련 문서
 
 - [[02-practical-backend/concurrency/concurrency|concurrency]]

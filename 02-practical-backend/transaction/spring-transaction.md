@@ -86,6 +86,10 @@ checked exception에서도 rollback해야 하면 `rollbackFor = Exception.class`
 - `REQUIRES_NEW`를 사용하면 어떤 장점과 위험이 있는가?
 - 예외를 catch하고 반환하면 트랜잭션은 어떻게 되는가?
 
+## 내 사례
+
+- [[webhook-once-without-loss|웹훅을 잃지 않고 한 번만 처리하기]]: `REQUIRES_NEW`로 상태 변경만 따로 커밋
+
 ## 관련 문서
 
 - [[02-practical-backend/transaction/transaction|transaction]]

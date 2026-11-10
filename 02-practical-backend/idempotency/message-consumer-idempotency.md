@@ -68,6 +68,10 @@ public void handle(OrderCompletedEvent event) {
 - 처리 후 ack 전에 장애가 나면 어떤 일이 생기는가?
 - event id unique와 business key unique는 어떻게 다른가?
 
+## 내 사례
+
+- [[webhook-once-without-loss|웹훅을 잃지 않고 한 번만 처리하기]]: 중복 수신을 조건부 UPDATE로 거르기
+
 ## 관련 문서
 
 - [[02-practical-backend/idempotency/idempotency|idempotency]]

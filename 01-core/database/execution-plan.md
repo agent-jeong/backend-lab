@@ -122,6 +122,10 @@ EXPLAIN ANALYZE SELECT * FROM orders WHERE user_id = 1;
 > [!question]- EXPLAIN의 rows와 실제 행 수가 다른 이유는?
 > rows는 테이블 통계(cardinality) 기반 추정치입니다. 통계가 오래되었거나 데이터 분포가 불균일하면 실제와 차이가 납니다. `ANALYZE TABLE`로 통계를 갱신할 수 있습니다.
 
+## 내 사례
+
+- [[slow-admin-query-tuning|5초 걸리던 조회를 실행계획으로 고치기]]: 풀 스캔을 실행계획으로 찾은 과정
+
 ## 관련 문서
 
 - [[01-core/database/database|database]]

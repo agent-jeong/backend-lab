@@ -68,6 +68,10 @@ batch, API, 스트리밍 작업은 성능 목표가 서로 다르다. latency는
 - throughput이 높아졌는데 사용자 경험이 나빠질 수 있는 이유는 무엇인가?
 - p99 latency가 중요한 이유는 무엇인가?
 
+## 내 사례
+
+- [[file-storage-migration|첨부파일 18만 건 이관]]: 작은 파일은 대역폭보다 왕복 지연이 병목
+
 ## 관련 문서
 
 - [[02-practical-backend/performance/performance|performance]]

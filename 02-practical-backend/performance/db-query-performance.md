@@ -75,6 +75,10 @@ limit 20;
 - 인덱스가 있는데도 느릴 수 있는 이유는 무엇인가?
 - N+1 문제를 어떻게 발견하고 해결할 것인가?
 
+## 내 사례
+
+- [[slow-admin-query-tuning|5초 걸리던 조회를 실행계획으로 고치기]]: 서브쿼리와 함수 때문에 못 탄 인덱스
+
 ## 관련 문서
 
 - [[02-practical-backend/performance/performance|performance]]

@@ -35,6 +35,12 @@ comments: false
 - lock과 멱등성은 다른 문제를 푼다. lock은 "동시에" 들어온 요청의 순서를 정하고, 멱등성은 "이미 처리된" 요청을 알아본다. 결제 재시도처럼 시간차를 두고 오는 중복은 lock으로 막히지 않는다.
 - 설명할 때는 어떤 공유 자원에서 어떤 경쟁 조건이 생겼는지부터 말한다.
 
+## 내 사례
+
+- [[irreversible-approval-once|되돌릴 수 없는 승인을 한 번만 보내기]]: DB 이름 잠금(`GET_LOCK`)과 잠금이 뚫려도 한 번만 나가는 구조
+- [[webhook-once-without-loss|웹훅을 잃지 않고 한 번만 처리하기]]: 락 대신 조건부 UPDATE로 중복 처리 막기
+- [[point-balance-and-idempotent-batch|포인트 잔액 계산과 멱등 지급 배치]]: 분산 락의 틈과 UNIQUE로 막는 마지막 선
+
 ## 관련 문서
 
 - [[02-practical-backend/transaction/transaction|transaction]]

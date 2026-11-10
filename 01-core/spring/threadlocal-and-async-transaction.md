@@ -284,6 +284,11 @@ public class AuthInterceptor implements HandlerInterceptor {
   </div>
 </div>
 
+## 내 사례
+
+- [[webhook-once-without-loss|웹훅을 잃지 않고 한 번만 처리하기]]: 커밋 후 전용 스레드풀에서 발급
+- [[inherited-access-system-incidents|이어받은 출입 시스템의 장애 추적]]: `parallelStream` 안에서 풀린 트랜잭션
+
 ## 관련 문서
 
 - [[01-core/spring/spring|spring]]

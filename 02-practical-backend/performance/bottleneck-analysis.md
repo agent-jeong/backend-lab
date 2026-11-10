@@ -64,6 +64,10 @@ API p95 1.2s
 - DB가 느려 보이지만 실제 원인이 pool 대기일 수 있는 이유는 무엇인가?
 - CPU 사용률이 낮은데 API가 느릴 수 있는 이유는 무엇인가?
 
+## 내 사례
+
+- [[file-storage-migration|첨부파일 18만 건 이관]]: dry-run으로 고정 비용 분리하기
+
 ## 관련 문서
 
 - [[02-practical-backend/performance/performance|performance]]

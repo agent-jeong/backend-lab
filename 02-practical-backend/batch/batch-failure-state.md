@@ -45,6 +45,10 @@ description: 배치 실패 원인과 재시도 가능성을 기록하는 기준
 - processing에서 멈춘 작업은 어떻게 복구하나?
 - 실패 사유는 어디까지 저장하나?
 
+## 내 사례
+
+- [[inherited-access-system-incidents|이어받은 출입 시스템의 장애 추적]]: 한 건 오류가 배치 전체를 멈춘 사례
+
 ## 관련 문서
 
 - [[batch-processing]]

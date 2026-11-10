@@ -75,6 +75,10 @@ closed model과 open model의 차이를 알고 써야 한다. 사용자가 응�
 - load test와 stress test는 어떻게 다른가?
 - 캐시 warm 상태만 테스트하면 어떤 문제가 있는가?
 
+## 내 사례
+
+- [[slow-admin-query-tuning|5초 걸리던 조회를 실행계획으로 고치기]]: 합격 기준을 코드로 둔 부하 테스트, p95
+
 ## 관련 문서
 
 - [[02-practical-backend/performance/performance|performance]]

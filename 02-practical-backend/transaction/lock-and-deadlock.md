@@ -76,6 +76,10 @@ pessimistic lock은 충돌을 미리 막지만 보유 시간이 길면 처리량
 - 조건부 update가 동시성 문제를 줄이는 이유는 무엇인가?
 - 데드락이 발생했을 때 애플리케이션은 재시도해야 하는가?
 
+## 내 사례
+
+- [[point-balance-and-idempotent-batch|포인트 잔액 계산과 멱등 지급 배치]]: 겹쳐 돈 스케줄러의 데드락
+
 ## 관련 문서
 
 - [[02-practical-backend/transaction/transaction|transaction]]

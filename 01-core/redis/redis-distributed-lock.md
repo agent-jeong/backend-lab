@@ -70,6 +70,10 @@ Redis 분산 락은 Redis key 하나를 원자적으로 선점해서, 여러 서
 - 분산 락만으로 중복 처리를 완전히 막을 수 있나?
 - Redis failover 중 분산 락의 안전성은 어떻게 판단하나?
 
+## 내 사례
+
+- [[point-balance-and-idempotent-batch|포인트 잔액 계산과 멱등 지급 배치]]: Redisson 락 안에 넣은 잔액 검사와 남은 틈
+
 ## 관련 문서
 
 - [[01-core/redis/redis|redis]]

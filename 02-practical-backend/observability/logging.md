@@ -66,6 +66,10 @@ log.warn("payment retry traceId={} orderId={} attempt={} reason={}",
 - 로그에 민감정보가 남으면 어떤 문제가 생기나?
 - 로그와 메트릭은 역할이 어떻게 다른가?
 
+## 내 사례
+
+- [[inherited-access-system-incidents|이어받은 출입 시스템의 장애 추적]]: 삼켜지던 비동기 에러에 로그 붙이기
+
 ## 관련 문서
 
 - [[observability]]

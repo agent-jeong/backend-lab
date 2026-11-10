@@ -174,6 +174,10 @@ public class OrderService {
   </div>
 </div>
 
+## 내 사례
+
+- [[inherited-access-system-incidents|이어받은 출입 시스템의 장애 추적]]: `parallelStream` 안 저장에 적용되지 않은 `@Transactional`
+
 ## 관련 문서
 
 - [[aop]]

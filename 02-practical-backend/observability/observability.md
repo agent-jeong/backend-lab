@@ -36,6 +36,10 @@ comments: false
 - 알림은 운영자가 행동할 수 있는 문제에만 울린다.
 - 면접에서는 어떤 지표와 로그로 원인을 좁혔는지 순서대로 말한다.
 
+## 내 사례
+
+- [[inherited-access-system-incidents|이어받은 출입 시스템의 장애 추적]]: 성공한 날과 실패한 날을 대조해 원인 좁히기, 삼켜지던 에러에 로그 붙이기
+
 ## 관련 문서
 
 - [[02-practical-backend/performance/performance|performance]]

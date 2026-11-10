@@ -38,6 +38,10 @@ Redis 학습 인덱스다. 상세 내용은 `01-core/redis/` 아래 문서에 �
 - 캐시는 빨라지는 대신 정합성, 만료 정책, 장애 대응이라는 숙제를 만든다.
 - Redis를 호출하는 경로마다 "Redis가 죽으면 DB로 가는가, 실패시키는가"를 정해 둔다.
 
+## 내 사례
+
+- [[point-balance-and-idempotent-batch|포인트 잔액 계산과 멱등 지급 배치]]: Redis 분산 락이 막지 못하는 틈
+
 ## 관련 문서
 
 - [[02-practical-backend/performance/performance|performance]]

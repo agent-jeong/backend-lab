@@ -6,82 +6,56 @@ comments: false
 
 # Backend Lab
 
-백엔드 주제를 실무 판단 기준과 말로 설명할 수 있는 기술 답변으로 정리하는 작업대다.
+백엔드 개념을 실무에서 어떻게 판단하는지, 그리고 면접에서 어떻게 말할지로 정리하는 위키다. 개념 노트와 직접 겪은 사례가 서로 이어져 있다.
 
-## 시작하기
+## 내 실무 사례
 
-1. [[00-home/daily-study-board|daily-study-board]]에서 학습할 주제를 고른다.
-2. 해당 주제 인덱스를 열고 핵심 질문 하나를 선택한다.
-3. 개념 문서 하나를 보강한다.
-4. [[04-interview-cases/interview-questions|technical-questions]]에 짧은 설명으로 압축한다.
+직접 겪은 문제를 회사·시스템 이름 없이 일반화했다. 각 문서 맨 위 요약 표와 "면접에서 말하기"만 읽어도 흐름이 잡힌다.
 
-결과물은 긴 글이 아니라 이 네 가지면 된다.
+| 사례 | 한 줄 요약 | 핵심 숫자 |
+|---|---|---|
+| [[irreversible-approval-once\|되돌릴 수 없는 승인을 한 번만 보내기]] | 멱등키 없는 외부 송금 승인을 중복 없이 | 응답 대기 최대 120초 |
+| [[webhook-once-without-loss\|웹훅을 잃지 않고 한 번만 처리하기]] | 저장 후 바로 응답, 커밋 후 비동기 처리 | 응답 제한 60초 |
+| [[slow-admin-query-tuning\|5초 걸리던 조회를 실행계획으로 고치기]] | 서브쿼리와 함수 때문에 못 탄 인덱스 | 부하 시 p95 90ms |
+| [[point-balance-and-idempotent-batch\|포인트 잔액 계산과 멱등 지급 배치]] | 잔액은 계산하고, 지급은 한 번만 | |
+| [[file-storage-migration\|첨부파일 18만 건 이관]] | 추정 바로잡기, 누락 검사, 안전장치 | 26분, 누락 0건 |
+| [[inherited-access-system-incidents\|이어받은 출입 시스템의 장애 추적]] | 성공한 날과 실패한 날 대조 | 9일 중 7일 실패, 실패율 18% |
+| [[rag-search-over-past-inquiries\|과거 문의 RAG 검색]] | 하이브리드 검색과 평가 세트 | top3 95.6% |
 
-- 한 줄 정의
-- 실무에서 문제가 되는 상황
-- 판단 기준 또는 해결 절차
-- 말로 할 짧은 답변
+전체 목록과 문서 구성: [[03-work-cases/work-cases|내 실무 사례]]
 
-## 학습 흐름
+## 주제 지도
 
-| 단계 | 할 일 | 산출물 |
-|---:|---|---|
-| 1 | 기존 문서 읽기와 빈칸 찾기 | 다룰 질문 1개 |
-| 2 | 공식 문서, 코드, 예제, 장애 패턴 확인 | 핵심 원리와 주의점 |
-| 3 | 실무 판단 기준으로 정리 | 체크리스트 3-5개 |
-| 4 | 설명 가능한 답변으로 압축 | 1분 요약과 꼬리 질문 |
+**기본기**: [[01-core/java/java|Java]] · [[01-core/kotlin/kotlin|Kotlin]] · [[01-core/spring/spring|Spring]] · [[01-core/jpa/jpa|JPA]] · [[01-core/database/database|Database]] · [[01-core/redis/redis|Redis]] · [[01-core/network/network|Network]] · [[01-core/os/os|OS]]
 
-## 바로가기
+**정합성**: [[02-practical-backend/transaction/transaction|트랜잭션]] · [[02-practical-backend/concurrency/concurrency|동시성]] · [[02-practical-backend/idempotency/idempotency|멱등성]]
 
-- [[00-home/daily-study-board|daily-study-board]]: 영역별 학습 주제와 산출물 가이드
-- [[00-home/mastery-map|mastery-map]]: 전체 주제와 목표 숙련도
-- [[00-home/learning-principles|learning-principles]]: 문서 작성 기준과 완료 조건
-- [[04-interview-cases/interview-questions|technical-questions]]: 기술 질문과 답변 구조
-- [[03-work-cases/work-cases|work-cases]]: 직접 겪은 문제를 일반화한 실무 사례
-- [[04-interview-cases/design-cases|design-cases]]: 면접에서 자주 나오는 설계 문제
-- [[00-home/glossary|glossary]]: 실무 핵심 용어 정리
+**운영**: [[02-practical-backend/performance/performance|성능]] · [[02-practical-backend/observability/observability|관측성]] · [[02-practical-backend/batch/batch-processing|배치]] · [[02-practical-backend/kubernetes/kubernetes|Kubernetes]] · [[02-practical-backend/ci-cd/ci-cd|CI/CD]]
 
-## 1단계: Core
+**설계와 품질**: [[02-practical-backend/architecture/architecture|아키텍처]] · [[02-practical-backend/security/security|보안]] · [[02-practical-backend/testing/testing|테스트]]
 
-기초 지식은 실무 문제를 설명하는 언어다. 문법보다 “왜 이런 문제가 생기고 어떻게 판단하는가”를 먼저 본다.
+**면접**: [[04-interview-cases/interview-questions|기술 질문]] · [[04-interview-cases/design-cases|면접 설계 문제]]
 
-- [[01-core/java/java|java]]
-- [[01-core/kotlin/kotlin|kotlin]]
-- [[01-core/spring/spring|spring]]
-- [[01-core/jpa/jpa|jpa]]
-- [[01-core/database/database|database]]
-- [[01-core/redis/redis|redis]]
-- [[01-core/network/network|network]]
-- [[01-core/os/os|os]]
+**AI**: [[05-ai-workflows/ai-workflows|AI 활용]]
 
-## 2단계: Practical Backend
+주제마다 인덱스 문서가 있고, 인덱스는 학습 순서 → 핵심 질문 → 실무에서 보는 것 → 내 사례 → 관련 문서 순서로 되어 있다.
 
-실무에서 되풀이되는 장애, 성능, 정합성, 운영 문제를 해결 절차 위주로 정리한다.
+## 공부하는 법
 
-- [[02-practical-backend/transaction/transaction|transaction]]
-- [[02-practical-backend/concurrency/concurrency|concurrency]]
-- [[02-practical-backend/idempotency/idempotency|idempotency]]
-- [[02-practical-backend/performance/performance|performance]]
-- [[02-practical-backend/observability/observability|observability]]
-- [[02-practical-backend/architecture/architecture|architecture]]
-- [[02-practical-backend/batch/batch-processing|batch-processing]]
-- [[02-practical-backend/security/security|security]]
-- [[02-practical-backend/testing/testing|testing]]
-- [[02-practical-backend/kubernetes/kubernetes|kubernetes]]
-- [[02-practical-backend/ci-cd/ci-cd|ci-cd]]
+1. [[00-home/daily-study-board|학습 보드]]에서 주제 하나를 고른다.
+2. 그 주제 인덱스에서 질문 하나를 골라 개념 노트를 보강한다.
+3. 노트 끝의 "면접에서 말하기"를 소리 내어 말해 본다.
+4. 이어진 내 사례가 있으면 같이 읽고, 개념과 경험을 한 답변으로 묶는다.
 
-## 3단계: Questions / Case / AI
+노트 하나가 끝났다고 보는 기준은 네 가지다.
 
-공부한 개념은 짧은 기술 답변과 공개 가능한 사례로 다시 만든다.
+- 무엇을 해결하는 개념인지 첫 문단에 보인다.
+- 실무에서 깨지는 상황과 판단 기준이 있다.
+- 장점만이 아니라 한계와 대가가 있다.
+- 1분 안에 말할 답변과 꼬리 질문이 있다.
 
-- [[04-interview-cases/interview-questions|technical-questions]]
-- [[03-work-cases/work-cases|work-cases]]
-- [[04-interview-cases/design-cases|design-cases]]
-- [[05-ai-workflows/ai-workflows|ai-workflows]]
+## 참고
 
-## 좋은 문서 기준
-
-- 첫 화면에서 “무엇을 해결하는 개념인지”가 보인다.
-- 추상 설명보다 장애 양상, 판단 기준, 트레이드오프가 먼저 나온다.
-- 예시는 `order`, `payment`, `user`, `example-service`처럼 공개 가능한 이름만 쓴다.
-- 끝에 질문을 받으면 바로 말할 수 있는 짧은 답변이 있다.
+- [[00-home/mastery-map|숙련도 지도]]: 주제별 목표 수준
+- [[00-home/learning-principles|학습 원칙]]: 문서 작성 기준과 완료 조건
+- [[00-home/glossary|용어집]]: 실무 핵심 용어

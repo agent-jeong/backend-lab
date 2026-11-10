@@ -69,6 +69,11 @@ retry는 일시 장애를 흡수하지만 멱등성 없이는 중복 처리 위�
 - retry와 idempotency key는 어떤 관계인가?
 - pending 상태는 왜 필요한가?
 
+## 내 사례
+
+- [[irreversible-approval-once|되돌릴 수 없는 승인을 한 번만 보내기]]: 결과를 모르면 다시 보내지 않기
+- [[webhook-once-without-loss|웹훅을 잃지 않고 한 번만 처리하기]]: 같은 웹훅 재전송
+
 ## 관련 문서
 
 - [[02-practical-backend/idempotency/idempotency|idempotency]]

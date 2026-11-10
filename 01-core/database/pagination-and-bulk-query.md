@@ -121,6 +121,10 @@ Stream<Order> findByStatusAsStream(@Param("status") String status);
 > [!question]- 대용량 데이터를 JPA로 처리할 때 주의점은?
 > 영속성 컨텍스트에 모든 Entity가 쌓이면 메모리 부족이 발생합니다. 일정 건수마다 `flush()`와 `clear()`를 호출하거나, `@Transactional(readOnly = true)`로 변경 감지를 생략해야 합니다.
 
+## 내 사례
+
+- [[slow-admin-query-tuning|5초 걸리던 조회를 실행계획으로 고치기]]: `ROW_NUMBER()` 페이징을 `LIMIT/OFFSET`으로
+
 ## 관련 문서
 
 - [[01-core/database/database|database]]
