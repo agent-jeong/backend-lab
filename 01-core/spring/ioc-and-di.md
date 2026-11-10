@@ -175,11 +175,11 @@ public class ServiceB {
 
 ## 점검 퀴즈
 
-아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+선택지를 누르면 정답과 이유가 나온다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
-    <p class="quiz-question"><span class="quiz-label">객관식</span>생성자 주입이 권장되는 가장 중요한 이유는?</p>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>생성자 주입을 권하는 이유는?</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="필수 의존성을 객체 생성 시점에 보장하고, final 사용과 테스트가 쉬우며 순환 참조를 더 빨리 드러낸다." aria-pressed="false">A. 필수 의존성을 명확히 하고 불변성과 테스트 용이성을 높인다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="생성자 주입이 성능 최적화의 핵심 이유는 아니다." aria-pressed="false">B. 런타임 성능이 항상 필드 주입보다 압도적으로 빠르다.</button>
@@ -191,7 +191,7 @@ public class ServiceB {
   <div class="quiz-card" data-quiz-card>
     <p class="quiz-question"><span class="quiz-label">OX</span>같은 타입의 Bean이 여러 개일 때 Spring은 항상 이름을 무시하고 무작위로 하나를 주입한다.</p>
     <div class="quiz-options">
-      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="Spring은 타입으로 후보를 찾고, @Primary, @Qualifier, 이름 등을 통해 후보를 좁힌다." aria-pressed="false">O</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="Spring은 타입으로 후보를 찾고, @Primary, @Qualifier, 이름으로 후보를 좁힌다." aria-pressed="false">O</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="무작위 주입이 아니라 명시적인 우선순위와 qualifier 기준을 사용한다." aria-pressed="false">X</button>
     </div>
     <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>

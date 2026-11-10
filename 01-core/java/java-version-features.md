@@ -147,7 +147,7 @@ spring:
 
 ## 점검 퀴즈
 
-아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+선택지를 누르면 정답과 이유가 나온다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
@@ -155,7 +155,7 @@ spring:
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="blocking I/O가 많은 요청 처리에서는 이점이 크지만 CPU 바운드 작업의 성능을 마법처럼 높이지는 않는다." aria-pressed="false">A. blocking I/O 중심인지 CPU 바운드인지 확인한다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="Virtual Thread가 DB 커넥션 같은 외부 리소스 한도를 없애지는 않는다." aria-pressed="false">B. DB 커넥션 풀 크기를 무시해도 되는지 확인한다.</button>
-      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="문법 변화보다 실행 모델과 blocking 특성이 중요하다." aria-pressed="false">C. var를 더 많이 쓸 수 있는지 확인한다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="문법보다 실행 모델과 blocking 여부가 달라진다." aria-pressed="false">C. var를 더 많이 쓸 수 있는지 확인한다.</button>
     </div>
     <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
   </div>

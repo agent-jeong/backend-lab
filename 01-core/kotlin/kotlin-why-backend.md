@@ -62,7 +62,7 @@ Kotlin은 Java를 대체한다기보다, JVM 백엔드에서 Java의 불편한 �
 
 ## 점검 퀴즈
 
-아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+선택지를 누르면 정답과 이유가 나온다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
@@ -87,7 +87,7 @@ Kotlin은 Java를 대체한다기보다, JVM 백엔드에서 Java의 불편한 �
   <div class="quiz-card" data-quiz-card>
     <p class="quiz-question"><span class="quiz-label">객관식</span>Kotlin의 장점을 백엔드 코드에서 가장 현실적으로 활용하는 방식은?</p>
     <div class="quiz-options">
-      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="nullable 타입, data class, 표현식 기반 문법으로 DTO와 비즈니스 로직의 의도를 명확히 하는 데 효과적이다." aria-pressed="false">A. null 가능성과 데이터 모델의 의도를 타입으로 드러낸다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="nullable 타입, data class, 표현식 문법으로 DTO와 비즈니스 로직의 의도가 코드에 드러난다." aria-pressed="false">A. null 가능성과 데이터 모델의 의도를 타입으로 드러낸다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="Kotlin이 DB 쿼리를 자동 최적화하지는 않는다." aria-pressed="false">B. DB 인덱스 설계를 자동으로 대체한다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="모든 Java 라이브러리를 제거하는 것이 목적은 아니다." aria-pressed="false">C. Java 라이브러리를 전혀 쓰지 않는 방향으로 강제한다.</button>
     </div>

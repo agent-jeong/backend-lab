@@ -105,11 +105,11 @@ JPA는 단순 CRUD와 객체 그래프 탐색에 강하다. 그 밖에서는 다
 
 ## 점검 퀴즈
 
-아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+선택지를 누르면 정답과 이유가 나온다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
-    <p class="quiz-question"><span class="quiz-label">객관식</span>JPA를 사용하는 핵심 이유로 가장 적절한 것은?</p>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>JPA를 쓰는 이유로 맞는 것은?</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="객체 모델과 관계형 DB 사이의 반복 매핑을 줄이고, 영속성 컨텍스트와 변경 감지로 도메인 중심 개발을 돕는다." aria-pressed="false">A. 객체-관계 매핑과 영속성 컨텍스트 기반 변경 관리를 제공한다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="JPA를 써도 SQL과 실행 계획 이해는 여전히 필요하다." aria-pressed="false">B. SQL 지식을 완전히 대체한다.</button>

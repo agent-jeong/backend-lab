@@ -155,13 +155,13 @@ public class JpaConfig { }
 
 ## 점검 퀴즈
 
-아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+선택지를 누르면 정답과 이유가 나온다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
     <p class="quiz-question"><span class="quiz-label">객관식</span>Entity에 기본 생성자가 필요한 이유는?</p>
     <div class="quiz-options">
-      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="JPA 구현체가 리플렉션과 프록시 생성을 통해 Entity를 생성할 수 있어야 하기 때문이다." aria-pressed="false">A. JPA가 리플렉션/프록시로 Entity를 생성할 수 있어야 하기 때문이다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="JPA 구현체가 리플렉션과 프록시로 Entity를 만들어야 하기 때문이다." aria-pressed="false">A. JPA가 리플렉션/프록시로 Entity를 생성할 수 있어야 하기 때문이다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="기본 생성자는 JSON 직렬화만을 위한 것이 아니다." aria-pressed="false">B. Jackson 직렬화만을 위해 필요하다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="기본 생성자가 모든 검증을 자동으로 수행하지 않는다." aria-pressed="false">C. 필드 검증을 자동 실행하기 위해서다.</button>
     </div>

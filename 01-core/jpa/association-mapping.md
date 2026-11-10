@@ -176,11 +176,11 @@ Cascade는 자식 Entity가 부모 없이 존재할 수 없을 때만 쓴다.
 
 ## 점검 퀴즈
 
-아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+선택지를 누르면 정답과 이유가 나온다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
-    <p class="quiz-question"><span class="quiz-label">객관식</span>연관관계의 주인이 중요한 이유는?</p>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>연관관계의 주인을 정해야 하는 이유는?</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="외래 키를 관리하는 쪽이 변경의 기준이 되며, 주인이 아닌 쪽만 수정하면 DB 반영이 안 될 수 있다." aria-pressed="false">A. 외래 키 변경을 어느 쪽 변경으로 반영할지 결정하기 때문이다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="주인은 객체 생성 순서가 아니라 외래 키 관리 기준이다." aria-pressed="false">B. 먼저 생성된 Entity를 뜻한다.</button>
@@ -199,7 +199,7 @@ Cascade는 자식 Entity가 부모 없이 존재할 수 없을 때만 쓴다.
   </div>
 
   <div class="quiz-card" data-quiz-card>
-    <p class="quiz-question"><span class="quiz-label">객관식</span>Cascade를 사용할 때 가장 중요한 판단 기준은?</p>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>Cascade를 쓸지 정하는 기준은?</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="부모와 자식의 생명주기가 정말 같은지 확인해야 한다. 공유 참조 Entity에 cascade remove를 걸면 위험하다." aria-pressed="false">A. 생명주기가 같은 aggregate 내부인지 확인한다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="cascade는 성능 최적화 옵션이 아니라 영속성 전이 옵션이다." aria-pressed="false">B. 조회 성능을 높이기 위해 모든 연관관계에 켠다.</button>

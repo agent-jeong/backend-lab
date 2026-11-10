@@ -141,14 +141,14 @@ User user = findById(id).orElseGet(() -> createDefault());
 
 ## 점검 퀴즈
 
-아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+선택지를 누르면 정답과 이유가 나온다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
     <p class="quiz-question"><span class="quiz-label">객관식</span>orElse()와 orElseGet()의 핵심 차이는?</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="orElse는 값 존재 여부와 관계없이 인자를 먼저 평가하고, orElseGet은 필요할 때 Supplier를 실행한다." aria-pressed="false">A. 기본값 계산 시점이 다르다.</button>
-      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="둘 다 Optional 값을 꺼내는 API이며 반환 타입 차이가 핵심은 아니다." aria-pressed="false">B. 반환 타입이 완전히 다르다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="둘 다 Optional 값을 꺼내는 API다. 차이는 반환 타입이 아니다." aria-pressed="false">B. 반환 타입이 완전히 다르다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="orElseGet도 null을 무조건 막아주지는 않는다." aria-pressed="false">C. orElseGet은 null을 절대 반환할 수 없다.</button>
     </div>
     <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>

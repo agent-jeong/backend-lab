@@ -1,5 +1,7 @@
 ---
 title: 기술 질문
+aliases:
+  - 04-interview/interview-questions
 description: 기술 질문과 개념 노트 연결
 comments: false
 ---

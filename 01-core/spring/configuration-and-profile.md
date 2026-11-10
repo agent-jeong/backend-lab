@@ -216,7 +216,7 @@ spring:
 
 ## 점검 퀴즈
 
-아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+선택지를 누르면 정답과 이유가 나온다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
@@ -239,7 +239,7 @@ spring:
   </div>
 
   <div class="quiz-card" data-quiz-card>
-    <p class="quiz-question"><span class="quiz-label">객관식</span>@Configuration의 CGLIB 프록시가 중요한 이유는?</p>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>@Configuration에 CGLIB 프록시가 붙는 이유는?</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="@Bean 메서드 간 호출에서도 singleton Bean이 중복 생성되지 않도록 프록시가 개입할 수 있다." aria-pressed="false">A. @Bean 메서드 호출 시 singleton 보장을 유지하기 위해서</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="CGLIB 프록시가 YAML을 암호화하는 기능은 아니다." aria-pressed="false">B. 설정 파일을 자동 암호화하기 위해서</button>

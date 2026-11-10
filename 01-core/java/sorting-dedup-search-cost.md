@@ -237,7 +237,7 @@ Set<User> users = new TreeSet<>(Comparator.comparing(User::getId));
 
 ## 점검 퀴즈
 
-아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+선택지를 누르면 정답과 이유가 나온다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
@@ -260,7 +260,7 @@ Set<User> users = new TreeSet<>(Comparator.comparing(User::getId));
   </div>
 
   <div class="quiz-card" data-quiz-card>
-    <p class="quiz-question"><span class="quiz-label">객관식</span>DB 정렬과 애플리케이션 정렬 중 선택 기준으로 가장 적절한 것은?</p>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>DB 정렬과 애플리케이션 정렬은 무엇으로 고르나?</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="페이징, 인덱스, 데이터 양을 고려하면 보통 DB에서 정렬하는 편이 안정적이다." aria-pressed="false">A. 페이징과 대량 데이터는 DB 정렬을 우선 검토한다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="모든 정렬을 애플리케이션으로 가져오면 메모리와 네트워크 비용이 커질 수 있다." aria-pressed="false">B. 데이터가 많을수록 항상 애플리케이션에서 정렬한다.</button>

@@ -114,7 +114,7 @@ pool 크기는 CPU, I/O 대기, DB connection pool, 외부 API 제한을 같이 
 
 ## 점검 퀴즈
 
-아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+선택지를 누르면 정답과 이유가 나온다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
@@ -122,7 +122,7 @@ pool 크기는 CPU, I/O 대기, DB connection pool, 외부 API 제한을 같이 
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="스레드 생성 비용과 개수를 관리하고 작업 제출/종료 정책을 분리할 수 있다." aria-pressed="false">A. 스레드 생명주기와 풀 크기를 관리하기 쉽다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="ExecutorService도 잘못 쓰면 동시성 문제가 생긴다." aria-pressed="false">B. 모든 동시성 버그를 자동으로 제거한다.</button>
-      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="비동기 처리가 항상 단일 스레드라는 뜻은 아니다." aria-pressed="false">C. 모든 작업을 반드시 하나의 스레드에서 실행한다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="비동기 처리가 항상 단일 스레드라는 뜻은 아니다." aria-pressed="false">C. 모든 작업을 하나의 스레드에서만 실행한다.</button>
     </div>
     <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
   </div>

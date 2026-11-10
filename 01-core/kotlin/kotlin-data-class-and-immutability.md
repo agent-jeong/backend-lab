@@ -95,7 +95,7 @@ class Cart(
 
 ## 점검 퀴즈
 
-아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+선택지를 누르면 정답과 이유가 나온다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
@@ -118,11 +118,11 @@ class Cart(
   </div>
 
   <div class="quiz-card" data-quiz-card>
-    <p class="quiz-question"><span class="quiz-label">객관식</span>JPA Entity에 data class를 피하는 이유로 가장 적절한 것은?</p>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>JPA Entity에 data class를 피하는 이유는?</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="data class가 생성하는 equals/hashCode/toString/copy와 final 성격이 JPA 프록시·연관관계와 충돌할 수 있다." aria-pressed="false">A. 자동 생성 메서드와 final 성격이 JPA 모델과 충돌할 수 있다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="data class에도 메서드를 정의할 수 있다." aria-pressed="false">B. data class는 메서드를 가질 수 없기 때문이다.</button>
-      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="문제의 핵심은 SQL 생성 여부가 아니라 엔티티 생명주기와 프록시다." aria-pressed="false">C. data class는 SQL을 절대 생성하지 못하기 때문이다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="문제는 SQL 생성 여부가 아니라 엔티티 생명주기와 프록시다." aria-pressed="false">C. data class는 SQL을 절대 생성하지 못하기 때문이다.</button>
     </div>
     <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
   </div>

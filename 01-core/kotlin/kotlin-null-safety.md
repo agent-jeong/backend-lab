@@ -96,11 +96,11 @@ val user = userRepository.findByIdOrNull(id)
 
 ## 점검 퀴즈
 
-아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+선택지를 누르면 정답과 이유가 나온다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
-    <p class="quiz-question"><span class="quiz-label">객관식</span>Kotlin의 nullable 타입과 non-null 타입 차이로 가장 적절한 설명은?</p>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>Kotlin의 nullable 타입과 non-null 타입 차이로 맞는 설명은?</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="String?은 null 가능성을 타입에 포함하고, String은 컴파일러가 null 대입을 제한한다." aria-pressed="false">A. null 가능성을 타입 시스템에 명시하느냐의 차이다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="non-null 타입도 Java 경계나 lateinit 등에서 런타임 NPE 가능성이 완전히 사라지는 것은 아니다." aria-pressed="false">B. non-null 타입은 어떤 상황에서도 NPE가 절대 발생하지 않는다.</button>

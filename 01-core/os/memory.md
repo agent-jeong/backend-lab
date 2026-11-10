@@ -114,18 +114,18 @@ resources:
 
 ```
 Container limit: 1Gi
-├── JVM Heap (-Xmx): 512m
+├── JVM Heap (-Xmx): 512m  (작은 컨테이너라 50%)
 ├── JVM Metaspace: ~100m
 ├── JVM Thread Stack: 스레드 수 × 1MB
 ├── JVM 내부 (GC, JIT, NIO 등): ~100~200m
 └── OS/기타: 나머지
 ```
 
-**JVM 힙은 컨테이너 limit의 50~70%** 정도로 잡는다. 나머지는 힙 외 메모리(Metaspace, 스레드 스택, NIO Direct Buffer 등)가 쓴다.
+**JVM 힙은 컨테이너 limit의 70~80%** 에서 시작한다. 나머지는 힙 외 메모리(Metaspace, 스레드 스택, NIO Direct Buffer 등)가 쓴다. 힙 외 메모리는 limit과 상관없이 수백 MB가 들기 때문에, 위 예시처럼 limit이 1Gi 정도로 작으면 50~60%로 낮춘다. 스레드가 많거나 Direct Buffer·네이티브 메모리를 많이 쓰는 앱도 비율을 낮춘다.
 
 ```bash
 # JVM이 컨테이너 메모리를 인식하도록 (Java 10+)
-java -XX:MaxRAMPercentage=70.0 -jar app.jar
+java -XX:MaxRAMPercentage=75.0 -jar app.jar
 ```
 
 ## Linux 메모리 확인
@@ -155,7 +155,7 @@ Mem:           16G     12G     200M    100M    3.8G        3.5G
 
 ## 면접에서 말하기
 
-> OS는 가상 메모리와 페이징으로 프로세스 메모리를 격리합니다. 물리 메모리가 부족하면 Swap이 생기고, Swap까지 부족하면 OOM Killer가 프로세스를 종료합니다. 저는 `free -h`에서 free가 아니라 available을 보고, 컨테이너에서는 JVM 힙을 limit의 50~70%로 잡아 Metaspace나 스레드 스택 같은 힙 외 메모리 자리를 남겨 둡니다.
+> OS는 가상 메모리와 페이징으로 프로세스 메모리를 격리합니다. 물리 메모리가 부족하면 Swap이 생기고, Swap까지 부족하면 OOM Killer가 프로세스를 종료합니다. 저는 `free -h`에서 free가 아니라 available을 보고, 컨테이너에서는 JVM 힙을 limit의 70~80%에서 시작해 Metaspace나 스레드 스택 같은 힙 외 메모리 자리를 남겨 둡니다.
 
 ## 꼬리 질문
 

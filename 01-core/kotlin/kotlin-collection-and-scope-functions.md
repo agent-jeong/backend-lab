@@ -107,11 +107,11 @@ scope function은 짧은 블록에서만 읽기 좋다. 중첩되면 일반 변�
 
 ## 점검 퀴즈
 
-아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+선택지를 누르면 정답과 이유가 나온다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
-    <p class="quiz-question"><span class="quiz-label">객관식</span>Collection 함수와 Sequence의 실무적 차이로 가장 적절한 것은?</p>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>Collection 함수와 Sequence의 실무 차이로 맞는 것은?</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="Collection은 중간 결과를 만들 수 있고, Sequence는 지연 평가로 긴 체인이나 대량 데이터에서 이점이 있을 수 있다." aria-pressed="false">A. Sequence는 지연 평가로 중간 컬렉션 생성을 줄일 수 있다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="Sequence가 항상 빠른 것은 아니다. 작은 데이터에서는 오버헤드가 더 클 수 있다." aria-pressed="false">B. Sequence는 모든 경우 Collection보다 빠르다.</button>
@@ -133,7 +133,7 @@ scope function은 짧은 블록에서만 읽기 좋다. 중첩되면 일반 변�
     <p class="quiz-question"><span class="quiz-label">객관식</span>also와 apply의 차이를 설명할 때 핵심 기준은?</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="apply는 수신 객체를 this로 다루며 객체 설정에, also는 it으로 다루며 부가 작업에 자주 쓴다." aria-pressed="false">A. 수신 객체 접근 방식과 의도</button>
-      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="둘 다 기본적으로 수신 객체를 반환한다. 반환 타입 차이가 핵심은 아니다." aria-pressed="false">B. 하나는 항상 Boolean을 반환한다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="둘 다 수신 객체를 반환한다. 차이는 반환 타입이 아니다." aria-pressed="false">B. 하나는 항상 Boolean을 반환한다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="둘 다 scope function이며 coroutine 전용 기능이 아니다." aria-pressed="false">C. apply는 coroutine에서만 사용할 수 있다.</button>
     </div>
     <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>

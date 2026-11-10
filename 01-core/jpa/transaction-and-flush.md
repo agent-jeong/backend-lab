@@ -165,11 +165,11 @@ public class NotificationService {
 
 ## 점검 퀴즈
 
-아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+선택지를 누르면 정답과 이유가 나온다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
-    <p class="quiz-question"><span class="quiz-label">객관식</span>flush와 commit의 차이로 가장 적절한 것은?</p>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>flush와 commit의 차이로 맞는 것은?</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="flush는 영속성 컨텍스트 변경을 DB에 SQL로 반영하는 과정이고, commit은 트랜잭션을 확정한다." aria-pressed="false">A. flush는 SQL 반영, commit은 트랜잭션 확정이다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="flush가 항상 commit을 의미하지 않는다." aria-pressed="false">B. flush가 발생하면 즉시 commit까지 완료된다.</button>

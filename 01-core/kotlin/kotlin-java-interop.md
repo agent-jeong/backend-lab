@@ -132,7 +132,7 @@ Entity를 `data class`로 만드는 문제는 플러그인으로 해결되지 �
 
 ## 점검 퀴즈
 
-아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+선택지를 누르면 정답과 이유가 나온다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
@@ -140,7 +140,7 @@ Entity를 `data class`로 만드는 문제는 플러그인으로 해결되지 �
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="Java에서 온 타입은 nullability 정보가 불명확해 Kotlin 컴파일러가 null 안전성을 충분히 보장하지 못한다." aria-pressed="false">A. Java 타입의 nullability가 불명확할 수 있다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="platform type이 Java 호출 자체를 막지는 않는다." aria-pressed="false">B. Java 메서드를 호출할 수 없게 만든다.</button>
-      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="성능 최적화가 아니라 nullability 경계 문제가 핵심이다." aria-pressed="false">C. 모든 호출을 reflection으로 바꾼다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="성능 최적화가 아니라 nullability 경계 문제다." aria-pressed="false">C. 모든 호출을 reflection으로 바꾼다.</button>
     </div>
     <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
   </div>
@@ -149,7 +149,7 @@ Entity를 `data class`로 만드는 문제는 플러그인으로 해결되지 �
     <p class="quiz-question"><span class="quiz-label">OX</span>Kotlin class는 기본적으로 final이므로 Spring AOP나 JPA 프록시와 충돌할 수 있다.</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="프록시 생성에는 상속/오버라이드가 필요한 경우가 있어 open 처리나 compiler plugin 설정이 필요할 수 있다." aria-pressed="false">O</button>
-      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="기본 final 특성은 Spring/JPA 경계에서 중요한 실무 포인트다." aria-pressed="false">X</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="클래스가 기본으로 final이라 Spring/JPA 프록시와 부딪힌다." aria-pressed="false">X</button>
     </div>
     <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
   </div>

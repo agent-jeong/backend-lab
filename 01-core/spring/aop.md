@@ -106,7 +106,7 @@ public class ExecutionTimeAspect {
 
 ## 점검 퀴즈
 
-아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+선택지를 누르면 정답과 이유가 나온다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
@@ -114,7 +114,7 @@ public class ExecutionTimeAspect {
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="같은 클래스 내부 메서드 호출은 프록시를 거치지 않아 AOP advice가 적용되지 않을 수 있다." aria-pressed="false">A. self-invocation에서는 advice가 적용되지 않을 수 있다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="AOP가 SQL 실행을 자동으로 제거하지 않는다." aria-pressed="false">B. 모든 DB 호출이 자동으로 캐시된다.</button>
-      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="AOP는 런타임 프록시를 통해 동작할 수 있으며 컴파일 에러가 핵심은 아니다." aria-pressed="false">C. AOP를 쓰면 컴파일이 불가능하다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="AOP는 런타임 프록시로 동작한다. 컴파일 에러와는 관계없다." aria-pressed="false">C. AOP를 쓰면 컴파일이 불가능하다.</button>
     </div>
     <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
   </div>

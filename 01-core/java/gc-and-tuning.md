@@ -206,11 +206,11 @@ java \
 
 ## 점검 퀴즈
 
-아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+선택지를 누르면 정답과 이유가 나온다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
-    <p class="quiz-question"><span class="quiz-label">객관식</span>GC 튜닝 전에 먼저 해야 할 일로 가장 적절한 것은?</p>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>GC 튜닝 전에 먼저 할 일은?</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="GC 로그, heap 사용량, 지연 시간, allocation rate를 보고 병목인지 확인해야 한다." aria-pressed="false">A. 로그와 지표로 GC가 실제 병목인지 확인한다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="근거 없이 heap을 키우면 문제를 숨기거나 컨테이너 OOM을 만들 수 있다." aria-pressed="false">B. 우선 -Xmx를 최대한 크게 올린다.</button>

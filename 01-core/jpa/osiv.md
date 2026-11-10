@@ -127,7 +127,7 @@ public class OrderService {
 
 ## 점검 퀴즈
 
-아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+선택지를 누르면 정답과 이유가 나온다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
@@ -150,7 +150,7 @@ public class OrderService {
   </div>
 
   <div class="quiz-card" data-quiz-card>
-    <p class="quiz-question"><span class="quiz-label">객관식</span>OSIV OFF에서 지연 로딩 문제를 해결하는 방식으로 가장 적절한 것은?</p>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>OSIV를 끈 상태에서 지연 로딩 문제를 푸는 방법은?</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="서비스 계층에서 필요한 조회 범위를 명확히 하고 fetch join, batch size, DTO projection 등을 사용한다." aria-pressed="false">A. 트랜잭션 안에서 필요한 데이터를 명시적으로 조회한다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="모든 연관관계를 EAGER로 바꾸면 성능 문제가 더 커질 수 있다." aria-pressed="false">B. 모든 연관관계를 EAGER로 바꾼다.</button>

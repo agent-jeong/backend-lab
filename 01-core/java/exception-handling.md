@@ -291,21 +291,21 @@ public class GlobalExceptionHandler {
 
 ## 점검 퀴즈
 
-아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+선택지를 누르면 정답과 이유가 나온다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
-    <p class="quiz-question"><span class="quiz-label">객관식</span>외부 API 호출 실패를 현재 계층에서 복구할 수 없다. 가장 적절한 처리는?</p>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>외부 API 호출 실패를 현재 계층에서 복구할 수 없다. 어떻게 처리하나?</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="실패를 null로 바꾸면 호출자가 실제 데이터 부재와 장애를 구분하기 어렵다." aria-pressed="false">A. null을 반환하고 호출자가 알아서 처리하게 한다.</button>
-      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="현재 서비스가 이해할 수 있는 예외로 변환하되 원본 예외를 cause로 보존하는 것이 적절하다." aria-pressed="false">B. 의미 있는 예외로 변환하고 원본 예외를 cause로 포함해 상위로 전파한다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="현재 서비스의 예외로 바꾸고, 원본 예외는 cause로 남긴다." aria-pressed="false">B. 의미 있는 예외로 변환하고 원본 예외를 cause로 포함해 상위로 전파한다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="모든 실패를 잡아 성공처럼 처리하면 장애 원인을 숨기고 잘못된 후속 처리를 만들 수 있다." aria-pressed="false">C. Exception으로 모두 잡고 정상 응답을 반환한다.</button>
     </div>
     <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
   </div>
 
   <div class="quiz-card" data-quiz-card>
-    <p class="quiz-question"><span class="quiz-label">OX</span>비즈니스 조건 검사는 try-catch보다 if문이나 Bean Validation으로 명시하는 것이 보통 더 적절하다.</p>
+    <p class="quiz-question"><span class="quiz-label">OX</span>비즈니스 조건 검사는 try-catch보다 if문이나 Bean Validation으로 드러내는 편이 읽기 쉽다.</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="예상 가능한 조건은 예외가 아니라 정상적인 제어 흐름으로 표현해야 장애와 분기 조건을 구분하기 쉽다." aria-pressed="false">O</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="예외를 일반 분기처럼 쓰면 흐름 이해 비용이 커지고 실제 장애와 조건 검사가 섞인다." aria-pressed="false">X</button>
@@ -318,7 +318,7 @@ public class GlobalExceptionHandler {
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="Spring은 기본적으로 모든 Exception을 롤백하지 않는다. checked exception은 별도 설정이 필요하다." aria-pressed="false">A. 모든 Exception이므로 자동 롤백된다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="기본 롤백 대상은 RuntimeException과 Error다. checked exception 롤백은 rollbackFor를 명시해야 한다." aria-pressed="false">B. 기본적으로 커밋되며, 롤백이 필요하면 rollbackFor를 명시한다.</button>
-      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="try-catch 여부가 아니라 트랜잭션 프록시 밖으로 어떤 예외가 전파되는지가 중요하다." aria-pressed="false">C. try-catch를 사용한 경우에만 롤백된다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="try-catch를 썼는지가 아니라, 트랜잭션 프록시 밖으로 어떤 예외가 나가는지가 롤백을 정한다." aria-pressed="false">C. try-catch를 사용한 경우에만 롤백된다.</button>
     </div>
     <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
   </div>

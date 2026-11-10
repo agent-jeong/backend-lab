@@ -9,6 +9,8 @@ description: Java 직렬화와 Jackson 기반 JSON 처리의 실무 주의점
 
 Spring Boot API 서버의 요청과 응답은 거의 다 JSON이다. Jackson이 알아서 처리해 주지만 규칙을 모르면 이런 일을 겪는다. 응답에서 필드가 빠지거나 null로 나온다. 날짜가 숫자 timestamp나 예상과 다른 포맷으로 나온다. JPA Entity를 그대로 반환해 순환 참조로 `StackOverflowError`가 난다. 요청 JSON과 Java 필드명이 달라 바인딩이 안 된다. enum 대소문자가 안 맞아 역직렬화가 실패한다. record DTO가 역직렬화되지 않는다.
 
+> **버전 기준**: 이 노트의 클래스 이름과 기본값은 Spring Boot 3 + Jackson 2 기준이다. Spring Boot 4부터는 Jackson 3가 기본이다. 패키지가 `com.fasterxml.jackson`에서 `tools.jackson`으로 바뀌고, 자동 설정 빈은 `ObjectMapper` 대신 `JsonMapper`, 컨버터는 `JacksonJsonHttpMessageConverter`다. Jackson 2 지원(`spring-boot-jackson2` 모듈)은 이전을 돕는 용도로만 남아 있고 deprecated다. 일부 기본값도 달라졌으므로, 이전할 때 날짜·enum 직렬화 결과를 테스트로 확인한다. Jackson 2 시절 기본값에 가깝게 맞추려면 `spring.jackson.use-jackson2-defaults=true`를 쓴다.
+
 ## Jackson은 어떻게 동작하나
 
 `@RestController`의 반환 객체는 `HttpMessageConverter`가 JSON으로 바꾼다. 기본 구현체가 Jackson의 `MappingJackson2HttpMessageConverter`다.
@@ -266,7 +268,7 @@ public record ExternalApiResponse(String userName, String emailAddress) {
 
 ## 점검 퀴즈
 
-아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+선택지를 누르면 정답과 이유가 나온다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
@@ -289,7 +291,7 @@ public record ExternalApiResponse(String userName, String emailAddress) {
   </div>
 
   <div class="quiz-card" data-quiz-card>
-    <p class="quiz-question"><span class="quiz-label">객관식</span>LocalDateTime 직렬화에서 실무적으로 중요한 기준은?</p>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>LocalDateTime을 직렬화할 때 먼저 정할 것은?</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="타임존이 없는 타입이므로 API 경계에서는 포맷과 시간대 의미를 명확히 정해야 한다." aria-pressed="false">A. 포맷과 시간대 의미를 API 스펙으로 명확히 한다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="LocalDateTime 자체에는 timezone 정보가 없다." aria-pressed="false">B. 항상 UTC 정보가 포함되어 안전하다.</button>

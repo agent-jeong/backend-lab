@@ -251,7 +251,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 
 ## 점검 퀴즈
 
-아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+선택지를 누르면 정답과 이유가 나온다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
@@ -259,7 +259,7 @@ public class AuthInterceptor implements HandlerInterceptor {
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="Spring 트랜잭션 컨텍스트는 주로 ThreadLocal에 묶여 있고 @Async는 다른 스레드에서 실행되기 때문이다." aria-pressed="false">A. 트랜잭션 컨텍스트가 ThreadLocal 기반인데 다른 스레드에서 실행되기 때문이다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="@Async가 항상 같은 스레드에서 실행되는 것은 아니다." aria-pressed="false">B. @Async가 같은 스레드에서 동기 실행되기 때문이다.</button>
-      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="문제의 핵심은 final 여부가 아니라 스레드 경계다." aria-pressed="false">C. 메서드명이 async로 끝나지 않기 때문이다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="문제는 final 여부가 아니라 스레드 경계다." aria-pressed="false">C. 메서드명이 async로 끝나지 않기 때문이다.</button>
     </div>
     <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
   </div>

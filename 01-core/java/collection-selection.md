@@ -126,7 +126,7 @@ JPA N+1을 줄인 뒤 메모리에서 데이터를 조립할 때 자주 쓰는 �
 
 ## 점검 퀴즈
 
-아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+선택지를 누르면 정답과 이유가 나온다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
@@ -142,7 +142,7 @@ JPA N+1을 줄인 뒤 메모리에서 데이터를 조립할 때 자주 쓰는 �
   <div class="quiz-card" data-quiz-card>
     <p class="quiz-question"><span class="quiz-label">OX</span>HashSet의 중복 판단은 equals와 hashCode에 의존한다.</p>
     <div class="quiz-options">
-      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="HashSet은 내부적으로 HashMap 구조를 사용하므로 hashCode와 equals 계약이 중요하다." aria-pressed="false">O</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="HashSet은 안에서 HashMap을 쓰므로 hashCode와 equals 계약을 그대로 따른다." aria-pressed="false">O</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="참조 주소만으로 중복을 판단하지 않는다. equals/hashCode 구현이 기준이 된다." aria-pressed="false">X</button>
     </div>
     <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>

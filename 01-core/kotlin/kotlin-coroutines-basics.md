@@ -105,11 +105,11 @@ cancellation은 협력적으로 동작한다. 취소 신호를 확인하는 지�
 
 ## 점검 퀴즈
 
-아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+선택지를 누르면 정답과 이유가 나온다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
-    <p class="quiz-question"><span class="quiz-label">객관식</span>Coroutine과 Thread의 차이로 가장 적절한 설명은?</p>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>Coroutine과 Thread의 차이로 맞는 설명은?</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="Coroutine은 Thread보다 가벼운 실행 단위이며, suspend 지점에서 스레드를 점유하지 않고 중단/재개될 수 있다." aria-pressed="false">A. Coroutine은 suspend 지점에서 중단·재개 가능한 가벼운 실행 단위다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="Coroutine이 항상 새 OS 스레드를 만드는 것은 아니다." aria-pressed="false">B. Coroutine 하나는 항상 OS Thread 하나를 새로 만든다.</button>
@@ -128,7 +128,7 @@ cancellation은 협력적으로 동작한다. 취소 신호를 확인하는 지�
   </div>
 
   <div class="quiz-card" data-quiz-card>
-    <p class="quiz-question"><span class="quiz-label">객관식</span>suspend 함수의 의미로 가장 적절한 것은?</p>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>suspend 함수의 의미로 맞는 것은?</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="호출 지점에서 중단될 수 있으며, 중단 중에는 스레드를 계속 점유하지 않을 수 있음을 표현한다." aria-pressed="false">A. 중단 가능 지점을 타입 수준에 드러낸다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="suspend가 붙었다고 항상 별도 스레드에서 실행되는 것은 아니다." aria-pressed="false">B. 항상 새 스레드에서 실행된다는 뜻이다.</button>

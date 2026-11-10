@@ -90,7 +90,7 @@ if ("ACTIVE".equals(status)) {
 
 ## 점검 퀴즈
 
-아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+선택지를 누르면 정답과 이유가 나온다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
@@ -117,7 +117,7 @@ if ("ACTIVE".equals(status)) {
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="Boolean은 null이 될 수 있어 auto-unboxing 시 NullPointerException이 발생할 수 있다." aria-pressed="false">A. null 값이 auto-unboxing되면 NPE가 날 수 있다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="Boolean 자체가 동시성 안전성을 제공하지는 않는다." aria-pressed="false">B. Boolean은 멀티스레드에서 항상 race condition을 만든다.</button>
-      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="값이 두 개뿐이라는 점이 문제가 아니라 null 가능성이 핵심이다." aria-pressed="false">C. true/false만 표현할 수 있어서 상태 표현이 불가능하다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="값이 두 개뿐이라서가 아니라 null이 들어올 수 있어서 문제다." aria-pressed="false">C. true/false만 표현할 수 있어서 상태 표현이 불가능하다.</button>
     </div>
     <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
   </div>

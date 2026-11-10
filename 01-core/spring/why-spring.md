@@ -106,11 +106,11 @@ Spring Boot는 Spring Framework 위에서 동작하는 도구다. IoC, DI, AOP�
 
 ## 점검 퀴즈
 
-아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+선택지를 누르면 정답과 이유가 나온다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
-    <p class="quiz-question"><span class="quiz-label">객관식</span>Spring이 백엔드 개발에서 제공하는 핵심 가치로 가장 적절한 것은?</p>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>Spring이 백엔드 개발에서 주는 가치로 맞는 것은?</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="객체 생성과 의존관계 관리를 컨테이너에 맡겨 애플리케이션 구조를 일관되게 만들고 확장 지점을 제공한다." aria-pressed="false">A. IoC 컨테이너를 통한 객체 관리와 일관된 확장 구조</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="Spring이 SQL 튜닝을 자동으로 대체하지는 않는다." aria-pressed="false">B. 모든 DB 쿼리를 자동으로 최적화한다.</button>
@@ -129,7 +129,7 @@ Spring Boot는 Spring Framework 위에서 동작하는 도구다. IoC, DI, AOP�
   </div>
 
   <div class="quiz-card" data-quiz-card>
-    <p class="quiz-question"><span class="quiz-label">객관식</span>IoC와 DI의 관계로 가장 적절한 설명은?</p>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>IoC와 DI의 관계로 맞는 설명은?</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="IoC는 제어 흐름을 컨테이너가 가져가는 원칙이고, DI는 의존성 주입으로 이를 구현하는 대표 방식이다." aria-pressed="false">A. DI는 IoC를 구현하는 대표적인 방식이다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="IoC와 DI는 연관되지만 완전히 같은 단어는 아니다." aria-pressed="false">B. IoC와 DI는 항상 완전히 같은 의미다.</button>

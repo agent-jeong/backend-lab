@@ -112,7 +112,7 @@ JPA는 Entity를 프록시로 감싸거나 필드 값을 읽어 변경 감지를
 
 ## 점검 퀴즈
 
-아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+선택지를 누르면 정답과 이유가 나온다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
@@ -135,7 +135,7 @@ JPA는 Entity를 프록시로 감싸거나 필드 값을 읽어 변경 감지를
   </div>
 
   <div class="quiz-card" data-quiz-card>
-    <p class="quiz-question"><span class="quiz-label">객관식</span>Reflection 사용 시 실무에서 주의할 점으로 가장 적절한 것은?</p>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>Reflection을 쓸 때 실무에서 주의할 점은?</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="컴파일 타임 안전성이 약해지고 성능/접근 제어/리팩터링 추적 문제가 생길 수 있다." aria-pressed="false">A. 타입 안전성과 성능, 리팩터링 안정성을 확인한다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="Reflection이 항상 직접 호출보다 빠른 것은 아니다." aria-pressed="false">B. 직접 메서드 호출보다 항상 빠르다.</button>

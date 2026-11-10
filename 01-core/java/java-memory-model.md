@@ -117,11 +117,11 @@ happens-before는 한 작업의 결과가 다른 작업에 보이도록 보장�
 
 ## 점검 퀴즈
 
-아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+선택지를 누르면 정답과 이유가 나온다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
-    <p class="quiz-question"><span class="quiz-label">객관식</span>visibility와 atomicity의 차이로 가장 적절한 것은?</p>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>visibility와 atomicity의 차이로 맞는 것은?</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="visibility는 변경을 다른 스레드가 볼 수 있는가, atomicity는 연산이 쪼개지지 않는가의 문제다." aria-pressed="false">A. 보이는 문제와 쪼개지지 않는 문제는 다르다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="volatile은 모든 복합 연산을 원자적으로 만들지 않는다." aria-pressed="false">B. visibility가 보장되면 모든 증가 연산도 안전하다.</button>
@@ -140,7 +140,7 @@ happens-before는 한 작업의 결과가 다른 작업에 보이도록 보장�
   </div>
 
   <div class="quiz-card" data-quiz-card>
-    <p class="quiz-question"><span class="quiz-label">객관식</span>synchronized가 제공하는 보장으로 가장 적절한 것은?</p>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>synchronized가 보장하는 것은?</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="동일 모니터 기준으로 상호 배제와 happens-before에 따른 가시성을 제공한다." aria-pressed="false">A. 상호 배제와 가시성 보장을 함께 제공한다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="synchronized가 모든 비동기 작업을 병렬로 만드는 것은 아니다." aria-pressed="false">B. 모든 코드를 자동 병렬화한다.</button>

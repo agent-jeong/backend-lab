@@ -164,7 +164,7 @@ Entity는 값 객체처럼 모든 필드로 `equals()`와 `hashCode()`를 만들
 
 ## 점검 퀴즈
 
-아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+선택지를 누르면 정답과 이유가 나온다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
@@ -180,8 +180,8 @@ Entity는 값 객체처럼 모든 필드로 `equals()`와 `hashCode()`를 만들
     <p class="quiz-question"><span class="quiz-label">객관식</span>mutable 객체를 HashMap key로 쓰면 위험한 이유는?</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="key의 hashCode나 equals 기준 값이 바뀌면 저장된 버킷과 조회 버킷이 달라질 수 있다." aria-pressed="false">A. 저장 후 key 값이 바뀌면 다시 조회하지 못할 수 있다.</button>
-      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="HashMap이 key를 복사하지 않는 것이 핵심은 맞지만, 문제는 동등성 기준 변경이다." aria-pressed="false">B. HashMap이 key를 항상 deep copy하기 때문이다.</button>
-      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="성능보다 정합성 문제가 더 중요하다." aria-pressed="false">C. HashMap이 자동으로 TreeMap으로 바뀌기 때문이다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="HashMap이 key를 복사하지 않는 건 맞다. 하지만 문제는 넣은 뒤 동등성 기준이 바뀌는 것이다." aria-pressed="false">B. HashMap이 key를 항상 deep copy하기 때문이다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="성능보다 정합성이 먼저 깨진다." aria-pressed="false">C. HashMap이 자동으로 TreeMap으로 바뀌기 때문이다.</button>
     </div>
     <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
   </div>

@@ -129,7 +129,7 @@ int bulkUpdateStatus(@Param("ids") List<Long> ids, @Param("status") UserStatus s
 
 ## 점검 퀴즈
 
-아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+선택지를 누르면 정답과 이유가 나온다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
@@ -152,7 +152,7 @@ int bulkUpdateStatus(@Param("ids") List<Long> ids, @Param("status") UserStatus s
   </div>
 
   <div class="quiz-card" data-quiz-card>
-    <p class="quiz-question"><span class="quiz-label">객관식</span>@DynamicUpdate를 항상 쓰지 않는 이유로 적절한 것은?</p>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>@DynamicUpdate를 항상 쓰지 않는 이유는?</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="변경 컬럼만 UPDATE할 수 있지만 SQL이 다양해져 쿼리 캐시나 실행 계획 재사용에 불리할 수 있다." aria-pressed="false">A. SQL 형태가 다양해지는 비용이 생길 수 있다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="@DynamicUpdate가 모든 UPDATE를 막는 기능은 아니다." aria-pressed="false">B. UPDATE가 절대 실행되지 않게 만든다.</button>

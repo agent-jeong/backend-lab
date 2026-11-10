@@ -141,7 +141,7 @@ public class OrderService {
 
 ## 점검 퀴즈
 
-아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+선택지를 누르면 정답과 이유가 나온다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
@@ -164,7 +164,7 @@ public class OrderService {
   </div>
 
   <div class="quiz-card" data-quiz-card>
-    <p class="quiz-question"><span class="quiz-label">객관식</span>@Transactional 동작 여부를 테스트에서 확인하는 방법으로 가장 적절한 것은?</p>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>@Transactional이 실제로 동작하는지 테스트에서 확인하는 방법은?</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="실제 프록시를 통한 호출 경로와 롤백/커밋 결과를 검증해야 한다. 단순히 어노테이션 존재만 보면 부족하다." aria-pressed="false">A. 프록시 호출 경로와 DB 반영/롤백 결과를 함께 검증한다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="어노테이션이 붙었다고 항상 적용되는 것은 아니다." aria-pressed="false">B. 리플렉션으로 어노테이션 존재만 확인한다.</button>

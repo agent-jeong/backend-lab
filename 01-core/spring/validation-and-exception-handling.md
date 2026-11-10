@@ -208,11 +208,11 @@ public record ErrorResponse(String code, String message) { }
 
 ## 점검 퀴즈
 
-아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+선택지를 누르면 정답과 이유가 나온다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
-    <p class="quiz-question"><span class="quiz-label">객관식</span>@Valid와 @Validated의 차이로 가장 적절한 것은?</p>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>@Valid와 @Validated의 차이로 맞는 것은?</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="@Validated는 Spring의 검증 애노테이션으로 validation group 지정 등 Spring 기능과 함께 쓰인다." aria-pressed="false">A. @Validated는 validation group 같은 Spring 검증 기능에 유용하다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="@Valid도 요청 DTO 검증에 사용할 수 있다." aria-pressed="false">B. @Valid는 DTO 검증에 사용할 수 없다.</button>
@@ -231,7 +231,7 @@ public record ErrorResponse(String code, String message) { }
   </div>
 
   <div class="quiz-card" data-quiz-card>
-    <p class="quiz-question"><span class="quiz-label">객관식</span>글로벌 예외 핸들러를 설계할 때 중요한 기준은?</p>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>글로벌 예외 핸들러를 설계할 때 정할 것은?</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="예외 종류를 HTTP 상태 코드와 일관된 에러 응답으로 변환하고, 민감 정보는 응답에 노출하지 않는다." aria-pressed="false">A. 예외를 일관된 상태 코드/응답으로 변환하고 민감 정보 노출을 막는다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="모든 예외를 200으로 응답하면 클라이언트와 모니터링이 실패를 인식하기 어렵다." aria-pressed="false">B. 모든 예외를 HTTP 200으로 반환한다.</button>

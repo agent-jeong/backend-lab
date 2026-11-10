@@ -204,11 +204,11 @@ public class Order {
 
 ## 점검 퀴즈
 
-아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+선택지를 누르면 정답과 이유가 나온다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
-    <p class="quiz-question"><span class="quiz-label">객관식</span>record를 JPA Entity로 사용하기 어려운 가장 직접적인 이유는?</p>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>record를 JPA Entity로 쓰기 어려운 이유는?</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="record도 메서드를 가질 수 있다. 핵심 제약은 상속/프록시와 불변 구조다." aria-pressed="false">A. record는 메서드를 정의할 수 없기 때문이다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="record는 final이고 필드가 불변이라 JPA 프록시, 지연 로딩, 변경 감지 모델과 맞지 않는다." aria-pressed="false">B. final 불변 구조가 JPA 프록시와 변경 감지 방식에 맞지 않기 때문이다.</button>
@@ -230,8 +230,8 @@ public class Order {
     <p class="quiz-question"><span class="quiz-label">객관식</span>@Enumerated(ORDINAL)이 위험한 이유는?</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="enum 순서가 바뀌거나 중간에 값이 추가되면 DB에 저장된 숫자의 의미가 바뀔 수 있다." aria-pressed="false">A. enum 선언 순서 변경이 저장 데이터 의미를 깨뜨릴 수 있다.</button>
-      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="문자열 길이보다 데이터 의미 안정성이 더 중요하다." aria-pressed="false">B. 문자열보다 항상 저장 공간을 많이 쓰기 때문이다.</button>
-      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="컴파일 에러로 잡히지 않는 데이터 호환성 문제가 핵심이다." aria-pressed="false">C. 컴파일 자체가 되지 않기 때문이다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="저장 공간보다 저장된 숫자의 의미가 바뀌는 게 문제다." aria-pressed="false">B. 문자열보다 항상 저장 공간을 많이 쓰기 때문이다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="컴파일은 된다. 문제는 컴파일러가 잡지 못하는 데이터 호환성이다." aria-pressed="false">C. 컴파일 자체가 되지 않기 때문이다.</button>
     </div>
     <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
   </div>

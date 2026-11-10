@@ -168,7 +168,7 @@ JPA가 변경 감지(dirty checking)를 건너뛰어 스냅샷 비교 비용이 
 
 ## 점검 퀴즈
 
-아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+선택지를 누르면 정답과 이유가 나온다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
@@ -191,7 +191,7 @@ JPA가 변경 감지(dirty checking)를 건너뛰어 스냅샷 비교 비용이 
   </div>
 
   <div class="quiz-card" data-quiz-card>
-    <p class="quiz-question"><span class="quiz-label">객관식</span>readOnly = true의 실무적 의미로 가장 적절한 것은?</p>
+    <p class="quiz-question"><span class="quiz-label">객관식</span>readOnly = true의 실무 의미로 맞는 것은?</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="JPA flush 최적화나 DB read-only 힌트 등으로 쓰일 수 있지만 쓰기 방지 보안 장치로만 믿으면 안 된다." aria-pressed="false">A. 읽기 최적화 힌트로 보고 쓰기 방지 장치로 과신하지 않는다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="readOnly가 모든 DB 쓰기를 물리적으로 항상 차단한다고 단정할 수 없다." aria-pressed="false">B. 어떤 환경에서도 INSERT/UPDATE가 100% 불가능해진다.</button>

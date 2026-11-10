@@ -164,7 +164,7 @@ public class ServiceLoggingAspect {
 
 ## 점검 퀴즈
 
-아래 문항은 개념을 실제로 설명할 수 있는지 점검하기 위한 것이다. 선택지를 누르면 정답 여부와 이유가 표시된다.
+선택지를 누르면 정답과 이유가 나온다.
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
@@ -172,7 +172,7 @@ public class ServiceLoggingAspect {
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="인증/인가 판단은 DispatcherServlet에 도달하기 전 요청 경계에서 처리해야 하는 경우가 많기 때문이다." aria-pressed="false">A. Spring MVC 진입 전 HTTP 요청 경계에서 보안 처리가 필요하기 때문이다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="Security가 Controller 내부 로직만 다루는 것은 아니다." aria-pressed="false">B. Controller 메서드 실행 후에만 인증해야 하기 때문이다.</button>
-      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="보안 처리를 DB 트랜잭션 이후로 미루는 것은 적절하지 않다." aria-pressed="false">C. 트랜잭션 커밋 뒤에만 권한을 확인해야 하기 때문이다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="보안 처리를 DB 트랜잭션 뒤로 미루면 안 된다." aria-pressed="false">C. 트랜잭션 커밋 뒤에만 권한을 확인해야 하기 때문이다.</button>
     </div>
     <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
   </div>
