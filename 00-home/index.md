@@ -13,7 +13,7 @@ comments: false
 1. [[00-home/daily-study-board|daily-study-board]]에서 학습할 주제를 고른다.
 2. 해당 주제 인덱스를 열고 핵심 질문 하나를 선택한다.
 3. 개념 문서 하나를 보강한다.
-4. [[04-interview/interview-questions|technical-questions]]에 짧은 설명으로 압축한다.
+4. [[04-interview-cases/interview-questions|technical-questions]]에 짧은 설명으로 압축한다.
 
 결과물은 긴 글이 아니라 이 네 가지면 된다.
 
@@ -36,8 +36,9 @@ comments: false
 - [[00-home/daily-study-board|daily-study-board]]: 영역별 학습 주제와 산출물 가이드
 - [[00-home/mastery-map|mastery-map]]: 전체 주제와 목표 숙련도
 - [[00-home/learning-principles|learning-principles]]: 문서 작성 기준과 완료 조건
-- [[04-interview/interview-questions|technical-questions]]: 기술 질문과 답변 구조
-- [[03-case-studies/case-studies|case-studies]]: 공개 가능한 실무 사례 정리
+- [[04-interview-cases/interview-questions|technical-questions]]: 기술 질문과 답변 구조
+- [[03-work-cases/work-cases|work-cases]]: 직접 겪은 문제를 일반화한 실무 사례
+- [[04-interview-cases/design-cases|design-cases]]: 면접에서 자주 나오는 설계 문제
 - [[00-home/glossary|glossary]]: 실무 핵심 용어 정리
 
 ## 1단계: Core
@@ -73,8 +74,9 @@ comments: false
 
 공부한 개념은 짧은 기술 답변과 공개 가능한 사례로 다시 만든다.
 
-- [[04-interview/interview-questions|technical-questions]]
-- [[03-case-studies/case-studies|case-studies]]
+- [[04-interview-cases/interview-questions|technical-questions]]
+- [[03-work-cases/work-cases|work-cases]]
+- [[04-interview-cases/design-cases|design-cases]]
 - [[05-ai-workflows/ai-workflows|ai-workflows]]
 
 ## 좋은 문서 기준

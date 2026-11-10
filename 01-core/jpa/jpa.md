@@ -41,4 +41,4 @@ JPA 학습 인덱스다. 상세 내용은 `01-core/jpa/` 아래 문서에 둔다
 ## 관련 문서
 
 - [[02-practical-backend/performance/performance|performance]]
-- [[04-interview/interview-questions|technical-questions]]
+- [[04-interview-cases/interview-questions|technical-questions]]

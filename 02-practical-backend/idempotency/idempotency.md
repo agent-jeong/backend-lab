@@ -41,5 +41,5 @@ comments: false
 - [[02-practical-backend/concurrency/concurrency|concurrency]]
 - [[02-practical-backend/transaction/external-api-and-transaction|external-api-and-transaction]]
 - [[02-practical-backend/transaction/compensation-and-outbox|compensation-and-outbox]]
-- [[03-case-studies/case-studies|case-studies]]
-- [[04-interview/interview-questions|technical-questions]]
+- [[03-work-cases/work-cases|work-cases]]
+- [[04-interview-cases/interview-questions|technical-questions]]

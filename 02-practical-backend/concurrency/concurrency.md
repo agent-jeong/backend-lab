@@ -40,5 +40,5 @@ comments: false
 - [[02-practical-backend/transaction/transaction|transaction]]
 - [[02-practical-backend/idempotency/idempotency|idempotency]]
 - [[01-core/database/lock|lock]]
-- [[03-case-studies/case-studies|case-studies]]
-- [[04-interview/interview-questions|technical-questions]]
+- [[03-work-cases/work-cases|work-cases]]
+- [[04-interview-cases/interview-questions|technical-questions]]

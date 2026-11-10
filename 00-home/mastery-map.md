@@ -13,8 +13,8 @@ comments: false
 | 활동 | 목표 | 산출물 |
 |---|---|---|
 | 개념 학습 | 한 개념을 실무 문제와 연결 | 개념 문서 1개 보강 |
-| 질문 압축 | 기술 질문으로 압축 | [technical-questions](../04-interview/interview-questions.md) 답변 1개 |
-| 사례 정리 | 사례로 재구성 | [case-studies](../03-case-studies/case-studies.md) 항목 1개 보강 |
+| 질문 압축 | 기술 질문으로 압축 | [technical-questions](../04-interview-cases/interview-questions.md) 답변 1개 |
+| 사례 정리 | 사례로 재구성 | [work-cases](../03-work-cases/work-cases.md) 항목 1개 보강 |
 | 레벨 점검 | 부족한 영역 재배치 | 현재 레벨 업데이트 |
 
 ## 숙련도 기준

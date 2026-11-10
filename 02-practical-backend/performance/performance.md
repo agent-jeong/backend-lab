@@ -44,5 +44,5 @@ comments: false
 - [[01-core/network/network|network]]
 - [[01-core/os/os|os]]
 - [[02-practical-backend/observability/observability|observability]]
-- [[03-case-studies/case-studies|case-studies]]
-- [[04-interview/interview-questions|technical-questions]]
+- [[03-work-cases/work-cases|work-cases]]
+- [[04-interview-cases/interview-questions|technical-questions]]

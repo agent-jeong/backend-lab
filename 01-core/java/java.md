@@ -63,4 +63,4 @@ Java Core 학습 인덱스다. 상세 내용은 `01-core/java/` 아래 개념 �
 - [[02-practical-backend/concurrency/concurrency|concurrency]]
 - [[01-core/spring/spring|spring]]
 - [[01-core/jpa/jpa|jpa]]
-- [[04-interview/interview-questions|technical-questions]]
+- [[04-interview-cases/interview-questions|technical-questions]]

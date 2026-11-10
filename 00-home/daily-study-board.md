@@ -64,7 +64,7 @@ comments: false
 
 | 주제 | 산출물 | 기술 질문 |
 |---|---|---|
-| [case-studies](../03-case-studies/case-studies.md) | 하나의 사례를 문제-원인-해결로 정리 | 프로젝트 경험을 어떻게 기술적으로 설명하나? |
+| [work-cases](../03-work-cases/work-cases.md) | 하나의 사례를 문제-원인-해결로 정리 | 프로젝트 경험을 어떻게 기술적으로 설명하나? |
 
 ## 학습 체크리스트
 

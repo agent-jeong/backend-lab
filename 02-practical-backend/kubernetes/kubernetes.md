@@ -41,4 +41,4 @@ comments: false
 - [[02-practical-backend/ci-cd/ci-cd|ci-cd]]
 - [[02-practical-backend/batch/batch-processing|batch-processing]]
 - [[02-practical-backend/observability/observability|observability]]
-- [[04-interview/interview-questions|technical-questions]]
+- [[04-interview-cases/interview-questions|technical-questions]]

@@ -13,8 +13,8 @@ PUBLIC_PATHS=(
   "00-home"
   "01-core"
   "02-practical-backend"
-  "03-case-studies"
-  "04-interview"
+  "03-work-cases"
+  "04-interview-cases"
   "05-ai-workflows"
   "_assets"
 )

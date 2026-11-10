@@ -39,5 +39,5 @@ comments: false
 
 - [[01-core/network/cors|cors]]
 - [[02-practical-backend/observability/logging|logging]]
-- [[03-case-studies/case-studies|case-studies]]
-- [[04-interview/interview-questions|technical-questions]]
+- [[03-work-cases/work-cases|work-cases]]
+- [[04-interview-cases/interview-questions|technical-questions]]

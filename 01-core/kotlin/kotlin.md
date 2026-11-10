@@ -43,4 +43,4 @@ comments: false
 - [[01-core/jpa/jpa|jpa]]
 - [[02-practical-backend/concurrency/concurrency|concurrency]]
 - [[02-practical-backend/performance/performance|performance]]
-- [[04-interview/interview-questions|technical-questions]]
+- [[04-interview-cases/interview-questions|technical-questions]]

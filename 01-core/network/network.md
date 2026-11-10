@@ -49,4 +49,4 @@ comments: false
 ## 관련 문서
 
 - [[02-practical-backend/performance/performance|performance]]
-- [[04-interview/interview-questions|technical-questions]]
+- [[04-interview-cases/interview-questions|technical-questions]]
