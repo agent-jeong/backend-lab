@@ -40,6 +40,7 @@ comments: false
 | 사례 | 연결 개념 | 핵심 질문 |
 |---|---|---|
 | [[irreversible-approval-once]] | 멱등성, `GET_LOCK`, 타임아웃 분류, 트랜잭션 경계 | 멱등키 없는 외부 승인에서 송금이 두 번 나가지 않게 하려면? |
+| [[webhook-once-without-loss]] | 커밋 후 비동기, 조건부 UPDATE, `REQUIRES_NEW` 경계 | 60초 안에 답해야 하는 웹훅을 잃지 않고 한 번만 처리하려면? |
 
 ## 일반 사례 목록
 
