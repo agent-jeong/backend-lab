@@ -1,9 +1,9 @@
 ---
-title: Kotlin Java Interop
+title: Kotlin과 Java 함께 쓰기
 description: Kotlin과 Java를 함께 사용할 때 nullability, annotation, 예외, 빌드 경계에서 주의할 점
 ---
 
-# Kotlin Java Interop
+# Kotlin과 Java 함께 쓰기
 
 Kotlin과 Java는 같은 JVM에서 서로를 호출한다. 문제는 그 경계에서 Kotlin의 안전장치가 약해진다는 점이다.
 

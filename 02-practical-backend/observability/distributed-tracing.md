@@ -1,9 +1,9 @@
 ---
-title: Distributed Tracing
+title: 분산 추적
 description: 분산 시스템에서 요청 흐름과 의존성 지연을 추적하는 방법
 ---
 
-# Distributed Tracing
+# 분산 추적
 
 Distributed Tracing은 요청 하나가 여러 서비스와 의존성을 거치는 과정을 span 단위로 기록해, 전체 흐름과 지연 구간을 보여 주는 방식이다.
 

@@ -1,9 +1,9 @@
 ---
-title: Build Pipeline
+title: 빌드 파이프라인
 description: 소스 변경을 검증 가능한 artifact로 만드는 단계
 ---
 
-# Build Pipeline
+# 빌드 파이프라인
 
 Build Pipeline은 소스 코드를 가져와 정적 검증, 테스트, 빌드, 이미지 생성, artifact 저장까지 매번 같은 단계로 돌리는 흐름이다.
 

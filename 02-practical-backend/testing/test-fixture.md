@@ -1,9 +1,9 @@
 ---
-title: Test Fixture
+title: 테스트 픽스처
 description: 테스트 데이터를 읽기 쉽고 유지보수 가능하게 관리하는 기준
 ---
 
-# Test Fixture
+# 테스트 픽스처
 
 Test Fixture는 테스트 실행에 필요한 객체, DB 데이터, 외부 응답을 준비하는 데이터와 구성이다.
 

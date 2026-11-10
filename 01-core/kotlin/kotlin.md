@@ -29,7 +29,7 @@ comments: false
 - coroutine은 thread를 대체하는가, 아니면 다른 추상화인가?
 - Spring MVC/JPA 기반 서비스에서 coroutine을 쓸 때 어떤 한계가 있는가?
 
-## 공부할 때 기준
+## 실무에서 보는 것
 
 - Kotlin의 장점은 짧은 문법보다 null 안정성, 불변 데이터 모델, 읽기 쉬운 컬렉션 처리에 있다.
 - Java와 섞인 프로젝트에서 NPE는 대부분 interop 경계(platform type)에서 난다.

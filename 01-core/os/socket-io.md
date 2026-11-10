@@ -1,9 +1,9 @@
 ---
-title: Socket I/O
+title: 소켓 I/O
 description: 네트워크 소켓, connection backlog, socket buffer와 서버 지연
 ---
 
-# Socket I/O
+# 소켓 I/O
 
 Socket I/O는 프로세스가 네트워크 연결로 데이터를 주고받는 작업이다. 처리량은 connection backlog, socket buffer, timeout, 네트워크 대기 상태에 좌우된다.
 

@@ -1,9 +1,9 @@
 ---
-title: Idempotency Key
+title: 멱등키
 description: 같은 의도의 요청을 식별해 중복 처리를 막는 키 설계
 ---
 
-# Idempotency Key
+# 멱등키
 
 Idempotency key는 같은 의도의 요청을 알아보기 위해 클라이언트나 서버가 만드는 고유 키다. 같은 key의 요청은 같은 결과로 처리한다.
 

@@ -1,10 +1,10 @@
 ---
-title: Performance
+title: 성능
 description: 백엔드 성능 문제 분석과 개선 학습 인덱스
 comments: false
 ---
 
-# Performance
+# 성능
 
 > 학습 인덱스다. 상세 내용은 `02-practical-backend/performance/` 아래 개념 문서에 둔다.
 > 개념 문서는 병목 원인, 측정 방법, 개선 방법과 한계를 다루고, 증상·원인·확인 방법 → 해결책의 장점과 한계 → 꼬리 질문 순으로 쓴다. 아직 학습하지 않은 내용은 미리 채우지 않는다.
@@ -29,7 +29,7 @@ comments: false
 - connection pool 고갈과 timeout은 어떤 증상으로 드러나는가?
 - 부하 테스트 결과를 운영 지표와 어떻게 연결할 것인가?
 
-## 실무 관점
+## 실무에서 보는 것
 
 - 성능 문제는 먼저 측정 기준과 재현 조건을 정의한다.
 - 개선 전후를 숫자로 비교한다.

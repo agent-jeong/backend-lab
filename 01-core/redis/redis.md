@@ -32,7 +32,7 @@ Redis 학습 인덱스다. 상세 내용은 `01-core/redis/` 아래 문서에 �
 - String, Hash, Set, Sorted Set, Stream/Pub/Sub은 각각 어떤 실무 문제에 맞는가?
 - hot key, big key, memory eviction, connection pool 고갈은 어떻게 확인하는가?
 
-## 실무 관점
+## 실무에서 보는 것
 
 - Redis는 "빠른 DB"가 아니다. 캐시, 세션, 분산 락, 카운터처럼 잃어도 복구되는 보조 상태를 둔다.
 - 캐시는 빨라지는 대신 정합성, 만료 정책, 장애 대응이라는 숙제를 만든다.

@@ -1,9 +1,9 @@
 ---
-title: Layered Architecture
+title: 계층형 아키텍처
 description: 계층별 책임을 나누어 변경 비용과 의존성 혼란을 줄이는 설계
 ---
 
-# Layered Architecture
+# 계층형 아키텍처
 
 Layered Architecture는 애플리케이션을 표현, 비즈니스, 데이터 접근 같은 계층으로 나누고, 계층마다 책임과 의존 방향을 제한하는 구조다. 목적은 계층 자체가 아니라 변경 이유를 나누는 데 있다.
 

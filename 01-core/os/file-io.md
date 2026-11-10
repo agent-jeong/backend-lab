@@ -1,9 +1,9 @@
 ---
-title: File I/O
+title: 파일 I/O
 description: 파일 읽기/쓰기, page cache, disk wait가 서버 성능에 미치는 영향
 ---
 
-# File I/O
+# 파일 I/O
 
 File I/O는 애플리케이션이 디스크의 파일을 읽거나 쓰는 작업이다. 같은 코드라도 OS page cache에 데이터가 있느냐, 디스크가 얼마나 빠르냐에 따라 응답 시간이 크게 달라진다.
 

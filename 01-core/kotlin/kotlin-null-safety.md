@@ -1,9 +1,9 @@
 ---
-title: Kotlin Null Safety
+title: Kotlin null 안전성
 description: Kotlin nullable 타입과 Java interop에서 발생하는 null 처리 기준
 ---
 
-# Kotlin Null Safety
+# Kotlin null 안전성
 
 Kotlin null safety는 null이 될 수 있는 타입과 없는 타입을 타입 시스템에서 나눠, null 처리 누락을 컴파일 시점에 잡는 기능이다. NPE를 없애 주는 게 아니라 줄여 주는 것이다.
 

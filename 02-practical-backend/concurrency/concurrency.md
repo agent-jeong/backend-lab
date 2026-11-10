@@ -1,10 +1,10 @@
 ---
-title: Concurrency
+title: 동시성
 description: 동시성 문제와 경쟁 조건 해결 학습 인덱스
 comments: false
 ---
 
-# Concurrency
+# 동시성
 
 > 학습 인덱스다. 상세 내용은 `02-practical-backend/concurrency/` 아래 개념 문서에 둔다.
 > 개념 문서는 race condition, lock, 트랜잭션, 멱등성을 다루고, 증상·원인·확인 방법 → 해결책의 장점과 한계 → 꼬리 질문 순으로 쓴다. 아직 학습하지 않은 내용은 미리 채우지 않는다.
@@ -28,7 +28,7 @@ comments: false
 - Redis 분산 락은 DB 정합성 보장과 무엇이 다른가?
 - 동시성 문제를 테스트로 어떻게 재현할 수 있는가?
 
-## 실무 관점
+## 실무에서 보는 것
 
 - 동시성 문제는 단일 요청 테스트로는 드러나지 않는다. 동시에 요청을 보내는 테스트로 재현한다.
 - 해결책이 lock만 있는 건 아니다. 조건부 update(`where stock >= ?`), unique 제약, 상태 전이 조건이 더 단순하고 확실한 경우가 많다.

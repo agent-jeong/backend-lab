@@ -1,10 +1,10 @@
 ---
-title: Network
+title: 네트워크
 description: HTTP, timeout, retry, 네트워크 장애 분석 학습 인덱스
 comments: false
 ---
 
-# Network
+# 네트워크
 
 > 학습 인덱스다. 상세 내용은 `01-core/network/` 아래 개념 문서에 둔다.
 > 초점은 요청 흐름, 장애 원인 분석, timeout/retry 판단이다. 증상·원인·확인 방법 → 해결책의 장점과 한계 → 꼬리 질문 순으로 쓰고, 아직 학습하지 않은 내용은 미리 채우지 않는다.
@@ -22,7 +22,7 @@ comments: false
 9. [[tls|TLS]]
 10. [[websocket|WebSocket]]
 
-## 스스로 답해 볼 질문
+## 핵심 질문
 
 - HTTP 요청은 클라이언트에서 서버까지 어떤 단계를 거치는가?
 - GET, POST, PUT, DELETE의 멱등성 차이는 무엇인가?
@@ -41,7 +41,7 @@ comments: false
 - 네트워크 장애는 클라이언트, DNS, LB, 애플리케이션, 외부 API 중 어떤 순서로 좁히는가?
 - p95/p99 latency, timeout count, connection pool 사용률은 외부 연동 장애 판단에 어떻게 쓰는가?
 
-## 실무에서 보는 순서
+## 실무에서 보는 것
 
 - retry는 일시 장애를 숨겨 주지만, 이미 느린 서버에는 부하를 몇 배로 늘린다.
 - 장애가 나면 클라이언트, 서버, DNS, LB, 방화벽, 외부 API 중 어느 구간의 문제인지부터 나눈다.

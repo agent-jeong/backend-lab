@@ -1,10 +1,10 @@
 ---
-title: AI Workflows
+title: AI 활용
 description: 백엔드 학습과 코드 리뷰를 돕는 AI 활용 흐름
 comments: false
 ---
 
-# AI Workflows
+# AI 활용
 
 AI는 정답을 받아 오는 곳이 아니다. 생각을 넓히고, 내가 쓴 것을 검증하는 데 쓴다.
 

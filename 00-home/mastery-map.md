@@ -1,10 +1,10 @@
 ---
-title: Mastery Map
+title: 숙련도 지도
 description: 백엔드 엔지니어링 학습 주제와 목표 숙련도 지도
 comments: false
 ---
 
-# Mastery Map
+# 숙련도 지도
 
 ## 운영 방식
 

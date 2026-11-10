@@ -1,9 +1,9 @@
 ---
-title: Dashboard
+title: 대시보드
 description: 장애 판단과 원인 분석에 바로 사용할 수 있는 대시보드 설계
 ---
 
-# Dashboard
+# 대시보드
 
 Dashboard는 서비스 상태, 사용자 영향, 원인 후보를 빨리 판단할 수 있게 핵심 지표를 한 화면에 모은 운영 도구다.
 

@@ -1,10 +1,10 @@
 ---
-title: Glossary
+title: 용어집
 description: 백엔드 실무에서 자주 쓰는 용어 정리
 comments: false
 ---
 
-# Glossary
+# 용어집
 
 ## Java / JVM
 

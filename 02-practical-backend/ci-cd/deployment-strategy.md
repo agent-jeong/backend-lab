@@ -1,9 +1,9 @@
 ---
-title: Deployment Strategy
+title: 배포 전략
 description: 서비스 중단과 변경 위험을 줄이는 배포 전략 선택 기준
 ---
 
-# Deployment Strategy
+# 배포 전략
 
 Deployment Strategy는 새 버전을 사용자에게 어떤 순서로, 어느 범위까지 내보낼지 정하는 배포 방식이다.
 

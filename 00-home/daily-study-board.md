@@ -1,10 +1,10 @@
 ---
-title: Daily Study Board
+title: 학습 보드
 description: 실무 중심 백엔드 CS 학습 보드
 comments: false
 ---
 
-# Daily Study Board
+# 학습 보드
 
 ## 사용 방법
 

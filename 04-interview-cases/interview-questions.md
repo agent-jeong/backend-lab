@@ -1,10 +1,10 @@
 ---
-title: Technical Questions
+title: 기술 질문
 description: 기술 질문과 개념 노트 연결
 comments: false
 ---
 
-# Technical Questions
+# 기술 질문
 
 ## 운영 방식
 

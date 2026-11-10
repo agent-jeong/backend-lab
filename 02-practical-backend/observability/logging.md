@@ -1,9 +1,9 @@
 ---
-title: Logging
+title: 로깅
 description: 장애 분석에 도움이 되는 로그의 기준과 실무 주의점
 ---
 
-# Logging
+# 로깅
 
 Logging은 요청 처리 중 일어난 주요 상태 변화, 판단, 실패 원인을 나중에 따라갈 수 있게 기록하는 일이다.
 
