@@ -18,6 +18,7 @@ comments: false
 | 문제 | 핵심 | 공개 자료 |
 |---|---|---|
 | [[first-come-limited-stock\|선착순 한정 수량을 초과 없이 팔기]] | 확인과 차감을 원자적으로, 최종 판정은 DB | Redis·MySQL 공식 문서 |
+| [[like-count\|좋아요 수를 빠르고 틀리지 않게 세기]] | 누가 눌렀는지는 정확히, 수는 따로 세고 원본으로 맞춤 | Redis·MySQL 공식 문서 |
 
 ## 답변 형식
 
