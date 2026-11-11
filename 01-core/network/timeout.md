@@ -51,8 +51,14 @@ HttpClient httpClient = HttpClient.create()
 TCP 연결이 맺어진 뒤 서버 응답을 기다리는 시간이다. 서버가 처리하는 데 오래 걸리면 여기서 걸린다.
 
 ```java
-// RestTemplate
+// RestTemplate + SimpleClientHttpRequestFactory
 factory.setReadTimeout(5000);  // 5초
+
+// RestTemplate + HttpComponentsClientHttpRequestFactory (Spring 6, HttpClient 5)
+// Spring 6.0은 factory.setReadTimeout()이 아무 효과가 없고, 6.1에는 메서드가 없다. SocketConfig로 건다
+SocketConfig socketConfig = SocketConfig.custom()
+    .setSoTimeout(Timeout.ofSeconds(5))
+    .build();
 
 // WebClient
 WebClient webClient = WebClient.builder()
@@ -90,14 +96,26 @@ public class ExternalApiConfig {
             @Value("${external-api.payment.connect-timeout}") int connectTimeout,
             @Value("${external-api.payment.read-timeout}") int readTimeout) {
 
+        PoolingHttpClientConnectionManager connectionManager =
+            PoolingHttpClientConnectionManagerBuilder.create()
+                .setDefaultSocketConfig(SocketConfig.custom()
+                    .setSoTimeout(Timeout.ofMilliseconds(readTimeout))
+                    .build())
+                .build();
+
+        CloseableHttpClient httpClient = HttpClients.custom()
+            .setConnectionManager(connectionManager)
+            .build();
+
         HttpComponentsClientHttpRequestFactory factory =
-            new HttpComponentsClientHttpRequestFactory();
+            new HttpComponentsClientHttpRequestFactory(httpClient);
         factory.setConnectTimeout(connectTimeout);
-        factory.setReadTimeout(readTimeout);
         return new RestTemplate(factory);
     }
 }
 ```
+
+`HttpComponentsClientHttpRequestFactory`(HttpClient 5)의 `setReadTimeout`은 버전마다 다르다. Spring 6.0에서는 메서드는 있지만 아무 효과가 없다. 호출해도 컴파일은 되니, read timeout이 걸린 줄 알고 넘어가기 쉽다. 6.1에서는 메서드가 빠져서 컴파일 오류가 난다. 이 두 버전에서는 위처럼 connection manager의 `SocketConfig`로 건다. 6.2부터는 `setReadTimeout`이 다시 생겼고, 소켓 timeout이 아니라 HttpClient의 response timeout을 건다.
 
 ## Timeout이 없으면 장애가 번진다
 
@@ -124,11 +142,18 @@ public PaymentResult processPayment(PaymentRequest request) {
     return paymentClient.pay(request);
 }
 
+// 회로가 열려 보내지 않은 호출만 "처리 중"으로 받아 둔다
+private PaymentResult paymentFallback(PaymentRequest request, CallNotPermittedException e) {
+    return PaymentResult.pending(request.orderId());
+}
+
+// timeout 등 보낸 뒤의 실패는 결과를 모르니 실패로 알린다
 private PaymentResult paymentFallback(PaymentRequest request, Exception e) {
-    // 대체 처리: 결제 큐에 넣고 나중에 처리
-    return PaymentResult.pending();
+    throw new PaymentUnavailableException("결제 서비스를 지금 사용할 수 없습니다", e);
 }
 ```
+
+fallback을 어떻게 나누는지는 [[circuit-breaker]]에 있다.
 
 ## 서버 측 Timeout
 
@@ -136,7 +161,7 @@ private PaymentResult paymentFallback(PaymentRequest request, Exception e) {
 
 | 설정 | 의미 | 기본값 (Tomcat) |
 |---|---|---|
-| `server.tomcat.connection-timeout` | 요청 헤더 수신 대기 시간 | 20초 |
+| `server.tomcat.connection-timeout` | 연결을 받은 뒤 요청 줄이 올 때까지 기다리는 시간 | 60초 (Spring Boot는 값을 정하지 않아 Tomcat 기본값을 쓴다. 단독 Tomcat의 server.xml은 20초로 잡는다) |
 | `spring.mvc.async.request-timeout` | 비동기 요청 처리 시간 | 30초 |
 | HikariCP `connectionTimeout` | DB 커넥션 획득 대기 시간 | 30초 |
 
@@ -172,13 +197,15 @@ private PaymentResult paymentFallback(PaymentRequest request, Exception e) {
 ## 내 사례
 
 - [[irreversible-approval-once|되돌릴 수 없는 승인을 한 번만 보내기]]: 타임아웃 = "모름"으로 다루기
-- [[inherited-access-system-incidents|이어받은 출입 시스템의 장애 추적]]: deadline을 늘려도 안 되면 연결을 본다
+- [[inherited-access-system-incidents|이어받은 시스템의 장애 추적]]: deadline을 늘려도 안 되면 연결을 본다
 
 ## 참고
 
 2026년 11월에 확인한 공식 문서다.
 
 - [Amazon Builders' Library: Timeouts, retries, and backoff with jitter](https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/)
+- [Spring Framework 6.0 Javadoc: HttpComponentsClientHttpRequestFactory](https://docs.spring.io/spring-framework/docs/6.0.x/javadoc-api/org/springframework/http/client/HttpComponentsClientHttpRequestFactory.html): `setReadTimeout`이 6.0부터 효과 없음
+- [Spring Framework 최신 Javadoc: HttpComponentsClientHttpRequestFactory](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/client/HttpComponentsClientHttpRequestFactory.html): 6.2부터 `setReadTimeout`이 response timeout을 건다
 
 ## 관련 문서
 

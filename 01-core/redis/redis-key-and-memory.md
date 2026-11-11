@@ -51,6 +51,8 @@ hot key는 명령을 한 스레드로 처리하는 Redis에 요청을 몰아서 
 | `allkeys-lfu` | 모든 key 중 덜 자주 쓰인 key 제거 | 사용 빈도 차이가 큰 캐시 |
 | `volatile-ttl` | TTL이 짧은 key 우선 제거 | 만료가 임박한 캐시부터 지우고 싶을 때 |
 
+위 표 말고도 `allkeys-random`, `volatile-random`, `volatile-lfu` 같은 정책이 있다. 기본값은 `maxmemory` 0(64-bit에서는 메모리 제한 없음), `maxmemory-policy` `noeviction`이다. 그래서 캐시로 쓰면서 둘을 정하지 않으면, Redis는 key를 지우지 않고 서버 메모리가 바닥날 때까지 커진다.
+
 maxmemory와 eviction policy를 모르고 운영하면 중요한 캐시가 예고 없이 사라진다. 한 Redis에 세션, 락, 캐시를 섞을수록 어떤 정책을 골라도 누군가는 손해를 보니, 중요도가 다른 데이터는 Redis 인스턴스나 DB를 나눈다.
 
 ## 자주 깨지는 곳

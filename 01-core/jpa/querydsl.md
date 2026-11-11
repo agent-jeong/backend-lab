@@ -62,6 +62,10 @@ private BooleanExpression statusEq(OrderStatus status) {
 private BooleanExpression createdAtGoe(LocalDateTime from) {
     return from == null ? null : order.createdAt.goe(from);
 }
+
+private BooleanExpression createdAtLoe(LocalDateTime to) {
+    return to == null ? null : order.createdAt.loe(to);
+}
 ```
 
 `where`는 `null` 조건을 그냥 건너뛴다. 그래서 조건 메서드가 값이 없을 때 `null`을 돌려주게 만들면, 들어온 조건만 붙는 쿼리가 깔끔하게 만들어진다.

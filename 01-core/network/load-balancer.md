@@ -64,26 +64,28 @@ LB → GET /health → Server C: timeout    → 비정상, 요청 제외
 // GET /actuator/health → {"status": "UP"}
 
 @Component
-public class CustomHealthIndicator implements HealthIndicator {
-    
+public class ReadinessHealthIndicator implements HealthIndicator {
+
     @Override
     public Health health() {
-        if (isDatabaseConnected() && isCacheAvailable()) {
+        // 이 서버가 요청을 받을 준비가 됐는지만 본다.
+        // DB처럼 모든 서버가 같이 쓰는 의존성은 넣지 않는다.
+        if (isWarmedUp()) {
             return Health.up().build();
         }
         return Health.down()
-            .withDetail("reason", "dependency unavailable")
+            .withDetail("reason", "not ready")
             .build();
     }
 }
 ```
 
-| 항목 | 설명 | 권장값 |
+| 항목 | 설명 | AWS ALB 기본값 (instance, ip 대상) |
 |---|---|---|
-| Interval | 체크 주기 | 10~30초 |
+| Interval | 체크 주기 | 30초 |
 | Timeout | 응답 대기 시간 | 5초 |
-| Unhealthy Threshold | 비정상 판단 횟수 | 2~3회 연속 실패 |
-| Healthy Threshold | 정상 복구 판단 횟수 | 2회 연속 성공 |
+| Unhealthy Threshold | 비정상 판단 횟수 | 2회 연속 실패 |
+| Healthy Threshold | 정상 복구 판단 횟수 | 5회 연속 성공 |
 
 ## SSL/TLS 종료 (SSL Termination)
 
@@ -141,10 +143,10 @@ LB에서 Server A 제외 시:
 ## 꼬리 질문
 
 > [!question]- 세션을 사용하면서 LB를 쓰려면 어떻게 해야 하는가?
-> Sticky Session(IP Hash)으로 같은 클라이언트를 늘 같은 서버로 보내거나, 세션을 Redis 같은 외부 저장소에 두고 어느 서버로 가든 같은 세션을 읽게 합니다. 서버 한 대가 죽어도 세션이 남으니 외부 저장소 쪽이 더 안전합니다.
+> Sticky Session(쿠키 또는 IP Hash)으로 같은 클라이언트를 늘 같은 서버로 보내거나, 세션을 Redis 같은 외부 저장소에 두고 어느 서버로 가든 같은 세션을 읽게 합니다. 서버 한 대가 죽어도 세션이 남으니 외부 저장소 쪽이 더 안전합니다.
 
 > [!question]- 헬스체크 엔드포인트에서 무엇을 체크해야 하는가?
-> 적어도 애플리케이션이 요청을 받을 수 있는 상태인지는 확인합니다. DB나 캐시처럼 없으면 일을 못 하는 의존성은 볼 수 있지만, 외부 API처럼 잠깐씩 흔들리는 의존성은 넣지 않는 게 좋습니다.
+> 애플리케이션이 요청을 받을 수 있는 상태인지를 확인합니다. DB, 캐시, 외부 API처럼 모든 서버가 같이 쓰는 의존성은 넣지 않습니다. 그게 잠깐 끊기면 모든 서버가 한꺼번에 빠져서, 의존성 장애가 전체 장애가 되기 때문입니다.
 
 > [!question]- 502 Bad Gateway는 언제 발생하는가?
 > LB가 백엔드 서버에 요청을 넘겼는데 서버가 이상한 응답을 돌려주거나, 서버 프로세스가 죽어 있을 때 납니다. 배포 중에 서버가 아직 뜨지 않았을 때도 납니다.
@@ -154,6 +156,7 @@ LB에서 Server A 제외 시:
 2026년 11월에 확인한 공식 문서다.
 
 - [NGINX: HTTP Load Balancing](https://nginx.org/en/docs/http/load_balancing.html)
+- [AWS: Health checks for Application Load Balancer target groups](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/target-group-health-checks.html)
 
 ## 관련 문서
 

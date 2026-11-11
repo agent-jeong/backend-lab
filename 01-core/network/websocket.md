@@ -16,7 +16,7 @@ WebSocket은 TCP 연결 하나를 열어 둔 채, 클라이언트와 서버가 �
 |---|---|---|
 | 통신 방향 | 요청-응답 (단방향) | 양방향 (full-duplex) |
 | 연결 | 요청마다 연결 또는 Keep-Alive | 한 번 연결 후 유지 |
-| 서버 → 클라이언트 | 불가 (클라이언트가 먼저 요청) | 가능 (서버가 먼저 전송 가능) |
+| 서버 → 클라이언트 | 서버가 먼저 보낼 수 없음 (SSE처럼 열어 둔 응답은 예외) | 가능 (서버가 먼저 전송 가능) |
 | 오버헤드 | 매 요청마다 헤더 전송 | 핸드셰이크 이후 프레임 단위 (헤더 최소) |
 | 적합한 상황 | CRUD API, 일반 웹 요청 | 실시간 알림, 채팅, 라이브 피드 |
 
@@ -96,6 +96,10 @@ public class NotificationService {
 
     private final SimpMessagingTemplate messagingTemplate;
 
+    public NotificationService(SimpMessagingTemplate messagingTemplate) {
+        this.messagingTemplate = messagingTemplate;
+    }
+
     public void sendToUser(String userId, Notification notification) {
         messagingTemplate.convertAndSendToUser(
             userId, "/queue/notifications", notification
@@ -145,7 +149,13 @@ Client ── PING ──▶ Server
          (응답 없음)         → 연결 끊김으로 판단, 재연결
 ```
 
-STOMP에서는 `heartbeat`를 설정하면 이걸 알아서 해 준다.
+STOMP에는 heartbeat가 프로토콜에 들어 있다. Spring의 simple broker는 `setHeartbeatValue`와 함께 `setTaskScheduler`로 스케줄러를 지정해야 heartbeat를 보낸다.
+
+```java
+registry.enableSimpleBroker("/topic", "/queue")
+    .setHeartbeatValue(new long[] {10000, 10000})  // 보내는 주기, 받기를 기대하는 주기 (ms)
+    .setTaskScheduler(messageBrokerTaskScheduler);
+```
 
 ## 서버가 여러 대일 때
 
@@ -217,10 +227,20 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 > 핸드셰이크는 HTTP 요청이라서, 이때 Cookie나 토큰으로 인증합니다. Spring에서는 `HandshakeInterceptor`에서 인증하거나, STOMP CONNECT 프레임 헤더에 토큰을 실어 보냅니다.
 
 > [!question]- SSE(Server-Sent Events)는 어떻게 동작하는가?
-> HTTP 연결을 열어 둔 채 서버가 `text/event-stream` 형식으로 데이터를 계속 흘려보냅니다. 그냥 HTTP라서 CORS나 인증을 기존 방식 그대로 쓸 수 있고, 끊기면 브라우저가 알아서 다시 연결합니다.
+> HTTP 연결을 열어 둔 채 서버가 `text/event-stream` 형식으로 데이터를 계속 흘려보냅니다. 그냥 HTTP라서 CORS와 쿠키 인증을 기존 방식 그대로 쓸 수 있고, 끊기면 브라우저가 알아서 다시 연결합니다. 다만 브라우저 `EventSource`는 `Authorization` 같은 헤더를 붙일 수 없어서, 토큰 인증이면 쿠키를 쓰거나 fetch 기반 클라이언트를 씁니다.
 
 > [!question]- WebSocket은 로드밸런서를 통과할 수 있는가?
-> L7 로드밸런서가 HTTP Upgrade를 지원하면 통과합니다. AWS ALB나 Nginx는 지원하지만, 따로 설정해야 하는 프록시도 있습니다. 그리고 Sticky Session으로 같은 사용자를 같은 서버로 보내거나, 외부 브로커로 서버끼리 메시지를 넘겨줘야 합니다.
+> L7 로드밸런서가 HTTP Upgrade를 지원하면 통과합니다. AWS ALB는 설정 없이 지원하고, Nginx는 `Upgrade`와 `Connection`이 hop-by-hop 헤더라 그대로 넘기지 않으므로 `proxy_set_header Upgrade $http_upgrade;`와 `proxy_set_header Connection "upgrade";`를 넣어야 합니다. 그리고 Sticky Session으로 같은 사용자를 같은 서버로 보내거나, 외부 브로커로 서버끼리 메시지를 넘겨줘야 합니다.
+
+## 참고
+
+2026년 11월에 확인한 공식 문서다.
+
+- [RFC 6455: The WebSocket Protocol](https://www.rfc-editor.org/rfc/rfc6455)
+- [Spring Framework: STOMP](https://docs.spring.io/spring-framework/reference/web/websocket/stomp.html)
+- [Spring Framework: Simple Broker](https://docs.spring.io/spring-framework/reference/web/websocket/stomp/handle-simple-broker.html)
+- [NGINX: WebSocket proxying](https://nginx.org/en/docs/http/websocket.html)
+- [MDN: EventSource() constructor](https://developer.mozilla.org/en-US/docs/Web/API/EventSource/EventSource)
 
 ## 관련 문서
 

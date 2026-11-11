@@ -32,11 +32,11 @@ Client ────────────────────────�
 | Master (Primary) | 쓰기를 전부 받고 binlog를 남긴다 |
 | Replica (Secondary) | Master의 binlog를 받아 다시 실행하고, 읽기를 받는다 |
 
-MySQL에서는 이렇게 흘러간다.
+MySQL에서는 이렇게 흘러간다. MySQL 8.4 문서는 Master를 source라고 부른다.
 
-1. Master가 데이터를 바꾸면 binlog에 기록한다.
-2. Replica의 IO Thread가 binlog를 가져와 relay log에 저장한다.
-3. Replica의 SQL Thread가 relay log를 다시 실행해 데이터를 맞춘다.
+1. Master(source)가 데이터를 바꾸면 binlog에 기록한다.
+2. Replica의 receiver 스레드(예전 이름 IO Thread)가 binlog를 가져와 relay log에 저장한다.
+3. Replica의 applier 스레드(예전 이름 SQL Thread)가 relay log를 다시 실행해 데이터를 맞춘다.
 
 ### 복제 지연 (Replication Lag)
 
@@ -48,7 +48,7 @@ Replica:              ───── lag ─── INSERT 반영
                       이 시점에 Replica를 읽으면 데이터가 없음
 ```
 
-사용자가 글을 쓰고 바로 목록을 열면 방금 쓴 글이 안 보인다. 대응은 셋 중 하나다.
+사용자가 글을 쓰고 바로 목록을 열면 방금 쓴 글이 안 보인다. 대응은 둘 중 하나다.
 
 | 전략 | 방법 | 언제 |
 |---|---|---|

@@ -16,12 +16,12 @@ comments: false
 
 | 사례 | 한 줄 요약 | 숫자 |
 |---|---|---|
-| [[irreversible-approval-once\|되돌릴 수 없는 승인을 한 번만 보내기]] | 멱등키 없는 외부 송금 승인을 중복 없이 | 응답 대기 최대 120초 |
+| [[irreversible-approval-once\|되돌릴 수 없는 승인을 한 번만 보내기]] | 멱등키도 취소도 없는 외부 승인 API를 한 번만 | 응답 대기 최대 120초 |
 | [[webhook-once-without-loss\|웹훅을 잃지 않고 한 번만 처리하기]] | 저장 후 바로 응답, 커밋 후 비동기 처리 | 응답 제한 60초 |
 | [[slow-admin-query-tuning\|5초 걸리던 조회를 실행계획으로 고치기]] | 서브쿼리와 함수 때문에 못 탄 인덱스 | 부하 시 p95 90ms |
 | [[point-balance-and-idempotent-batch\|포인트 잔액 계산과 멱등 지급 배치]] | 잔액은 계산하고, 지급은 한 번만 | |
-| [[file-storage-migration\|첨부파일 18만 건 이관]] | 추정 바로잡기, 누락 검사, 안전장치 | 26분, 누락 0건 |
-| [[inherited-access-system-incidents\|이어받은 출입 시스템의 장애 추적]] | 성공한 날과 실패한 날 대조 | 9일 중 7일 실패, 실패율 18% |
+| [[file-storage-migration\|첨부파일 약 18만 건 이관]] | 추정 바로잡기, 누락 검사, 안전장치 | 30분 안, 누락 0건 |
+| [[inherited-access-system-incidents\|이어받은 단말 연동 시스템의 장애 추적]] | 성공한 날과 실패한 날 대조 | 9일 중 7일 실패, 실패율 18% |
 | [[rag-search-over-past-inquiries\|과거 문의 RAG 검색]] | 하이브리드 검색과 평가 세트 | top3 95.6% |
 
 전체 목록과 글의 구성은 [[03-work-cases/work-cases|내 실무 사례]]에 있다.

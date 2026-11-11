@@ -17,7 +17,7 @@ DNS 조회 결과는 여러 곳에서 TTL만큼 캐시된다. 그래서 서버 I
 2. 캐시 없음 → OS의 DNS Resolver에 질의
 3. Resolver → Root DNS (.com, .net 등의 위치 응답)
 4. Resolver → TLD DNS (.com → example.com의 네임서버 응답)
-5. Resolver → Authoritative DNS (example.com → 93.184.216.34 응답)
+5. Resolver → Authoritative DNS (example.com → 203.0.113.10 응답)
 6. Resolver → 결과를 캐시하고 클라이언트에 반환
 ```
 
@@ -27,7 +27,7 @@ DNS 조회 결과는 여러 곳에서 TTL만큼 캐시된다. 그래서 서버 I
 
 | 레코드 | 용도 | 예시 |
 |---|---|---|
-| A | 도메인 → IPv4 주소 | `api.example.com → 93.184.216.34` |
+| A | 도메인 → IPv4 주소 | `api.example.com → 203.0.113.10` |
 | AAAA | 도메인 → IPv6 주소 | `api.example.com → 2001:db8::1` |
 | CNAME | 도메인 → 다른 도메인 | `www.example.com → example.com` |
 | MX | 메일 서버 지정 | `example.com → mail.example.com` |
@@ -38,7 +38,7 @@ DNS 조회 결과는 여러 곳에서 TTL만큼 캐시된다. 그래서 서버 I
 
 ```
 # A 레코드: 도메인을 직접 IP에 매핑
-api.example.com → 93.184.216.34
+api.example.com → 203.0.113.10
 
 # CNAME: 도메인을 다른 도메인에 매핑 (간접)
 api.example.com → my-app.elb.amazonaws.com → 실제 IP
@@ -75,15 +75,18 @@ DNS 서버가 응답하지 않으면 도메인으로 보내는 요청이 전부 
 
 ```
 # DNS 조회 실패 시 에러 예시
-java.net.UnknownHostException: api.external-service.com
-curl: (6) Could not resolve host: api.external-service.com
+java.net.UnknownHostException: api.example.com
+curl: (6) Could not resolve host: api.example.com
 ```
 
 ### JVM DNS 캐시
 
 ```
-# 리눅스에서 DNS 캐시 확인
+# DNS 서버가 주는 응답 확인 (/etc/hosts와 JVM 캐시는 거치지 않는다)
 dig api.example.com
+
+# OS 리졸버(/etc/hosts 포함)를 거친 결과 확인
+getent hosts api.example.com
 
 # Java에서 DNS 캐시 TTL 설정
 # JVM은 기본적으로 성공한 DNS를 30초, 실패한 DNS를 10초 캐시
@@ -100,19 +103,19 @@ JVM은 OS와 따로 `InetAddress` 안에 DNS 결과를 캐시한다. 이 TTL이 
 3. 응답이 엉뚱한 IP면 DNS 레코드나 캐시 문제다.
 4. 응답이 정상이면 DNS 다음 단계(TCP 연결, 서버 응답 등)를 본다.
 
-## 내부 DNS (Service Discovery)
+## 내부 서비스 찾기 (DNS와 registry)
 
-마이크로서비스 환경에서는 내부 DNS로 서비스를 찾는다.
+마이크로서비스 환경에서는 내부 DNS나 서비스 registry로 서비스를 찾는다.
 
 ```
 # Kubernetes 내부 DNS
 order-service.default.svc.cluster.local → 10.96.0.15
 
-# Spring Cloud + Eureka
+# Spring Cloud + Eureka (DNS가 아니라 registry에 인스턴스 목록을 묻는다)
 order-service → 192.168.1.10:8080, 192.168.1.11:8080
 ```
 
-인스턴스가 늘거나 줄면 내부 DNS가 알아서 목록을 고친다.
+인스턴스가 늘거나 줄면 Kubernetes는 내부 DNS가, Eureka는 registry가 알아서 목록을 고친다.
 
 ## 자주 깨지는 곳
 

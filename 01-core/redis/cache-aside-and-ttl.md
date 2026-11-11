@@ -47,6 +47,8 @@ public void updateProductName(Long productId, String name) {
 
 캐시는 커밋한 뒤에 지운다. 커밋 전에 지우면, 그 사이에 들어온 다른 요청이 아직 바뀌기 전 DB 값을 읽어 캐시에 다시 넣는다. 커밋 뒤에 지우는 일은 transaction synchronization, 이벤트, outbox 중 하나로 건다.
 
+커밋 뒤에 지워도 틈은 남는다. 커밋 전에 옛 값을 읽어 간 요청이 삭제가 끝난 뒤에 캐시를 채우면, 옛 값이 다시 들어간다. 이 옛 값이 남는 시간의 상한이 TTL이다.
+
 ## 데이터별로 어떻게 잡나
 
 | 데이터 | 전략 | 이유 |

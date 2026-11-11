@@ -68,13 +68,15 @@ String name = user.getName(); // 이 시점에 SELECT 실행
 트랜잭션(영속성 컨텍스트)이 끝난 뒤에 지연 로딩을 하려고 하면 난다.
 
 ```java
-// Controller에서 직접 Entity를 반환하는 경우
+// Controller에서 직접 Entity를 반환하는 경우 (OSIV를 끈 상태)
 public User getUser(Long id) {
     User user = userRepository.findById(id).orElseThrow();
     return user;
     // JSON 직렬화 시 user.getOrders()에 접근 → 트랜잭션 종료 후라 예외 발생
 }
 ```
+
+Spring Boot 기본값처럼 OSIV가 켜져 있으면 이 코드는 예외 없이 지연 로딩을 한다. 대신 커넥션을 응답이 끝날 때까지 쥔다([[osiv]]).
 
 트랜잭션이 끝나기 전에 필요한 데이터를 다 꺼내 두면 된다. 방법은 두 가지다.
 
@@ -87,7 +89,8 @@ public UserResponse getUser(Long id) {
 }
 
 // 2. 필요한 연관 데이터를 fetch join으로 미리 로딩
-@Query("SELECT u FROM User u JOIN FETCH u.orders WHERE u.id = :id")
+// 주문이 없는 회원도 찾으려고 LEFT JOIN FETCH를 쓴다
+@Query("SELECT u FROM User u LEFT JOIN FETCH u.orders WHERE u.id = :id")
 Optional<User> findByIdWithOrders(@Param("id") Long id);
 ```
 

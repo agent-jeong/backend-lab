@@ -54,7 +54,7 @@ HTTP 자체 → 요청이 서버까지 가는 길 → 느리거나 실패하는 
 ## 내 사례
 
 - [[irreversible-approval-once|되돌릴 수 없는 승인을 한 번만 보내기]]: 응답 타임아웃을 "안 감"과 "모름"으로 나누기
-- [[inherited-access-system-incidents|이어받은 출입 시스템의 장애 추적]]: gRPC deadline을 바꿔도 안 될 때 연결 상태 보기
+- [[inherited-access-system-incidents|이어받은 시스템의 장애 추적]]: gRPC deadline을 바꿔도 안 될 때 연결 상태 보기
 
 ## 관련 문서
 

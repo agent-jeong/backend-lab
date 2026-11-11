@@ -90,12 +90,12 @@ flowchart LR
     API -->|행이 바뀌었을 때만 ±1| R[(Redis<br/>글별 증감)]
     S[주기 반영 작업] -->|증감을 꺼내고 0으로| R
     S -->|like_count + 증감| C[(DB post_like_count)]
-    J[맞춤 배치] -->|COUNT로 다시 계산| C
+    J[맞춤 배치] -->|증감 비우고 COUNT로 다시 계산| C
 ```
 
 1. `post_like` INSERT/DELETE는 그대로 DB에서 한다. 누가 눌렀는지는 여기가 원본이다.
 2. 행이 바뀌었으면 `post_like_count`를 바로 고치지 않고 Redis에 `INCRBY like:delta:{postId} 1`(또는 -1)을 한다.
-3. 몇 초마다 반영 작업이 글별 증감을 꺼내면서 0으로 비우고(`GETDEL` 또는 Lua), DB에 `like_count = like_count + 증감`으로 한 번에 더한다. 좋아요 100번이 UPDATE 한 번이 된다.
+3. 몇 초마다 반영 작업이 글별 증감을 꺼내면서 0으로 비우고(`GETDEL`(Redis 6.2 이상) 또는 Lua), DB에 `like_count = like_count + 증감`으로 한 번에 더한다. 좋아요 100번이 UPDATE 한 번이 된다.
 4. 화면은 `DB 수 + Redis에 남은 증감`을 보여 주거나, 몇 초 늦은 DB 수를 그대로 보여 준다.
 
 ### 틀어지는 곳과 맞추는 법
@@ -108,6 +108,8 @@ flowchart LR
 | 같은 사람이 연타 | 두 번째 INSERT가 중복 키로 실패, Redis도 건드리지 않음 | 맞출 것 없음 |
 
 수는 틀어질 수 있다고 받아들이고, 원본(`post_like`)에서 언제든 다시 셀 수 있게 만들어 둔 게 이 설계의 안전장치다. 맞춤 배치는 최근 좋아요가 있었던 글만 골라 돌린다.
+
+맞춤 배치가 `like_count`를 `COUNT(*)` 값으로 덮어쓸 때, Redis에 아직 반영되지 않은 증감이 남아 있으면 다음 반영 작업이 그 몫을 한 번 더 더한다. `COUNT(*)`에 이미 들어간 좋아요가 두 번 세지는 것이다. 그래서 맞춤 배치는 그 글의 반영 작업과 겹치지 않게 하고, 그 글의 증감을 먼저 `GETDEL`로 비운 뒤 `COUNT(*)`로 덮어쓴다. 비운 뒤 COUNT까지의 짧은 틈에 들어온 좋아요는 한 번 더 셀 수 있지만, 다음 맞춤 때 다시 덮어써지므로 오차가 쌓이지 않는다.
 
 ## 4. 고르지 않은 대안
 
@@ -160,13 +162,14 @@ flowchart LR
 
 ## 공개 자료로 확인한 것
 
-확인한 날짜: 2026-11-10
+확인한 날짜: 2026-11-10 (`GETDEL`은 2026-11-11)
 
 | 내용 | 출처 |
 |---|---|
 | InnoDB는 동시 트랜잭션마다 보이는 행 수가 달라 행 수를 따로 들고 있지 않고, `COUNT(*)`는 가장 작은 보조 인덱스를 훑는다 | [MySQL 8.4 Reference: Aggregate Function Descriptions](https://dev.mysql.com/doc/refman/8.4/en/aggregate-functions.html) |
 | `INCR`는 키가 없으면 0에서 시작하는 원자적 증가이고, 카운터 패턴의 기본이다 | [Redis Docs: INCR](https://redis.io/docs/latest/commands/incr/) |
 | Redis 복제는 기본이 비동기라 장애 조치 때 쓰기가 사라질 수 있다 | [Redis Docs: Redis replication](https://redis.io/docs/latest/operate/oss_and_stack/management/replication/) |
+| `GETDEL`은 값을 돌려주고 키를 지우며, Redis 6.2.0부터 있다 | [Redis Docs: GETDEL](https://redis.io/docs/latest/commands/getdel/) |
 
 ## 내 사례와 이어지는 곳
 

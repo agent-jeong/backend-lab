@@ -72,7 +72,7 @@ JPA는 단순 CRUD와 `order.getUser()`처럼 객체를 따라가는 조회에 �
 |---|---|
 | 단순 CRUD | 맞다 |
 | 연관된 객체 따라가기 | 맞다 |
-| 복잡한 통계 쿼리 | 안 맞다. 네이티브 SQL이나 QueryDSL을 쓴다 |
+| 복잡한 통계 쿼리 | 안 맞다. 네이티브 SQL이나 SQL mapper를 쓴다 |
 | 대량 데이터 일괄 처리 | 안 맞다. 벌크 연산이나 JDBC batch를 쓴다 |
 | 조건이 바뀌는 동적 쿼리 | 그럭저럭. QueryDSL이 더 낫다 |
 
@@ -101,7 +101,7 @@ JPA는 단순 CRUD와 `order.getUser()`처럼 객체를 따라가는 조회에 �
 > 아닙니다. JPA가 만드는 SQL을 읽을 줄 알아야 느릴 때 직접 고칠 수 있습니다. 복잡한 쿼리는 결국 네이티브 SQL로 써야 하기도 합니다.
 
 > [!question]- JPA가 적합하지 않은 상황은?
-> 복잡한 통계나 집계 쿼리, 대량 데이터 일괄 처리, 여러 테이블을 복잡하게 JOIN하는 쿼리가 그렇습니다. 이런 건 네이티브 SQL이나 QueryDSL로 쓰는 게 낫습니다.
+> 복잡한 통계나 집계 쿼리, 대량 데이터 일괄 처리, 여러 테이블을 복잡하게 JOIN하는 쿼리가 그렇습니다. 이런 건 네이티브 SQL이나 SQL mapper로 쓰는 게 낫습니다. QueryDSL-JPA는 결국 JPQL이라 JPQL이 못 하는 건 똑같이 못 합니다.
 
 > [!question]- Spring Data JPA의 `JpaRepository`는 어떻게 구현 없이 동작하는가?
 > Spring이 실행 중에 프록시 객체를 만들고, 메서드 이름을 읽어서 JPQL을 만들어 냅니다. 예를 들어 `findByEmail`은 `SELECT u FROM User u WHERE u.email = :email`이 됩니다.

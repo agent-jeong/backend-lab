@@ -19,7 +19,7 @@ tags: [concept, jpa]
 order/
 ├── OrderRepository.java
 ├── OrderRepositoryCustom.java
-├── OrderRepositoryImpl.java
+├── OrderRepositoryCustomImpl.java
 ├── OrderSearchCondition.java
 └── OrderSummaryResponse.java
 ```
@@ -28,7 +28,7 @@ order/
 |---|---|
 | `OrderRepository` | 기본 CRUD, 단순 조회 |
 | `OrderRepositoryCustom` | QueryDSL로 만들 조회 메서드를 선언한다 |
-| `OrderRepositoryImpl` | `JPAQueryFactory`로 실제 쿼리를 짠다 |
+| `OrderRepositoryCustomImpl` | `JPAQueryFactory`로 실제 쿼리를 짠다 |
 | `OrderSearchCondition` | 검색 조건 DTO |
 | `OrderSummaryResponse` | 조회 결과 DTO |
 
@@ -72,7 +72,7 @@ public interface OrderRepositoryCustom {
 }
 ```
 
-`OrderRepositoryCustom`을 `OrderRepository`에 붙이고, 구현체는 따로 클래스로 둔다. 구현체 이름은 프로젝트의 Spring Data JPA 버전과 팀 규칙에 맞춰 `OrderRepositoryImpl`이나 `OrderRepositoryCustomImpl`로 정한다.
+`OrderRepositoryCustom`을 `OrderRepository`에 붙이고, 구현체는 따로 클래스로 둔다. 구현체 이름은 fragment 인터페이스 이름에 `Impl`을 붙인 `OrderRepositoryCustomImpl`로 짓는다. Repository 인터페이스 이름에 `Impl`을 붙이는 `OrderRepositoryImpl` 방식은 Spring Data 문서가 deprecated로 본다.
 
 ## 검색 조건 DTO
 
@@ -110,7 +110,7 @@ public record OrderSummaryResponse(
 ```java
 @Repository
 @RequiredArgsConstructor
-public class OrderRepositoryImpl implements OrderRepositoryCustom {
+public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
@@ -248,7 +248,9 @@ public Slice<OrderSummaryResponse> searchOrdersSlice(
                     statusEq(condition.status()),
                     userIdEq(condition.userId()),
                     orderedAtGoe(condition.from()),
-                    orderedAtLoe(condition.to())
+                    orderedAtLoe(condition.to()),
+                    priceGoe(condition.minPrice()),
+                    priceLoe(condition.maxPrice())
             )
             .orderBy(order.createdAt.desc())
             .offset(pageable.getOffset())
@@ -301,7 +303,7 @@ public Slice<OrderSummaryResponse> searchOrdersSlice(
 ## 꼬리 질문
 
 > [!question]- QueryDSL을 Repository 어디에 두는가?
-> 보통 Spring Data JPA Repository에 Custom Repository 인터페이스를 붙이고, 따로 만든 구현체에서 `JPAQueryFactory`를 씁니다. 구현체 이름은 프로젝트의 Spring Data JPA 버전과 팀 규칙에 맞춥니다.
+> 보통 Spring Data JPA Repository에 Custom Repository 인터페이스를 붙이고, 따로 만든 구현체에서 `JPAQueryFactory`를 씁니다. 구현체 이름은 `OrderRepositoryCustomImpl`처럼 Custom 인터페이스 이름에 `Impl`을 붙입니다.
 
 > [!question]- Page와 Slice는 언제 나누는가?
 > 전체 개수가 필요하면 `Page`, 다음 페이지가 있는지만 알면 되면 `Slice`를 씁니다. `Slice`는 count query를 안 돌려도 돼서 데이터가 많은 목록에서 덕을 볼 수 있습니다.

@@ -72,7 +72,7 @@ comments: false
 - **TraceId**: 요청 하나가 여러 서비스를 거칠 때, 그 흐름을 처음부터 끝까지 따라가려고 붙이는 고유 ID. → [[trace-id-and-correlation-id]]
 - **SLO (Service Level Objective)**: 서비스가 지키기로 정한 품질 목표. "p99 latency 200ms 이내" 같은 식으로 정한다. → [[alert-and-slo]]
 - **Latency**: 요청부터 응답까지 걸리는 시간. 실무에서는 평균보다 p95, p99를 본다. → [[latency-and-throughput]]
-- **p95 / p99**: 요청 100개를 느린 순으로 줄 세웠을 때 95번째, 99번째의 응답 시간. 평균에 가려지는 느린 요청을 드러낸다. → [[latency-and-throughput]]
+- **p95 / p99**: 요청 100개를 빠른 순으로 줄 세웠을 때 95번째, 99번째의 응답 시간. 가장 느린 5%, 1%가 어디서 시작하는지 보여 준다. 평균에 가려지는 느린 요청을 드러낸다. → [[latency-and-throughput]]
 - **Throughput**: 정해진 시간 동안 처리하는 요청 수. TPS(Transactions Per Second)로 측정한다. → [[latency-and-throughput]]
 
 ## CI/CD / Deployment

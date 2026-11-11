@@ -43,10 +43,10 @@ Retry는 네트워크가 잠깐 끊기는 것처럼 일시적인 이유로 실�
 ### 지수 백오프 + Jitter
 
 ```
-시도1 → 실패 → 1초 + random(0~500ms) → 시도2 → 실패 → 2초 + random(0~500ms) → 시도3
+시도1 → 실패 → 1~2초 중 무작위 대기 → 시도2 → 실패 → 2~4초 중 무작위 대기 → 시도3
 ```
 
-여러 클라이언트가 동시에 실패하면 재시도도 같은 시점에 몰린다(Thundering Herd). Jitter로 대기 시간에 무작위 값을 더하면 재시도 시점이 흩어진다.
+여러 클라이언트가 동시에 실패하면 재시도도 같은 시점에 몰린다(Thundering Herd). Jitter로 대기 시간을 무작위로 흔들면 재시도 시점이 흩어진다. 아래 Spring Retry의 `random = true`는 지수 백오프로 정한 대기 시간에 1부터 `multiplier`까지의 무작위 배수를 곱한다. 위 그림의 1~2초, 2~4초가 그 결과다.
 
 ```java
 // Spring Retry - 지수 백오프 + Jitter
@@ -77,12 +77,16 @@ public PaymentResult recover(Exception e, PaymentRequest request) {
 
 ### 멱등키 (Idempotency Key)
 
-```java
-// 클라이언트가 고유한 멱등키를 생성해서 헤더에 포함
+클라이언트가 고유한 멱등키를 만들어 헤더에 싣는다.
+
+```http
 POST /api/payments
 Idempotency-Key: 550e8400-e29b-41d4-a716-446655440000
+```
 
-// 서버는 멱등키로 중복 요청을 감지
+서버는 멱등키로 중복 요청을 알아본다.
+
+```java
 @PostMapping("/api/payments")
 public PaymentResult pay(@RequestHeader("Idempotency-Key") String key,
                          @RequestBody PaymentRequest request) {
@@ -146,8 +150,8 @@ Retry-After: 30
 
 ## 꼬리 질문
 
-> [!question]- 재시도 횟수는 몇 번이 적절한가?
-> 보통 2~3회면 됩니다. 재시도할 때마다 대기 시간이 쌓여서 사용자가 응답을 그만큼 늦게 받기 때문입니다. 첫 대기를 1초로 두고 지수 백오프로 3번 재시도하면 1초 + 2초 + 4초 = 7초를 더 기다립니다. 위 코드처럼 `maxAttempts = 3`이면 첫 시도를 포함한 횟수라서 재시도는 2번, 대기는 1초 + 2초 = 3초입니다.
+> [!question]- 재시도는 몇 번까지 하는가?
+> 보통 2~3회면 됩니다. 재시도할 때마다 대기 시간이 쌓여서 사용자가 응답을 그만큼 늦게 받기 때문입니다. 첫 대기를 1초로 두고 지수 백오프로 3번 재시도하면 1초 + 2초 + 4초 = 7초를 더 기다립니다. 위 코드처럼 `maxAttempts = 3`이면 첫 시도를 포함한 횟수라서 재시도는 2번입니다. `random = true`라서 대기는 1~2초와 2~4초, 합쳐서 3~6초입니다.
 
 > [!question]- Retry-After 헤더는 어떻게 쓰는가?
 > 서버가 429나 503 응답에 `Retry-After: 30`을 붙여 보내면, 클라이언트는 30초 뒤에 다시 보내야 합니다. 이걸 무시하고 바로 재시도하면 서버에 쓸데없는 부하만 얹습니다.
@@ -161,6 +165,7 @@ Retry-After: 30
 
 - [Amazon Builders' Library: Timeouts, retries, and backoff with jitter](https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/)
 - [RFC 9110: Idempotent Methods](https://www.rfc-editor.org/rfc/rfc9110#name-idempotent-methods)
+- [Spring Retry: ExponentialRandomBackOffPolicy](https://github.com/spring-projects/spring-retry/blob/main/src/main/java/org/springframework/retry/backoff/ExponentialRandomBackOffPolicy.java)
 
 ## 관련 문서
 

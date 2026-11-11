@@ -47,7 +47,7 @@ Process B
 → 접근 재시도
 ```
 
-Page Fault가 잦으면 그만큼 디스크를 읽느라 느려진다.
+위 흐름은 디스크를 읽어야 하는 major fault다. 처음 쓰는 메모리에 페이지를 붙이거나 이미 page cache에 있는 페이지를 연결하는 minor fault는 디스크를 읽지 않는다. 느려지는 건 major fault가 잦을 때다.
 
 ## Swap
 
@@ -75,7 +75,7 @@ procs  memory       swap    io
 ### Swappiness
 
 ```bash
-# Swap 사용 경향 (0~100, 기본 60)
+# Swap 사용 경향 (0~200, 기본 60. 커널 5.8 전에는 0~100)
 cat /proc/sys/vm/swappiness
 
 # DB 서버처럼 Swap을 최소화해야 하는 경우
@@ -125,7 +125,8 @@ Container limit: 1Gi
 JVM 힙은 컨테이너 limit의 70~80%에서 시작한다. 나머지는 Metaspace, 스레드 스택, NIO Direct Buffer 같은 힙 밖 메모리가 쓴다. 힙 밖 메모리는 limit이 얼마든 수백 MB가 들어서, 위 예시처럼 limit이 1Gi 정도로 작으면 50~60%로 낮춘다. 스레드가 많거나 Direct Buffer나 네이티브 메모리를 많이 쓰는 앱도 비율을 낮춘다.
 
 ```bash
-# JVM이 컨테이너 메모리를 인식하도록 (Java 10+)
+# 힙 최대 크기를 컨테이너 메모리의 75%로 잡는다 (기본값 25%)
+# 컨테이너 인식(UseContainerSupport)은 Java 10부터, Java 8은 8u191부터 기본으로 켜져 있다
 java -XX:MaxRAMPercentage=75.0 -jar app.jar
 ```
 
@@ -179,6 +180,7 @@ free가 0이어도 available이 넉넉하면 정상이다. Linux는 놀고 있�
 
 - [Linux kernel: Control Group v2 (memory)](https://docs.kernel.org/admin-guide/cgroup-v2.html)
 - [proc_meminfo(5)](https://man7.org/linux/man-pages/man5/proc_meminfo.5.html)
+- [Linux kernel: sysctl vm (swappiness)](https://docs.kernel.org/admin-guide/sysctl/vm.html)
 
 ## 관련 문서
 

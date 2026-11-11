@@ -32,12 +32,13 @@ LIMIT 20;
 
 -- 다음 페이지: 마지막 항목의 값을 기준으로 조회
 SELECT * FROM orders
-WHERE (created_at, id) < ('2024-06-01 10:00:00', 12345)
+WHERE created_at < '2024-06-01 10:00:00'
+   OR (created_at = '2024-06-01 10:00:00' AND id < 12345)
 ORDER BY created_at DESC, id DESC
 LIMIT 20;
 ```
 
-OFFSET 대신 마지막으로 본 항목의 값을 기준으로 그다음을 읽는다. 몇 번째 페이지든 속도가 같다. 대신 5페이지로 바로 건너뛰는 건 안 된다. 무한 스크롤 화면에 맞다.
+OFFSET 대신 마지막으로 본 항목의 값을 기준으로 그다음을 읽는다. `(created_at, id)` 복합 인덱스가 있으면 몇 번째 페이지든 속도가 같다. 조건을 `(created_at, id) < (?, ?)`처럼 row constructor로 쓰면 MySQL이 인덱스를 덜 쓸 수 있어서, MySQL 문서는 위처럼 OR로 풀어 쓰기를 권한다. 어느 쪽이든 실행 계획에서 `range`로 읽는지 확인한다. 대신 5페이지로 바로 건너뛰는 건 안 된다. 무한 스크롤 화면에 맞다.
 
 ## 대안 2: 커버링 인덱스 + 서브쿼리
 
@@ -49,10 +50,11 @@ JOIN (
     SELECT id FROM orders
     ORDER BY created_at DESC
     LIMIT 20 OFFSET 100000
-) sub ON o.id = sub.id;
+) sub ON o.id = sub.id
+ORDER BY o.created_at DESC;
 ```
 
-화면에 페이지 번호가 꼭 있어야 할 때 쓴다. 서브쿼리는 커버링 인덱스로 ID만 빠르게 가져오고, 그 20건만 원본 테이블과 JOIN한다. OFFSET이 커도 건너뛰는 구간은 인덱스만 읽고 지나간다.
+화면에 페이지 번호가 꼭 있어야 할 때 쓴다. JOIN한 결과는 순서가 보장되지 않으니 바깥 쿼리에도 `ORDER BY`를 다시 적는다. `created_at` 인덱스가 있어야 서브쿼리가 테이블을 읽지 않고 인덱스만 읽는다. 서브쿼리는 커버링 인덱스로 ID만 빠르게 가져오고, 그 20건만 원본 테이블과 JOIN한다. OFFSET이 커도 건너뛰는 구간은 인덱스만 읽고 지나간다.
 
 ## COUNT 줄이기
 
@@ -77,11 +79,12 @@ EXPLAIN SELECT * FROM orders WHERE status = 'COMPLETED';
 
 ```java
 // Spring Data JPA: Slice 사용 (COUNT 쿼리 없음)
-Slice<Order> slice = orderRepository.findByStatus("COMPLETED", PageRequest.of(0, 1000));
+Slice<Order> slice = orderRepository.findByStatus(OrderStatus.COMPLETED, PageRequest.of(0, 1000));
+process(slice.getContent());
 
 while (slice.hasNext()) {
-    process(slice.getContent());
-    slice = orderRepository.findByStatus("COMPLETED", slice.nextPageable());
+    slice = orderRepository.findByStatus(OrderStatus.COMPLETED, slice.nextPageable());
+    process(slice.getContent()); // 마지막 Slice까지 처리한다
 }
 ```
 
@@ -91,7 +94,7 @@ while (slice.hasNext()) {
 @Transactional(readOnly = true)
 @QueryHints(@QueryHint(name = HINT_FETCH_SIZE, value = "1000"))
 @Query("SELECT o FROM Order o WHERE o.status = :status")
-Stream<Order> findByStatusAsStream(@Param("status") String status);
+Stream<Order> findByStatusAsStream(@Param("status") OrderStatus status);
 ```
 
 전체를 메모리에 올리지 않고 한 건씩 처리한다. 트랜잭션 안에서만 쓸 수 있고, 다 쓰고 나면 Stream을 닫아야 한다.
@@ -99,7 +102,7 @@ Stream<Order> findByStatusAsStream(@Param("status") String status);
 ```java
 @Transactional(readOnly = true)
 public void exportCompleted() {
-    try (Stream<Order> orders = orderRepository.findByStatusAsStream("COMPLETED")) {
+    try (Stream<Order> orders = orderRepository.findByStatusAsStream(OrderStatus.COMPLETED)) {
         orders.forEach(this::write);
     }
 }

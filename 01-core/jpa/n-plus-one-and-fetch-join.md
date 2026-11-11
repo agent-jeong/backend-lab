@@ -64,14 +64,14 @@ SELECT o.*, u.* FROM orders o INNER JOIN users u ON o.user_id = u.id
 
 ### 컬렉션 fetch join
 
-`@OneToMany` 쪽을 fetch join하면 자식 수만큼 부모 행이 중복된다.
+`@OneToMany` 쪽을 fetch join하면 SQL 결과에서 자식 수만큼 부모 행이 중복된다.
 
 ```java
 @Query("SELECT DISTINCT u FROM User u JOIN FETCH u.orders")
 List<User> findAllWithOrders();
 ```
 
-`DISTINCT`로 중복을 없앤다. Hibernate 6에서는 JPQL에 `DISTINCT`를 써도 SQL에는 넣지 않고, 애플리케이션에서 중복 Entity를 걸러 낸다. Hibernate 5에서는 SQL에도 DISTINCT가 들어간다.
+Hibernate 6부터는 `DISTINCT` 없이도 중복된 부모 Entity를 알아서 걸러 낸다. `DISTINCT`를 쓰면 SQL에도 그대로 들어간다. Hibernate 5에서는 `DISTINCT`를 써야 중복 부모가 걸러졌다.
 
 ### 컬렉션 fetch join과 페이징
 
@@ -138,7 +138,7 @@ JPQL을 쓰지 않고도 fetch join처럼 가져온다. 간단할 때는 편하�
 
 - 쿼리 수를 세 보지 않고 코드를 쓰면, 개발 환경은 데이터가 적어서 N+1이 안 보인다.
 - 컬렉션 fetch join에 페이징을 붙이면, 전체 데이터가 메모리에 올라간다.
-- `List` 타입 컬렉션 둘 이상을 동시에 fetch join하면, `MultipleBagFetchException`이 난다. 행이 곱으로 불어나는 걸 막으려는 제한이라, 하나만 fetch join하고 나머지는 `@BatchSize`로 읽는다.
+- `List` 타입 컬렉션 둘 이상을 동시에 fetch join하면, `MultipleBagFetchException`이 난다. 하나를 `Set`으로 바꾸면 예외는 사라지지만, 컬렉션 둘을 같이 fetch join하면 DB에서 행이 곱으로 불어나는 건 그대로다. 그래서 하나만 fetch join하고 나머지는 `@BatchSize`로 읽는다.
 - `@BatchSize` 없이 모든 곳을 fetch join으로 막으면, 페이징이 필요한 곳에서 막힌다.
 - `spring.jpa.show-sql=true` 로그만 보고 있으면, 로그가 흘러가 버려서 실제 쿼리 수를 세지 못한다.
 
@@ -156,13 +156,13 @@ JPQL을 쓰지 않고도 fetch join처럼 가져온다. 간단할 때는 편하�
 > 아닙니다. EAGER는 연관 Entity를 바로 불러올 뿐이라, `findAll()` 같은 JPQL에서는 주문 목록을 먼저 가져온 뒤 회원을 건마다 따로 조회해서 여전히 N+1이 납니다.
 
 > [!question]- `MultipleBagFetchException`이 발생하는 이유는?
-> `List` 타입 컬렉션 두 개 이상을 동시에 fetch join하면 카테시안 곱이 생겨서입니다. 하나를 `Set`으로 바꾸거나, fetch join 대신 `@BatchSize`로 불러옵니다.
+> Hibernate가 `List` 타입 컬렉션(bag) 두 개 이상을 동시에 fetch join하는 걸 막아서입니다. 하나를 `Set`으로 바꾸면 예외는 사라지지만 카테시안 곱으로 행이 불어나는 건 그대로라, 보통은 하나만 fetch join하고 나머지는 `@BatchSize`로 불러옵니다.
 
 > [!question]- `default_batch_fetch_size`의 적정 값은?
 > 보통 100~1000 사이로 둡니다. DB가 IN 절에 받아 주는 개수 제한과 메모리 사용량을 보고 정합니다.
 
 > [!question]- N+1을 어떻게 발견하는가?
-> `spring.jpa.properties.hibernate.format_sql=true`를 켜고 로그 레벨을 맞춰서 실제로 나가는 SQL을 봅니다. 목록 API에서 쿼리 수가 데이터 건수만큼 늘어나면 N+1을 의심합니다.
+> `logging.level.org.hibernate.SQL=debug`로 실제로 나가는 SQL을 찍고, `spring.jpa.properties.hibernate.format_sql=true`로 보기 좋게 정리해서 봅니다. 목록 API에서 쿼리 수가 데이터 건수만큼 늘어나면 N+1을 의심합니다.
 
 ## 점검 퀴즈
 

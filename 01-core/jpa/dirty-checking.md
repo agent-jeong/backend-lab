@@ -15,9 +15,10 @@ tags: [concept, jpa]
 ```
 1. Entity 조회 → 영속성 컨텍스트에 스냅샷 저장
 2. Entity 필드 변경
-3. 트랜잭션 커밋 → flush(쌓인 변경을 SQL로 DB에 보내는 일) 발생
+3. 트랜잭션 커밋 직전 → flush(쌓인 변경을 SQL로 DB에 보내는 일) 발생
 4. 스냅샷과 현재 상태 비교
 5. 바뀐 Entity마다 UPDATE SQL을 만들어 실행
+6. 트랜잭션 커밋
 ```
 
 ```java

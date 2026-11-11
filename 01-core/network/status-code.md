@@ -54,7 +54,7 @@ public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
 | 404 Not Found | 리소스 없음 | 존재하지 않는 ID 조회 |
 | 405 Method Not Allowed | 허용되지 않은 메서드 | POST만 가능한데 GET 요청 |
 | 409 Conflict | 리소스 충돌 | 중복 등록, 상태 충돌 |
-| 422 Unprocessable Entity | 문법은 맞지만 처리 불가 | 비즈니스 규칙 위반 |
+| 422 Unprocessable Content | 문법은 맞지만 처리 불가 (예전 이름 Unprocessable Entity) | 비즈니스 규칙 위반 |
 | 429 Too Many Requests | 요청 횟수 초과 | Rate Limit 초과 |
 
 ### 401 vs 403
@@ -68,7 +68,7 @@ public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
 
 ```
 400 Bad Request:          요청 자체가 잘못됨 (JSON 파싱 실패, 필수 필드 누락)
-422 Unprocessable Entity: 요청 형식은 맞지만 비즈니스 규칙 위반 (잔액 부족, 재고 없음)
+422 Unprocessable Content: 요청 형식은 맞지만 비즈니스 규칙 위반 (잔액 부족, 재고 없음)
 ```
 
 실무에서는 400 하나로 통일하는 팀도 많다. 어느 쪽이든 팀 안에서는 하나로 맞춘다.
@@ -78,7 +78,7 @@ public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
 | 코드 | 의미 | 사용 시점 |
 |---|---|---|
 | 500 Internal Server Error | 서버 내부 오류 | 예상치 못한 예외 |
-| 502 Bad Gateway | 업스트림 서버 응답 오류 | 프록시/LB 뒤의 서버 에러 |
+| 502 Bad Gateway | 업스트림 서버 응답 오류 | 업스트림이 잘못된 응답을 주거나 연결을 끊음 |
 | 503 Service Unavailable | 서비스 일시적 불가 | 서버 과부하, 배포 중 |
 | 504 Gateway Timeout | 업스트림 서버 응답 시간 초과 | 프록시/LB의 timeout |
 
@@ -103,37 +103,19 @@ public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
 
 ## 에러 응답 형식
 
-에러 응답은 모든 API에서 같은 모양으로 준다. 그래야 클라이언트가 에러를 한 군데에서 처리한다.
+에러 응답은 모든 API에서 같은 모양으로 준다. 그래야 클라이언트가 에러를 한 군데에서 처리한다. 형식은 RFC 9457 Problem Details(`application/problem+json`)로 맞춘다.
 
-```java
-// 일관된 에러 응답 형식
+```json
 {
-    "code": "ORDER_NOT_FOUND",
-    "message": "주문을 찾을 수 없습니다.",
-    "status": 404
+  "type": "https://api.example.com/problems/order-not-found",
+  "title": "주문을 찾을 수 없습니다",
+  "status": 404,
+  "detail": "주문 42가 없습니다.",
+  "errorCode": "ORDER_NOT_FOUND"
 }
 ```
 
-```java
-@RestControllerAdvice
-public class GlobalExceptionHandler {
-
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNotFound(EntityNotFoundException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-            .body(new ErrorResponse("NOT_FOUND", e.getMessage(), 404));
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException e) {
-        String message = e.getBindingResult().getFieldErrors().stream()
-            .map(error -> error.getField() + ": " + error.getDefaultMessage())
-            .collect(Collectors.joining(", "));
-        return ResponseEntity.badRequest()
-            .body(new ErrorResponse("VALIDATION_ERROR", message, 400));
-    }
-}
-```
+필드의 뜻과 Spring `ProblemDetail`로 만드는 법은 [[rest-api-design]]에 있다.
 
 ## 자주 깨지는 곳
 
@@ -149,7 +131,7 @@ public class GlobalExceptionHandler {
 >
 > 401은 로그인이 안 된 경우, 403은 로그인은 했지만 권한이 없는 경우로 나누고, 비즈니스 규칙 위반은 팀에서 정한 대로 400이나 422로 줍니다.
 >
-> 상태 코드는 재시도할지 정할 때도 씁니다. 4xx는 다시 보내지 않고, 502나 504는 멱등한 요청만 다시 보냅니다.
+> 상태 코드는 재시도할지 정할 때도 씁니다. 408, 429를 뺀 4xx는 다시 보내지 않고, 502나 504는 멱등한 요청만 다시 보냅니다.
 
 ## 꼬리 질문
 

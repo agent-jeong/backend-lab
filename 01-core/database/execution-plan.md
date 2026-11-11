@@ -94,7 +94,7 @@ type: ref | key: idx_status_created | rows: 20 | Extra: Using where; Backward in
 
 이제 인덱스 하나로 조건 거르기와 정렬을 다 한다. `Backward index scan`은 인덱스를 거꾸로 읽었다는 뜻이고, DESC 정렬에도 인덱스를 쓰고 있다는 얘기다.
 
-## EXPLAIN ANALYZE (MySQL 8.0+)
+## EXPLAIN ANALYZE (MySQL 8.0.18+)
 
 ```sql
 EXPLAIN ANALYZE SELECT * FROM orders WHERE user_id = 1;
@@ -116,7 +116,7 @@ EXPLAIN ANALYZE SELECT * FROM orders WHERE user_id = 1;
 >
 > `type`이 `ALL`이면 테이블을 전부 읽는다는 뜻이라 인덱스를 추가할지 봅니다. `Using filesort`가 나오면 정렬에 맞는 인덱스가 필요한지 봅니다.
 >
-> `rows`는 추정치라서, 정확한 숫자가 필요하면 MySQL 8.0 이상에서 `EXPLAIN ANALYZE`로 실제로 돌려 본 결과를 확인합니다.
+> `rows`는 추정치라서, 정확한 숫자가 필요하면 MySQL 8.0.18 이상에서 `EXPLAIN ANALYZE`로 실제로 돌려 본 결과를 확인합니다.
 
 ## 꼬리 질문
 

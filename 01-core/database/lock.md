@@ -20,6 +20,7 @@ tags: [concept, database]
 
 - 공유 락(Shared Lock, S Lock)은 읽기 락이다. 여러 트랜잭션이 동시에 잡을 수 있다. S Lock이 걸린 데이터에 쓰려는(X Lock) 트랜잭션은 기다린다.
 - 배타 락(Exclusive Lock, X Lock)은 쓰기 락이다. X Lock이 걸린 데이터는 다른 트랜잭션이 읽기 락(S Lock)을 잡든 쓰기 락(X Lock)을 잡든 모두 기다린다.
+- 단, 락을 잡지 않는 일반 SELECT는 X Lock이 걸려 있어도 기다리지 않고 MVCC 스냅샷을 읽는다([[transaction-and-isolation]]).
 
 | 요청 \ 보유 | S Lock | X Lock |
 |---|---|---|
@@ -84,7 +85,7 @@ public class Product {
 // → 0 rows updated면 OptimisticLockException 발생
 ```
 
-락을 걸지 않는다. 대신 version 조건이 붙은 UPDATE가 실행될 때 0건이 바뀌면 누군가 먼저 고쳤다고 판단한다. JPA에서는 이 UPDATE가 flush 때 나가니 보통 커밋 직전이다. 부딪힐 일이 드문 데이터에 맞다.
+읽을 때 락을 걸지 않는다. 대신 version 조건이 붙은 UPDATE가 실행될 때 0건이 바뀌면 누군가 먼저 고쳤다고 판단한다. JPA에서는 이 UPDATE가 flush 때 나가니 보통 커밋 직전이다. 부딪힐 일이 드문 데이터에 맞다.
 
 | 기준 | 비관적 락 | 낙관적 락 |
 |---|---|---|
@@ -106,9 +107,10 @@ TX-B: UPDATE orders SET status = 'SHIPPED' WHERE id = 1;    → 대기 (TX-A가 
 두 트랜잭션이 서로 상대가 쥔 락을 기다리면 데드락이다. 이렇게 대응한다.
 
 - InnoDB는 데드락을 알아채면 트랜잭션 하나를 롤백한다. 그 트랜잭션은 애플리케이션이 다시 시도해야 한다.
-- 모든 트랜잭션이 테이블과 행을 같은 순서로 잠그면 데드락이 생기지 않는다.
+- 모든 트랜잭션이 테이블과 행을 같은 순서로 잠그면 데드락이 크게 준다. Gap Lock이나 보조 인덱스 락이 얽히면 그래도 날 수 있다.
 - 트랜잭션을 짧게 만들어 락을 쥐고 있는 시간을 줄인다.
-- `innodb_lock_wait_timeout`으로 락을 얼마나 기다릴지 상한을 둔다.
+
+`innodb_lock_wait_timeout`은 데드락이 아니라 보통의 락 대기에 상한을 두는 설정이다. 데드락은 InnoDB가 바로 찾아내 롤백한다. `innodb_deadlock_detect`를 끈 환경에서만 데드락도 이 타임아웃으로 풀린다.
 
 ## 자주 깨지는 곳
 

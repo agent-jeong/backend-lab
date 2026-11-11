@@ -32,7 +32,7 @@ TLS 1.3은 1-RTT로 핸드셰이크가 끝난다(TLS 1.2는 2-RTT). 이전 세�
 인증서는 세 가지 일을 한다.
 
 1. 이 서버가 정말 example.com인지 확인해 준다.
-2. 암호화에 쓸 서버의 공개 키를 담고 있다.
+2. 서버의 공개 키를 담고 있다. 서버는 핸드셰이크 내용에 자기 개인 키로 서명하고(CertificateVerify), 클라이언트는 이 공개 키로 서명을 확인한다. 실제 암호화에 쓸 키는 (EC)DHE로 따로 합의한다. TLS 1.3에서는 공개 키로 키를 실어 보내는 정적 RSA 방식이 빠졌다.
 3. CA(Certificate Authority)의 서명이 붙어 있어서, 클라이언트가 이미 믿는 CA까지 서명을 따라 올라가며 확인할 수 있다.
 
 ```
@@ -98,14 +98,14 @@ openssl verify -CAfile ca-bundle.crt server.crt
 
 ## Java에서의 TLS
 
-```java
-// 자체 서명 인증서를 사용하는 외부 API 호출 시
-// JVM의 truststore에 CA 인증서 추가
+```bash
+# 자체 서명 인증서를 사용하는 외부 API 호출 시
+# JVM의 truststore에 CA 인증서 추가
 keytool -import -alias myca -file ca.crt \
     -keystore $JAVA_HOME/lib/security/cacerts \
     -storepass changeit
 
-// 또는 시스템 속성으로 지정
+# 또는 시스템 속성으로 지정
 -Djavax.net.ssl.trustStore=/path/to/truststore.jks
 -Djavax.net.ssl.trustStorePassword=changeit
 ```

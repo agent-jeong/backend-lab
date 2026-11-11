@@ -108,7 +108,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(InsufficientBalanceException.class)
     ProblemDetail handleInsufficientBalance(InsufficientBalanceException e) {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(
-                HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
+                HttpStatusCode.valueOf(422), e.getMessage());
         problem.setType(URI.create("https://api.example.com/problems/insufficient-balance"));
         problem.setTitle("잔액이 부족합니다");
         problem.setProperty("errorCode", "PAYMENT_INSUFFICIENT_BALANCE");
@@ -116,6 +116,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 }
 ```
+
+RFC 9110은 422의 이름을 Unprocessable Content로 바꿨고, Spring Framework 7.0은 `HttpStatus.UNPROCESSABLE_ENTITY`를 deprecated로 두고 `UNPROCESSABLE_CONTENT`를 쓰게 한다. 위 코드는 6.x와 7.x에서 다 돌도록 `HttpStatusCode.valueOf(422)`로 적었다.
 
 예외 처리기를 어떻게 나누는지는 [[validation-and-exception-handling]]에 있다.
 

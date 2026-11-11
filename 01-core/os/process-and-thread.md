@@ -77,15 +77,19 @@ server:
 ```
 
 ```
-요청 → Accept Queue → Thread Pool에서 스레드 할당 → 처리 → 반환
+요청 → Tomcat이 연결 수락 → Thread Pool에서 스레드 할당 → 처리 → 반환
 
 Thread Pool (max=200):
 [Thread-1: 처리 중] [Thread-2: 처리 중] [Thread-3: 유휴] ... [Thread-200]
 
-모든 스레드가 처리 중이면 → Accept Queue에서 대기
-Accept Queue도 가득 차면 → Linux 기본 설정에서는 새 연결 요청(SYN)을 버린다.
+모든 스레드가 처리 중이면 → Tomcat은 max-connections(8192)까지 연결을 계속 받고,
+                            그 요청들은 Tomcat 안에서 스레드가 비기를 기다린다
+max-connections도 차면   → 새 연결은 OS accept queue(accept-count=100)에서 기다린다
+accept queue도 가득 차면 → Linux 기본 설정에서는 새 연결 요청(SYN)을 버린다.
                             클라이언트는 재전송하다 connect timeout을 맞는다
 ```
+
+`accept-count`는 스레드가 모자랄 때가 아니라 `max-connections`에 닿았을 때 쓰는 OS 큐 길이다.
 
 ### 스레드 풀 크기 정하기
 
@@ -104,17 +108,19 @@ kill -3 <PID>
 
 ```
 "http-nio-8080-exec-5" #35 daemon prio=5 os_prio=0 tid=0x00007f
-   java.lang.Thread.State: WAITING (parking)
+   java.lang.Thread.State: TIMED_WAITING (parking)
     at sun.misc.Unsafe.park(Native Method)
-    at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
-    at com.zaxxer.hikari.pool.HikariPool.getConnection(HikariPool.java:162)
+    at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java)
+    at java.util.concurrent.SynchronousQueue.poll(SynchronousQueue.java)
+    at com.zaxxer.hikari.util.ConcurrentBag.borrow(ConcurrentBag.java)
+    at com.zaxxer.hikari.pool.HikariPool.getConnection(HikariPool.java)
 ```
 
 | 스레드 상태 | 의미 | 해석 |
 |---|---|---|
-| RUNNABLE | 실행 중 또는 실행 대기 | 정상 |
+| RUNNABLE | 실행 중 또는 실행 대기 | 대개 정상. 외부 API 응답을 socket read로 기다리는 스레드도 RUNNABLE로 보인다 |
 | WAITING | 다른 스레드의 통지 대기 | 많으면 병목 의심 |
-| TIMED_WAITING | 시간 제한 대기 | sleep, timeout 대기 |
+| TIMED_WAITING | 시간 제한 대기 | sleep, timeout 대기. 커넥션 풀 대기도 여기로 보인다 |
 | BLOCKED | 모니터 락 획득 대기 | 많으면 락 경합 확인 |
 
 ## 멀티프로세스와 멀티스레드

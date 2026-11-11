@@ -107,12 +107,12 @@ Throttling은 로그에 남지 않아서 찾기 어렵다. 응답 시간이 불�
 >
 > 스레드 수를 정할 때는 먼저 작업이 CPU 바운드인지 I/O 바운드인지 나눠 봅니다.
 >
-> 컨테이너에서는 CPU limit을 넘으면 Throttling이 걸려 응답 시간이 불규칙해지는데, 로그에는 안 남습니다. 그래서 `top`과 `/sys/fs/cgroup/cpu/cpu.stat`으로 CPU를 어떻게 쓰는지와 Throttling이 걸렸는지를 확인합니다.
+> 컨테이너에서는 CPU limit을 넘으면 Throttling이 걸려 응답 시간이 불규칙해지는데, 로그에는 안 남습니다. 그래서 `top`과 `/sys/fs/cgroup/cpu.stat`으로 CPU를 어떻게 쓰는지와 Throttling이 걸렸는지를 확인합니다.
 
 ## 꼬리 질문
 
 > [!question]- CPU Throttling은 어떻게 발견하는가?
-> 애플리케이션 로그에는 안 남습니다. cgroup의 `cpu.stat`에서 `nr_throttled`와 `throttled_time`을 보거나, Kubernetes라면 `container_cpu_cfs_throttled_periods_total` 메트릭을 봅니다.
+> 애플리케이션 로그에는 안 남습니다. cgroup의 `cpu.stat`에서 `nr_throttled`와 `throttled_usec`(cgroup v1이면 `throttled_time`)을 보거나, Kubernetes라면 `container_cpu_cfs_throttled_periods_total` 메트릭을 봅니다.
 
 > [!question]- nice 값은 언제 조정하는가?
 > 배치처럼 늦어도 되는 프로세스의 nice 값을 높이면(예: 19), 실시간 요청을 처리하는 프로세스가 CPU를 더 받습니다. 다만 실무에서 직접 만지는 일은 드물고, 컨테이너 환경에서는 CPU request와 limit으로 조절합니다.

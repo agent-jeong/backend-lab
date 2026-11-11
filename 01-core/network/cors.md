@@ -22,10 +22,10 @@ https://app.example.com:443  → Origin
 
 | URL A | URL B | 같은 Origin? |
 |---|---|---|
-| `https://app.com` | `https://app.com/api` | O (경로는 무관) |
-| `https://app.com` | `http://app.com` | X (프로토콜 다름) |
-| `https://app.com` | `https://api.app.com` | X (호스트 다름) |
-| `https://app.com` | `https://app.com:8080` | X (포트 다름) |
+| `https://app.example.com` | `https://app.example.com/orders` | O (경로는 무관) |
+| `https://app.example.com` | `http://app.example.com` | X (프로토콜 다름) |
+| `https://app.example.com` | `https://api.example.com` | X (호스트 다름) |
+| `https://app.example.com` | `https://app.example.com:8080` | X (포트 다름) |
 
 ## 동작
 
@@ -40,10 +40,10 @@ https://app.example.com:443  → Origin
 ```
 Browser                          Server
   │── GET /api/data ──────────▶   │
-  │   Origin: https://app.com     │
+  │   Origin: https://app.example.com
   │                                │
   │◀── 200 OK ────────────────   │
-  │   Access-Control-Allow-Origin: https://app.com
+  │   Access-Control-Allow-Origin: https://app.example.com
 ```
 
 ### Preflight Request (사전 요청)
@@ -53,30 +53,30 @@ Browser                          Server
 ```
 Browser                              Server
   │── OPTIONS /api/orders ────────▶   │  ← Preflight
-  │   Origin: https://app.com         │
+  │   Origin: https://app.example.com
   │   Access-Control-Request-Method: POST
   │   Access-Control-Request-Headers: Content-Type, Authorization
   │                                    │
   │◀── 204 No Content ───────────   │  ← 허용 응답
-  │   Access-Control-Allow-Origin: https://app.com
+  │   Access-Control-Allow-Origin: https://app.example.com
   │   Access-Control-Allow-Methods: GET, POST, PUT, DELETE
   │   Access-Control-Allow-Headers: Content-Type, Authorization
   │   Access-Control-Max-Age: 3600
   │                                    │
   │── POST /api/orders ───────────▶   │  ← 실제 요청
-  │   Origin: https://app.com         │
+  │   Origin: https://app.example.com
   │   Content-Type: application/json   │
   │                                    │
   │◀── 201 Created ──────────────   │
 ```
 
-`Access-Control-Max-Age`는 Preflight 결과를 브라우저가 기억하는 시간(초)이다. 그동안 같은 요청에는 Preflight를 다시 보내지 않는다.
+`Access-Control-Max-Age`는 Preflight 결과를 브라우저가 기억하는 시간(초)이다. 그동안 같은 요청에는 Preflight를 다시 보내지 않는다. 이 헤더가 없으면 브라우저는 5초만 기억하고, 값을 크게 줘도 크롬은 7200초(2시간), 파이어폭스는 86400초(24시간)까지만 받아 준다.
 
 ## 응답 헤더 (서버 → 브라우저)
 
 | 헤더 | 용도 | 예시 |
 |---|---|---|
-| `Access-Control-Allow-Origin` | 허용할 Origin | `https://app.com` 또는 `*` |
+| `Access-Control-Allow-Origin` | 허용할 Origin | `https://app.example.com` 또는 `*` |
 | `Access-Control-Allow-Methods` | 허용할 HTTP 메서드 | `GET, POST, PUT, DELETE` |
 | `Access-Control-Allow-Headers` | 허용할 요청 헤더 | `Content-Type, Authorization` |
 | `Access-Control-Allow-Credentials` | 인증 정보 포함 허용 | `true` |
@@ -163,7 +163,7 @@ public class SecurityConfig {
 }
 ```
 
-Spring Security를 쓰면 `WebMvcConfigurer`만으로는 모자라다. Security 필터가 먼저 돌면서 Preflight를 막을 수 있어서, `CorsConfigurationSource`를 Security에도 등록한다.
+Spring Security를 쓰면 `http.cors(...)`를 켜야 한다. Preflight에는 쿠키가 실리지 않아서, Security 필터가 CORS보다 먼저 돌면 인증되지 않은 요청으로 보고 막는다. `http.cors(withDefaults())`만 켜도, `CorsConfigurationSource` 빈이 없고 Spring MVC가 있으면 Security는 `WebMvcConfigurer`에 적은 CORS 설정을 그대로 쓴다. 위 코드처럼 `CorsConfigurationSource`를 직접 만들면 그 설정을 쓴다.
 
 ## Postman에서는 되는데 브라우저에서 안 되는 이유
 
@@ -179,10 +179,10 @@ Postman → 서버: CORS 헤더 무관하게 요청 성공
 ## 자주 깨지는 곳
 
 - `Allow-Origin: *`에 `credentials: true`를 같이 쓰면 브라우저가 에러를 낸다.
-- Spring Security를 쓰면서 `WebMvcConfigurer`만 설정하면, Security 필터가 Preflight를 먼저 막는다.
+- Spring Security를 쓰면서 `http.cors(...)`를 켜지 않으면, `WebMvcConfigurer`에 CORS를 적어 둬도 Security 필터가 Preflight를 먼저 막는다.
 - OPTIONS 메서드를 막으면 Preflight가 실패해서 Preflight가 필요한 API가 모두 막힌다.
 - 개발 환경에서 프록시로 CORS를 피해 가면, 운영에 올리고 나서야 CORS 문제를 발견한다.
-- `Access-Control-Max-Age`를 설정하지 않으면 요청할 때마다 Preflight가 나간다.
+- `Access-Control-Max-Age`를 설정하지 않으면 브라우저가 Preflight 결과를 5초만 기억해서, Preflight가 거의 요청마다 나간다.
 
 ## 한 번에 설명하기
 
@@ -190,7 +190,7 @@ Postman → 서버: CORS 헤더 무관하게 요청 성공
 >
 > `application/json` 요청은 OPTIONS로 Preflight가 먼저 나가서, CORS 에러가 나면 서버가 OPTIONS를 막고 있지 않은지부터 봅니다.
 >
-> 쿠키를 실어야 하면 `Allow-Origin: *` 대신 Origin을 직접 적고, Spring Security를 쓰면 `CorsConfigurationSource`를 Security에 등록합니다.
+> 쿠키를 실어야 하면 `Allow-Origin: *` 대신 Origin을 직접 적고, Spring Security를 쓰면 `http.cors()`를 켜서 CORS가 인증보다 먼저 처리되게 합니다.
 
 ## 꼬리 질문
 
@@ -202,6 +202,15 @@ Postman → 서버: CORS 헤더 무관하게 요청 성공
 
 > [!question]- Access-Control-Expose-Headers는 언제 사용하는가?
 > 브라우저 JavaScript가 읽을 수 있는 응답 헤더는 기본으로 몇 개뿐입니다. 페이지네이션의 `X-Total-Count` 같은 커스텀 헤더를 프론트에서 읽으려면 `Expose-Headers`에 적어 줘야 합니다.
+
+## 참고
+
+2026년 11월에 확인한 공식 문서다.
+
+- [MDN: Cross-Origin Resource Sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS)
+- [MDN: Access-Control-Max-Age](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Access-Control-Max-Age)
+- [Spring Framework: CORS (Spring Web MVC)](https://docs.spring.io/spring-framework/reference/web/webmvc-cors.html)
+- [Spring Security: CORS](https://docs.spring.io/spring-security/reference/servlet/integrations/cors.html)
 
 ## 관련 문서
 

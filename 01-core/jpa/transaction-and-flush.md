@@ -24,7 +24,7 @@ public class UserService {
     public void updateUser(Long id, String name) {
         User user = userRepository.findById(id).orElseThrow();
         user.setName(name);
-        // 메서드 종료 → 트랜잭션 커밋 → flush → UPDATE 실행
+        // 메서드 종료 → flush(UPDATE 실행) → 트랜잭션 커밋
     }
 }
 ```
@@ -70,25 +70,27 @@ flush는 영속성 컨텍스트에 쌓인 변경을 SQL로 DB에 보내는 것�
 
 | 언제 | 왜 |
 |---|---|
-| 트랜잭션을 커밋할 때 | 바뀐 내용을 DB에 넣어야 하니까 |
+| 트랜잭션을 커밋하기 직전 | 바뀐 내용을 DB에 넣어야 하니까 |
 | JPQL 쿼리를 실행하기 전 | 영속성 컨텍스트와 DB 내용을 맞춰 놓고 조회하려고 |
 | `entityManager.flush()`를 직접 부를 때 | 직접 시켰으니까 |
 
-JPQL을 실행하기 전에 자동으로 flush(auto flush)하기 때문에, 방금 `persist()`한 데이터가 JPQL 결과에 들어 있다.
+JPQL을 실행하기 전에 자동으로 flush(auto flush)하기 때문에, 방금 바꾼 값이 JPQL 결과에 그대로 반영된다.
 
 ```java
 @Transactional
-public void example() {
-    User user = new User("kim");
-    entityManager.persist(user); // 아직 INSERT 안 함
+public void example(Long id) {
+    User user = entityManager.find(User.class, id);
+    user.setName("kim"); // 변경 감지 대상, 아직 UPDATE 안 함
 
-    // JPQL 실행 전에 auto flush → INSERT 실행
+    // JPQL 실행 전에 auto flush → UPDATE 실행
     List<User> users = entityManager
-        .createQuery("SELECT u FROM User u", User.class)
+        .createQuery("SELECT u FROM User u WHERE u.name = 'kim'", User.class)
         .getResultList();
-    // kim이 결과에 포함됨
+    // 방금 이름을 바꾼 user가 결과에 포함됨
 }
 ```
+
+예제에 `persist()`를 쓰지 않은 이유가 있다. `User`처럼 `IDENTITY` 전략을 쓰는 Entity는 `persist()`하자마자 INSERT가 나가서 auto flush를 보여 주지 못한다([[persistence-context]]).
 
 ## @Transactional(readOnly = true)
 

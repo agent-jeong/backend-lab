@@ -74,7 +74,7 @@ total    %{time_total}
 
 요청은 보통 애플리케이션 서버에 바로 가지 않고 로드밸런서(L7이면 리버스 프록시 역할도 한다)를 먼저 지난다. 여기서 TLS를 풀고, 경로나 호스트로 대상 그룹을 고르고, 헬스체크를 통과한 서버 중 하나로 넘긴다. 원래 클라이언트 IP와 스킴은 `X-Forwarded-For`, `X-Forwarded-Proto` 헤더에 담아 보낸다. 자세한 내용은 [[load-balancer]]에 있다.
 
-장애 때 보는 곳: 응답 코드가 어디서 만들어졌는지부터 가른다. 애플리케이션 로그에 그 요청이 없는데 사용자는 502, 503, 504를 받았다면 로드밸런서가 만든 응답이다. 503은 보낼 서버가 없을 때(헬스체크 전부 실패), 504는 서버 응답을 기다리다 끊었을 때, 502는 서버가 연결을 끊거나 잘못된 응답을 줬을 때 흔히 나온다. 로드밸런서 접근 로그의 대상 서버 처리 시간과 헬스체크 상태를 같이 본다.
+장애 때 보는 곳: 응답 코드가 어디서 만들어졌는지부터 가른다. 애플리케이션 로그에 그 요청이 없는데 사용자는 502, 503, 504를 받았다면 로드밸런서가 만든 응답이다. 503은 보낼 서버가 없을 때, 504는 서버 응답을 기다리다 끊었을 때, 502는 서버가 연결을 끊거나 잘못된 응답을 줬을 때 흔히 나온다. 헬스체크가 전부 실패했을 때는 제품마다 다르다. AWS ALB는 대상이 모두 unhealthy면 fail open으로 전부에게 보내고, Nginx는 살아 있는 upstream이 없으면 502를 준다. 로드밸런서 접근 로그의 대상 서버 처리 시간과 헬스체크 상태를 같이 본다.
 
 Spring Boot 뒤에 프록시가 있으면 `server.forward-headers-strategy`를 설정해야 애플리케이션이 원래 클라이언트 IP와 `https`를 본다. 설정하지 않으면 리다이렉트 URL이 `http`로 나가거나 접근 로그에 로드밸런서 IP만 찍힌다.
 
@@ -99,7 +99,7 @@ Spring Boot 3.x 기본 구성에서는 내장 Tomcat이 연결을 받아 요청 
 | 일부 사용자만 접속 실패 | DNS, TLS | `dig` 결과, 인증서 체인 |
 | 전체 접속 불가, 인증서 경고 | TLS | 인증서 만료일 |
 | 연결이 안 맺어짐 | TCP, 방화벽 | `nc -vz`, 보안 그룹 |
-| 503이 쏟아지고 앱 로그는 조용함 | 로드밸런서 | 헬스체크 상태, 등록된 서버 수 |
+| 502나 503이 쏟아지고 앱 로그는 조용함 | 로드밸런서 | 헬스체크 상태, 등록된 서버 수 |
 | 504가 나고 앱 로그엔 긴 처리 시간 | 애플리케이션, 외부 의존성 | 처리 시간, 스레드 풀, DB 풀 |
 | 첫 바이트는 빠른데 화면이 늦음 | 브라우저 렌더링 | Network waterfall |
 
@@ -145,6 +145,7 @@ Spring Boot 3.x 기본 구성에서는 내장 Tomcat이 연결을 받아 요청 
 - [MDN: Populating the page: how browsers work](https://developer.mozilla.org/en-US/docs/Web/Performance/Guides/How_browsers_work)
 - [RFC 8446: The Transport Layer Security (TLS) Protocol Version 1.3](https://www.rfc-editor.org/rfc/rfc8446)
 - [curl man page (`--write-out`)](https://curl.se/docs/manpage.html)
+- [AWS: Health checks for Application Load Balancer target groups](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/target-group-health-checks.html)
 
 ## 관련 문서
 
