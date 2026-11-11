@@ -84,3 +84,4 @@ spec:
 - [[kubernetes]]
 - [[deployment-service-ingress]]
 - [[readiness-and-liveness-probe]]
+- [[graceful-shutdown]]

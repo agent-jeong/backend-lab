@@ -47,13 +47,51 @@ public void reserveStock(Long productId, int quantity) {
 
 | 상황 | 선택 | 이유 |
 |---|---|---|
-| 같은 row를 반드시 순차 변경 | pessimistic lock | 명시적으로 선점해 lost update를 막는다 |
+| 같은 row를 한 번에 하나씩만 고쳐야 할 때 | pessimistic lock | 명시적으로 선점해 lost update를 막는다 |
 | 충돌이 드물고 재시도 가능 | optimistic lock | 락 점유를 줄이고 버전 충돌만 감지한다 |
 | 단순 수량 차감 | 조건부 update | 원자적 SQL로 락 범위를 줄인다 |
 | 여러 자원을 함께 수정 | 락 획득 순서 고정 | 데드락 가능성을 낮춘다 |
 | 긴 처리 포함 | 트랜잭션 밖에서 선처리 | 락 보유 시간을 줄인다 |
 
 pessimistic lock은 충돌을 미리 막지만, 락을 오래 쥐면 처리량이 떨어진다. optimistic lock은 충돌이 드물 때 가볍지만, 충돌하면 재시도하거나 사용자에게 다시 하라고 알려야 한다. 조건부 update는 단순하고 빠르지만 검증할 규칙이 복잡하면 한 문장에 담기 어렵다. 경합이 아주 심한 기능이면 요청을 큐에 줄 세우는 방법까지 놓고 업무에 맞게 고른다.
+
+## 교착 상태가 생기는 네 가지 조건
+
+데드락은 네 조건이 한꺼번에 성립할 때만 생긴다. 거꾸로 하나라도 깨면 데드락은 생기지 않는다. 운영체제 교재에서 다루는 조건이지만 DB 락과 애플리케이션 락에도 그대로 들어맞는다.
+
+| 조건 | 뜻 | DB 락에서 | 애플리케이션 락에서 |
+|---|---|---|---|
+| 상호 배제 | 자원을 한 번에 하나만 쥔다 | 배타 락이 걸린 행은 다른 트랜잭션이 고치지 못한다 | `synchronized`, `ReentrantLock`, 분산 락은 한 스레드나 한 서버만 쥔다 |
+| 점유 대기 | 자원을 쥔 채 다른 자원을 기다린다 | 주문 행을 고친 트랜잭션이 커밋하기 전에 재고 행의 락을 기다린다 | 락 A를 쥔 스레드가 락 B의 `lock()`에서 멈춘다 |
+| 비선점 | 남이 쥔 자원을 강제로 빼앗지 못한다 | 트랜잭션이 쥔 행 락은 커밋이나 롤백 전까지 풀리지 않는다 | 다른 스레드가 쥔 `synchronized` 모니터를 밖에서 풀 방법이 없다 |
+| 순환 대기 | 기다림이 원을 이룬다 | T1은 A 행을 쥐고 B 행을, T2는 B 행을 쥐고 A 행을 기다린다 | 스레드 1은 계좌 A, B 순서로, 스레드 2는 B, A 순서로 잠근다 |
+
+조건마다 깨는 비용이 다르다.
+
+- 상호 배제는 깰 수 없다. 동시에 고쳐도 되는 데이터라면 처음부터 락이 필요 없다.
+- 점유 대기는 필요한 락을 처음에 한꺼번에 잡거나, 하나라도 못 잡으면 쥔 것을 다 놓고 다시 시작하면 깨진다. `tryLock(timeout)`이 실패했을 때 쥔 락을 풀고 재시도하는 방식이 이쪽이다. 무엇을 잠글지 미리 알아야 하고, 재시도 로직이 붙는다.
+- 비선점은 DB가 이미 대신 깨 준다. InnoDB 같은 DB는 데드락을 감지하면 한 트랜잭션을 희생자로 골라 롤백해서 락을 강제로 놓게 한다. 그래서 데드락이 나도 영원히 멈추지는 않지만, 롤백된 요청은 애플리케이션이 받아서 처리해야 한다.
+- 순환 대기는 락을 잡는 순서를 하나로 정하면 깨진다. 모든 요청이 id가 작은 행부터 잠그면, 작은 id를 쥔 쪽이 큰 id를 기다리는 일은 있어도 그 반대는 없어서 원이 생기지 않는다.
+
+실무에서는 주로 순환 대기를 깬다. 코드에서 잠그는 순서만 맞추면 되고, 락을 더 오래 쥐거나 재시도를 붙일 필요가 없어서 비용이 가장 적다.
+
+```java
+@Transactional
+public void transfer(long fromAccountId, long toAccountId, long amount) {
+    long firstId = Math.min(fromAccountId, toAccountId);
+    long secondId = Math.max(fromAccountId, toAccountId);
+
+    Account first = accountRepository.findByIdForUpdate(firstId);
+    Account second = accountRepository.findByIdForUpdate(secondId);
+
+    Account from = first.getId() == fromAccountId ? first : second;
+    Account to = first.getId() == fromAccountId ? second : first;
+    from.withdraw(amount);
+    to.deposit(amount);
+}
+```
+
+A에서 B로 보내는 요청과 B에서 A로 보내는 요청이 동시에 와도, 둘 다 id가 작은 계좌부터 잠그니 서로를 기다리는 원이 생기지 않는다. 여러 테이블을 고칠 때도 같다. 주문, 재고, 포인트처럼 테이블 순서를 정해 두고 모든 기능이 그 순서를 따르게 한다.
 
 ## 자주 깨지는 곳
 

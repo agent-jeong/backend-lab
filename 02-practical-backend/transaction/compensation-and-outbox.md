@@ -95,3 +95,4 @@ public void completeOrder(Long orderId) {
 - [[external-api-and-transaction]]
 - [[02-practical-backend/idempotency/idempotency|idempotency]]
 - [[02-practical-backend/observability/observability|observability]]
+- [[message-queue-basics]]

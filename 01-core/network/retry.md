@@ -167,3 +167,5 @@ Retry-After: 30
 - [[timeout]]
 - [[http-basics]]
 - [[status-code]]
+- [[circuit-breaker]]
+- [[rate-limiting]]

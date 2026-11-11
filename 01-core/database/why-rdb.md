@@ -90,3 +90,4 @@ WHERE o.status = 'COMPLETED';
 - [[01-core/database/database|database]]
 - [[table-and-key]]
 - [[transaction-and-isolation]]
+- [[nosql-and-cap]]

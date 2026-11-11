@@ -69,7 +69,9 @@ public class EncodingFilter implements Filter {
 }
 ```
 
-쓰는 곳: 인코딩 설정, CORS 처리, body를 래핑한 요청/응답 로깅, Spring Security 인증/인가(FilterChain), XSS 방어.
+쓰는 곳: 인코딩 설정, CORS 처리, body를 래핑한 요청/응답 로깅, Spring Security 인증/인가(FilterChain), 보안 응답 헤더(CSP 등) 추가.
+
+XSS를 막겠다고 필터에서 요청 값을 한꺼번에 escape하는 방식은 쓰지 않는다. 같은 값이 HTML, JSON, SQL 등 어디에 쓰이느냐에 따라 인코딩이 달라서, 미리 바꿔 두면 데이터가 망가지거나 다른 곳에서 뚫린다. XSS는 출력하는 쪽에서 문맥에 맞게 인코딩해서 막는다([[xss]]).
 
 ### Interceptor
 
@@ -215,3 +217,4 @@ public class ServiceLoggingAspect {
 - [[spring-mvc-request-flow]]
 - [[aop]]
 - [[validation-and-exception-handling]]
+- [[spring-security-flow]]

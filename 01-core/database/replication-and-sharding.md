@@ -175,3 +175,4 @@ Shard Key 값을 보고 데이터를 여러 DB에 나눠 담는다.
 - [[01-core/database/transaction-and-isolation|transaction-and-isolation]]
 - [[02-practical-backend/performance/performance|performance]]
 - [[connection-pool-and-timeout]]
+- [[nosql-and-cap]]

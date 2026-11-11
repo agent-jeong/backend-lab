@@ -79,3 +79,4 @@ strategy:
 - [[kubernetes]]
 - [[readiness-and-liveness-probe]]
 - [[02-practical-backend/ci-cd/ci-cd|ci-cd]]
+- [[graceful-shutdown]]

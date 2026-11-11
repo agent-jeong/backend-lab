@@ -90,3 +90,5 @@ public void handle(OrderCompletedEvent event) {
 - [[02-practical-backend/transaction/compensation-and-outbox|compensation-and-outbox]]
 - [[state-transition-and-unique-constraint]]
 - [[02-practical-backend/observability/observability|observability]]
+- [[message-queue-basics]]
+- [[kafka-core-concepts]]

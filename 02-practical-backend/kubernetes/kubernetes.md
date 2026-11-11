@@ -17,8 +17,9 @@ Pod, Deployment·Service·Ingress, 프로브, 리소스, 롤링 업데이트, Cr
 4. [[readiness-and-liveness-probe|Readiness Probe와 Liveness Probe]]
 5. [[resource-request-and-limit|Resource Request와 Limit]]
 6. [[rolling-update-and-rollback|Rolling Update와 Rollback]]
-7. [[cronjob|CronJob]]
-8. [[kubernetes-logging-and-metrics|로그와 메트릭 확인]]
+7. [[graceful-shutdown|Graceful Shutdown]]
+8. [[cronjob|CronJob]]
+9. [[kubernetes-logging-and-metrics|로그와 메트릭 확인]]
 
 ## 먼저 답해 볼 질문
 

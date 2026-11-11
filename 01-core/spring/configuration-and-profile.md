@@ -264,3 +264,4 @@ spring:
 - [[01-core/spring/spring|spring]]
 - [[bean-lifecycle-and-scope]]
 - [[ioc-and-di]]
+- [[spring-boot-auto-configuration]]

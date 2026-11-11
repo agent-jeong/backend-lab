@@ -17,7 +17,8 @@ comments: false
 4. [[db-query-performance|DB 조회 성능]]
 5. [[cache-performance|Cache 적용]]
 6. [[connection-pool-and-timeout|Connection Pool과 Timeout]]
-7. [[load-test-and-metrics|부하 테스트와 지표 해석]]
+7. [[rate-limiting|처리율 제한(Rate Limiting)]]
+8. [[load-test-and-metrics|부하 테스트와 지표 해석]]
 
 ## 먼저 답해 볼 질문
 

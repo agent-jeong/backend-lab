@@ -61,6 +61,9 @@ comments: false
 - @Async에서 트랜잭션이 동작하는가? ThreadLocal과의 관계는? [[threadlocal-and-async-transaction]]
 - 스레드 풀에서 ThreadLocal 누수가 발생하는 이유와 대응은? [[threadlocal-and-async-transaction]]
 - Controller, Service, Repository 책임을 어떻게 나누나요? [[layered-architecture]] [[service-responsibility]]
+- Boot 3로 올린 뒤 직접 만든 라이브러리의 자동 설정이 켜지지 않는다면 어디를 보나? [[spring-boot-auto-configuration]]
+- 직접 등록한 `ObjectMapper` 때문에 날짜가 배열로 나간다면 원인은 무엇인가? [[spring-boot-auto-configuration]]
+- 어떤 자동 설정이 켜졌는지 어떻게 확인하나? [[spring-boot-auto-configuration]]
 
 ## JPA
 
@@ -82,12 +85,37 @@ comments: false
 - 작업이 느릴 때 어디가 느린지 탐지하고 성능을 개선하는 방법은? [[bottleneck-analysis]]
 - 트랜잭션 격리 수준은 어떤 문제를 막기 위한 것인가요? [[transaction-and-isolation]]
 - Deadlock이 발생하면 어떤 순서로 원인을 좁히나요? [[lock-and-deadlock]]
+- CAP 정리를 "셋 중 둘을 고른다"로 설명하면 무엇이 틀렸나? [[nosql-and-cap]]
+- consistent hashing은 노드를 늘릴 때 옮기는 데이터를 어떻게 줄이나? [[nosql-and-cap]]
+- 데드락이 생기는 네 가지 조건 중, 실무에서는 무엇을 깨나? [[lock-and-deadlock]]
 
 ## Redis
 
 - Redis 캐싱 적용 시 정합성 문제를 어떻게 다루나요? [[cache-aside-and-ttl]]
 - Cache Aside 패턴의 장점과 한계는 무엇인가요? [[cache-aside-and-ttl]]
 - Redis 장애가 나도 서비스가 계속 동작해야 한다면 어떻게 설계하나요? [[redis-failure-and-fallback]]
+
+## Network
+
+- 브라우저에 URL을 입력하면 응답을 받기까지 무슨 일이 일어나나? [[request-journey]]
+- 사용자는 504를 받았는데 애플리케이션 로그에는 200이 찍혔다면 무슨 일인가? [[request-journey]]
+- PUT과 PATCH는 어떻게 다르고, PATCH는 왜 멱등하지 않을 수 있나? [[rest-api-design]]
+- offset 페이지네이션은 왜 뒤로 갈수록 느려지고, cursor는 어떻게 다른가? [[rest-api-design]]
+- 서킷 브레이커의 CLOSED, OPEN, HALF_OPEN은 어떻게 바뀌나? [[circuit-breaker]]
+- Retry와 서킷 브레이커는 어느 쪽을 바깥에 두나? [[circuit-breaker]]
+
+## Performance
+
+- 고정 윈도우 처리율 제한의 경계 문제는 무엇이고 어떻게 줄이나? [[rate-limiting]]
+- 서버가 여러 대일 때 처리율 제한 카운터는 어디에 두나? [[rate-limiting]]
+
+## Messaging
+
+- 주문 완료 뒤 알림, 포인트, 정산을 동기 호출과 메시지 중 무엇으로 붙이나? [[message-queue-basics]]
+- exactly-once를 지원하는 브로커를 쓰면 소비자 멱등성이 필요 없나? [[message-queue-basics]]
+- 소비자를 늘렸는데 처리 속도가 그대로인 이유는? [[kafka-core-concepts]]
+- offset을 처리 전과 처리 후 중 언제 커밋하나? 각각 무엇이 생기나? [[kafka-core-concepts]]
+- `acks=all`이면 메시지를 절대 잃지 않나? [[kafka-core-concepts]]
 
 ## Security
 
@@ -98,6 +126,12 @@ comments: false
 - CSRF는 어떤 조건에서 문제가 되고 어떻게 막나요? [[csrf]]
 - SQL Injection은 ORM을 써도 발생할 수 있나요? [[sql-injection]]
 - 로그에 민감 정보가 남지 않게 하려면 무엇을 확인해야 하나요? [[sensitive-data-logging]]
+- `permitAll`로 연 API에서 401이 나는 이유는? [[spring-security-flow]]
+- 로그인하지 않은 요청이 401이 아니라 403으로 나가는 이유는? [[spring-security-flow]]
+- OAuth와 OIDC는 무엇이 다르고, ID token에서 무엇을 검증하나? [[oauth2-and-oidc]]
+- PKCE는 무엇을 막고, 서버 앱에도 필요한가? [[oauth2-and-oidc]]
+- HttpOnly 쿠키를 쓰면 XSS가 막히나? [[xss]]
+- XSS는 입력할 때 막나, 출력할 때 막나? [[xss]]
 
 ## Concurrency
 
@@ -120,6 +154,10 @@ comments: false
 - DTO와 Entity를 분리하는 이유는 무엇인가요? [[dto-vs-entity]]
 - 의존성 방향이 깨지면 어떤 문제가 생기나요? [[dependency-direction]]
 - 모듈 경계는 어떤 기준으로 정하나요? [[module-boundary]]
+- 결제 수단이 늘 때마다 if문이 늘어나는 코드를 어떻게 바꾸나? [[oop-design-principles]]
+- 구현이 하나뿐인 Service에도 인터페이스를 만들어야 하나? [[oop-design-principles]]
+- 마이크로서비스로 나누면 무엇이 비싸지나? [[monolith-and-msa]]
+- 분산 모놀리스는 무엇이고 어떻게 알아보나? [[monolith-and-msa]]
 
 ## Testing
 
@@ -139,6 +177,8 @@ comments: false
 - Resource request와 limit은 어떤 장애와 연결되나요? [[resource-request-and-limit]]
 - CronJob 중복 실행은 어떻게 막나요? [[cronjob]]
 - Pod가 재시작된 원인은 어떻게 확인하나요? [[kubernetes-logging-and-metrics]]
+- 배포 중에 502가 몇 건씩 나는 이유와 대책은? [[graceful-shutdown]]
+- terminationGracePeriodSeconds는 어떻게 정하나? [[graceful-shutdown]]
 
 ## CI/CD
 

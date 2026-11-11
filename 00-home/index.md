@@ -30,7 +30,7 @@ comments: false
 
 **기본기**: [[01-core/java/java|Java]] · [[01-core/kotlin/kotlin|Kotlin]] · [[01-core/spring/spring|Spring]] · [[01-core/jpa/jpa|JPA]] · [[01-core/database/database|Database]] · [[01-core/redis/redis|Redis]] · [[01-core/network/network|Network]] · [[01-core/os/os|OS]]
 
-**정합성**: [[02-practical-backend/transaction/transaction|트랜잭션]] · [[02-practical-backend/concurrency/concurrency|동시성]] · [[02-practical-backend/idempotency/idempotency|멱등성]]
+**정합성**: [[02-practical-backend/transaction/transaction|트랜잭션]] · [[02-practical-backend/concurrency/concurrency|동시성]] · [[02-practical-backend/idempotency/idempotency|멱등성]] · [[02-practical-backend/messaging/messaging|메시징]]
 
 **운영**: [[02-practical-backend/performance/performance|성능]] · [[02-practical-backend/observability/observability|관측성]] · [[02-practical-backend/batch/batch-processing|배치]] · [[02-practical-backend/kubernetes/kubernetes|Kubernetes]] · [[02-practical-backend/ci-cd/ci-cd|CI·CD]]
 

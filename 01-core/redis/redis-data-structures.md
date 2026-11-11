@@ -77,3 +77,4 @@ Redis에는 String 말고도 Hash, Set, Sorted Set, List, Stream, Pub/Sub이 있
 - [[cache-aside-and-ttl]]
 - [[02-practical-backend/performance/performance|performance]]
 - [[websocket]]
+- [[rate-limiting]]

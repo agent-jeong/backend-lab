@@ -13,12 +13,15 @@ comments: false
 
 1. [[authentication-and-authorization|인증과 인가]]
 2. [[session-and-token|Session과 Token]]
-3. [[password-storage|Password 저장]]
-4. [[cors|CORS]]
-5. [[csrf|CSRF]]
-6. [[sql-injection|SQL Injection]]
-7. [[sensitive-data-logging|민감 정보 로깅 방지]]
-8. [[authorization-check-location|권한 검증 위치]]
+3. [[oauth2-and-oidc|OAuth 2.0과 OpenID Connect]]
+4. [[password-storage|Password 저장]]
+5. [[cors|CORS]]
+6. [[csrf|CSRF]]
+7. [[xss|XSS]]
+8. [[sql-injection|SQL Injection]]
+9. [[sensitive-data-logging|민감 정보 로깅 방지]]
+10. [[authorization-check-location|권한 검증 위치]]
+11. [[spring-security-flow|Spring Security 인증과 인가 흐름]]
 
 ## 먼저 답해 볼 질문
 

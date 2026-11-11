@@ -88,3 +88,4 @@ public OrderDetail getOrder(long orderId, AuthenticatedUser user) {
 - [[session-and-token]]
 - [[authorization-check-location]]
 - [[01-core/spring/filter-interceptor-aop|filter-interceptor-aop]]
+- [[spring-security-flow]]

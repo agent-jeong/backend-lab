@@ -91,4 +91,5 @@ public AuthenticatedUser authenticate(String accessToken) {
 - [[security]]
 - [[authentication-and-authorization]]
 - [[authorization-check-location]]
+- [[oauth2-and-oidc]]
 - [[01-core/network/http-basics|http-basics]]

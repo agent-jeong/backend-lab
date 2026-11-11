@@ -159,3 +159,4 @@ HTTP는 기본으로 무상태다. 요청은 서로 따로 처리되고, 서버�
 - [[status-code]]
 - [[timeout]]
 - [[tls]]
+- [[rest-api-design]]

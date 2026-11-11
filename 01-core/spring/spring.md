@@ -22,6 +22,7 @@ IoC와 DI, 빈 생명주기, AOP와 프록시, MVC 요청 흐름, 트랜잭션�
 9. [[transactional-pitfalls|@Transactional 주의점]]
 10. [[threadlocal-and-async-transaction|ThreadLocal과 비동기 트랜잭션]]
 11. [[configuration-and-profile|Configuration과 Profile]]
+12. [[spring-boot-auto-configuration|Spring Boot 자동 설정]]
 
 ## 먼저 답해 볼 질문
 

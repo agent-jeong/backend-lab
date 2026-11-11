@@ -186,3 +186,4 @@ private PaymentResult paymentFallback(PaymentRequest request, Exception e) {
 - [[retry]]
 - [[tcp-connection]]
 - [[http-basics]]
+- [[circuit-breaker]]

@@ -319,3 +319,4 @@ public record ExternalApiResponse(String userName, String emailAddress) {
 - [[class-interface-enum-record]]
 - [[01-core/spring/spring|spring]]
 - [[01-core/jpa/jpa|jpa]]
+- [[spring-boot-auto-configuration]]

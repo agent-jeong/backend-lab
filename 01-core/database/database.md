@@ -20,7 +20,8 @@ comments: false
 7. [[normalization-and-denormalization|정규화와 반정규화]]
 8. [[join|Join]]
 9. [[replication-and-sharding|Replication과 Sharding]]
-10. [[pagination-and-bulk-query|Pagination과 대용량 조회]]
+10. [[nosql-and-cap|NoSQL과 CAP 정리]]
+11. [[pagination-and-bulk-query|Pagination과 대용량 조회]]
 
 ## 먼저 답해 볼 질문
 

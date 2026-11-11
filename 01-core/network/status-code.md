@@ -174,3 +174,4 @@ public class GlobalExceptionHandler {
 - [[http-basics]]
 - [[retry]]
 - [[01-core/spring/validation-and-exception-handling|validation-and-exception-handling]]
+- [[rest-api-design]]
