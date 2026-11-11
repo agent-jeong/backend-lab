@@ -571,3 +571,51 @@ article h2 {
     color: var(--secondary);
   }
 }
+
+// ──────────────────────────────────────
+// 글 목록(explorer) – 파란 굵은 링크를 줄여 눈이 덜 바쁘게
+// ──────────────────────────────────────
+.explorer-content {
+  // 최상위(00~05)만 진하게, 주제 폴더와 글은 본문색으로 한 단계 낮춘다
+  .explorer-ul > li > .folder-container div > a {
+    color: var(--dark);
+    font-weight: 700;
+  }
+
+  .folder-outer .folder-container div > a {
+    color: var(--darkgray);
+    font-weight: 500;
+  }
+
+  .folder-container div > a:hover,
+  ul li > a:hover {
+    color: var(--secondary);
+  }
+
+  .folder-icon {
+    color: var(--gray);
+  }
+
+  ul li > a {
+    color: var(--darkgray);
+    opacity: 1;
+    font-size: 0.92rem;
+    font-weight: 400;
+  }
+
+  // 지금 보는 글은 배경으로 표시한다
+  ul li > a.active {
+    color: var(--dark);
+    font-weight: 600;
+    background-color: var(--highlight);
+    border-radius: 4px;
+    padding: 0 0.35rem;
+    margin-left: -0.35rem;
+  }
+}
+
+// 폴더 페이지 목록의 날짜: 배경과 대비가 너무 낮아 한 단계 진하게
+.page-listing .meta {
+  color: var(--darkgray);
+  opacity: 0.7;
+}

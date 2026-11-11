@@ -77,7 +77,20 @@ TOP_FOLDERS = {
 }
 
 
-def write_folder_indexes(content: Path) -> int:
+def folder_dates(root: Path, rel: str) -> str:
+    """Frontmatter lines for a generated folder index, from the folder's git history.
+
+    Any commit under the folder counts, so "modified" means "something in this
+    folder last changed", not "a published note last changed".
+    """
+    args = ["git", "-C", str(root), "log", "--format=%cs", "--", rel]
+    out = subprocess.run(args, capture_output=True, text=True, check=True).stdout.split()
+    if not out:
+        return ""
+    return f"created: {out[-1]}\nmodified: {out[0]}\n"
+
+
+def write_folder_indexes(content: Path, root: Path) -> int:
     count = 0
     for folder in sorted(p for p in content.rglob("*") if p.is_dir()):
         index = folder / "index.md"
@@ -101,7 +114,7 @@ def write_folder_indexes(content: Path) -> int:
             alias = title.replace("/", "·")
             body = f"먼저 [[{hub_path}|{alias} 안내 글]]을 보면 읽는 순서와 핵심 질문이 있다."
         index.write_text(
-            f"---\ntitle: {title}\ndescription: {desc}\ncomments: false\n---\n\n{body}\n",
+            f"---\ntitle: {title}\ndescription: {desc}\n{folder_dates(root, rel)}comments: false\n---\n\n{body}\n",
             encoding="utf-8",
         )
         count += 1
@@ -123,7 +136,7 @@ def main() -> int:
         modified = git_date(root, source, first=False)
         changed += inject(md, created, modified)
     dropped = sum(drop_duplicate_h1(md) for md in content.rglob("*.md"))
-    folders = write_folder_indexes(content)
+    folders = write_folder_indexes(content, root)
     print(f"prepare-notes: dates {changed}, duplicate titles {dropped}, folder indexes {folders}")
     return 0
 

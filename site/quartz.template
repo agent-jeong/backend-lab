@@ -2,6 +2,205 @@ import { loadQuartzConfig, loadQuartzLayout } from "./quartz/plugins/loader/conf
 import * as ExternalPlugin from "./.quartz/plugins"
 import { FileTrieNode } from "./quartz/util/fileTrie"
 
+type SortNode = Pick<FileTrieNode, "isFolder" | "slug" | "displayName">
+
+// 글 목록(브라우저)과 폴더 페이지(빌드)가 같은 순서를 쓴다.
+// 글 목록에서는 이 함수가 문자열로 직렬화되므로 안에서 바깥 값이나 보조 함수를 쓰지 않는다.
+const siteSort = (a: SortNode, b: SortNode) => {
+  const orderMap: Record<string, string[]> = {
+    java: [
+      "primitive-and-reference-types",
+      "class-interface-enum-record",
+      "equals-and-hashcode",
+      "exception-handling",
+      "generics-and-type-erasure",
+      "collection-selection",
+      "hashmap",
+      "sorting-dedup-search-cost",
+      "stream-and-optional",
+      "java-version-features",
+      "reflection-and-annotation",
+      "jvm-memory-structure",
+      "java-concurrency-basics",
+      "java-memory-model",
+      "gc-and-tuning",
+      "memory-leak-and-oom",
+      "serialization-and-jackson",
+    ],
+    kotlin: [
+      "kotlin-why-backend",
+      "kotlin-null-safety",
+      "kotlin-data-class-and-immutability",
+      "kotlin-collection-and-scope-functions",
+      "kotlin-java-interop",
+      "kotlin-coroutines-basics",
+    ],
+    jpa: [
+      "why-jpa",
+      "entity-table-mapping",
+      "persistence-context",
+      "dirty-checking",
+      "association-mapping",
+      "lazy-and-eager-loading",
+      "n-plus-one-and-fetch-join",
+      "transaction-and-flush",
+      "querydsl",
+      "querydsl-practical-usage",
+    ],
+    spring: [
+      "why-spring",
+      "ioc-and-di",
+      "bean-lifecycle-and-scope",
+      "aop",
+      "spring-mvc-request-flow",
+      "validation-and-exception-handling",
+      "transaction-integration",
+      "configuration-and-profile",
+    ],
+    database: [
+      "why-rdb",
+      "table-and-key",
+      "db-index",
+      "execution-plan",
+      "transaction-and-isolation",
+      "lock",
+      "join",
+      "pagination-and-bulk-query",
+    ],
+    network: [
+      "http-basics",
+      "tcp-connection",
+      "timeout",
+      "retry",
+      "status-code",
+      "dns",
+      "load-balancer",
+      "cors",
+      "tls",
+      "websocket",
+    ],
+    os: [
+      "process-and-thread",
+      "context-switching",
+      "memory",
+      "cpu-scheduling",
+      "file-io",
+      "socket-io",
+      "blocking-and-non-blocking",
+      "system-resource-monitoring",
+    ],
+    redis: [
+      "why-redis",
+      "cache-aside-and-ttl",
+      "redis-failure-and-fallback",
+      "redis-distributed-lock",
+      "redis-data-structures",
+      "redis-key-and-memory",
+      "redis-monitoring",
+    ],
+    "01-core": [
+      "java",
+      "kotlin",
+      "spring",
+      "jpa",
+      "database",
+      "redis",
+      "network",
+      "os",
+    ],
+    "02-practical-backend": [
+      "transaction",
+      "concurrency",
+      "idempotency",
+      "performance",
+      "observability",
+      "architecture",
+      "messaging",
+      "batch",
+      "security",
+      "testing",
+      "ci-cd",
+      "kubernetes",
+    ],
+    transaction: [
+      "why-transaction",
+      "acid-and-isolation",
+      "transaction-boundary",
+      "spring-transaction",
+      "lock-and-deadlock",
+      "external-api-and-transaction",
+      "compensation-and-outbox",
+    ],
+    concurrency: [
+      "why-concurrency-problem",
+      "race-condition-and-critical-section",
+      "unique-constraint-and-state-transition",
+      "optimistic-lock",
+      "pessimistic-lock",
+      "distributed-lock",
+      "concurrency-test",
+    ],
+    idempotency: [
+      "why-idempotency",
+      "duplicate-request-and-retry",
+      "idempotency-key",
+      "state-transition-and-unique-constraint",
+      "message-consumer-idempotency",
+      "payment-order-idempotency",
+    ],
+    performance: [
+      "why-performance-problem",
+      "latency-and-throughput",
+      "bottleneck-analysis",
+      "db-query-performance",
+      "cache-performance",
+      "connection-pool-and-timeout",
+      "load-test-and-metrics",
+    ],
+    observability: [
+      "why-observability",
+      "logging",
+      "metrics",
+      "distributed-tracing",
+      "trace-id-and-correlation-id",
+      "alert-and-slo",
+      "dashboard",
+      "incident-analysis-flow",
+    ],
+  }
+
+  if (a.isFolder !== b.isFolder) {
+    return a.isFolder ? -1 : 1
+  }
+
+  const aParts = a.slug.split("/")
+  const bParts = b.slug.split("/")
+  const parentFolder = a.isFolder ? (aParts.at(-3) ?? "") : (aParts.at(-2) ?? "")
+
+  // 폴더 안내 글(폴더와 같은 이름의 글, 예: transaction/transaction)은 맨 위에 둔다.
+  // 이 함수는 브라우저로 직렬화되므로 안에서 보조 함수를 선언하지 않는다.
+  const hubNames = ["batch-processing", "work-cases", "design-cases"]
+  const aHub = !a.isFolder && (aParts.at(-1) === aParts.at(-2) || hubNames.includes(aParts.at(-1) ?? ""))
+  const bHub = !b.isFolder && (bParts.at(-1) === bParts.at(-2) || hubNames.includes(bParts.at(-1) ?? ""))
+  if (aHub !== bHub) return aHub ? -1 : 1
+  const order = orderMap[parentFolder]
+
+  if (order) {
+    const aSlug = a.isFolder ? (aParts.at(-2) ?? "") : (aParts.at(-1) ?? "")
+    const bSlug = b.isFolder ? (bParts.at(-2) ?? "") : (bParts.at(-1) ?? "")
+    const aIdx = order.indexOf(aSlug)
+    const bIdx = order.indexOf(bSlug)
+    if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx
+    if (aIdx !== -1) return -1
+    if (bIdx !== -1) return 1
+  }
+
+  return a.displayName.localeCompare(b.displayName, undefined, {
+    numeric: true,
+    sensitivity: "base",
+  })
+}
+
 ExternalPlugin.Explorer({
   title: "글 목록",
   filterFn: (node: FileTrieNode) => {
@@ -9,198 +208,7 @@ ExternalPlugin.Explorer({
     const segment = node.slugSegment ?? ""
     return !hidden.has(segment)
   },
-  sortFn: (a: FileTrieNode, b: FileTrieNode) => {
-    const orderMap: Record<string, string[]> = {
-      java: [
-        "primitive-and-reference-types",
-        "class-interface-enum-record",
-        "equals-and-hashcode",
-        "exception-handling",
-        "generics-and-type-erasure",
-        "collection-selection",
-        "hashmap",
-        "sorting-dedup-search-cost",
-        "stream-and-optional",
-        "java-version-features",
-        "reflection-and-annotation",
-        "jvm-memory-structure",
-        "java-concurrency-basics",
-        "java-memory-model",
-        "gc-and-tuning",
-        "memory-leak-and-oom",
-        "serialization-and-jackson",
-      ],
-      kotlin: [
-        "kotlin-why-backend",
-        "kotlin-null-safety",
-        "kotlin-data-class-and-immutability",
-        "kotlin-collection-and-scope-functions",
-        "kotlin-java-interop",
-        "kotlin-coroutines-basics",
-      ],
-      jpa: [
-        "why-jpa",
-        "entity-table-mapping",
-        "persistence-context",
-        "dirty-checking",
-        "association-mapping",
-        "lazy-and-eager-loading",
-        "n-plus-one-and-fetch-join",
-        "transaction-and-flush",
-        "querydsl",
-        "querydsl-practical-usage",
-      ],
-      spring: [
-        "why-spring",
-        "ioc-and-di",
-        "bean-lifecycle-and-scope",
-        "aop",
-        "spring-mvc-request-flow",
-        "validation-and-exception-handling",
-        "transaction-integration",
-        "configuration-and-profile",
-      ],
-      database: [
-        "why-rdb",
-        "table-and-key",
-        "db-index",
-        "execution-plan",
-        "transaction-and-isolation",
-        "lock",
-        "join",
-        "pagination-and-bulk-query",
-      ],
-      network: [
-        "http-basics",
-        "tcp-connection",
-        "timeout",
-        "retry",
-        "status-code",
-        "dns",
-        "load-balancer",
-        "cors",
-        "tls",
-        "websocket",
-      ],
-      os: [
-        "process-and-thread",
-        "context-switching",
-        "memory",
-        "cpu-scheduling",
-        "file-io",
-        "socket-io",
-        "blocking-and-non-blocking",
-        "system-resource-monitoring",
-      ],
-      redis: [
-        "why-redis",
-        "cache-aside-and-ttl",
-        "redis-failure-and-fallback",
-        "redis-distributed-lock",
-        "redis-data-structures",
-        "redis-key-and-memory",
-        "redis-monitoring",
-      ],
-      "01-core": [
-        "java",
-        "kotlin",
-        "spring",
-        "jpa",
-        "database",
-        "redis",
-        "network",
-        "os",
-      ],
-      "02-practical-backend": [
-        "transaction",
-        "concurrency",
-        "idempotency",
-        "performance",
-        "observability",
-        "architecture",
-        "batch",
-        "security",
-        "testing",
-        "ci-cd",
-      ],
-      transaction: [
-        "why-transaction",
-        "acid-and-isolation",
-        "transaction-boundary",
-        "spring-transaction",
-        "lock-and-deadlock",
-        "external-api-and-transaction",
-        "compensation-and-outbox",
-      ],
-      concurrency: [
-        "why-concurrency-problem",
-        "race-condition-and-critical-section",
-        "unique-constraint-and-state-transition",
-        "optimistic-lock",
-        "pessimistic-lock",
-        "distributed-lock",
-        "concurrency-test",
-      ],
-      idempotency: [
-        "why-idempotency",
-        "duplicate-request-and-retry",
-        "idempotency-key",
-        "state-transition-and-unique-constraint",
-        "message-consumer-idempotency",
-        "payment-order-idempotency",
-      ],
-      performance: [
-        "why-performance-problem",
-        "latency-and-throughput",
-        "bottleneck-analysis",
-        "db-query-performance",
-        "cache-performance",
-        "connection-pool-and-timeout",
-        "load-test-and-metrics",
-      ],
-      observability: [
-        "why-observability",
-        "logging",
-        "metrics",
-        "distributed-tracing",
-        "trace-id-and-correlation-id",
-        "alert-and-slo",
-        "dashboard",
-        "incident-analysis-flow",
-      ],
-    }
-
-    if (a.isFolder !== b.isFolder) {
-      return a.isFolder ? -1 : 1
-    }
-
-    const aParts = a.slug.split("/")
-    const bParts = b.slug.split("/")
-    const parentFolder = a.isFolder ? (aParts.at(-3) ?? "") : (aParts.at(-2) ?? "")
-
-    // 폴더 안내 글(폴더와 같은 이름의 글, 예: transaction/transaction)은 맨 위에 둔다.
-    // 이 함수는 브라우저로 직렬화되므로 안에서 보조 함수를 선언하지 않는다.
-    const hubNames = ["batch-processing", "work-cases", "design-cases"]
-    const aHub = !a.isFolder && (aParts.at(-1) === aParts.at(-2) || hubNames.includes(aParts.at(-1) ?? ""))
-    const bHub = !b.isFolder && (bParts.at(-1) === bParts.at(-2) || hubNames.includes(bParts.at(-1) ?? ""))
-    if (aHub !== bHub) return aHub ? -1 : 1
-    const order = orderMap[parentFolder]
-
-    if (order) {
-      const aSlug = a.isFolder ? (aParts.at(-2) ?? "") : (aParts.at(-1) ?? "")
-      const bSlug = b.isFolder ? (bParts.at(-2) ?? "") : (bParts.at(-1) ?? "")
-      const aIdx = order.indexOf(aSlug)
-      const bIdx = order.indexOf(bSlug)
-      if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx
-      if (aIdx !== -1) return -1
-      if (bIdx !== -1) return 1
-    }
-
-    return a.displayName.localeCompare(b.displayName, undefined, {
-      numeric: true,
-      sensitivity: "base",
-    })
-  },
+  sortFn: siteSort,
   mapFn: (node: FileTrieNode) => {
     const labels: Record<string, string> = {
       "00-home": "00 소개",
@@ -223,7 +231,41 @@ ExternalPlugin.Explorer({
   order: ["filter", "sort", "map"],
 })
 
+type ListedPage = { slug?: string; frontmatter?: { title?: string } }
+
+const toSortNode = (page: ListedPage): SortNode => {
+  const slug = page.slug ?? ""
+  return {
+    isFolder: slug.endsWith("/index"),
+    slug: slug as SortNode["slug"],
+    displayName: page.frontmatter?.title ?? slug,
+  }
+}
+
+ExternalPlugin.FolderPage({
+  sort: (a: ListedPage, b: ListedPage) => siteSort(toSortNode(a), toSortNode(b)),
+})
+
 const config = await loadQuartzConfig()
+
+// explorer 플러그인은 folderDefaultState 옵션을 읽지 않고 늘 접힌 상태로 시작한다.
+// 처음 온 방문자에게 최상위 폴더(00~05)를 펼친 상태로 저장해 둔다. 직접 접은 폴더는 건드리지 않는다.
+// 최상위 폴더를 추가하면 mapFn의 labels, inject-dates.py의 TOP_FOLDERS도 같이 고친다.
+const explorerDefaultOpenScript = `
+try {
+  const key = "fileTree"
+  const saved = JSON.parse(localStorage.getItem(key) || "[]")
+  const known = new Set(saved.map((item) => item.path))
+  const topFolders = ["00-home", "01-core", "02-practical-backend", "03-work-cases", "04-design-cases", "05-ai-workflows"]
+  const added = topFolders
+    .map((name) => name + "/index")
+    .filter((path) => !known.has(path))
+    .map((path) => ({ path, collapsed: false }))
+  if (added.length > 0) localStorage.setItem(key, JSON.stringify([...saved, ...added]))
+} catch (error) {
+  console.warn("[explorer-default-open] skipped:", error)
+}
+`
 
 const quizRuntimeScript = `
 function initializeQuizWidgets() {
@@ -265,6 +307,11 @@ config.plugins.emitters.push({
   name: "QuizRuntime",
   externalResources: () => ({
     js: [
+      {
+        loadTime: "beforeDOMReady",
+        contentType: "inline",
+        script: explorerDefaultOpenScript,
+      },
       {
         loadTime: "afterDOMReady",
         contentType: "inline",
