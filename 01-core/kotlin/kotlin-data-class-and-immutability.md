@@ -1,18 +1,18 @@
 ---
 title: Kotlin Data Class와 불변성
-description: Kotlin data class, val, copy, 불변 컬렉션의 실무 사용 기준
+description: data class를 어디에 쓰고 어디에 쓰지 말지, val과 List가 실제로 무엇을 막아 주는지
 tags: [concept, kotlin]
 ---
 
 # Kotlin Data Class와 불변성
 
-`data class`는 값을 실어 나르는 객체를 짧게 만드는 Kotlin 문법이고, 불변성은 객체 상태가 바뀌는 길을 막아 코드를 예측 가능하게 만드는 설계 원칙이다.
+`data class`는 값을 실어 나르는 객체를 짧게 만드는 Kotlin 문법이다. 불변성은 만든 뒤에 객체 상태가 바뀌지 않게 막는 설계 원칙이다. 상태가 안 바뀌면 코드를 읽을 때 값이 어디서 바뀌었는지 찾아다닐 필요가 없다.
 
-백엔드에는 request, response, command, event처럼 값만 나르는 객체가 많아서 `data class`가 잘 맞는다. 문제는 경계다. JPA Entity에 쓰면 자동 생성 메서드가 사고를 내고, `val`이나 `List`를 불변으로 착각하면 공유된 상태가 몰래 바뀐다. default value는 Jackson 역직렬화와 validation의 의미를 흐린다.
+백엔드에는 request, response, command, event처럼 값만 나르는 객체가 많아서 `data class`가 잘 맞는다. 문제는 그 밖에서 쓸 때다. JPA Entity에 쓰면 자동으로 생기는 메서드가 사고를 내고, `val`이나 `List`를 불변이라고 착각하면 여러 곳이 같이 쓰는 주문 목록이 모르는 새 바뀐다. default value를 넣으면 요청에서 값이 빠졌는지 Jackson도 validation도 알아채지 못한다.
 
 ## data class를 쓰는 곳
 
-DTO나 command처럼 값 전달이 목적인 객체에 쓴다.
+DTO나 command처럼 값을 넘기는 게 목적인 객체에 쓴다.
 
 ```kotlin
 data class OrderResponse(
@@ -22,7 +22,7 @@ data class OrderResponse(
 )
 ```
 
-`equals`, `hashCode`, `toString`, `copy`, `componentN`이 자동으로 생긴다. 값 객체에는 이게 장점이지만, Entity처럼 식별자와 생명주기가 있는 객체에서는 바로 이 메서드들이 문제를 만든다.
+`equals`, `hashCode`, `toString`, `copy`, `componentN`이 자동으로 생긴다. 값 객체에는 편한 일이지만, Entity처럼 식별자가 있고 저장, 조회, 수정을 거치며 오래 사는 객체에서는 바로 이 메서드들이 문제를 만든다.
 
 ## JPA Entity에는 쓰지 않는다
 
@@ -33,23 +33,23 @@ data class Order(
 )
 ```
 
-- class와 method가 기본으로 final이라 proxy 생성과 충돌한다.
-- `equals/hashCode`가 모든 생성자 프로퍼티를 기준으로 만들어진다.
+- class와 method가 기본으로 final이라 JPA가 proxy를 만들 수 없다.
+- `equals/hashCode`가 생성자의 모든 프로퍼티를 비교하도록 만들어진다.
 - 양방향 연관관계가 `toString`에 들어가면 순환 참조가 생길 수 있다.
 - `toString`, `equals`, `hashCode`가 지연 로딩 필드를 건드려 의도하지 않은 조회가 나갈 수 있다.
 
-Entity는 일반 class로 만들고, DTO만 data class로 분리한다.
+Entity는 일반 class로 만들고, data class는 DTO에만 쓴다.
 
 ## val과 불변성
 
-`val`은 변수 재할당만 막는다.
+`val`은 변수에 다른 값을 다시 넣는 것만 막는다.
 
 ```kotlin
 val items: MutableList<String> = mutableListOf()
 items.add("order") // 가능
 ```
 
-가리키는 객체가 mutable이면 내부 상태는 바뀐다. Kotlin의 `List`도 읽기 전용 인터페이스일 뿐 완전한 불변 컬렉션을 보장하지 않는다. 불변성을 원하면 mutable 타입을 밖으로 내보내지 말고, 필요하면 방어적 복사를 한다.
+가리키는 객체가 mutable이면 그 안의 내용은 바뀐다. Kotlin의 `List`도 읽기 전용 인터페이스일 뿐이라, 실제 객체가 `MutableList`라면 다른 쪽에서 내용을 바꿀 수 있다. 정말 안 바뀌게 하려면 mutable 타입을 밖으로 내보내지 말고, 필요하면 복사본을 넘긴다(방어적 복사).
 
 ```kotlin
 class Cart(
@@ -73,26 +73,30 @@ class Cart(
 
 ## 자주 깨지는 곳
 
-- **DTO와 Entity를 모두 `data class`로 만든다.** Entity 쪽에서 proxy, equals/hashCode, 지연 로딩 문제가 한꺼번에 생긴다.
-- **`val`이면 완전히 불변이라고 생각한다.** `val` 프로퍼티가 mutable collection을 가리키면 내용은 바뀐다.
-- **`copy()`를 deep copy로 오해한다.** 얕은 복사라서 nested mutable 객체는 원본과 공유된다. `copy()` 후 nested 객체를 바꿔 원본이 변하는지 테스트해 본다.
-- **mutable collection을 그대로 외부에 노출한다.** 호출자가 내부 상태를 바꾼다.
-- **default value로 필수 입력 누락을 숨긴다.** 값이 안 왔는데 기본값으로 정상 처리된다.
+- DTO와 Entity를 모두 `data class`로 만들면, Entity 쪽에서 proxy, equals/hashCode, 지연 로딩 문제가 한꺼번에 생긴다.
+- `val`이면 완전히 불변이라고 믿으면, `val` 프로퍼티가 가리키는 mutable collection의 내용이 바뀌는 걸 놓친다.
+- `copy()`를 deep copy로 알고 쓰면, 안쪽의 mutable 객체는 원본과 같이 쓰고 있어서 한쪽을 바꾸면 다른 쪽도 바뀐다. `copy()` 뒤에 안쪽 객체를 바꿔 보고 원본이 변하는지 테스트해 본다.
+- mutable collection을 그대로 밖에 내주면, 받은 쪽이 내부 상태를 바꾼다.
+- 필수 입력에 default value를 넣으면, 값이 안 왔는데도 기본값으로 정상 처리된다.
 
 ## 한 번에 설명하기
 
-> `data class`는 DTO, command, event처럼 값 전달이 목적인 객체에 씁니다. JPA Entity는 식별자, proxy, 지연 로딩, 생명주기 문제가 있어서 일반 class로 만듭니다. `val`은 재할당만 막고 내부 변경은 막지 못하고, `List`도 읽기 전용 인터페이스일 뿐입니다. 그래서 불변성이 필요하면 mutable 상태를 밖으로 내보내지 않고 방어적 복사를 씁니다.
+> `data class`는 DTO, command, event처럼 값을 넘기는 게 목적인 객체에 씁니다. JPA Entity는 식별자, proxy, 지연 로딩, 생명주기 문제가 얽혀서 일반 class로 만듭니다.
+>
+> `val`은 다시 대입하는 것만 막고 안쪽 내용이 바뀌는 건 못 막습니다. `List`도 읽기 전용 인터페이스일 뿐입니다.
+>
+> 그래서 정말 안 바뀌어야 하는 상태라면 mutable 객체를 밖으로 내보내지 않고, 복사본을 넘깁니다.
 
 ## 꼬리 질문
 
 > [!question]- Kotlin data class는 어떤 상황에 적합한가?
-> API DTO, command, event처럼 값 전달이 목적이고 자동 `equals/hashCode/toString/copy`가 자연스러운 객체에 맞습니다.
+> API DTO, command, event처럼 값을 넘기는 게 목적이고, 필드 값으로 `equals/hashCode/toString/copy`를 자동으로 만들어도 어색하지 않은 객체에 씁니다.
 
 > [!question]- JPA Entity에 data class를 쓰면 왜 위험한가?
-> final class, 모든 필드 기반 equals/hashCode, toString의 lazy loading 접근, proxy 생성 문제가 겹치기 때문입니다.
+> 문제가 한꺼번에 겹칩니다. class가 final이라 proxy를 못 만들고, equals/hashCode가 모든 필드를 비교하고, toString이 지연 로딩 필드를 건드려 쿼리가 나갑니다.
 
 > [!question]- `val`이면 불변 객체인가?
-> 아닙니다. `val`은 참조 재할당만 막습니다. 참조 대상이 mutable이면 내부 상태는 바뀝니다.
+> 아닙니다. `val`은 다른 객체를 다시 넣는 것만 막습니다. 가리키는 객체가 mutable이면 그 안의 상태는 바뀝니다.
 
 ## 점검 퀴즈
 
@@ -131,7 +135,7 @@ class Cart(
 
 ## 참고
 
-공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+2026년 11월에 확인한 공식 문서다.
 
 - [Kotlin: Data classes](https://kotlinlang.org/docs/data-classes.html)
 - [Kotlin: No-arg compiler plugin (JPA)](https://kotlinlang.org/docs/no-arg-plugin.html)

@@ -1,18 +1,18 @@
 ---
 title: Kotlin과 Java 함께 쓰기
-description: Kotlin과 Java를 함께 사용할 때 nullability, annotation, 예외, 빌드 경계에서 주의할 점
+description: Kotlin과 Java가 서로 부를 때 null, 기본 인자, 예외, final class에서 생기는 문제
 tags: [concept, kotlin]
 ---
 
 # Kotlin과 Java 함께 쓰기
 
-Kotlin과 Java는 같은 JVM에서 서로를 호출한다. 문제는 그 경계에서 Kotlin의 안전장치가 약해진다는 점이다.
+Kotlin과 Java는 같은 JVM에서 서로를 부른다. 그런데 서로 넘나드는 자리에서는 Kotlin이 걸어 둔 안전장치가 약해진다.
 
-Kotlin 백엔드는 거의 항상 Java 라이브러리, Spring, JPA, Jackson과 같이 돈다. 그래서 Java가 돌려준 null을 Kotlin이 non-null로 믿거나, Java 쪽에서 Kotlin default parameter를 못 쓰거나, checked exception이 강제되지 않아 실패 처리를 놓치는 일이 생긴다. Kotlin class가 기본 final이라 Spring/JPA proxy와 부딪히는 것도 이 경계 문제다.
+Kotlin 백엔드는 거의 늘 Java 라이브러리, Spring, JPA, Jackson과 같이 돈다. 그래서 Java가 돌려준 null을 Kotlin이 non-null로 믿고 쓰다가 NPE가 나고, Java 쪽에서는 Kotlin의 default parameter를 못 써서 인자를 전부 넘겨야 한다. checked exception을 Kotlin이 강제하지 않으니 실패 처리를 빠뜨리기도 한다. Kotlin class가 기본으로 final이라 Spring과 JPA의 proxy와 부딪히는 것도 같은 종류의 문제다.
 
 ## Platform Type
 
-Kotlin이 nullability를 확정할 수 없는 Java 타입은 platform type으로 보인다.
+Java 타입은 null이 올 수 있는지 Kotlin이 알 수 없어서 platform type으로 보인다.
 
 ```java
 public User findUser(Long id) {
@@ -20,14 +20,14 @@ public User findUser(Long id) {
 }
 ```
 
-Kotlin에서는 `User!`로 취급되어 nullable로도, non-null로도 쓸 수 있다. 컴파일러가 막아 주지 않는다는 뜻이다.
+Kotlin에서는 `User!`로 취급되어 nullable로도, non-null로도 쓸 수 있다. 어느 쪽으로 쓰든 컴파일러가 막지 않는다.
 
 ```kotlin
 val user = javaUserRepository.findUser(id)
 println(user.name) // 런타임 NPE 가능
 ```
 
-Java API 경계에서는 null을 명시적으로 막는다.
+Java API를 부르는 자리에서는 null이 오면 어떻게 할지 직접 적는다.
 
 ```kotlin
 val user = javaUserRepository.findUser(id)
@@ -36,7 +36,7 @@ val user = javaUserRepository.findUser(id)
 
 ## Java에서 Kotlin 호출
 
-Kotlin의 default parameter는 Java에서는 보이지 않는다. Java 쪽은 모든 인자를 넘겨야 한다.
+Kotlin의 default parameter는 Java에서는 보이지 않는다. Java에서 부를 때는 인자를 모두 넘겨야 한다.
 
 ```kotlin
 class MailSender {
@@ -68,9 +68,9 @@ class TokenUtils {
 
 ## Spring/JPA와의 경계
 
-Kotlin class는 기본이 final이다. Spring AOP나 JPA가 상속 기반 proxy를 쓰면 open class가 필요하다.
+Kotlin class는 기본이 final이다. Spring AOP나 JPA는 클래스를 상속해서 proxy를 만들기 때문에 open class가 필요하다.
 
-보통 Gradle plugin으로 처리한다.
+보통 Gradle plugin으로 푼다.
 
 ```kotlin
 plugins {
@@ -86,7 +86,7 @@ plugins {
 | `plugin.spring` | `@Component`, `@Transactional`, `@Async` 등이 붙은 클래스를 `open`으로 만든다 | `@Entity`는 열지 않는다 |
 | `plugin.jpa` | `@Entity`, `@Embeddable`, `@MappedSuperclass`에 no-arg 생성자를 만든다 | `open` 처리는 하지 않는다 |
 
-그래서 Entity는 기본 설정만으로는 final로 남고, Hibernate가 지연 로딩 프록시를 만들지 못해 `@ManyToOne(fetch = LAZY)`가 사실상 즉시 로딩처럼 동작할 수 있다. Entity에는 `allOpen`을 따로 건다.
+그래서 두 플러그인만 켜 두면 Entity는 final로 남는다. Hibernate가 지연 로딩 프록시를 만들지 못하니 `@ManyToOne(fetch = LAZY)`가 사실상 즉시 로딩처럼 동작할 수 있다. Entity에는 `allOpen`을 따로 건다.
 
 ```kotlin
 allOpen {
@@ -96,9 +96,9 @@ allOpen {
 }
 ```
 
-Entity를 `data class`로 만드는 문제는 플러그인으로 해결되지 않는다. [[kotlin-data-class-and-immutability]] 참고.
+Entity를 `data class`로 만들었을 때 생기는 문제는 플러그인으로 풀리지 않는다. 자세한 내용은 [[kotlin-data-class-and-immutability]]에 있다.
 
-## 상황별로 정리하면
+## 상황별로 할 일
 
 | 상황 | 할 일 |
 |---|---|
@@ -110,26 +110,28 @@ Entity를 `data class`로 만드는 문제는 플러그인으로 해결되지 �
 
 ## 자주 깨지는 곳
 
-- **Java API 반환값을 non-null로 단정한다.** platform type이라 컴파일은 되고 런타임에 NPE가 난다. platform type 경고와 null 처리 방식을 경계마다 본다.
-- **default parameter만 믿고 overload를 만들지 않는다.** Java 호출부가 모든 인자를 넘겨야 한다.
-- **Java checked exception 처리를 놓친다.** Kotlin이 강제하지 않으니 실패가 그대로 올라간다.
-- **`kotlin("plugin.spring")`, `kotlin("plugin.jpa")` 없이 proxy 문제를 만난다.** proxy가 필요한 class가 final로 남는다. Entity는 no-arg 생성자와 open 처리가 둘 다 적용됐는지 따로 확인한다.
-- **Java와 Kotlin DTO의 nullability annotation이 어긋난다.** 한쪽에서는 필수, 다른 쪽에서는 선택이 된다.
+- Java API가 돌려준 값을 non-null로 믿고 쓰면, platform type이라 컴파일은 되고 실행 중에 NPE가 난다. Java를 부르는 자리마다 platform type 경고와 null 처리를 본다.
+- default parameter만 믿고 overload를 만들지 않으면, Java에서 부르는 쪽이 인자를 전부 넘겨야 한다.
+- Java checked exception을 Kotlin이 강제하지 않는다고 그냥 두면, 실패가 아무 처리 없이 그대로 위로 올라간다.
+- `kotlin("plugin.spring")`, `kotlin("plugin.jpa")` 없이 쓰면, proxy가 필요한 class가 final로 남아 proxy가 안 만들어진다. Entity는 no-arg 생성자와 open 처리가 둘 다 들어갔는지 따로 확인한다.
+- Java DTO와 Kotlin DTO의 nullability annotation이 어긋나면, 같은 필드가 한쪽에서는 필수, 다른 쪽에서는 선택이 된다.
 
 ## 한 번에 설명하기
 
-> Kotlin은 Java와 잘 섞이지만 그 경계에서는 Kotlin의 null 안전성이 약해집니다. Java 반환 타입은 nullability를 모르는 platform type이라 Kotlin에서도 NPE가 날 수 있어서, 저는 Java API를 부르는 자리에서 null을 명시적으로 막습니다. Spring/JPA에서는 Kotlin class가 기본 final이고 no-arg 생성자가 없어서 plugin.spring, plugin.jpa가 필요하고, Entity에는 allOpen을 따로 겁니다.
+> Kotlin은 Java와 잘 섞이지만, 서로 넘나드는 자리에서는 Kotlin의 null 안전성이 약해집니다. Java가 돌려주는 값은 null이 올지 모르는 platform type이라 Kotlin에서도 NPE가 날 수 있습니다. 그래서 저는 Java API를 부르는 자리에서 null을 직접 막습니다.
+>
+> Spring과 JPA에서는 Kotlin class가 기본 final이고 no-arg 생성자가 없어서 plugin.spring과 plugin.jpa를 켜고, Entity에는 allOpen을 따로 겁니다.
 
 ## 꼬리 질문
 
 > [!question]- Kotlin platform type이란 무엇인가?
-> Java에서 온 타입처럼 null 가능성을 Kotlin 컴파일러가 확정할 수 없는 타입입니다. 명시적으로 처리하지 않으면 런타임 NPE가 납니다.
+> Java에서 온 타입처럼, null이 올 수 있는지 Kotlin 컴파일러가 알 수 없는 타입입니다. null 처리를 직접 해 두지 않으면 실행 중에 NPE가 납니다.
 
 > [!question]- Kotlin class가 기본 final인 것이 Spring/JPA에서 왜 문제가 되는가?
-> Spring AOP나 JPA proxy가 상속 기반으로 동작할 때 final class를 상속할 수 없기 때문입니다.
+> Spring AOP나 JPA는 클래스를 상속해서 proxy를 만드는데, final class는 상속할 수 없어서입니다.
 
 > [!question]- Kotlin에서 Java checked exception은 어떻게 다뤄지는가?
-> Kotlin은 checked exception 처리를 강제하지 않습니다. 그래서 Java API 호출 실패를 어떻게 처리할지 설계와 코드 리뷰에서 기준을 정해 둡니다.
+> Kotlin은 checked exception을 잡으라고 강제하지 않습니다. 그래서 Java API 호출이 실패했을 때 어떻게 처리할지는 팀이 설계와 코드 리뷰에서 기준을 정해 둬야 합니다.
 
 ## 점검 퀴즈
 
@@ -168,7 +170,7 @@ Entity를 `data class`로 만드는 문제는 플러그인으로 해결되지 �
 
 ## 참고
 
-공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+2026년 11월에 확인한 공식 문서다.
 
 - [Kotlin: Calling Java from Kotlin](https://kotlinlang.org/docs/java-interop.html)
 - [Kotlin: All-open compiler plugin](https://kotlinlang.org/docs/all-open-plugin.html)

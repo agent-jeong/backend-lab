@@ -1,14 +1,14 @@
 ---
 title: Filter vs Interceptor vs AOP
-description: Spring 요청 처리 흐름에서 Filter, Interceptor, AOP의 실행 시점과 선택 기준
+description: Filter, Interceptor, AOP가 요청 흐름의 어디에 끼어들고, 무엇을 어디에 둘지
 tags: [concept, spring]
 ---
 
 # Filter vs Interceptor vs AOP
 
-셋 다 공통 처리를 끼워 넣는 자리지만 끼어드는 층이 다르다. Filter는 서블릿 컨테이너에서 요청과 응답을 가로채고, Interceptor는 DispatcherServlet 이후 Controller 전후에서, AOP는 특정 빈의 메서드 실행 전후에서 동작한다.
+셋 다 여러 요청에 똑같이 적용할 코드를 끼워 넣는 자리인데, 끼어드는 위치가 다르다. Filter는 서블릿 컨테이너에서 요청과 응답을 가로챈다. Interceptor는 DispatcherServlet을 지난 뒤 Controller 앞뒤에서, AOP는 특정 빈의 메서드 앞뒤에서 돈다.
 
-어느 층인지 모르고 고르면 로깅, 인증, 인코딩 코드가 엉뚱한 자리에 들어간다. Spring Security의 Filter Chain도 Filter가 어디 있는지 알아야 읽힌다.
+위치를 모르고 고르면 로깅, 인증, 인코딩 코드가 엉뚱한 자리에 들어간다. 예를 들어 요청 body를 로그로 남기려고 Interceptor에서 body를 읽으면 Controller가 빈 body를 받는다. Spring Security의 Filter Chain도 Filter가 어디쯤 있는지 알아야 읽힌다.
 
 ## 실행 흐름
 
@@ -54,7 +54,7 @@ HTTP 요청
 
 ### Filter
 
-서블릿 스펙이라 Spring에 의존하지 않고, 요청과 응답 객체 자체를 바꿀 수 있다.
+서블릿 스펙에 들어 있어서 Spring 없이도 돌고, 요청과 응답 객체를 통째로 바꿔 끼울 수 있다.
 
 ```java
 @Component
@@ -73,7 +73,7 @@ public class EncodingFilter implements Filter {
 
 ### Interceptor
 
-Spring MVC가 제공하고, Controller 호출 전후에 동작한다.
+Spring MVC에 들어 있고, Controller 호출 앞뒤에서 돈다.
 
 ```java
 @Component
@@ -108,7 +108,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 
 ### AOP
 
-Spring 빈의 메서드 단위로 동작한다. URL이 아니라 클래스와 메서드를 골라 적용한다.
+Spring 빈의 메서드마다 걸린다. URL이 아니라 클래스와 메서드를 골라 건다.
 
 ```java
 @Aspect
@@ -142,26 +142,30 @@ public class ServiceLoggingAspect {
 
 ## 자주 깨지는 곳
 
-- **Filter에 `@Autowired`로 빈을 주입하려 한다.** 동작하지 않는다. `DelegatingFilterProxy`가 필요하다.
-- **Interceptor에서 request body를 읽는다.** body는 한 번만 읽히는 스트림이라 Controller에서 다시 읽지 못한다.
-- **AOP를 URL 기준으로 걸려고 한다.** AOP는 빈과 메서드 기준이다.
-- **공통 로직을 전부 AOP로 해결하려 한다.** Filter나 Interceptor가 맞는 자리를 놓친다.
-- **`postHandle`이 항상 불린다고 믿는다.** Controller에서 예외가 나면 `postHandle`은 호출되지 않고 `afterCompletion`만 호출된다.
+- Filter에 `@Autowired`로 빈을 넣으려 하면, 동작하지 않는다. `DelegatingFilterProxy`가 필요하다.
+- Interceptor에서 request body를 읽으면, body는 한 번만 읽히는 스트림이라 Controller가 다시 읽지 못한다.
+- AOP를 URL 기준으로 걸려고 하면, 걸 방법이 없다. AOP는 빈과 메서드를 기준으로 고른다.
+- 공통 코드를 전부 AOP로 풀려고 하면, Filter나 Interceptor가 더 맞는 자리를 놓친다.
+- `postHandle`이 늘 불린다고 믿으면, 정리 코드가 빠진다. Controller에서 예외가 나면 `postHandle`은 불리지 않고 `afterCompletion`만 불린다.
 
 ## 한 번에 설명하기
 
-> Filter는 서블릿 컨테이너에서 모든 요청을 가로채고, Interceptor는 Spring MVC에서 Controller 전후에, AOP는 빈의 메서드 단위로 동작합니다. 저는 요청과 응답 자체를 바꿔야 하면 Filter, URL과 Handler 기준이면 Interceptor, 메서드 수준 공통 관심사면 AOP를 고릅니다. Spring Security가 Filter에서, `@Transactional`이 AOP에서 동작한다는 걸 알면 전체 구조가 보입니다.
+> Filter는 서블릿 컨테이너에서 모든 요청을 가로채고, Interceptor는 Spring MVC 안에서 Controller 앞뒤에, AOP는 빈의 메서드마다 걸립니다.
+>
+> 요청과 응답 자체를 바꿔야 하면 Filter를, URL이나 Handler를 보고 판단해야 하면 Interceptor를, 여러 메서드에 똑같이 붙일 코드면 AOP를 고릅니다.
+>
+> Spring Security는 Filter에서, `@Transactional`은 AOP에서 돈다는 것까지 알면 전체 구조가 한 번에 보입니다.
 
 ## 꼬리 질문
 
 > [!question]- Spring Security는 왜 Filter에서 동작하는가?
-> 인증/인가는 DispatcherServlet에 도달하기 전에 처리해야 합니다. 인증에 실패한 요청이 Controller까지 가면 쓸데없이 자원을 쓰고, 그 자체로 보안 위협이 됩니다.
+> 인증과 인가는 요청이 DispatcherServlet에 닿기 전에 끝내야 하기 때문입니다. 인증에 실패한 요청이 Controller까지 들어오면 쓸데없이 자원을 쓰고, 막혔어야 할 요청이 안쪽까지 들어온다는 것 자체가 보안 구멍입니다.
 
 > [!question]- Interceptor의 preHandle에서 false를 반환하면?
-> Controller 메서드와 postHandle은 호출되지 않습니다. afterCompletion은 앞에서 true를 반환한 interceptor들만 역순으로 호출되고, false를 반환한 그 interceptor의 afterCompletion은 호출되지 않습니다. 응답은 preHandle에서 직접 써야 합니다.
+> Controller 메서드와 postHandle은 불리지 않습니다. afterCompletion은 그 앞에서 true를 반환한 interceptor들만 역순으로 불리고, false를 반환한 interceptor 자신의 afterCompletion은 불리지 않습니다. 그래서 응답은 preHandle 안에서 직접 써 줘야 합니다.
 
 > [!question]- Filter에서 request body를 로깅하려면?
-> `ContentCachingRequestWrapper`로 request를 래핑해서 body를 여러 번 읽을 수 있게 합니다. 원본 request의 InputStream은 한 번만 읽히므로, 직접 읽으면 Controller가 읽을 게 없습니다.
+> `ContentCachingRequestWrapper`로 request를 감싸서 body를 여러 번 읽을 수 있게 합니다. 원본 request의 InputStream은 한 번만 읽혀서, Filter에서 그냥 읽어 버리면 Controller가 읽을 게 남지 않습니다.
 
 ## 점검 퀴즈
 
@@ -200,7 +204,7 @@ public class ServiceLoggingAspect {
 
 ## 참고
 
-공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+2026년 11월에 확인한 공식 문서다.
 
 - [Spring Framework: Interceptors](https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-config/interceptors.html)
 - [Spring Framework: Filters](https://docs.spring.io/spring-framework/reference/web/webmvc/filters.html)

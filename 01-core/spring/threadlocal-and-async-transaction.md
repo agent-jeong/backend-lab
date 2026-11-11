@@ -1,18 +1,18 @@
 ---
 title: "@Async와 ThreadLocal 함정"
-description: ThreadLocal 기반 Spring 상태 관리가 비동기와 스레드 풀에서 깨지는 원인과 대응
+description: 트랜잭션, 인증 정보, traceId가 @Async와 스레드 풀에서 사라지거나 남는 이유와 대응
 tags: [concept, spring]
 ---
 
 # @Async와 ThreadLocal 함정
 
-Spring의 트랜잭션, SecurityContext, MDC는 모두 ThreadLocal에 들어 있다. 그래서 `@Async`나 `CompletableFuture`로 스레드가 바뀌면 따라가지 않고, 스레드 풀에서 스레드가 재사용되면 이전 값이 남는다.
+Spring의 트랜잭션, SecurityContext, MDC는 모두 ThreadLocal에 들어 있다. 그래서 `@Async`나 `CompletableFuture`로 스레드가 바뀌면 이 값들이 따라가지 않는다. 스레드 풀에서 스레드를 다시 쓰면 앞 요청의 값이 그대로 남아 있기도 한다.
 
-증상은 제각각으로 보인다. `@Async` 메서드의 DB 저장이 커밋되지 않거나 별도 트랜잭션으로 돌고, `SecurityContextHolder.getContext()`가 비어 있고, 로그의 traceId가 비동기 구간에서 사라진다. `CompletableFuture.supplyAsync()` 안에서는 호출자의 DB 커넥션을 공유하지 못해 커넥션 풀이 예상보다 빨리 고갈된다. 가장 위험한 건 이전 요청의 사용자 정보가 다음 요청에 보이는 보안 사고다. 원인은 모두 하나, 값이 "현재 스레드"에 묶여 있다는 것이다.
+증상은 제각각으로 보인다. `@Async` 메서드의 DB 저장이 커밋되지 않거나 별도 트랜잭션으로 돈다. `SecurityContextHolder.getContext()`가 비어 있고, 로그의 traceId가 비동기 구간에서 사라진다. `CompletableFuture.supplyAsync()` 안에서는 호출자의 DB 커넥션을 같이 쓰지 못해 커넥션을 하나씩 더 잡고, 커넥션 풀이 생각보다 빨리 바닥난다. 가장 위험한 건 앞 요청 사용자의 정보가 다음 요청에서 보이는 보안 사고다. 이 증상들은 모두 값이 지금 도는 스레드에 묶여 있어서 생긴다.
 
 ## ThreadLocal 동작
 
-ThreadLocal은 스레드마다 따로 값을 두는 저장소다. 같은 변수라도 스레드마다 값이 다르다.
+ThreadLocal은 스레드마다 값을 따로 두는 저장소다. 같은 변수를 읽어도 스레드마다 다른 값이 나온다.
 
 ```java
 ThreadLocal<String> context = new ThreadLocal<>();
@@ -44,7 +44,7 @@ Thread-2: ┌─ ThreadLocal ─┐
 | MDC (로깅) | `MDC.put()` | traceId, requestId |
 | RequestContextHolder | `RequestContextHolder` | HttpServletRequest |
 
-이 값들은 전부 "현재 스레드"에 묶여 있다. 스레드가 바뀌면 한꺼번에 끊긴다.
+이 값들은 전부 지금 도는 스레드에 묶여 있어서, 스레드가 바뀌면 한꺼번에 끊긴다.
 
 ## @Async에서 트랜잭션이 동작하지 않는 이유
 
@@ -82,7 +82,7 @@ Thread-1 (요청 스레드)          Thread-2 (@Async 스레드)
 └─────────────────────┘       └─────────────────────┘
 ```
 
-`@Async`는 다른 스레드에서 실행되므로 호출자의 ThreadLocal을 볼 수 없다.
+`@Async` 메서드는 다른 스레드에서 돌기 때문에 호출한 쪽의 ThreadLocal을 볼 수 없다.
 
 ### 대응
 
@@ -159,7 +159,7 @@ public class MdcTaskDecorator implements TaskDecorator {
 
 ## 스레드 풀에서 값이 새는 문제
 
-스레드 풀은 스레드를 재사용한다. ThreadLocal을 비우지 않으면 이전 요청의 값이 다음 요청에 그대로 남는다.
+스레드 풀은 스레드를 다시 쓴다. ThreadLocal을 비우지 않으면 앞 요청의 값이 다음 요청까지 그대로 남는다.
 
 ```
 요청 A (userId=100) → Thread-1에 ThreadLocal 저장 → 응답 → Thread-1 반환
@@ -226,29 +226,33 @@ public class AuthInterceptor implements HandlerInterceptor {
 
 ## 자주 깨지는 곳
 
-- **`@Async` 메서드가 호출자의 트랜잭션에 참여한다고 믿는다.** 참여하지 않는다. DB 작업이 필요하면 비동기 메서드에 자체 `@Transactional`을 단다.
-- **`@Async` 메서드에서 `SecurityContextHolder`로 인증 정보를 꺼낸다.** 비어 있다. 파라미터로 넘기거나 TaskDecorator로 복사한다.
-- **ThreadLocal에 넣고 `remove()`를 하지 않는다.** 스레드 풀에서 다음 요청으로 값이 샌다. `afterCompletion()`이나 `finally`에서 비운다.
-- **`CompletableFuture.supplyAsync()`에서 MDC traceId가 사라진다.** 호출 스레드의 MDC가 복사되지 않아서다.
-- **`InheritableThreadLocal`이면 해결된다고 생각한다.** 스레드 생성 시점에만 상속되므로, 스레드 풀에서 재사용될 때는 전파되지 않는다.
+- `@Async` 메서드가 호출자의 트랜잭션에 함께 묶인다고 믿으면, 호출자가 롤백해도 비동기 쪽 작업은 따로 간다. 함께 묶이지 않는다. DB 작업이 필요하면 비동기 메서드에 따로 `@Transactional`을 단다.
+- `@Async` 메서드에서 `SecurityContextHolder`로 인증 정보를 꺼내면, 비어 있다. 파라미터로 넘기거나 TaskDecorator로 복사한다.
+- ThreadLocal에 넣고 `remove()`를 하지 않으면, 스레드 풀에서 다음 요청으로 값이 샌다. `afterCompletion()`이나 `finally`에서 비운다.
+- `CompletableFuture.supplyAsync()`를 그냥 쓰면, 호출 스레드의 MDC가 복사되지 않아 traceId가 사라진다.
+- `InheritableThreadLocal`이면 풀린다고 생각하면, 스레드 풀에서는 그대로 깨진다. 값은 스레드를 새로 만들 때만 넘어가고, 풀에서 스레드를 다시 쓸 때는 넘어가지 않는다.
 
 ## 한 번에 설명하기
 
-> Spring의 트랜잭션, SecurityContext, MDC는 모두 ThreadLocal에 묶여 있어서 `@Async`나 `CompletableFuture`로 스레드가 바뀌면 전파되지 않습니다. 그래서 비동기 메서드에서 DB 작업이 필요하면 자체 `@Transactional`을 선언하고, traceId나 인증 정보는 파라미터로 넘기거나 TaskDecorator로 복사합니다. 스레드 풀은 스레드를 재사용하기 때문에, ThreadLocal은 `afterCompletion()`이나 `finally`에서 꼭 `remove()`합니다. 안 그러면 이전 사용자의 정보가 다음 요청에 남습니다.
+> Spring의 트랜잭션, SecurityContext, MDC는 모두 ThreadLocal에 묶여 있어서, `@Async`나 `CompletableFuture`로 스레드가 바뀌면 따라가지 않습니다.
+>
+> 그래서 비동기 메서드에서 DB 작업이 필요하면 그 메서드에 따로 `@Transactional`을 달고, traceId나 인증 정보는 파라미터로 넘기거나 TaskDecorator로 복사합니다.
+>
+> 스레드 풀은 스레드를 다시 쓰기 때문에, ThreadLocal은 `afterCompletion()`이나 `finally`에서 꼭 `remove()`합니다. 안 그러면 앞 사용자의 정보가 다음 요청에 남습니다.
 
 ## 꼬리 질문
 
 > [!question]- @Async에서 트랜잭션이 동작하는가?
-> 호출자의 트랜잭션에는 참여하지 않습니다. 다른 스레드라서 ThreadLocal에 바인딩된 Connection이 없습니다. 비동기 메서드 자체에 `@Transactional`을 선언하면 독립 트랜잭션으로 동작합니다.
+> 호출한 쪽 트랜잭션에는 들어가지 않습니다. 다른 스레드라서 ThreadLocal에 묶인 Connection이 없거든요. 비동기 메서드에 직접 `@Transactional`을 달면, 그 메서드만의 독립 트랜잭션으로 돕니다.
 
 > [!question]- InheritableThreadLocal로 해결되지 않는 이유는?
-> `InheritableThreadLocal`은 자식 스레드 **생성 시점**에만 부모 값을 복사합니다. 스레드 풀은 스레드를 재사용하므로, 생성이 아니라 재할당될 때는 값이 복사되지 않습니다.
+> `InheritableThreadLocal`은 자식 스레드를 **만들 때**만 부모 값을 복사합니다. 스레드 풀은 이미 만든 스레드를 다시 쓰기 때문에, 작업을 받을 때는 값이 복사되지 않습니다.
 
 > [!question]- ThreadLocal 누수가 보안 사고로 이어지는 경우는?
-> Interceptor에서 인증된 사용자 ID를 ThreadLocal에 저장하고 정리하지 않으면, 같은 스레드에 할당된 다음 요청(인증 안 된 요청)에서 이전 사용자의 ID로 동작할 수 있습니다.
+> Interceptor에서 로그인한 사용자 ID를 ThreadLocal에 넣고 지우지 않았다고 해 보죠. 그 스레드가 다음에 인증 안 된 요청을 받으면, 그 요청이 앞 사용자의 ID로 처리될 수 있습니다.
 
 > [!question]- CompletableFuture에서 MDC traceId를 유지하려면?
-> TaskDecorator 패턴으로 작업 실행 전 호출 스레드의 MDC를 캡처하고, 비동기 스레드에서 설정한 뒤, finally에서 정리합니다.
+> TaskDecorator를 씁니다. 작업을 넘기기 전에 호출 스레드의 MDC를 복사해 두고, 비동기 스레드에서 그 값을 넣은 뒤 실행하고, finally에서 지웁니다.
 
 ## 점검 퀴즈
 
@@ -292,7 +296,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 
 ## 참고
 
-공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+2026년 11월에 확인한 공식 문서다.
 
 - [Spring Framework: Task Execution and Scheduling](https://docs.spring.io/spring-framework/reference/integration/scheduling.html)
 - [Spring Framework: Transaction-bound Events](https://docs.spring.io/spring-framework/reference/data-access/transaction/event.html)

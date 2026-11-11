@@ -1,14 +1,14 @@
 ---
 title: Kotlin null 안전성
-description: Kotlin nullable 타입과 Java interop에서 발생하는 null 처리 기준
+description: Kotlin이 null을 타입으로 막는 방식과, 그래도 NPE가 나는 곳
 tags: [concept, kotlin]
 ---
 
 # Kotlin null 안전성
 
-Kotlin null safety는 null이 될 수 있는 타입과 없는 타입을 타입 시스템에서 나눠, null 처리 누락을 컴파일 시점에 잡는 기능이다. NPE를 없애 주는 게 아니라 줄여 주는 것이다.
+Kotlin은 null이 될 수 있는 타입과 될 수 없는 타입을 나눠 두고, null 체크를 빠뜨리면 컴파일 에러를 낸다. NPE를 없애 주는 게 아니라 줄여 준다.
 
-백엔드에서 null은 요청값, DB 조회 결과, 외부 API 응답, 설정값 어디서나 나온다. Kotlin을 써도 Java API가 돌려준 platform type, `!!` 남용, JPA Entity의 지연 초기화 필드에서는 여전히 NPE가 난다. Jackson 역직렬화 때문에 nullable과 default value를 따로 설계해야 하고, null과 빈 문자열과 빈 컬렉션의 의미가 섞이기도 한다.
+백엔드에서 null은 요청값, DB 조회 결과, 외부 API 응답, 설정값 어디서나 나온다. Kotlin을 써도 Java API가 돌려준 platform type, 여기저기 붙인 `!!`, JPA Entity에서 나중에 채워지는 필드에서는 여전히 NPE가 난다. Jackson이 JSON을 객체로 만들 때를 생각해 nullable과 default value를 따로 정해야 하고, null과 빈 문자열과 빈 컬렉션이 같은 뜻인지 다른 뜻인지 헷갈리기도 한다.
 
 ## 기본 개념
 
@@ -25,7 +25,7 @@ nullable 값은 바로 쓸 수 없다.
 val length = nickname.length // compile error
 ```
 
-안전 호출(`?.`)이나 명시적 처리를 거쳐야 한다.
+안전 호출(`?.`)이나 null일 때 할 일을 적어 줘야 쓸 수 있다.
 
 ```kotlin
 val length = nickname?.length ?: 0
@@ -41,7 +41,7 @@ val length = nickname?.length ?: 0
 | 목록 없음 | null보다 empty list 우선 |
 | 외부 API 불확실한 값 | nullable DTO로 받고 검증 후 내부 모델 변환 |
 
-외부 입력과 내부 도메인 모델의 nullability는 나눠 둔다.
+밖에서 들어오는 입력과 안쪽 도메인 모델은 null 허용 여부를 따로 정한다.
 
 ```kotlin
 data class CreateUserRequest(
@@ -55,7 +55,7 @@ data class CreateUserCommand(
 )
 ```
 
-요청 DTO는 입력이 빠질 수 있다는 사실을 그대로 표현하고, 검증을 통과한 뒤 만드는 내부 command는 non-null로 둔다.
+요청 DTO는 값이 빠져서 올 수 있으니 nullable로 두고, 검증을 통과한 뒤 만드는 내부 command는 non-null로 둔다.
 
 ## `!!`는 NPE를 직접 던진다
 
@@ -65,7 +65,7 @@ data class CreateUserCommand(
 val length = nickname!!.length
 ```
 
-`!!`가 늘수록 null safety를 쓰는 의미가 없어진다. 정말 null일 수 없는 상태라면, 무엇이 왜 없는지 드러나는 예외를 던지는 편이 낫다.
+`!!`가 늘수록 Kotlin이 null을 막아 주는 이점이 사라진다. 정말 null일 수 없는 상황이라면, 무엇이 왜 없는지 알 수 있는 예외를 직접 던지는 편이 낫다.
 
 ```kotlin
 val user = userRepository.findByIdOrNull(id)
@@ -74,26 +74,30 @@ val user = userRepository.findByIdOrNull(id)
 
 ## 자주 깨지는 곳
 
-- **`!!`로 컴파일 오류를 빨리 없앤다.** 오류가 런타임 NPE로 미뤄질 뿐이다. 코드 리뷰에서 `!!` 위치와 이유를 확인한다.
-- **Java API 반환값을 non-null로 단정한다.** platform type이라 컴파일러가 막지 않는다.
-- **nullable 필드를 여러 계층으로 그대로 넘긴다.** 계층마다 null 체크가 반복된다. request DTO와 내부 command/domain 모델의 nullability를 분리한다.
-- **빈 컬렉션이면 될 자리에 nullable collection을 쓴다.** 호출부마다 null 처리가 붙는다.
-- **검증 전 request DTO를 domain 객체처럼 쓴다.** 누락된 값이 도메인 안으로 들어온다. 테스트에서는 누락 필드, null 필드, 빈 문자열을 구분해 검증한다.
+- 컴파일 오류를 빨리 없애려고 `!!`를 붙이면, 오류가 실행 중 NPE로 미뤄질 뿐이다. 코드 리뷰에서 `!!`가 어디 왜 붙었는지 본다.
+- Java API가 돌려준 값을 non-null로 믿고 쓰면, platform type이라 컴파일러가 막지 않아 실행 중에 NPE가 난다.
+- nullable 필드를 여러 계층으로 그대로 넘기면, 계층마다 null 체크가 반복된다. request DTO와 내부 command, domain 모델의 null 허용 여부를 따로 정한다.
+- 빈 컬렉션이면 될 자리에 nullable collection을 쓰면, 부르는 쪽마다 null 처리가 붙는다.
+- 검증하기 전의 request DTO를 domain 객체처럼 쓰면, 빠진 값이 도메인 안까지 들어온다. 테스트에서는 필드가 아예 없는 경우, null인 경우, 빈 문자열인 경우를 나눠서 본다.
 
 ## 한 번에 설명하기
 
-> Kotlin null safety는 null 가능성을 타입으로 표현해서 null 처리 누락을 컴파일 시점에 줄입니다. NPE를 완전히 없애지는 못하고, Java의 platform type, `!!`, JPA나 Jackson 경계에서는 여전히 납니다. 저는 외부 입력 DTO는 nullable로 받고, 검증한 뒤 내부 모델은 non-null로 바꿉니다. 빈 목록은 null 대신 empty list로 돌려줘서 호출부를 단순하게 합니다.
+> Kotlin은 null이 될 수 있는지를 타입에 적게 해서, null 체크를 빠뜨리면 컴파일할 때 잡아 줍니다. 그래도 NPE가 완전히 없어지지는 않고, Java에서 받은 platform type이나 `!!`, JPA나 Jackson과 맞물리는 곳에서는 여전히 납니다.
+>
+> 저는 밖에서 들어오는 요청 DTO는 nullable로 받고, 검증한 뒤 안쪽 모델은 non-null로 바꿉니다.
+>
+> 빈 목록은 null 대신 empty list로 돌려줘서 부르는 쪽 코드를 단순하게 둡니다.
 
 ## 꼬리 질문
 
 > [!question]- Kotlin의 nullable 타입과 non-null 타입 차이는?
-> `String`은 null을 담을 수 없고, `String?`은 null을 담을 수 있습니다. nullable 값은 안전 호출이나 null 처리를 거쳐야 사용할 수 있습니다.
+> `String`에는 null을 못 넣고, `String?`에는 넣을 수 있습니다. nullable 값은 안전 호출을 쓰거나 null일 때 어떻게 할지 적어 줘야 쓸 수 있습니다.
 
 > [!question]- `!!`는 왜 위험한가?
-> null이면 런타임에 NPE를 던지므로 Kotlin null safety의 장점을 우회합니다. 명시적 예외나 안전한 변환을 먼저 씁니다.
+> null이면 그 자리에서 NPE를 던져서, Kotlin이 null을 막아 주는 걸 스스로 꺼 버리는 셈입니다. 그래서 무엇이 없는지 알려 주는 예외를 직접 던지거나, `?:`로 기본값을 주는 쪽을 먼저 씁니다.
 
 > [!question]- Kotlin을 써도 NPE가 발생할 수 있는 경우는?
-> Java interop의 platform type, `!!`, 초기화 전 접근, reflection/Jackson/JPA 경계에서 납니다.
+> Java에서 받은 platform type 값, `!!`, 초기화하기 전에 필드를 읽는 경우, 그리고 reflection으로 객체를 만드는 Jackson이나 JPA와 맞물리는 곳에서 납니다.
 
 ## 점검 퀴즈
 
@@ -132,7 +136,7 @@ val user = userRepository.findByIdOrNull(id)
 
 ## 참고
 
-공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+2026년 11월에 확인한 공식 문서다.
 
 - [Kotlin: Null safety](https://kotlinlang.org/docs/null-safety.html)
 

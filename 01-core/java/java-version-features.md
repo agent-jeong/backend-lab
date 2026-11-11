@@ -1,16 +1,16 @@
 ---
 title: Java 버전별 핵심 변화
-description: Java 버전별 핵심 변화와 실무 적용 판단
+description: Java 8부터 21, 25까지 실무 코드를 바꾼 기능과 버전을 올릴 때 볼 것
 tags: [concept, java]
 ---
 
 # Java 버전별 핵심 변화
 
-Java 8부터 21(그리고 25)까지, 실무 코드를 실제로 바꾼 기능만 골라 모았다. 기능 목록을 외우기보다 각 기능이 어떤 코드를 더 안전하고 읽기 쉽게 만드는지로 본다.
+Java 8부터 21(그리고 25)까지, 실무 코드를 실제로 바꾼 기능만 골라 모았다. 기능 목록을 외우기보다, 각 기능 덕분에 어떤 코드가 더 안전하고 읽기 쉬워졌는지로 본다.
 
-이 구분이 필요한 순간은 팀에서 Java 버전을 올리며 무엇을 적용할지 정할 때, 레거시 코드를 최신 기능으로 리팩토링하며 이점과 위험을 따질 때다. 특히 Java 21의 virtual thread는 동시성 모델 자체를 바꿔서 아키텍처에도 영향을 준다.
+이 정리가 필요한 때는 팀에서 Java 버전을 올리면서 새 기능 중 무엇을 쓸지 정할 때, 오래된 코드를 새 기능으로 고치면서 얻는 것과 위험을 따져 볼 때다. 특히 Java 21의 virtual thread는 요청을 스레드에 어떻게 나눠 맡길지부터 바꾸기 때문에, 서버 구조를 정할 때도 영향을 준다.
 
-## Java 8: 현대 Java의 기준
+## Java 8: 지금 Java 코드의 출발점
 
 | 기능 | 실무 의미 |
 |---|---|
@@ -20,7 +20,7 @@ Java 8부터 21(그리고 25)까지, 실무 코드를 실제로 바꾼 기능만
 | `LocalDate`, `LocalDateTime` | `Date`, `Calendar`의 혼란을 해결 |
 | default method | 인터페이스를 확장해도 기존 구현체가 깨지지 않음 |
 
-대부분의 프로젝트에서 이미 일상적으로 쓰는 기능이다.
+대부분의 프로젝트가 이미 매일 쓰는 기능이다.
 
 ## Java 11 (LTS): 모듈 시스템 이후 첫 LTS
 
@@ -78,7 +78,7 @@ public record PaymentFailure(String reason) implements PaymentResult {}
 public record PaymentPending(String redirectUrl) implements PaymentResult {}
 ```
 
-가능한 하위 타입을 컴파일 타임에 제한한다. Java 21의 pattern matching switch와 같이 쓰면, 하위 타입을 하나 빠뜨렸을 때 `default` 없이도 컴파일 에러가 난다. 새 결제 상태를 추가하면 처리하지 않은 switch를 컴파일러가 전부 찾아 준다.
+올 수 있는 하위 타입을 컴파일할 때 정해 둔다. Java 21의 pattern matching switch와 같이 쓰면, 하위 타입을 하나 빠뜨렸을 때 `default` 없이도 컴파일 에러가 난다. 그래서 새 결제 상태를 추가하면, 그 상태를 처리하지 않은 switch를 컴파일러가 전부 찾아 준다.
 
 ## Java 21: Virtual Thread
 
@@ -90,7 +90,7 @@ public record PaymentPending(String redirectUrl) implements PaymentResult {}
 
 ### Virtual Thread가 바꾸는 것
 
-기존 스레드는 OS 스레드와 1:1로 매핑돼 수천 개 이상 만들기 어렵다. Virtual Thread는 JVM이 관리하는 경량 스레드라 수만 개를 동시에 돌릴 수 있다.
+기존 스레드는 OS 스레드 하나에 하나씩 대응돼서 수천 개 넘게 만들기 어렵다. Virtual Thread는 JVM이 관리하는 가벼운 스레드라서 수만 개를 동시에 돌릴 수 있다.
 
 ```java
 // 기존: 스레드 풀 크기가 동시 처리량의 한계
@@ -100,12 +100,12 @@ ExecutorService executor = Executors.newFixedThreadPool(200);
 ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
 ```
 
-도입 전에 알아 둘 것:
+도입하기 전에 알아 둘 것이 있다.
 
-- **I/O 바운드에서만 이득이다.** CPU 바운드 작업은 빨라지지 않는다.
-- **pinning은 버전에 따라 다르다.** Java 21~23에서는 `synchronized` 블록 안에서 blocking I/O를 하면 carrier thread가 고정(pinning)된다. Java 24(JEP 491)부터 `synchronized`로 인한 pinning은 해소됐다. native 메서드 호출 중 blocking은 여전히 pinning된다.
-- **외부 자원 한도는 그대로다.** 스레드가 1만 개여도 DB 커넥션이 20개면 나머지는 풀에서 기다린다.
-- **`ThreadLocal`이 메모리 문제가 된다.** virtual thread 수가 많은 만큼 복사본도 많아진다.
+- I/O를 기다리는 시간이 긴 작업에서만 이득이 있다. CPU를 계속 쓰는 작업은 빨라지지 않는다.
+- pinning은 버전마다 다르다. Java 21~23에서는 `synchronized` 블록 안에서 blocking I/O를 하면 carrier thread가 고정(pinning)된다. Java 24(JEP 491)부터 `synchronized`로 인한 pinning은 해소됐다. native 메서드 호출 중 blocking은 여전히 pinning된다.
+- 외부 자원의 한도는 그대로다. 스레드가 1만 개여도 DB 커넥션이 20개면 나머지는 커넥션 풀에서 기다린다.
+- `ThreadLocal`이 메모리를 잡아먹는다. virtual thread가 많은 만큼 복사본도 많아진다.
 - Spring Boot 3.2+에서는 설정 한 줄로 켠다.
 
 ```yaml
@@ -127,24 +127,28 @@ spring:
 
 ## 한 번에 설명하기
 
-> Java 8의 Lambda, Stream, Optional이 지금 Java 코드의 기반이고, Java 17의 record와 sealed class로 불변 객체와 타입 제한을 쉽게 표현하게 됐습니다. 가장 큰 변화는 Java 21의 virtual thread인데, OS 스레드 1:1 모델에서 JVM이 관리하는 경량 스레드로 바뀌어 I/O 바운드 서비스가 적은 자원으로 수만 개의 동시 요청을 처리할 수 있습니다. 다만 CPU 바운드에는 이점이 없고, synchronized pinning과 ThreadLocal은 따로 확인합니다. 새 프로젝트는 Java 21 이상(최신 LTS는 25), 기존 프로젝트는 17 이상을 기준으로 올립니다.
+> 지금 Java 코드는 대부분 Java 8의 Lambda, Stream, Optional 위에 서 있습니다. Java 17에서는 record와 sealed class 덕분에 불변 객체와 하위 타입 제한을 짧게 쓸 수 있게 됐습니다.
+>
+> 가장 큰 변화는 Java 21의 virtual thread입니다. OS 스레드에 하나씩 대응하던 방식에서 JVM이 관리하는 가벼운 스레드로 바뀌어, I/O를 많이 기다리는 서비스가 적은 자원으로 수만 개의 동시 요청을 처리할 수 있습니다. 다만 CPU를 많이 쓰는 작업에는 이득이 없고, synchronized pinning과 ThreadLocal은 따로 확인합니다.
+>
+> 새 프로젝트는 Java 21 이상(최신 LTS는 25), 기존 프로젝트는 17 이상을 기준으로 올립니다.
 
 ## 꼬리 질문
 
-> [!question]- virtual thread와 platform thread의 차이는?
-> platform thread는 OS 스레드와 1:1 매핑되어 생성 비용이 큽니다. virtual thread는 JVM이 관리하는 경량 스레드로 수만 개를 생성해도 부담이 적습니다.
+> [!question]- virtual thread와 platform thread는 뭐가 다른가?
+> platform thread는 OS 스레드 하나에 하나씩 대응해서 만드는 비용이 큽니다. virtual thread는 JVM이 관리하는 가벼운 스레드라서 수만 개를 만들어도 부담이 적습니다.
 
-> [!question]- virtual thread에서 pinning이 발생하는 상황은?
-> Java 21~23에서는 `synchronized` 블록 안에서 blocking I/O를 수행하면 carrier thread가 고정(pinning)됩니다. 이 버전에서는 `ReentrantLock`으로 바꿔 피합니다. Java 24(JEP 491)부터는 `synchronized` pinning이 해소됐고, native 호출 중 blocking 같은 경우만 남았습니다. JFR `jdk.VirtualThreadPinned` 이벤트로 확인합니다.
+> [!question]- virtual thread에서 pinning은 언제 생기나?
+> Java 21~23에서는 `synchronized` 블록 안에서 blocking I/O를 하면 carrier thread가 묶여 버립니다(pinning). 이 버전에서는 `ReentrantLock`으로 바꿔서 피합니다. Java 24(JEP 491)부터는 `synchronized` 때문에 생기는 pinning은 없어졌고, native 호출 중에 blocking되는 경우 정도만 남았습니다. 실제로 생기는지는 JFR `jdk.VirtualThreadPinned` 이벤트로 봅니다.
 
-> [!question]- record를 JPA Entity로 사용할 수 없는 이유는?
-> record는 final class라 JPA가 프록시를 생성할 수 없고, setter가 없어 필드 값 변경이 불가능하며, 기본 생성자도 없습니다.
+> [!question]- record를 JPA Entity로 못 쓰는 이유는?
+> record는 final class라서 JPA가 프록시를 만들 수 없고, 필드가 전부 final이라 JPA가 빈 객체를 만든 뒤 값을 채워 넣을 수 없습니다. 인자 없는 생성자를 따로 선언할 수는 있지만 결국 다른 생성자를 불러 모든 필드를 정해야 해서, JPA가 쓰는 방식과 맞지 않습니다.
 
-> [!question]- sealed class는 어떤 설계 문제를 해결하는가?
-> 상속 가능한 하위 타입을 컴파일 타임에 제한합니다. Java 21 pattern matching switch와 함께 쓰면 빠진 케이스가 컴파일 에러가 되어, 타입을 추가할 때 처리 누락을 막습니다.
+> [!question]- sealed class는 어떤 문제를 풀어 주나?
+> 상속할 수 있는 하위 타입을 컴파일할 때 정해 둡니다. Java 21 pattern matching switch와 같이 쓰면 빠뜨린 케이스가 컴파일 에러가 되니까, 타입을 새로 추가했을 때 처리를 빠뜨리지 않습니다.
 
-> [!question]- var를 남용하면 어떤 문제가 생기는가?
-> 타입이 오른쪽에서 명확히 보이지 않는 경우 코드 가독성이 떨어집니다. `var result = process(data)`처럼 타입 추론이 어려운 경우가 문제입니다.
+> [!question]- var를 아무 데나 쓰면 어떤 문제가 생기나?
+> 오른쪽만 봐서는 타입을 알 수 없을 때 코드를 읽기 어려워집니다. `var result = process(data)`처럼 무슨 타입인지 짐작이 안 가는 경우가 문제입니다.
 
 ## 점검 퀴즈
 
@@ -183,7 +187,7 @@ spring:
 
 ## 참고
 
-공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+2026년 11월에 확인한 공식 문서다.
 
 - [JDK Release Notes (OpenJDK projects)](https://openjdk.org/projects/jdk/)
 - [JEP 444: Virtual Threads](https://openjdk.org/jeps/444)

@@ -1,29 +1,29 @@
 ---
 title: "Java 동시성 기초"
-description: Java 스레드, ExecutorService, Future, CompletableFuture의 실무 사용 기준
+description: 스레드를 직접 만들지 않고 ExecutorService, Future, CompletableFuture로 동시 작업을 돌리는 기준
 tags: [concept, java]
 ---
 
 # Java 동시성 기초 (스레드, synchronized, volatile)
 
-여러 작업을 동시에 돌리려면 `Thread`, `ExecutorService`, `Future`, `CompletableFuture` 같은 실행 모델을 알고 써야 한다. thread pool은 성능을 올리는 도구이기 전에 **동시에 도는 작업 수를 제한해 시스템을 지키는 장치**다.
+Java에서 여러 작업을 동시에 돌리는 방법은 `Thread`, `ExecutorService`, `Future`, `CompletableFuture`가 있다. 각각 작업을 어떻게 띄우고 결과를 어떻게 받는지가 다르니 알고 골라야 한다. thread pool은 빠르게 하려고 쓰기 전에, 동시에 도는 작업 수를 묶어 두어 서버가 무너지지 않게 하려고 쓴다.
 
-백엔드 서버는 요청 처리, 외부 API 호출, 배치, 메시지 소비를 동시에 한다. 여기서 흔한 사고는 요청마다 `Thread`를 만들어 OS 스레드와 메모리를 낭비하는 것, pool 크기를 근거 없이 키워 DB connection pool이나 외부 API를 더 빨리 고갈시키는 것, `Future.get()`을 그냥 불러 비동기를 동기 대기로 바꾸는 것, `CompletableFuture`에 executor를 주지 않아 공용 pool에 부하를 주는 것, timeout·cancel·예외 처리 없이 비동기 작업을 방치하는 것이다.
+백엔드 서버는 요청 처리, 외부 API 호출, 배치, 메시지 소비를 한꺼번에 한다. 여기서 흔히 터지는 일은 이렇다. 요청마다 `Thread`를 만들어 OS 스레드와 메모리를 낭비한다. pool 크기를 근거 없이 키워서 DB connection pool이나 외부 API 호출 한도를 더 빨리 바닥낸다. `Future.get()`을 바로 불러서 비동기로 띄운 작업을 결국 기다리고 앉아 있는다. `CompletableFuture`에 executor를 안 넘겨서 공용 pool을 붐비게 한다. timeout, 취소, 예외 처리 없이 비동기 작업을 띄워 놓고 내버려 둔다.
 
 ## Thread를 직접 만들지 않는 이유
 
-직접 `Thread`를 만들면 실행은 간단하지만 운영에서 제어할 손잡이가 없다.
+`Thread`를 직접 만들면 띄우기는 쉽지만, 운영 중에 몇 개가 돌고 있는지 보거나 줄일 방법이 없다.
 
 ```java
 Thread thread = new Thread(() -> sendEmail(orderId));
 thread.start();
 ```
 
-서버에서는 thread pool을 쓴다. 스레드 생성 비용이 줄고, 동시에 도는 작업 수가 제한되고, queue·reject policy·shutdown을 관리할 수 있고, active thread와 queue size를 메트릭으로 볼 수 있다.
+서버에서는 thread pool을 쓴다. 스레드를 매번 만들지 않아도 되고, 동시에 도는 작업 수에 상한이 생기고, queue와 reject policy, shutdown을 직접 정할 수 있고, active thread와 queue size를 메트릭으로 볼 수 있다.
 
 ## ExecutorService
 
-`ExecutorService`는 작업 제출과 스레드 관리를 분리한다.
+`ExecutorService`를 쓰면 작업을 넘기는 코드와 스레드를 관리하는 코드가 나뉜다. 호출하는 쪽은 작업만 넘기면 된다.
 
 ```java
 ExecutorService executor = Executors.newFixedThreadPool(10);
@@ -46,11 +46,11 @@ ExecutorService executor = new ThreadPoolExecutor(
 );
 ```
 
-queue가 무제한이면 장애가 늦게 드러나고, pool이 과하게 크면 다른 자원이 먼저 고갈된다.
+queue에 제한이 없으면 작업이 계속 쌓이기만 해서 장애를 늦게 알아차린다. pool이 너무 크면 DB 커넥션 같은 다른 자원이 먼저 바닥난다.
 
 ## Future와 CompletableFuture
 
-`Future`는 비동기 결과를 표현하지만 조합과 예외 처리가 불편하다.
+`Future`로 비동기 작업의 결과를 받을 수는 있지만, 여러 작업을 엮거나 예외를 처리하기가 불편하다.
 
 ```java
 Future<PaymentResult> future = executor.submit(() -> paymentClient.pay(request));
@@ -66,7 +66,7 @@ CompletableFuture<PaymentResult> paymentFuture =
         .exceptionally(ex -> PaymentResult.failed());
 ```
 
-`supplyAsync()`에 executor를 주지 않으면 common pool에서 돈다. 서버 애플리케이션에서는 작업 성격에 맞는 executor를 명시한다.
+`supplyAsync()`에 executor를 넘기지 않으면 common pool에서 돈다. 서버 애플리케이션에서는 외부 API 호출용처럼 작업 성격에 맞는 executor를 따로 만들어 넘긴다.
 
 ## 작업별로 어떻게 돌리나
 
@@ -78,40 +78,44 @@ CompletableFuture<PaymentResult> paymentFuture =
 | 요청 흐름의 부가 작업 | 비동기로 돌리되 실패 보상 기준을 정해 둔다 |
 | 공유 상태 수정 | 동기화, lock, atomic, 불변 구조 검토 |
 
-pool 크기는 CPU, I/O 대기, DB connection pool, 외부 API 제한을 같이 보고 정한다.
+pool 크기는 CPU 수, I/O를 기다리는 시간, DB connection pool 크기, 외부 API 호출 한도를 함께 보고 정한다.
 
 ## 자주 깨지는 곳
 
-- **요청마다 Thread를 만든다.** 스레드 수에 상한이 없어 부하가 몰리면 메모리부터 무너진다.
-- **pool 크기만 키우면 빨라진다고 믿는다.** DB connection pool보다 훨씬 큰 작업 pool은 대기만 늘린다.
-- **timeout 없이 `Future.get()`을 부른다.** 작업이 안 끝나면 무기한 기다린다.
-- **`CompletableFuture` 예외를 처리하지 않는다.** 실패가 조용히 사라진다.
-- **executor를 shutdown하지 않는다.** 테스트나 배치가 끝나지 않는다.
+- 요청마다 Thread를 만들면, 스레드 수에 상한이 없어서 요청이 몰릴 때 메모리부터 무너진다.
+- pool 크기만 키우면 빨라질 거라고 믿고 DB connection pool보다 훨씬 크게 잡으면, 커넥션을 기다리는 스레드만 늘어난다.
+- timeout 없이 `Future.get()`을 부르면, 작업이 안 끝날 때 끝없이 기다린다.
+- `CompletableFuture`의 예외를 처리하지 않으면, 실패가 아무 흔적 없이 사라진다.
+- executor를 shutdown하지 않으면, 테스트나 배치가 끝나지 않는다.
 
 ## 운영에서 볼 것
 
-- 로그에 thread name, 걸린 시간, timeout 여부를 남긴다.
+- 로그에 thread name, 걸린 시간, timeout이 났는지를 남긴다.
 - 메트릭으로 active thread, queue size, rejected task, task duration을 본다.
-- timeout, 예외, cancel 상황에서 결과가 의도대로 처리되는지 테스트한다.
-- 스레드 덤프에서 작업이 blocked, waiting 상태로 쌓이는지 본다.
+- timeout, 예외, 취소가 났을 때 결과가 생각한 대로 처리되는지 테스트한다.
+- 스레드 덤프에서 blocked나 waiting 상태인 작업이 쌓이는지 본다.
 
 ## 한 번에 설명하기
 
-> 동시 작업은 Thread를 직접 만들지 않고 ExecutorService로 실행 수와 queue를 제어합니다. thread pool은 빠르게 하려는 도구라기보다 동시 실행 수를 제한해 시스템을 보호하는 장치라서, 크기는 CPU, I/O 대기, DB connection pool, 외부 API 제한을 같이 보고 정합니다. Future.get()은 timeout을 꼭 주고, CompletableFuture는 executor와 예외 처리를 명시합니다. 공유 상태 문제는 실행 모델과 별개라서 Java Memory Model까지 같이 봅니다.
+> 동시 작업은 Thread를 직접 만들지 않고, ExecutorService로 동시에 도는 수와 queue를 정해 두고 돌립니다. thread pool은 빠르게 하려고 쓰기보다 동시에 도는 작업 수를 묶어서 서버를 지키려고 씁니다. 그래서 크기는 CPU, I/O 대기 시간, DB connection pool, 외부 API 한도를 같이 보고 정합니다.
+>
+> Future.get()에는 꼭 timeout을 주고, CompletableFuture에는 executor와 예외 처리를 직접 넣습니다.
+>
+> 여러 스레드가 같은 값을 건드리는 문제는 작업을 어떻게 띄우느냐와는 다른 문제라서, Java Memory Model까지 같이 봅니다.
 
 ## 꼬리 질문
 
-> [!question]- Thread를 직접 만들기보다 ExecutorService를 사용하는 이유는?
-> 스레드 생성 비용을 줄이고, 동시 실행 수, queue, reject policy, shutdown을 제어할 수 있기 때문입니다.
+> [!question]- Thread를 직접 만들지 않고 ExecutorService를 쓰는 이유는?
+> 스레드를 매번 만드는 비용이 줄고, 동시에 몇 개를 돌릴지, queue와 reject policy, shutdown을 직접 정할 수 있어서입니다.
 
 > [!question]- thread pool 크기를 무작정 키우면 왜 위험한가?
-> CPU context switching, memory 사용량, DB connection 대기, 외부 API 부하가 증가해서 전체 장애로 번질 수 있습니다.
+> CPU context switching이 늘고, 메모리를 더 쓰고, DB 커넥션을 기다리는 스레드가 쌓이고, 외부 API에도 부하가 더 갑니다. 그러다 서비스 전체 장애로 번질 수 있습니다.
 
-> [!question]- `CompletableFuture.supplyAsync()`에서 executor를 지정하지 않으면 어떻게 되는가?
-> 기본적으로 common pool을 사용합니다. 서버 애플리케이션에서는 다른 작업과 pool을 공유해 예측하기 어려운 지연이 생길 수 있습니다.
+> [!question]- `CompletableFuture.supplyAsync()`에 executor를 안 넘기면 어떻게 되나?
+> common pool에서 돕니다. 서버에서는 다른 작업과 그 pool을 나눠 쓰게 돼서, 언제 느려질지 예측하기 어려워집니다.
 
-> [!question]- `Future.get()`을 사용할 때 무엇을 주의해야 하는가?
-> timeout 없이 호출하면 작업이 끝날 때까지 무기한 대기할 수 있으므로 `get(timeout, unit)`을 사용하고 예외 처리를 해야 합니다.
+> [!question]- `Future.get()`을 쓸 때 조심할 점은?
+> timeout 없이 부르면 작업이 끝날 때까지 끝없이 기다릴 수 있습니다. 그래서 `get(timeout, unit)`을 쓰고, 예외도 처리합니다.
 
 ## 점검 퀴즈
 
@@ -150,7 +154,7 @@ pool 크기는 CPU, I/O 대기, DB connection pool, 외부 API 제한을 같이 
 
 ## 참고
 
-공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+2026년 11월에 확인한 공식 문서다.
 
 - [Java SE 21 API: java.util.concurrent](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/package-summary.html)
 - [JEP 444: Virtual Threads](https://openjdk.org/jeps/444)

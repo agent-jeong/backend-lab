@@ -1,26 +1,26 @@
 ---
 title: "시스템 자원 모니터링"
-description: CPU, memory, disk, network 지표로 서버 병목을 좁히는 방법
+description: 서버가 느릴 때 CPU, 메모리, 디스크, 네트워크 지표를 어떤 순서로 보며 원인을 좁히는지
 tags: [concept, os]
 ---
 
 # 시스템 자원 모니터링 (CPU, 메모리, 디스크)
 
-시스템 자원 모니터링은 CPU, memory, disk, network, process 지표를 함께 보며 서버 병목과 장애 원인을 좁히는 작업이다.
+CPU, memory, disk, network, process 지표를 나란히 놓고 보면서, 서버가 어디서 막혔는지와 장애 원인을 좁혀 가는 일이다.
 
-애플리케이션 로그에 에러가 없는데 서버가 느리다면 답은 대개 여기 있다. 첫 질문은 "CPU가 높은가 낮은가"다. 높으면 계산, GC, busy loop를 의심하고, 낮은데 느리면 I/O wait, lock wait, 외부 의존성 대기를 본다.
+애플리케이션 로그에 에러가 하나도 없는데 주문 API가 느리다면, 원인은 대개 이 지표들에서 보인다. 가장 먼저 CPU가 높은지 낮은지를 본다. 높으면 계산, GC, busy loop를 의심하고, 낮은데 느리면 I/O나 락을 기다리거나 DB, 외부 API를 기다리고 있는 쪽을 본다.
 
 ## 주요 지표
 
 | 영역 | 지표 | 의미 |
 |---|---|---|
-| CPU | usage, load average, run queue | 실행 가능 작업과 일부 I/O 대기 작업이 얼마나 쌓였는지 확인 |
-| Memory | used, available, swap, OOM kill | 메모리 부족과 swap 발생 여부 확인 |
-| Disk | IOPS, throughput, await, util, iowait | 디스크 대기와 포화 여부 확인 |
-| Network | throughput, error, retransmit, connection | 네트워크 품질과 연결 상태 확인 |
-| Process | thread count, fd count, open files | 프로세스 리소스 누수와 제한 확인 |
+| CPU | usage, load average, run queue | 실행을 기다리는 작업과 일부 I/O 대기 작업이 얼마나 쌓였는지 |
+| Memory | used, available, swap, OOM kill | 메모리가 모자란지, swap이 도는지 |
+| Disk | IOPS, throughput, await, util, iowait | 디스크를 기다리는지, 디스크가 한계에 닿았는지 |
+| Network | throughput, error, retransmit, connection | 패킷이 유실되거나 재전송되는지, 연결 상태는 어떤지 |
+| Process | thread count, fd count, open files | 스레드나 파일이 계속 늘어나는지, 제한에 걸렸는지 |
 
-Linux의 load average는 CPU 실행 대기뿐 아니라 일부 uninterruptible I/O wait도 포함한다. 그래서 load average가 높다고 곧 CPU 병목은 아니고, CPU 사용률과 같이 봐야 한다.
+Linux의 load average에는 CPU를 기다리는 작업뿐 아니라 일부 uninterruptible I/O wait도 들어간다. 그래서 load average가 높다고 바로 CPU 병목이라고 볼 수는 없고, CPU 사용률과 같이 봐야 한다.
 
 ## 증상별 확인 순서
 
@@ -35,36 +35,40 @@ Linux의 load average는 CPU 실행 대기뿐 아니라 일부 uninterruptible I
 
 ## Java 서버에서 같이 볼 것
 
-OS 지표만으로는 heap, native memory, thread, GC 문제를 구분하지 못한다. JVM 지표를 옆에 놓고 본다.
+OS 지표만 봐서는 heap, native memory, thread, GC 중 어디가 문제인지 가릴 수 없다. 그래서 JVM 지표를 옆에 놓고 본다.
 
 | OS 지표 | JVM/애플리케이션 지표 | 판단 |
 |---|---|---|
-| CPU usage 높음 | GC time, thread CPU | GC 문제인지 애플리케이션 CPU 문제인지 구분 |
-| memory available 낮음 | heap, non-heap, direct buffer | JVM 내부/외부 메모리 사용 구분 |
-| thread count 증가 | thread dump, pool queue | 스레드 누수나 blocking 대기 확인 |
-| disk iowait 높음 | log write, file processing | 로그/파일 처리 병목 확인 |
-| network retransmit 증가 | external API latency | 네트워크 품질 문제 가능성 확인 |
+| CPU usage 높음 | GC time, thread CPU | GC가 CPU를 쓰는지 애플리케이션 코드가 쓰는지 |
+| memory available 낮음 | heap, non-heap, direct buffer | JVM 힙에서 쓰는지 힙 밖에서 쓰는지 |
+| thread count 증가 | thread dump, pool queue | 스레드가 새고 있는지, blocking으로 묶여 있는지 |
+| disk iowait 높음 | log write, file processing | 로그 쓰기나 파일 처리가 막고 있는지 |
+| network retransmit 증가 | external API latency | 네트워크 품질이 나빠진 건 아닌지 |
 
 ## 자주 깨지는 곳
 
-- **CPU 사용률 하나로 서버 상태를 판단한다.** CPU가 낮아도 I/O나 락 대기로 느릴 수 있다.
-- **load average를 CPU 사용률과 같은 뜻으로 읽는다.** I/O 대기도 섞여 있다.
-- **평균 latency만 본다.** p95/p99 지연과 순간 포화가 평균에 묻힌다.
-- **컨테이너 limit과 호스트 OS 지표를 섞어 본다.** 호스트는 여유가 있어도 컨테이너는 limit에 걸려 있을 수 있다.
-- **JVM heap만 본다.** native memory, thread stack, direct buffer를 놓쳐 OOM 원인을 못 찾는다.
-- **로그와 OS 지표의 시간을 맞추지 않는다.** 원인과 결과의 선후를 잘못 읽는다.
-- **포화된 뒤의 결과 지표만 본다.** 맨 처음 무엇이 튀었는지가 원인이다.
+- CPU 사용률 하나로 서버 상태를 판단하면 틀린다. CPU가 낮아도 I/O나 락을 기다리느라 느릴 수 있다.
+- load average를 CPU 사용률과 같은 뜻으로 읽으면 틀린다. load average에는 I/O 대기도 섞여 있다.
+- 평균 latency만 보면 p95/p99 지연과 잠깐씩 꽉 차는 순간이 평균에 묻힌다.
+- 컨테이너 limit과 호스트 OS 지표를 섞어 보면 판단이 어긋난다. 호스트는 여유가 있어도 컨테이너는 limit에 걸려 있을 수 있다.
+- JVM heap만 보면 native memory, thread stack, direct buffer를 놓쳐서 OOM 원인을 못 찾는다.
+- 로그와 OS 지표의 시간을 맞추지 않으면 무엇이 먼저 일어났는지를 거꾸로 읽는다.
+- 모든 게 꽉 찬 뒤의 지표만 보면 원인을 놓친다. 맨 처음 무엇이 튀었는지가 원인이다.
 
 ## 운영에서 볼 것
 
 - 부하 테스트 중에 CPU, memory, disk, network 지표를 같이 수집한다.
 - 장애 시간대의 API latency, dependency latency, GC pause, error rate를 시간축에 맞춰 본다.
-- 메트릭은 p95/p99 latency, CPU, memory available, iowait, network retransmit, fd count. 장애 판단에는 평균보다 p95/p99, 순간 포화, error rate, queue 대기 시간이 더 쓸모 있을 때가 많다.
-- 명령어는 `top`, `vmstat 1`, `iostat -x 1`, `sar`, `ss`, `lsof`, `dmesg`.
+- 메트릭은 p95/p99 latency, CPU, memory available, iowait, network retransmit, fd count를 본다. 장애인지 판단할 때는 평균보다 p95/p99, 순간적으로 꽉 차는지, error rate, queue 대기 시간이 더 쓸모 있을 때가 많다.
+- 명령어는 `top`, `vmstat 1`, `iostat -x 1`, `sar`, `ss`, `lsof`, `dmesg`를 쓴다.
 
 ## 한 번에 설명하기
 
-> 서버가 느리면 저는 먼저 CPU가 높은지 낮은지 봅니다. 높으면 계산, GC, busy loop를 의심하고, 낮은데 느리면 I/O wait, lock wait, 외부 의존성 대기를 봅니다. load average는 일부 I/O 대기도 포함하니 CPU 사용률과 같이 해석하고, Java 서버라면 heap, native memory, GC 지표를 OS 지표와 같은 시간축에 놓고 비교합니다.
+> 서버가 느리면 먼저 CPU가 높은지 낮은지 봅니다. 높으면 계산, GC, busy loop를 의심하고, 낮은데 느리면 I/O나 락, DB나 외부 API를 기다리고 있는지 봅니다.
+>
+> load average에는 일부 I/O 대기도 들어가서 CPU 사용률과 같이 봅니다.
+>
+> Java 서버라면 heap, native memory, GC 지표를 OS 지표와 같은 시간축에 놓고 비교합니다.
 
 ## 꼬리 질문
 
@@ -76,7 +80,7 @@ OS 지표만으로는 heap, native memory, thread, GC 문제를 구분하지 못
 
 ## 참고
 
-공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+2026년 11월에 확인한 공식 문서다.
 
 - [vmstat(8)](https://man7.org/linux/man-pages/man8/vmstat.8.html)
 - [top(1)](https://man7.org/linux/man-pages/man1/top.1.html)

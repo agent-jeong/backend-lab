@@ -1,14 +1,14 @@
 ---
 title: 설정 관리와 Profile 분리
-description: Spring의 설정 관리와 Profile 기반 환경 분리
+description: 설정값을 어디에 두고 어떻게 받는지, 환경마다 Profile로 나누는 법
 tags: [concept, spring]
 ---
 
 # 설정 관리와 Profile 분리
 
-Configuration은 Bean 등록과 외부 설정을 다루는 Spring의 방식이고, Profile은 dev, prod 같은 환경마다 다른 설정을 적용하는 기능이다.
+Spring에서 설정은 두 가지다. `@Configuration`으로 Bean을 등록하는 일과, `application.yml` 같은 파일에서 값을 읽어 오는 일이다. Profile은 dev, prod처럼 환경마다 다른 값을 쓰게 해 준다.
 
-설정을 잘못 나누면 사고가 바로 난다. 운영 DB 비밀번호가 코드와 함께 Git에 올라가고, 개발 환경이 운영 DB에 붙고, 로컬에서 되던 기능이 운영에서만 다른 설정 때문에 실패한다.
+설정을 잘못 나누면 사고가 바로 난다. 운영 DB 비밀번호가 코드와 함께 Git에 올라가고, 개발 서버가 운영 DB에 붙고, 로컬에서 되던 결제 호출이 운영에서만 다른 타임아웃 값 때문에 실패한다.
 
 ## 설정 파일
 
@@ -41,7 +41,7 @@ app:
 4. 커맨드 라인 인자 (--server.port=9090)
 ```
 
-높은 쪽이 낮은 쪽을 덮어쓴다. 같은 jar를 환경 변수나 실행 인자만 바꿔 여러 환경에 띄울 수 있는 이유다.
+높은 쪽이 낮은 쪽을 덮어쓴다. 그래서 같은 jar를 환경 변수나 실행 인자만 바꿔 여러 환경에 띄울 수 있다.
 
 ## 설정값 주입
 
@@ -59,7 +59,7 @@ public class ApiClient {
 }
 ```
 
-단일 값 하나를 넣을 때 쓴다.
+값 하나를 넣을 때 쓴다.
 
 ### @ConfigurationProperties (설정 묶음이면 이쪽)
 
@@ -80,7 +80,7 @@ public class ApiProperties {
 public class AppConfig { }
 ```
 
-관련 설정을 객체 하나로 묶어 타입 안전하게 받는다. 검증(`@Validated`), 리스트, 중첩 객체를 지원해서 `@Value`를 여기저기 흩어 두는 것보다 고치기 쉽다.
+관련 설정을 객체 하나에 묶어 타입에 맞게 받는다. 검증(`@Validated`), 리스트, 중첩 객체도 받을 수 있어서 `@Value`를 여기저기 흩어 두는 것보다 고치기 쉽다.
 
 ### 무엇을 쓸까
 
@@ -132,7 +132,7 @@ public class StorageConfig {
 }
 ```
 
-환경마다 구현체가 달라야 하면 `@Profile`로 Bean을 나눈다. 코드 안에서 if문으로 환경을 분기하지 않는다.
+로컬에서는 파일에, 운영에서는 S3에 저장하듯 환경마다 구현체가 달라야 하면 `@Profile`로 Bean을 나눈다. 코드 안에서 if문으로 환경을 가르지 않는다.
 
 ### Profile 활성화 방법
 
@@ -171,7 +171,7 @@ public class AppConfig {
 }
 ```
 
-`@Configuration` 클래스는 CGLIB 프록시로 감싸진다. 그래서 `@Bean` 메서드를 여러 번 불러도 같은 인스턴스가 나온다(singleton 보장). Spring Boot가 자동 등록하는 Bean(예: `ObjectMapper`)과 같은 타입을 `@Bean`으로 정의하면 자동 설정을 대체한다.
+`@Configuration` 클래스는 CGLIB 프록시로 감싸진다. 그래서 `@Bean` 메서드를 여러 번 불러도 같은 인스턴스가 나오고, singleton이 지켜진다. Spring Boot가 자동으로 등록하는 Bean(예: `ObjectMapper`)과 같은 타입을 `@Bean`으로 직접 정의하면 자동 설정 대신 내 Bean이 쓰인다.
 
 ## 민감 정보 관리
 
@@ -187,33 +187,35 @@ spring:
     password: ${DB_PASSWORD}
 ```
 
-비밀번호, API 키는 환경 변수나 외부 시크릿 관리 도구로 넣는다. 설정 파일에 직접 쓰면 Git에 그대로 남는다.
+비밀번호와 API 키는 환경 변수나 외부 시크릿 관리 도구로 넣는다. 설정 파일에 직접 쓰면 Git 이력에 그대로 남는다.
 
 ## 자주 깨지는 곳
 
-- **민감 정보를 `application.yml`에 쓰고 커밋한다.** 저장소에 접근하는 누구나 운영 비밀번호를 본다.
-- **Profile 대신 if문으로 환경을 분기한다.** 환경이 늘 때마다 코드가 바뀐다.
-- **모든 설정을 `@Value`로 넣는다.** 관련 설정이 클래스마다 흩어진다.
-- **`@ConfigurationProperties`에 getter/setter를 빠뜨린다.** 바인딩이 되지 않는다.
-- **Profile을 지정하지 않는다.** 운영 환경이 기본 설정으로 뜬다.
+- 비밀번호를 `application.yml`에 쓰고 커밋하면, 저장소를 볼 수 있는 누구나 운영 비밀번호를 본다.
+- Profile 대신 if문으로 환경을 가르면, 환경이 하나 늘 때마다 코드를 고쳐야 한다.
+- 모든 설정을 `@Value`로 넣으면, 관련 설정이 클래스마다 흩어져 어디서 무엇을 읽는지 찾기 어렵다.
+- `@ConfigurationProperties` 클래스에 getter/setter를 빠뜨리면, 값이 바인딩되지 않는다.
+- Profile을 지정하지 않고 띄우면, 운영 서버가 기본 설정으로 뜬다.
 
 ## 한 번에 설명하기
 
-> 설정은 `application.yml`에 두고 환경별 값은 `application-{profile}.yml`로 나눕니다. 값 하나면 `@Value`, 관련 설정 묶음이면 `@ConfigurationProperties`로 받습니다. 운영에서는 Profile을 환경 변수로 켜고, 비밀번호 같은 민감 정보는 설정 파일에 쓰지 않고 환경 변수나 시크릿 관리 도구로 주입합니다.
+> 공통 설정은 `application.yml`에 두고, 환경마다 다른 값은 `application-{profile}.yml`로 나눕니다. 값 하나면 `@Value`로, 관련 설정이 여러 개면 `@ConfigurationProperties`로 묶어서 받습니다.
+>
+> 운영에서는 Profile을 환경 변수로 켭니다. 비밀번호 같은 값은 설정 파일에 쓰지 않고 환경 변수나 시크릿 관리 도구로 넣습니다.
 
 ## 꼬리 질문
 
 > [!question]- `@Value`와 `@ConfigurationProperties`의 차이는?
-> `@Value`는 단일 값을 문자열 키로 주입하고, `@ConfigurationProperties`는 관련 설정을 객체로 묶어서 타입 안전하게 바인딩합니다. 설정이 여러 개이거나 검증이 필요하면 `@ConfigurationProperties`를 씁니다.
+> `@Value`는 값 하나를 문자열 키로 넣고, `@ConfigurationProperties`는 관련 설정을 객체 하나로 묶어서 타입에 맞게 받습니다. 설정이 여러 개거나 검증이 필요하면 `@ConfigurationProperties`를 씁니다.
 
 > [!question]- 설정 우선순위는 어떻게 되는가?
-> `application.yml` < `application-{profile}.yml` < 환경 변수 < 커맨드 라인 인자 순으로 우선순위가 높아집니다. 우선순위가 높은 설정이 낮은 설정을 덮어씁니다.
+> `application.yml` < `application-{profile}.yml` < 환경 변수 < 커맨드 라인 인자 순서로 높아지고, 높은 쪽 값이 낮은 쪽을 덮어씁니다.
 
 > [!question]- 민감 정보는 어떻게 관리하는가?
-> 환경 변수, Kubernetes Secret, AWS Parameter Store 같은 외부 시크릿 관리 도구를 씁니다. 설정 파일에 직접 쓰면 Git 이력에 남아 노출됩니다.
+> 환경 변수나 Kubernetes Secret, AWS Parameter Store 같은 시크릿 관리 도구로 넣습니다. 설정 파일에 직접 쓰면 Git 이력에 남아서, 나중에 지워도 이력에서 보입니다.
 
 > [!question]- `@Configuration`의 CGLIB 프록시란?
-> `@Configuration` 클래스는 CGLIB 프록시로 만들어져서 `@Bean` 메서드를 여러 번 호출해도 같은 인스턴스를 돌려줍니다. 이렇게 Bean의 singleton을 보장합니다.
+> `@Configuration` 클래스는 CGLIB 프록시로 만들어집니다. 그래서 `@Bean` 메서드를 여러 번 불러도 새로 만들지 않고 이미 만든 인스턴스를 돌려줘서, Bean이 하나로 유지됩니다.
 
 ## 점검 퀴즈
 
@@ -252,7 +254,7 @@ spring:
 
 ## 참고
 
-공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+2026년 11월에 확인한 공식 문서다.
 
 - [Spring Boot: Externalized Configuration](https://docs.spring.io/spring-boot/reference/features/external-config.html)
 - [Spring Boot: Profiles](https://docs.spring.io/spring-boot/reference/features/profiles.html)

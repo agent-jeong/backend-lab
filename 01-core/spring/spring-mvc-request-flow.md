@@ -1,14 +1,14 @@
 ---
 title: Spring MVC 요청 처리 흐름
-description: Spring MVC의 요청 처리 흐름과 각 컴포넌트의 역할
+description: HTTP 요청 하나가 DispatcherServlet에서 Controller를 거쳐 응답이 되기까지
 tags: [concept, spring]
 ---
 
 # Spring MVC 요청 처리 흐름
 
-Spring MVC에서는 DispatcherServlet이 모든 HTTP 요청을 받아 Handler를 고르고, 비즈니스 로직을 거친 결과를 View나 Response Body로 바꿔 돌려준다.
+Spring MVC에서는 DispatcherServlet이 모든 HTTP 요청을 먼저 받는다. 어느 Controller 메서드로 보낼지 고르고, 메서드가 돌려준 결과를 View나 JSON 응답으로 바꿔 내보낸다.
 
-이 흐름을 알아야 장애 위치를 좁힐 수 있다. 404가 컨트롤러 매핑 문제인지 필터 문제인지, `@RequestBody`가 왜 바인딩되지 않는지, `@ExceptionHandler`가 왜 어떤 예외는 못 잡는지가 모두 "요청이 지금 어느 단계에 있나"로 풀린다.
+주문 조회 API가 404를 내거나, 주문 생성 요청의 body가 null로 들어오거나, 만들어 둔 `@ExceptionHandler`가 어떤 예외는 못 잡을 때가 있다. 이럴 때 "요청이 지금 어느 단계까지 왔나"를 따지면 원인이 Filter인지, 매핑인지, 바인딩인지 금방 좁혀진다.
 
 ## 요청 처리 흐름
 
@@ -33,7 +33,7 @@ Spring MVC에서는 DispatcherServlet이 모든 HTTP 요청을 받아 Handler를
 
 ### DispatcherServlet
 
-모든 HTTP 요청의 진입점이다. Front Controller 패턴으로 요청을 받아 맞는 핸들러에 넘긴다.
+모든 HTTP 요청이 처음 들어오는 곳이다. Front Controller 패턴으로, 요청을 한곳에서 받아 맞는 핸들러에 넘긴다.
 
 ### HandlerMapping
 
@@ -53,7 +53,7 @@ public class OrderController {
 
 ### ArgumentResolver
 
-HTTP 요청에서 값을 꺼내 Controller 메서드 파라미터에 바인딩한다.
+HTTP 요청에서 값을 꺼내 Controller 메서드 파라미터에 채워 넣는다.
 
 | 어노테이션 | 소스 | 예시 |
 |---|---|---|
@@ -97,30 +97,32 @@ public class GlobalExceptionHandler {
 }
 ```
 
-`@ExceptionHandler`는 Controller에서 난 예외만 처리한다. Filter는 DispatcherServlet 앞에 있어서 거기서 난 예외는 잡지 못하고 따로 처리해야 한다.
+`@ExceptionHandler`는 Controller 쪽에서 난 예외만 잡는다. Filter는 DispatcherServlet보다 앞에 있어서, 거기서 난 예외는 여기까지 오지 않는다. Filter 안에서 따로 처리해야 한다.
 
 ## 자주 깨지는 곳
 
-- **`@RequestBody` 대상에 기본 생성자가 없다.** 바인딩이 실패한다.
-- **Filter 예외를 `@ExceptionHandler`로 잡으려 한다.** 잡히지 않는다.
-- **`preHandle()`이 `false`를 반환한 뒤를 모른다.** Controller가 실행되지 않는다.
-- **`@Controller`에서 JSON을 반환하면서 `@ResponseBody`를 빠뜨린다.** 반환값이 View 이름으로 해석된다.
-- **Filter와 Interceptor를 구분 없이 쓴다.** 같은 처리가 두 곳에 흩어진다.
+- `@RequestBody`로 받는 클래스에 기본 생성자가 없으면, 바인딩이 실패한다.
+- Filter에서 난 예외를 `@ExceptionHandler`로 잡으려 하면, 잡히지 않는다.
+- `preHandle()`이 `false`를 반환하면 Controller가 실행되지 않는데, 이걸 모르고 응답을 안 쓰면 클라이언트는 빈 응답을 받는다.
+- `@Controller`에서 JSON을 반환하면서 `@ResponseBody`를 빠뜨리면, 반환값이 View 이름으로 해석된다.
+- Filter와 Interceptor를 기준 없이 섞어 쓰면, 같은 처리가 두 곳에 흩어진다.
 
 ## 한 번에 설명하기
 
-> Spring MVC는 DispatcherServlet이 모든 요청을 받아 HandlerMapping으로 Controller를 찾고, 결과를 ViewResolver나 MessageConverter로 응답에 씁니다. 실행 순서는 Filter, Interceptor, AOP, Controller입니다. `@ExceptionHandler`는 Controller 쪽 예외만 잡기 때문에, Filter에서 나는 예외는 따로 처리합니다.
+> Spring MVC에서는 DispatcherServlet이 모든 요청을 받아 HandlerMapping으로 Controller를 찾고, 결과를 ViewResolver나 MessageConverter로 응답에 씁니다. 요청은 Filter, Interceptor, AOP, Controller 순서로 지나갑니다.
+>
+> `@ExceptionHandler`는 Controller 쪽 예외만 잡아서, Filter에서 나는 예외는 따로 처리합니다.
 
 ## 꼬리 질문
 
 > [!question]- `@Controller`와 `@RestController`의 차이는?
-> `@RestController`는 `@Controller` + `@ResponseBody`입니다. `@Controller`는 View 이름을 반환하고, `@RestController`는 반환값을 JSON으로 직렬화합니다.
+> `@RestController`는 `@Controller`에 `@ResponseBody`를 합친 것입니다. `@Controller`가 돌려준 문자열은 View 이름으로 쓰이고, `@RestController`가 돌려준 객체는 JSON으로 바뀌어 응답 본문에 들어갑니다.
 
 > [!question]- `@RequestBody` 바인딩이 실패하는 원인은?
-> 기본 생성자 누락, 필드명 불일치, Content-Type(`application/json`) 미설정, Jackson 어노테이션 오류가 대표적입니다.
+> 자주 보는 건 넷입니다. 기본 생성자가 없거나, JSON 필드 이름과 클래스 필드 이름이 다르거나, Content-Type을 `application/json`으로 안 보냈거나, Jackson 어노테이션을 잘못 단 경우입니다.
 
 > [!question]- DispatcherServlet의 역할은?
-> Front Controller 패턴의 구현체로, 모든 HTTP 요청을 한곳에서 받아 맞는 Handler에 넘깁니다. HandlerMapping, HandlerAdapter, ViewResolver 등을 조합해 요청을 처리합니다.
+> Front Controller 패턴을 구현한 것으로, 모든 HTTP 요청을 한곳에서 받아 맞는 Handler에 넘깁니다. 직접 일을 다 하지는 않고 HandlerMapping, HandlerAdapter, ViewResolver 같은 부품을 불러서 요청을 처리합니다.
 
 ## 점검 퀴즈
 
@@ -159,7 +161,7 @@ public class GlobalExceptionHandler {
 
 ## 참고
 
-공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+2026년 11월에 확인한 공식 문서다.
 
 - [Spring Framework: DispatcherServlet](https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet.html)
 

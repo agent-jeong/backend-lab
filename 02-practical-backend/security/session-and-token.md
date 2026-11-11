@@ -1,17 +1,19 @@
 ---
 title: Session과 Token
-description: 서버 세션과 토큰 기반 인증의 차이와 선택 기준
+description: 로그인 상태를 서버에 두는 세션과 클라이언트가 들고 다니는 토큰의 차이, 고르는 기준
 tags: [concept, security]
 ---
 
 # Session과 Token
 
-Session은 인증 상태를 서버에 저장하고 클라이언트는 세션 id만 들고 다니는 방식이다. Token은 인증 정보를 서명된 값으로 만들어 클라이언트가 요청마다 보내는 방식이다. 인증 상태를 어디에 두느냐에 따라 로그아웃, 확장성, 탈취 대응이 달라진다. 그래서 선택 기준은 확장성보다 만료, 탈취, 로그아웃, 권한 변경에 어떻게 대응하느냐다.
+Session은 로그인 상태를 서버에 저장하고, 클라이언트는 세션 id만 들고 다니는 방식이다. Token은 로그인 정보를 서명된 값으로 만들어 클라이언트가 요청마다 보내는 방식이다.
+
+로그인 상태를 어디에 두느냐에 따라 로그아웃을 어떻게 처리할지, 서버를 늘릴 때 무엇이 필요한지, 탈취됐을 때 어떻게 막을지가 달라진다. 그래서 고를 때는 확장성보다 만료, 탈취, 로그아웃, 권한 변경을 어떻게 처리할지를 먼저 본다.
 
 ## 동작
 
 1. 사용자가 로그인하면 서버가 인증 정보를 검증한다.
-2. 세션 방식은 서버 저장소에 인증 상태를 저장하고 세션 id를 쿠키로 보낸다.
+2. 세션 방식은 서버 저장소에 로그인 상태를 저장하고 세션 id를 쿠키로 보낸다.
 3. 토큰 방식은 사용자 식별자, 만료 시간, 권한 정보를 담은 서명된 토큰을 발급한다.
 4. 이후 요청에서 세션 id나 토큰을 검증해 인증된 사용자 정보를 만든다.
 5. 만료, 로그아웃, 권한 변경, 토큰 탈취 상황에 맞춰 무효화 정책을 적용한다.
@@ -28,7 +30,7 @@ public AuthenticatedUser authenticate(String accessToken) {
 }
 ```
 
-토큰 검증은 서명, 만료 시간, 발급자, audience를 함께 확인한다. payload를 decode만 하는 것은 인증이 아니다.
+토큰을 검증할 때는 서명, 만료 시간, 발급자, audience를 함께 확인한다. payload를 decode만 하는 것은 인증이 아니다.
 
 ## 언제 무엇을 쓰나
 
@@ -49,12 +51,12 @@ public AuthenticatedUser authenticate(String accessToken) {
 
 ## 자주 깨지는 곳
 
-- **JWT를 쓰면 로그아웃 문제가 저절로 풀린다고 생각한다.** 발급한 토큰은 만료 전까지 유효하다. 강제 무효화는 따로 설계해야 한다.
-- **token payload에 민감 정보를 넣는다.** JWT payload는 암호화가 아니라 인코딩된 값이라 누구나 읽는다.
-- **access token 만료 시간을 너무 길게 둔다.** 탈취되거나 권한이 바뀌어도 오래 쓰인다.
-- **refresh token을 access token처럼 매 요청에 보낸다.** 오래 사는 토큰이 노출되는 경로가 늘어난다.
-- **access token, refresh token, session cookie의 역할을 섞는다.** 만료와 재발급 정책이 꼬인다.
-- **쿠키를 쓰면서 CSRF 대응을 하지 않는다.**
+- JWT를 쓰면 로그아웃이 저절로 해결된다고 여기면, 로그아웃한 뒤에도 토큰이 살아 있다. 발급한 토큰은 만료 전까지 유효하므로 강제 무효화는 따로 설계해야 한다.
+- token payload에 민감 정보를 넣으면 누구나 읽는다. JWT payload는 암호화가 아니라 인코딩된 값이다.
+- access token 만료 시간을 너무 길게 두면, 탈취되거나 권한이 바뀌어도 그 토큰이 오래 쓰인다.
+- refresh token을 access token처럼 매 요청에 보내면, 오래 사는 토큰이 노출될 경로가 늘어난다.
+- access token, refresh token, session cookie가 각각 무슨 일을 하는지 섞어 쓰면, 만료와 재발급 정책이 꼬인다.
+- 쿠키를 쓰면서 CSRF를 막지 않으면, 다른 사이트에서 보낸 요청에도 로그인 상태가 따라간다.
 
 ## 확인하는 법
 
@@ -65,7 +67,11 @@ public AuthenticatedUser authenticate(String accessToken) {
 
 ## 한 번에 설명하기
 
-> Session은 인증 상태를 서버가 들고 있고, Token은 서명된 인증 정보를 클라이언트가 들고 다닙니다. 세션은 강제 로그아웃이 쉽지만 저장소와 확장 설계가 필요하고, 토큰은 stateless하게 검증되지만 발급 뒤 무효화와 권한 변경 반영이 어렵습니다. 저는 확장성보다 만료, 탈취, 로그아웃, 권한 변경에 어떻게 대응할지를 기준으로 고릅니다. JWT payload는 인코딩일 뿐이라 민감 정보를 넣지 않고, 쿠키를 쓰면 CSRF와 쿠키 옵션을 같이 봅니다.
+> Session은 로그인 상태를 서버가 들고 있고, Token은 서명된 로그인 정보를 클라이언트가 들고 다닙니다.
+>
+> 세션은 강제 로그아웃이 쉽지만 저장소와 서버를 늘릴 때의 설계가 필요하고, 토큰은 서버에 상태 없이 검증할 수 있지만 발급한 뒤에는 무효화하거나 바뀐 권한을 반영하기 어렵습니다. 그래서 확장성보다 만료, 탈취, 로그아웃, 권한 변경에 어떻게 대응할지를 기준으로 고릅니다.
+>
+> JWT payload는 인코딩일 뿐이라 민감 정보를 넣지 않고, 쿠키를 쓰면 CSRF와 쿠키 옵션을 같이 봅니다.
 
 ## 꼬리 질문
 
@@ -75,7 +81,7 @@ public AuthenticatedUser authenticate(String accessToken) {
 
 ## 참고
 
-공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+2026년 11월에 확인한 공식 문서다.
 
 - [OWASP: Session Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html)
 - [RFC 7519: JSON Web Token](https://www.rfc-editor.org/rfc/rfc7519)

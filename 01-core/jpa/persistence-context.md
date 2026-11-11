@@ -1,14 +1,14 @@
 ---
 title: "영속성 컨텍스트의 역할과 생명주기"
-description: JPA 영속성 컨텍스트의 동작 원리와 실무 영향
+description: 같은 조회가 쿼리를 한 번만 날리고, save() 없이 UPDATE가 나가는 이유
 tags: [concept, jpa]
 ---
 
 # 영속성 컨텍스트의 역할과 생명주기
 
-영속성 컨텍스트는 JPA가 Entity를 관리하는 1차 캐시 공간이다. 동일성 보장, 쓰기 지연, 변경 감지가 모두 여기서 나온다.
+영속성 컨텍스트는 JPA가 조회하거나 저장한 Entity를 담아 두고 관리하는 공간이다. 1차 캐시라고도 부른다. 같은 row를 같은 객체로 돌려주는 것, SQL을 모아 뒀다가 한꺼번에 보내는 것, 바뀐 값을 찾아 UPDATE하는 것이 모두 여기서 일어난다.
 
-이걸 모르면 JPA의 "이상한" 동작을 설명하지 못한다. 같은 id를 두 번 조회했는데 쿼리가 한 번만 나가고, `save()`를 안 불렀는데 UPDATE가 나가고, 트랜잭션 밖에서 고친 값은 DB에 안 들어간다. 모두 **Entity가 지금 영속성 컨텍스트 안에 있느냐**로 갈린다.
+JPA가 가끔 이상하게 굴 때 원인은 대개 여기 있다. 같은 주문을 두 번 조회했는데 쿼리는 한 번만 나가고, `save()`를 안 불렀는데 UPDATE가 나가고, 트랜잭션 밖에서 고친 값은 DB에 안 들어간다. 모두 그 Entity가 지금 영속성 컨텍스트 안에 있느냐로 갈린다.
 
 ## 1차 캐시
 
@@ -22,9 +22,9 @@ public void example() {
 }
 ```
 
-같은 트랜잭션 안에서 같은 id로 조회하면 1차 캐시에서 돌려준다. DB 접근이 줄고, 같은 row를 가리키는 두 객체가 `==`로 true가 된다.
+같은 트랜잭션 안에서 같은 id로 조회하면 1차 캐시에서 꺼내 준다. DB에 덜 가고, 같은 row를 가리키는 두 변수가 `==`로 비교해도 true다.
 
-1차 캐시를 타는 건 `find()`(`findById()`)처럼 id로 찾을 때뿐이다. JPQL·QueryDSL 쿼리는 항상 DB에 SQL을 보내고, 결과 행 중 이미 영속성 컨텍스트에 있는 Entity는 DB 값이 아니라 기존 객체를 돌려준다.
+1차 캐시에서 꺼내 주는 건 `find()`(`findById()`)처럼 id로 찾을 때뿐이다. JPQL이나 QueryDSL 쿼리는 늘 DB에 SQL을 보낸다. 다만 결과 행 중에 이미 영속성 컨텍스트에 있는 Entity가 있으면, DB에서 읽은 값이 아니라 원래 있던 객체를 돌려준다.
 
 ## 쓰기 지연 (Transactional Write-Behind)
 
@@ -38,13 +38,13 @@ public void example() {
 }
 ```
 
-`persist()` 시점에는 SQL이 나가지 않고, flush 시점에 모아서 실행한다.
+`persist()`를 부를 때는 SQL이 나가지 않고, flush할 때 모아서 실행한다.
 
-예외: `@GeneratedValue(strategy = IDENTITY)`는 id를 DB가 만들기 때문에 `persist()` 즉시 INSERT가 나간다. MySQL auto_increment를 쓰면 쓰기 지연과 JDBC batch insert의 이점이 사라진다. 자세한 내용은 [[entity-table-mapping]].
+예외가 하나 있다. `@GeneratedValue(strategy = IDENTITY)`는 id를 DB가 만들기 때문에 `persist()`하자마자 INSERT가 나간다. 그래서 MySQL auto_increment를 쓰면 쓰기 지연도 JDBC batch insert도 덕을 못 본다. 자세한 내용은 [[entity-table-mapping]]에 있다.
 
 ## 변경 감지 (Dirty Checking)
 
-트랜잭션 커밋 시 영속성 컨텍스트가 스냅샷과 현재 상태를 비교하고, 바뀐 게 있으면 UPDATE를 실행한다. 기본은 모든 컬럼을 UPDATE하고, `@DynamicUpdate`를 쓰면 바뀐 컬럼만 UPDATE한다. 영속 상태 Entity라면 `save()`를 부르지 않아도 변경이 반영된다.
+트랜잭션을 커밋할 때 영속성 컨텍스트가 처음 읽은 스냅샷과 지금 값을 비교해서, 바뀐 게 있으면 UPDATE를 날린다. 기본은 모든 컬럼을 UPDATE하고, `@DynamicUpdate`를 붙이면 바뀐 컬럼만 UPDATE한다. 영속 상태 Entity라면 `save()`를 안 불러도 바뀐 값이 들어간다.
 
 자세한 동작과 주의점은 [[dirty-checking|Dirty Checking]]에 있다.
 
@@ -58,16 +58,16 @@ public void example() {
 영속 (managed)  →  remove()  →  삭제 (removed)
 ```
 
-| 상태 | 의미 | 변경 감지 |
+| 상태 | 뜻 | 변경 감지 |
 |---|---|---|
-| 비영속 (new) | `new`로 생성만 한 상태 | X |
-| 영속 (managed) | 영속성 컨텍스트에 관리되는 상태 | O |
-| 준영속 (detached) | 영속성 컨텍스트에서 분리된 상태 | X |
-| 삭제 (removed) | 삭제 예정 상태 | - |
+| 비영속 (new) | `new`로 만들기만 했다 | X |
+| 영속 (managed) | 영속성 컨텍스트가 관리하고 있다 | O |
+| 준영속 (detached) | 영속성 컨텍스트에서 떨어져 나왔다 | X |
+| 삭제 (removed) | 지워질 예정이다 | - |
 
 ## 범위는 트랜잭션과 같다
 
-Spring에서 영속성 컨텍스트의 생명주기는 기본적으로 트랜잭션과 같다.
+Spring에서는 기본으로 영속성 컨텍스트가 트랜잭션과 같이 열리고 같이 닫힌다.
 
 ```java
 @Transactional
@@ -79,33 +79,37 @@ public void process() {
 }
 ```
 
-`@Transactional`이 없는 메서드에서는 repository 호출마다 트랜잭션이 따로 열리고 닫힌다. 그래서 Entity는 조회 직후 준영속이 되고, 지연 로딩이 실패한다.
+OSIV가 꺼져 있을 때 `@Transactional`이 없는 메서드에서는 repository를 부를 때마다 트랜잭션과 영속성 컨텍스트가 따로 열리고 닫힌다. 그래서 Entity는 조회하자마자 준영속이 되고, 지연 로딩이 실패한다. OSIV가 켜져 있으면 요청이 끝날 때까지 영속성 컨텍스트가 살아 있어서 지연 로딩이 된다.
 
 ## 자주 깨지는 곳
 
-- **트랜잭션 밖에서 Entity를 고치고 반영을 기대한다.** 준영속 Entity라 변경 감지가 돌지 않는다.
-- **`@Transactional` 없는 메서드에서 지연 로딩을 한다.** `LazyInitializationException`이 난다.
-- **1차 캐시를 모르고 같은 조회를 반복한다.** id 조회라면 이미 캐시에 있는 걸 다시 가져오려 한다.
-- **대량 데이터를 영속성 컨텍스트에 올린다.** 메모리가 부족해진다.
-- **배치에서 `clear()`를 하지 않는다.** 영속성 컨텍스트가 처리 건수만큼 계속 커진다.
+- 트랜잭션 밖에서 Entity를 고치면, 준영속 Entity라 변경 감지가 돌지 않아서 DB에 안 들어간다.
+- `@Transactional` 없는 메서드에서 지연 로딩을 하면, `LazyInitializationException`이 난다.
+- 1차 캐시를 모르면, id로 이미 꺼내 둔 Entity를 굳이 다시 조회하는 코드를 쓰게 된다.
+- 대량 데이터를 영속성 컨텍스트에 올리면, 메모리가 모자란다.
+- 배치에서 `clear()`를 하지 않으면, 영속성 컨텍스트가 처리한 건수만큼 계속 커진다.
 
 ## 한 번에 설명하기
 
-> 영속성 컨텍스트는 Entity를 관리하는 1차 캐시 공간으로, 동일성 보장, 쓰기 지연, 변경 감지를 제공합니다. 같은 트랜잭션에서 같은 id로 조회하면 캐시에서 돌려주고, 필드를 바꾸면 커밋 시점에 UPDATE가 나갑니다. Spring에서는 범위가 `@Transactional`과 같아서, 트랜잭션 밖에서는 Entity가 준영속이 되어 변경 감지와 지연 로딩이 동작하지 않습니다. 대량 처리에서는 일정 건수마다 flush와 clear로 비워 줍니다.
+> 영속성 컨텍스트는 Entity를 담아 두고 관리하는 1차 캐시입니다. 같은 row는 같은 객체로 돌려주고, SQL은 모아 뒀다 보내고, 바뀐 값은 알아서 UPDATE합니다.
+>
+> 같은 트랜잭션에서 같은 id로 조회하면 캐시에서 꺼내 주고, 필드를 바꾸면 커밋할 때 UPDATE가 나갑니다.
+>
+> Spring에서는 영속성 컨텍스트가 `@Transactional`과 같이 열리고 닫혀서, 트랜잭션 밖에서는 Entity가 준영속이 되고 변경 감지도 지연 로딩도 안 됩니다. 대량 처리에서는 일정 건수마다 flush와 clear로 비워 줍니다.
 
 ## 꼬리 질문
 
 > [!question]- 1차 캐시와 2차 캐시의 차이는?
-> 1차 캐시는 영속성 컨텍스트(트랜잭션) 범위이고, 2차 캐시는 애플리케이션 범위입니다. 1차 캐시는 자동으로 동작하지만, 2차 캐시는 별도 설정이 필요합니다.
+> 1차 캐시는 영속성 컨텍스트, 그러니까 보통 트랜잭션 하나 안에서만 살아 있고, 2차 캐시는 애플리케이션 전체에서 공유합니다. 1차 캐시는 아무것도 안 해도 동작하지만, 2차 캐시는 따로 설정해야 켜집니다.
 
 > [!question]- 준영속 상태에서 변경 감지가 안 되는 이유는?
-> 변경 감지는 영속성 컨텍스트가 스냅샷과 현재 상태를 비교하는 메커니즘입니다. 준영속 Entity는 영속성 컨텍스트에서 분리되었으므로 비교 대상이 없습니다.
+> 변경 감지는 영속성 컨텍스트가 들고 있는 스냅샷과 지금 값을 비교하는 일입니다. 준영속 Entity는 영속성 컨텍스트에서 떨어져 나와서, 비교해 줄 주체가 없습니다.
 
 > [!question]- `entityManager.merge()`는 언제 사용하는가?
-> 준영속 Entity를 다시 영속 상태로 만들 때 사용합니다. 새로운 영속 Entity를 반환하며, 원본 객체는 여전히 준영속입니다.
+> 준영속 Entity의 값을 다시 영속 상태로 들여올 때 씁니다. 이때 돌려받는 건 새 영속 Entity이고, 넘긴 원본 객체는 그대로 준영속으로 남습니다.
 
 > [!question]- 대량 데이터 처리 시 영속성 컨텍스트를 어떻게 관리하는가?
-> 일정 건수마다 `flush()`와 `clear()`를 호출해서 영속성 컨텍스트를 비워야 합니다. 그렇지 않으면 메모리 사용량이 계속 늘어납니다.
+> 일정 건수마다 `flush()`와 `clear()`를 불러서 영속성 컨텍스트를 비웁니다. 안 그러면 처리한 Entity가 계속 쌓여서 메모리가 끝없이 늘어납니다.
 
 ## 점검 퀴즈
 
@@ -144,7 +148,7 @@ public void process() {
 
 ## 참고
 
-공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+2026년 11월에 확인한 공식 문서다.
 
 - [Hibernate ORM 6.6 User Guide: Persistence Context](https://docs.hibernate.org/orm/6.6/userguide/html_single/Hibernate_User_Guide.html#pc)
 - [Jakarta Persistence 3.1](https://jakarta.ee/specifications/persistence/3.1/)

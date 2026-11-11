@@ -1,14 +1,14 @@
 ---
 title: "타임아웃 설계와 실무 기준"
-description: Connection/Read/Write timeout의 차이와 실무 설정 기준
+description: Connection, Read, Write timeout이 각각 무엇을 기다리고, 값을 어떻게 잡는지
 tags: [concept, network]
 ---
 
 # 타임아웃 설계와 실무 기준
 
-Timeout은 네트워크 요청의 각 단계에서 응답을 기다리는 최대 시간이다. 설정하지 않으면 무한정 기다리고, 그 대기가 장애를 옮긴다.
+Timeout은 네트워크 요청의 단계마다 응답을 얼마까지 기다릴지 정한 시간이다. 설정하지 않으면 끝없이 기다리고, 그렇게 기다리는 동안 상대의 장애가 우리 서버로 옮겨 온다.
 
-외부 API 하나가 느려지면 그 API를 기다리는 스레드가 쌓이고, 커넥션 풀이 바닥나고, 결국 상관없는 기능까지 멈춘다. 그래서 timeout은 "얼마나 기다릴까"보다 **"느린 상대 하나 때문에 우리 서버 전체가 멈추지 않게"**를 기준으로 정한다. Connection timeout과 Read timeout은 걸리는 원인이 달라서 따로 잡는다.
+외부 결제 API 하나가 느려지면 그 API를 기다리는 스레드가 쌓이고, 커넥션 풀이 바닥나고, 결국 결제와 상관없는 상품 조회까지 멈춘다. 그래서 timeout은 얼마나 기다려 줄지보다, 느린 상대 하나 때문에 우리 서버 전체가 멈추지 않으려면 언제 끊어야 하는지를 보고 정한다. Connection timeout과 Read timeout은 걸리는 이유가 달라서 따로 잡는다.
 
 ## 종류
 
@@ -33,7 +33,7 @@ Client                              Server
 
 ### Connection Timeout
 
-TCP 3-way handshake가 끝나기까지의 시간이다. 서버가 죽었거나 방화벽이 막고 있으면 여기서 걸린다.
+TCP 3-way handshake가 끝날 때까지 기다리는 시간이다. 서버가 죽었거나 방화벽이 막고 있으면 여기서 걸린다.
 
 ```java
 // RestTemplate
@@ -44,11 +44,11 @@ HttpClient httpClient = HttpClient.create()
     .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000);
 ```
 
-설정하지 않으면 서버가 응답하지 않을 때 OS 기본 TCP timeout(보통 75초~2분)까지 기다린다. 그래서 짧게 잡는다.
+설정하지 않으면 서버가 응답하지 않을 때 OS 기본 TCP timeout(보통 75초~2분)까지 기다린다. 연결은 정상이면 금방 맺어지니 짧게 잡는다.
 
 ### Read Timeout (Response Timeout)
 
-TCP 연결이 맺어진 뒤 서버 응답을 기다리는 시간이다. 서버 처리가 오래 걸리면 여기서 걸린다.
+TCP 연결이 맺어진 뒤 서버 응답을 기다리는 시간이다. 서버가 처리하는 데 오래 걸리면 여기서 걸린다.
 
 ```java
 // RestTemplate
@@ -63,7 +63,7 @@ WebClient webClient = WebClient.builder()
     .build();
 ```
 
-Read timeout은 API의 예상 응답 시간에 맞춘다. 결제 API처럼 처리가 긴 곳은 넉넉하게, 단순 조회 API는 짧게 잡는다.
+Read timeout은 그 API가 보통 얼마 만에 응답하는지를 보고 잡는다. 결제 API처럼 처리가 긴 곳은 넉넉하게, 단순 조회 API는 짧게 잡는다.
 
 ## API별로 따로 잡는다
 
@@ -111,11 +111,11 @@ public class ExternalApiConfig {
 5. → 전체 서비스 장애
 ```
 
-대응은 세 가지를 같이 쓴다.
+막으려면 아래 세 가지를 같이 쓴다.
 
-1. **Read Timeout**: 예상 응답 시간의 2~3배 이내로 잡는다.
-2. **Circuit Breaker**: 연속으로 실패하면 바로 실패를 돌려준다(Resilience4j 등).
-3. **Bulkhead**: 외부 API별로 스레드 풀을 나눠, 한 API의 장애가 다른 기능으로 넘어가지 않게 한다.
+1. Read timeout은 예상 응답 시간의 2~3배 안쪽으로 잡는다.
+2. Circuit Breaker(Resilience4j 등)를 두고, 실패가 이어지면 상대를 부르지 않고 바로 실패를 돌려준다.
+3. Bulkhead로 외부 API마다 스레드 풀을 나눠서, 한 API의 장애가 다른 기능으로 넘어가지 않게 한다.
 
 ```java
 // Resilience4j Circuit Breaker 예시
@@ -132,7 +132,7 @@ private PaymentResult paymentFallback(PaymentRequest request, Exception e) {
 
 ## 서버 측 Timeout
 
-클라이언트 timeout만으로는 부족하고, 서버 측 timeout도 같이 맞춘다.
+클라이언트 timeout만 잡아서는 모자라고, 서버 쪽 timeout도 같이 맞춘다.
 
 | 설정 | 의미 | 기본값 (Tomcat) |
 |---|---|---|
@@ -140,30 +140,34 @@ private PaymentResult paymentFallback(PaymentRequest request, Exception e) {
 | `spring.mvc.async.request-timeout` | 비동기 요청 처리 시간 | 30초 |
 | HikariCP `connectionTimeout` | DB 커넥션 획득 대기 시간 | 30초 |
 
-서버의 요청 처리 시간이 클라이언트의 Read timeout보다 길면, 클라이언트는 이미 끊었는데 서버는 계속 처리한다.
+서버가 요청을 처리하는 시간이 클라이언트의 Read timeout보다 길면, 클라이언트는 이미 끊었는데 서버는 계속 처리한다. 처리 결과를 받을 쪽이 없는데 자원만 쓴다.
 
 ## 자주 깨지는 곳
 
-- **timeout을 설정하지 않는다.** 외부 API 장애가 전체 서비스로 번진다.
-- **Connection timeout과 Read timeout에 같은 값을 넣는다.** 연결 실패는 늦게 알아채고, 느린 처리는 너무 일찍 끊는다.
-- **Read timeout을 너무 짧게 잡는다.** 정상 요청까지 실패한다.
-- **서버 측 timeout을 안 맞춘다.** 클라이언트는 끊었는데 서버는 계속 처리한다.
-- **모든 외부 API에 같은 timeout을 쓴다.** 결제와 검색은 응답 시간이 다르다.
+- timeout을 설정하지 않으면 외부 API 하나의 장애가 서비스 전체로 번진다.
+- Connection timeout과 Read timeout에 같은 값을 넣으면, 연결 실패는 늦게 알아채고 느린 처리는 너무 일찍 끊는다.
+- Read timeout을 너무 짧게 잡으면 정상인 요청까지 실패한다.
+- 서버 쪽 timeout을 맞추지 않으면, 클라이언트는 끊었는데 서버는 계속 처리한다.
+- 모든 외부 API에 같은 timeout을 쓰면 어느 한쪽은 틀린 값이 된다. 결제와 검색은 응답 시간이 다르다.
 
 ## 한 번에 설명하기
 
-> Timeout은 연결을 맺기까지의 Connection timeout, 응답을 기다리는 Read timeout, 요청을 보내는 Write timeout으로 나뉩니다. 설정하지 않으면 외부 API 하나가 느려질 때 스레드가 모두 묶여 전체 서비스가 멈춥니다. 저는 Connection timeout은 1~3초로 짧게, Read timeout은 API마다 예상 응답 시간을 보고 따로 잡습니다. 여기에 Circuit Breaker와 Bulkhead를 붙여 장애가 번지지 않게 합니다.
+> Timeout은 연결을 맺을 때까지의 Connection timeout, 응답을 기다리는 Read timeout, 요청을 보내는 Write timeout으로 나뉩니다. 설정하지 않으면 외부 API 하나가 느려질 때 스레드가 전부 묶여서 서비스 전체가 멈춥니다.
+>
+> Connection timeout은 1~3초로 짧게 두고, Read timeout은 API마다 보통 얼마 만에 응답하는지를 보고 따로 잡습니다.
+>
+> 여기에 Circuit Breaker와 Bulkhead를 붙여서 한 곳의 장애가 다른 기능으로 번지지 않게 합니다.
 
 ## 꼬리 질문
 
 > [!question]- Connection timeout이 발생하는 원인은?
-> 서버가 다운되었거나, 방화벽이 SYN 패킷을 차단하거나, 네트워크 경로에 문제가 있는 경우입니다. DNS는 정상이지만 TCP 연결이 수립되지 않는 상황입니다.
+> 서버가 죽었거나, 방화벽이 SYN 패킷을 막거나, 중간 네트워크 경로에 문제가 있을 때입니다. DNS로 IP는 찾았는데 TCP 연결이 맺어지지 않는 상황입니다.
 
 > [!question]- Read timeout이 발생했는데 서버에서는 처리가 완료되었다면?
-> 클라이언트는 timeout으로 실패 처리했지만, 서버는 정상 처리를 완료한 상태입니다. 결제 같은 경우 중복 처리가 발생할 수 있으므로, 멱등키로 중복을 방지하거나 상태 조회 API로 결과를 확인해야 합니다.
+> 클라이언트는 실패로 알고 있는데 서버에서는 이미 처리가 끝난 상태입니다. 결제라면 다시 보냈다가 두 번 결제될 수 있어서, 멱등키로 중복을 막거나 상태 조회 API로 실제 결과를 확인해야 합니다.
 
 > [!question]- Circuit Breaker는 어떻게 동작하는가?
-> 연속 실패가 임계치를 넘으면 OPEN 상태로 전환되어 요청을 보내지 않고 즉시 실패를 반환합니다. 일정 시간 후 HALF_OPEN으로 전환되어 일부 요청을 시도하고, 성공하면 CLOSED로 복구합니다.
+> 실패가 정해 둔 기준을 넘으면 OPEN 상태가 되어, 상대에게 요청을 보내지 않고 바로 실패를 돌려줍니다. 일정 시간이 지나면 HALF_OPEN이 되어 요청 몇 개만 보내 보고, 성공하면 CLOSED로 돌아갑니다.
 
 ## 내 사례
 
@@ -172,7 +176,7 @@ private PaymentResult paymentFallback(PaymentRequest request, Exception e) {
 
 ## 참고
 
-공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+2026년 11월에 확인한 공식 문서다.
 
 - [Amazon Builders' Library: Timeouts, retries, and backoff with jitter](https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/)
 

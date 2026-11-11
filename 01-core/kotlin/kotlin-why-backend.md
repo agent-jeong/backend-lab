@@ -1,20 +1,23 @@
 ---
 title: Kotlin을 백엔드에서 사용하는 이유
-description: Kotlin이 Java 백엔드의 어떤 실무 문제를 줄이는지 정리
+description: Kotlin을 쓰면 Java 백엔드에서 어떤 문제가 줄고, 어디서 새로 조심해야 하는지
 tags: [concept, kotlin]
 ---
 
 # Kotlin을 백엔드에서 사용하는 이유
 
-Kotlin은 JVM 위에서 Java와 서로 호출되면서 null 안정성, 짧은 데이터 모델, 함수형 컬렉션 처리, coroutine을 제공하는 언어다.
+Kotlin은 JVM에서 돌고 Java 코드와 서로 불러 쓸 수 있는 언어다. null을 타입으로 막아 주고, 데이터 클래스를 짧게 쓰게 해 주고, 컬렉션을 함수형으로 다루고, coroutine을 쓸 수 있다.
 
-문법이 짧아서 쓰는 언어가 아니다. 백엔드에서 Kotlin을 쓰는 이유는 다음 문제들이 줄기 때문이다.
+문법이 짧아서 쓰는 언어는 아니다. 백엔드에서 Kotlin을 쓰면 이런 문제가 줄어든다.
 
-- null 처리 누락으로 나는 `NullPointerException`
-- DTO, request, response 객체의 반복 코드
-- 컬렉션 변환과 조건 조립의 장황한 코드
-- Java 라이브러리와 Spring 생태계는 그대로 두고 타입은 더 안전하게 쓰고 싶은 요구
-- 비동기 I/O 흐름을 callback보다 읽기 쉽게 쓰고 싶은 요구
+- null 체크를 빠뜨려서 나는 `NullPointerException`
+- DTO, request, response 객체마다 반복되는 코드
+- 컬렉션을 변환하고 조건을 붙이는 장황한 코드
+
+그리고 이런 바람을 채워 준다.
+
+- Java 라이브러리와 Spring은 그대로 쓰면서 타입은 더 엄격하게 쓰고 싶다.
+- 비동기 I/O 흐름을 callback보다 읽기 쉽게 쓰고 싶다.
 
 ## Java와 무엇이 다른가
 
@@ -27,7 +30,7 @@ Kotlin은 JVM 위에서 Java와 서로 호출되면서 null 안정성, 짧은 �
 | checked exception | 있음 | 없음 |
 | 비동기 | Future, CompletableFuture | coroutine |
 
-Kotlin은 Java를 대체한다기보다, JVM 백엔드에서 Java의 불편한 부분을 줄이는 선택지에 가깝다.
+Kotlin은 Java를 몰아낸다기보다, JVM 백엔드에서 Java의 불편한 부분을 덜어 주는 쪽에 가깝다.
 
 ## 상황별 득실
 
@@ -41,25 +44,29 @@ Kotlin은 Java를 대체한다기보다, JVM 백엔드에서 Java의 불편한 �
 
 ## 자주 깨지는 곳
 
-- **NPE가 완전히 사라진다고 생각한다.** Java API 반환값은 platform type이라 여전히 NPE가 난다. 호출부에서 nullability를 확인한다.
-- **JPA Entity를 무심코 `data class`로 만든다.** final class, 자동 생성 메서드, 기본 생성자 문제가 한꺼번에 생긴다.
-- **`val`만 쓰면 완전히 불변이라고 생각한다.** 가리키는 객체가 mutable이면 내용은 바뀐다.
-- **coroutine을 쓰면 자동으로 빨라진다고 생각한다.** blocking I/O를 그대로 부르면 효과가 없다.
+- NPE가 완전히 사라진다고 믿으면, Java API가 돌려준 값에서 NPE를 맞는다. 그 값은 platform type이라 컴파일러가 막지 않는다. 받는 쪽에서 null이 올 수 있는지 확인한다.
+- JPA Entity를 무심코 `data class`로 만들면, final class, 자동으로 생기는 메서드, 기본 생성자 문제가 한꺼번에 생긴다.
+- `val`만 쓰면 완전히 불변이라고 믿으면, 가리키는 객체가 mutable일 때 내용이 바뀌는 걸 놓친다.
+- coroutine을 쓰면 알아서 빨라진다고 믿고 blocking I/O를 그대로 부르면, 아무 효과가 없다.
 
 ## 한 번에 설명하기
 
-> Kotlin은 Java 생태계를 그대로 쓰면서 null 안정성, data class, 컬렉션 처리, coroutine을 제공합니다. 저는 문법이 짧은 것보다 타입으로 오류 가능성을 줄이는 점을 더 큰 장점으로 봅니다. 다만 Java interop, JPA, Jackson, Spring proxy 경계에서는 Kotlin 특성이 오히려 주의점이 됩니다. 도입할 때는 한 번에 전환하기보다 DTO, 테스트, 신규 모듈처럼 위험이 낮은 곳부터 시작합니다.
+> Kotlin은 Java 라이브러리와 Spring을 그대로 쓰면서 null 안정성, data class, 컬렉션 처리, coroutine을 쓸 수 있게 해 줍니다. 저는 문법이 짧은 것보다 타입으로 실수를 미리 막아 주는 점을 더 크게 봅니다.
+>
+> 다만 Java 코드와 섞이는 곳, JPA, Jackson, Spring 프록시와 맞물리는 곳에서는 Kotlin의 특징이 오히려 걸림돌이 됩니다.
+>
+> 그래서 도입할 때는 한 번에 바꾸기보다 DTO, 테스트, 새 모듈처럼 위험이 낮은 곳부터 씁니다.
 
 ## 꼬리 질문
 
 > [!question]- Kotlin을 백엔드에서 사용하는 이유는 무엇인가?
-> null 안정성, data class, 컬렉션 extension, coroutine으로 Java 코드의 반복과 일부 런타임 오류를 줄이기 때문입니다.
+> null 안정성, data class, 컬렉션 extension, coroutine 덕분에 Java로 쓸 때의 반복 코드가 줄고, 실행해 봐야 알던 오류 일부를 컴파일할 때 잡을 수 있어서입니다.
 
 > [!question]- Kotlin을 쓰면 Java가 필요 없어지는가?
-> 아닙니다. Kotlin은 JVM 위에서 Java 생태계와 함께 쓰이는 경우가 많아서 Java, Spring, JPA 동작 원리를 여전히 알아야 합니다.
+> 아닙니다. Kotlin은 대개 JVM 위에서 Java 라이브러리와 함께 쓰여서, Java, Spring, JPA가 어떻게 도는지는 여전히 알아야 합니다.
 
 > [!question]- Kotlin 도입 시 가장 먼저 주의할 경계는?
-> Java interop의 platform type, JPA Entity 설계, Jackson 역직렬화, Spring proxy 적용 여부를 먼저 확인합니다.
+> 넷을 먼저 봅니다. Java에서 받은 값의 platform type, JPA Entity를 어떻게 만들지, Jackson이 객체를 제대로 만들어 내는지, Spring 프록시가 실제로 걸리는지입니다.
 
 ## 점검 퀴즈
 
@@ -98,7 +105,7 @@ Kotlin은 Java를 대체한다기보다, JVM 백엔드에서 Java의 불편한 �
 
 ## 참고
 
-공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+2026년 11월에 확인한 공식 문서다.
 
 - [Kotlin for server side](https://kotlinlang.org/docs/server-overview.html)
 - [Spring Framework: Kotlin](https://docs.spring.io/spring-framework/reference/languages/kotlin.html)

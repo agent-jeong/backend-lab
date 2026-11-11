@@ -1,18 +1,18 @@
 ---
 title: Kotlin Collection과 Scope Functions
-description: Kotlin 컬렉션 처리와 scope function의 실무 사용 기준
+description: Kotlin 컬렉션 함수와 Sequence, scope function을 언제 쓰고 언제 풀어 쓸지
 tags: [concept, kotlin]
 ---
 
 # Kotlin Collection과 Scope Functions
 
-Kotlin의 collection 함수와 scope function은 데이터 변환, 객체 초기화, null 처리를 짧게 쓰게 해 주는 도구다.
+Kotlin의 collection 함수와 scope function을 쓰면 데이터 변환, 객체 초기화, null 처리를 몇 줄로 짧게 쓸 수 있다.
 
-짧게 쓸 수 있다는 게 곧 함정이다. `map`, `filter`, `groupBy` 체인이 길어지면 디버깅이 어렵고, `also`, `apply`, `let`, `run`이 섞이면 `it`과 `this`가 헷갈린다. 기본이 eager라서 큰 컬렉션에서는 중간 컬렉션이 메모리를 먹는다.
+그런데 짧게 쓸 수 있어서 오히려 탈이 난다. 주문 목록에 `map`, `filter`, `groupBy`를 길게 이어 붙이면 어디서 값이 틀어졌는지 디버깅하기 어렵다. `also`, `apply`, `let`, `run`이 섞이면 `it`과 `this`가 무엇을 가리키는지 헷갈린다. 컬렉션 함수는 기본이 eager라서, 큰 컬렉션에서는 단계마다 생기는 중간 컬렉션이 메모리를 먹는다.
 
 ## Collection 처리
 
-collection 함수는 기본이 eager evaluation이다. Java Stream이 lazy인 것과 다르다.
+collection 함수는 기본이 eager evaluation이라 호출하는 즉시 계산한다. Java Stream이 lazy인 것과 다르다.
 
 ```kotlin
 val userIds = orders
@@ -21,7 +21,7 @@ val userIds = orders
     .distinct()
 ```
 
-단계마다 새 컬렉션이 생길 수 있다. 데이터가 크거나 체인이 길면 `Sequence`를 쓴다.
+단계마다 새 컬렉션이 생긴다. 데이터가 크거나 체인이 길면 `Sequence`를 쓴다.
 
 ```kotlin
 val userIds = orders.asSequence()
@@ -52,7 +52,7 @@ val responses = orders.map { order ->
 }
 ```
 
-Java의 `stream().collect(toMap())`보다 짧다. 다만 key가 겹칠 수 있는지는 여전히 직접 확인한다.
+Java의 `stream().collect(toMap())`보다 짧다. 다만 key가 겹칠 수 있는지는 여전히 직접 확인해야 한다.
 
 ## Scope Functions
 
@@ -70,7 +70,7 @@ val result = user
     ?: UserResponse.empty()
 ```
 
-scope function은 짧은 블록에서만 읽기 좋다. 중첩되면 일반 변수로 풀어 쓴다.
+scope function은 블록이 짧을 때만 읽기 좋다. 중첩되면 일반 변수로 풀어 쓴다.
 
 ## 무엇을 쓸까
 
@@ -85,26 +85,30 @@ scope function은 짧은 블록에서만 읽기 좋다. 중첩되면 일반 변�
 
 ## 자주 깨지는 곳
 
-- **`let`, `also`, `apply`를 중첩한다.** 지금 `it`과 `this`가 무엇인지 헷갈린다. 2단계 이상이면 풀어 쓴다.
-- **`also` 안에 비즈니스 로직을 숨긴다.** 로깅처럼 보이는 블록이 실제로는 상태를 바꾼다. 변환 과정에 side effect가 섞였는지 본다.
-- **큰 컬렉션에 eager 체인을 길게 건다.** 단계마다 중간 컬렉션이 생긴다.
-- **`groupBy`로 큰 map/list를 만든다.** 메모리 사용량이 데이터 크기만큼 늘어난다.
-- **`associateBy`의 key 중복을 확인하지 않는다.** 겹치는 key가 있으면 데이터가 조용히 사라진다.
+- `let`, `also`, `apply`를 중첩하면, 지금 `it`과 `this`가 무엇인지 헷갈린다. 2단계 이상이면 풀어 쓴다.
+- `also` 안에 비즈니스 로직을 넣으면, 로깅처럼 보이는 블록이 실제로는 상태를 바꾼다. 변환 중간에 side effect가 섞였는지 본다.
+- 큰 컬렉션에 eager 체인을 길게 걸면, 단계마다 중간 컬렉션이 생겨 메모리를 먹는다.
+- `groupBy`로 큰 map이나 list를 만들면, 메모리 사용량이 데이터 크기만큼 늘어난다.
+- `associateBy`를 쓰면서 key가 겹치는지 확인하지 않으면, 겹친 key의 앞쪽 데이터가 아무 경고 없이 사라진다.
 
 ## 한 번에 설명하기
 
-> Kotlin collection 함수는 기본이 eager라서 체인 단계마다 중간 컬렉션이 생길 수 있습니다. 그래서 큰 데이터를 여러 번 변환할 때는 `Sequence`를 씁니다. scope function은 반환값과 컨텍스트 객체가 다른데, `let`은 lambda 결과와 `it`, `also`는 원본과 `it`, `apply`는 원본과 `this`입니다. 저는 짧고 분명한 변환에만 쓰고, 중첩되거나 비즈니스 로직이 들어가면 변수와 함수로 풀어 씁니다.
+> Kotlin collection 함수는 기본이 eager라서 체인 단계마다 중간 컬렉션이 생깁니다. 그래서 큰 데이터를 여러 번 변환할 때는 `Sequence`를 씁니다.
+>
+> scope function은 함수마다 돌려주는 값과 블록 안에서 객체를 부르는 이름이 다릅니다. `let`은 lambda 결과를 돌려주고 `it`으로 부르고, `also`는 원본을 돌려주고 `it`으로, `apply`는 원본을 돌려주고 `this`로 부릅니다.
+>
+> 저는 짧고 뻔한 변환에만 쓰고, 중첩되거나 비즈니스 로직이 들어가면 변수와 함수로 풀어 씁니다.
 
 ## 꼬리 질문
 
 > [!question]- Kotlin collection 함수와 Sequence의 차이는?
-> 일반 collection 함수는 eager라서 단계마다 컬렉션을 만들 수 있고, Sequence는 lazy라서 큰 데이터를 연속 변환할 때 중간 비용을 줄입니다.
+> 일반 collection 함수는 eager라서 단계마다 컬렉션을 새로 만듭니다. Sequence는 lazy라서 원소 하나씩 끝까지 흘려보내기 때문에, 큰 데이터를 여러 번 변환할 때 중간 컬렉션 비용이 줄어듭니다.
 
 > [!question]- `let`, `also`, `apply`의 차이는?
-> `let`은 lambda 결과를 반환하고 `it`을 사용합니다. `also`는 원본 객체를 반환하고 `it`을 사용합니다. `apply`는 원본 객체를 반환하고 `this`를 사용합니다.
+> `let`은 lambda 결과를 돌려주고 블록 안에서 객체를 `it`으로 부릅니다. `also`는 원본 객체를 돌려주고 `it`으로 부릅니다. `apply`는 원본 객체를 돌려주고 `this`로 부릅니다. 그래서 변환은 `let`, 로깅은 `also`, 객체 설정은 `apply`에 씁니다.
 
 > [!question]- scope function을 남용하면 왜 문제가 되는가?
-> 중첩될수록 현재 객체와 반환값이 흐려져서, 정작 중요한 비즈니스 로직이 읽히지 않습니다.
+> 겹겹이 쌓일수록 지금 블록의 객체가 무엇이고 무엇을 돌려주는지가 흐려져서, 정작 봐야 할 비즈니스 로직이 안 읽힙니다.
 
 ## 점검 퀴즈
 
@@ -143,7 +147,7 @@ scope function은 짧은 블록에서만 읽기 좋다. 중첩되면 일반 변�
 
 ## 참고
 
-공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+2026년 11월에 확인한 공식 문서다.
 
 - [Kotlin: Scope functions](https://kotlinlang.org/docs/scope-functions.html)
 - [Kotlin: Sequences](https://kotlinlang.org/docs/sequences.html)

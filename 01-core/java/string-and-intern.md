@@ -1,18 +1,18 @@
 ---
 title: "String 리터럴 vs new vs intern"
-description: String 리터럴 할당과 new 할당의 차이, String Pool과 intern 메서드의 동작 원리
+description: 문자열을 리터럴로 만들 때와 new로 만들 때 무엇이 다르고, String Pool과 intern()은 어떻게 동작하는지
 tags: [concept, java]
 ---
 
 # String 리터럴 vs new vs intern의 차이
 
-String 리터럴은 String Pool에서 재사용되고, `new String()`은 항상 Heap에 새 객체를 만든다. `intern()`은 Pool에 같은 값이 있으면 그 참조를, 없으면 등록한 뒤 그 참조를 돌려준다.
+String 리터럴은 String Pool에 하나만 두고 같이 쓰고, `new String()`은 매번 Heap에 새 객체를 만든다. `intern()`은 Pool에 같은 값이 있으면 그 참조를 돌려주고, 없으면 Pool에 넣은 뒤 그 참조를 돌려준다.
 
-이 차이를 모르면 `==`와 `equals()`를 헷갈려 문자열 비교 버그가 생긴다. 같은 문자열을 `new String()`으로 대량 생성하면 메모리가 낭비되고, 반대로 `intern()`을 아무 데나 쓰면 String Pool이 비대해져 GC 부담이 커진다. Pool과 Heap의 관계를 알아야 메모리 사용 패턴이 예측된다.
+이 차이를 모르면 `==`와 `equals()`를 헷갈려 문자열 비교 버그를 만든다. 같은 문자열을 `new String()`으로 대량으로 만들면 메모리가 낭비된다. 반대로 `intern()`을 아무 데나 쓰면 String Pool이 불어나 GC 부담이 커진다. Pool과 Heap이 어떻게 연결되는지 알아야 메모리가 어떻게 쓰일지 예상할 수 있다.
 
 ## String Pool
 
-String Pool(String Constant Pool)은 JVM이 문자열 리터럴을 저장하는 영역이다. Java 7+부터 Heap 안에 있다(이전에는 PermGen).
+String Pool(String Constant Pool)은 JVM이 문자열 리터럴을 모아 두는 곳이다. Java 7부터는 Heap 안에 있다. 그 전에는 PermGen에 있었다.
 
 ```
 Heap
@@ -62,7 +62,7 @@ System.out.println(s3 == s4);      // false (s3은 여전히 Heap 객체)
 1. Pool에 같은 값의 문자열이 있으면 Pool의 참조를 돌려준다.
 2. 없으면 Pool에 등록하고 그 참조를 돌려준다.
 
-String Pool은 내부적으로 HashTable이다. 버킷 수는 `-XX:StringTableSize`로 조정한다.
+String Pool은 내부적으로 HashTable이다. 버킷 수는 `-XX:StringTableSize`로 바꾼다.
 
 ```bash
 # String Pool HashTable 크기 설정 (기본값: 65536, Java 11+)
@@ -80,28 +80,32 @@ java -XX:StringTableSize=120011 -jar app.jar
 
 ## 자주 깨지는 곳
 
-- **문자열을 `==`로 비교한다.** 외부 입력이나 `new String()`과 비교하면 값이 같아도 false다.
-- **`intern()`을 무분별하게 부른다.** String Pool이 커지고 GC pause가 늘어난다.
-- **"String Pool은 PermGen에 있다"는 Java 6 이전 정보를 그대로 믿는다.** Java 7+에서는 Heap에 있고 GC 대상이다.
-- **`new String("hello")`가 객체를 2개 만들 수 있다는 걸 모른다.** Pool에 1개, Heap에 1개다.
+- 문자열을 `==`로 비교하면, 외부 입력이나 `new String()`으로 만든 값과는 내용이 같아도 false가 나온다.
+- `intern()`을 아무 데나 부르면, String Pool이 커지고 GC pause가 늘어난다.
+- "String Pool은 PermGen에 있다"는 Java 6 이전 설명을 그대로 믿으면 틀린다. Java 7부터는 Heap에 있고 GC 대상이다.
+- `new String("hello")`는 객체를 2개까지 만든다. Pool에 1개, Heap에 1개다.
 
 ## 한 번에 설명하기
 
-> String 리터럴은 String Pool에 저장돼 같은 값이면 같은 참조를 받고, `new String()`은 항상 Heap에 새 객체를 만들어서 `==` 비교가 false가 됩니다. `intern()`은 Pool에 등록하거나 기존 Pool 참조를 돌려주는데, 중복이 많은 문자열에는 메모리 절감이 되지만 고유 문자열이 많으면 오히려 부담입니다. Java 7부터 Pool은 Heap에 있어서 GC 대상이고, 저는 문자열 비교는 항상 `equals()`로 합니다.
+> String 리터럴은 String Pool에 저장돼서 값이 같으면 같은 참조를 받습니다. `new String()`은 매번 Heap에 새 객체를 만들기 때문에 `==`로 비교하면 false가 나옵니다.
+>
+> `intern()`은 문자열을 Pool에 넣거나 이미 있는 Pool 참조를 돌려줍니다. 같은 값이 많이 반복되면 메모리를 아낄 수 있지만, 값이 전부 제각각이면 오히려 부담만 늘어납니다.
+>
+> Java 7부터 Pool은 Heap에 있어서 GC 대상입니다. 저는 문자열 비교는 항상 `equals()`로 합니다.
 
 ## 꼬리 질문
 
-> [!question]- `new String("hello")`는 객체를 몇 개 만드는가?
-> 최대 2개입니다. "hello" 리터럴이 처음 등장하면 Pool에 1개, `new`로 Heap에 1개가 생성됩니다. 이미 Pool에 "hello"가 있으면 Heap에 1개만 추가됩니다.
+> [!question]- `new String("hello")`는 객체를 몇 개 만드나?
+> 최대 2개입니다. "hello" 리터럴이 처음 나오면 Pool에 1개, `new`로 Heap에 1개가 생깁니다. Pool에 "hello"가 이미 있으면 Heap에 1개만 더 생깁니다.
 
-> [!question]- `intern()`을 언제 쓰면 유용한가?
-> 외부에서 읽어온 문자열 중 중복이 매우 많은 경우(예: CSV 파싱에서 반복되는 상태값)에 메모리 절감 효과가 있습니다. 단, 고유 문자열이 많으면 역효과입니다.
+> [!question]- `intern()`은 언제 쓸모가 있나?
+> 밖에서 읽어 온 문자열에 같은 값이 아주 많이 반복될 때입니다. 예를 들어 CSV를 파싱하는데 상태값 몇 개가 계속 반복되면 메모리를 꽤 아낍니다. 값이 대부분 제각각이면 역효과가 납니다.
 
-> [!question]- String Pool이 Heap으로 옮겨진 이유는?
-> Java 6까지는 PermGen에 있어서 크기가 고정되었고, 많은 문자열을 intern하면 `OutOfMemoryError: PermGen space`가 발생했습니다. Java 7+에서 Heap으로 이동하면서 GC 대상이 되어 메모리 관리가 유연해졌습니다.
+> [!question]- String Pool은 왜 Heap으로 옮겨졌나?
+> Java 6까지는 PermGen에 있어서 크기가 고정이었고, 문자열을 많이 intern하면 `OutOfMemoryError: PermGen space`가 났습니다. Java 7부터 Heap으로 옮기면서 GC 대상이 됐고, 메모리를 더 유연하게 쓸 수 있게 됐습니다.
 
-> [!question]- `==`와 `equals()`를 구분하지 않으면 어떤 버그가 생기는가?
-> 리터럴끼리 비교할 때는 `==`가 동작하지만, 외부 입력(HTTP 파라미터, DB 조회 결과 등)은 `new String()`과 동일하게 Heap 객체이므로 `==`로 비교하면 false가 됩니다.
+> [!question]- `==`와 `equals()`를 구분하지 않으면 어떤 버그가 생기나?
+> 리터럴끼리는 같은 Pool 객체라서 `==`로 비교해도 true가 나옵니다. 하지만 HTTP 파라미터나 DB 조회 결과 같은 외부 입력은 `new String()`처럼 따로 만든 Heap 객체라서, `==`로 비교하면 false가 나옵니다.
 
 ## 점검 퀴즈
 
@@ -140,7 +144,7 @@ java -XX:StringTableSize=120011 -jar app.jar
 
 ## 참고
 
-공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+2026년 11월에 확인한 공식 문서다.
 
 - [Java SE 21 API: String.intern](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html)
 - [JLS 21: String Literals](https://docs.oracle.com/javase/specs/jls/se21/html/jls-3.html#jls-3.10.5)

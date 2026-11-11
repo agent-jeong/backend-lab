@@ -1,22 +1,22 @@
 ---
 title: Cache 적용
-description: 캐시로 성능을 개선할 때 hit ratio, 정합성, 장애 전파를 함께 보는 기준
+description: 캐시를 붙일 때 hit ratio와 함께 옛 값, 장애 전파까지 따져 보는 방법
 tags: [concept, performance]
 ---
 
 # Cache 적용
 
-캐시는 반복 조회 비용을 줄이려고 빠른 저장소에 결과를 저장하는 방법이다. 대신 정합성, TTL, 장애 대응, stampede를 같이 설계해야 한다.
+캐시는 같은 조회를 반복하지 않으려고 결과를 빠른 저장소에 담아 두는 방법이다. 붙일 때는 옛 값을 얼마나 보여 줄지, TTL, 장애 대응, stampede까지 같이 정해야 한다.
 
-캐시를 붙인다고 항상 빨라지지는 않는다. DB 부하를 줄이는 대신 옛 값을 보여 주는 시간이 생기고, miss가 한꺼번에 몰리면 DB가 넘어가고, Redis 장애가 API 장애로 번지면 캐시가 오히려 장애 원인이 된다. 변경이 잦은 데이터는 무효화 비용이 성능 이득보다 클 수 있다. 그래서 적용 전에 옛 값을 얼마나 오래 허용할지와 무효화 기준부터 정한다.
+캐시를 붙인다고 늘 빨라지지는 않는다. 상품 정보를 캐시하면 DB 부하는 줄지만, 가격이 바뀐 뒤에도 잠깐 옛 가격이 보인다. miss가 한꺼번에 몰리면 DB가 넘어가고, Redis 장애가 API 장애로 번지면 캐시가 오히려 장애를 만든다. 자주 바뀌는 데이터는 캐시를 지우는 비용이 얻는 속도보다 클 때도 있다. 그래서 붙이기 전에 옛 값을 얼마나 오래 봐줄지와 언제 캐시를 지울지부터 정한다.
 
-## 동작
+## 캐시를 거치는 흐름
 
 1. 캐시할 데이터와 옛 값 허용 시간을 정한다.
 2. cache aside 같은 패턴으로 먼저 캐시를 조회한다.
 3. miss면 DB를 조회하고 캐시에 저장한다.
 4. 원본 데이터가 바뀌면 캐시를 삭제하거나 갱신한다.
-5. Redis 장애 시 timeout, fallback, circuit breaker로 API 장애 전파를 줄인다.
+5. Redis가 죽으면 timeout, fallback, circuit breaker로 API까지 같이 죽지 않게 막는다.
 
 ```java
 ProductSummary cached = cache.get(key);
@@ -29,9 +29,9 @@ cache.set(key, summary, Duration.ofMinutes(5));
 return summary;
 ```
 
-단순 cache aside 흐름이다. 실제로는 Redis timeout, 캐시 저장 실패, stampede, 원본 변경 시 삭제 실패까지 같이 다뤄야 한다.
+가장 단순한 cache aside 흐름이다. 실제로는 Redis timeout, 캐시 저장 실패, stampede, 원본이 바뀌었는데 캐시 삭제가 실패하는 경우까지 다뤄야 한다.
 
-stampede 위험이 있는 key는 TTL jitter, mutex/single-flight, stale-while-revalidate 같은 방어를 검토한다. 목표는 miss 요청이 모두 동시에 DB로 가지 않게 하는 것이다.
+stampede가 걱정되는 key에는 TTL jitter, mutex/single-flight, stale-while-revalidate 같은 방어를 검토한다. 어느 쪽이든 miss 난 요청이 한꺼번에 DB로 몰리지 않게 하려는 것이다.
 
 ## 어떤 데이터에 맞나
 
@@ -46,26 +46,30 @@ stampede 위험이 있는 key는 TTL jitter, mutex/single-flight, stale-while-re
 
 ## 자주 깨지는 곳
 
-- **TTL과 무효화 정책을 정하지 않는다.**
-- **Redis timeout을 길게 잡는다.** 캐시 대기가 API timeout이 된다.
-- **hit ratio만 본다.** 높아도 hot key, big key, Redis latency 때문에 API가 느릴 수 있다.
-- **캐시 삭제 실패와 DB fallback 부하를 모니터링하지 않는다.**
-- **모든 key에 같은 TTL을 준다.** 동시에 대량 만료된다.
-- **stampede 방어 없이 둔다.** miss 요청이 전부 DB로 간다.
-- **원본 변경 시 캐시 값을 직접 덮어쓴다(set).** 동시 쓰기 두 건의 캐시 반영 순서가 DB와 뒤바뀌면 옛 값이 TTL까지 남는다. 보통은 DB commit 후 캐시를 삭제한다.
-- **DB commit 전에 캐시를 삭제한다.** 그 사이 들어온 조회가 commit 전 값을 다시 캐시에 채운다. commit 후 삭제해도 같은 경합이 드물게 남으므로 TTL을 안전망으로 둔다.
+- TTL과 캐시를 지울 시점을 정하지 않으면, 옛 값이 언제까지 남을지 아무도 모른다.
+- Redis timeout을 길게 잡으면, 캐시를 기다리다 API가 timeout 난다.
+- hit ratio만 보면, 수치가 높아도 hot key, big key, Redis latency 때문에 API가 느린 걸 놓친다.
+- 캐시 삭제 실패와 DB fallback 부하를 지켜보지 않으면, 옛 값이 남거나 DB가 버거워져도 늦게 안다.
+- 모든 key에 같은 TTL을 주면, 한꺼번에 만료되어 DB로 요청이 몰린다.
+- stampede를 막지 않으면, miss 난 요청이 전부 DB로 간다.
+- 원본이 바뀔 때 캐시 값을 직접 덮어쓰면(set), 동시에 들어온 쓰기 두 건이 캐시에 반영되는 순서가 DB와 뒤바뀔 때 옛 값이 TTL까지 남는다. 그래서 보통은 DB commit 뒤에 캐시를 지운다.
+- DB commit 전에 캐시를 지우면, 그 사이 들어온 조회가 commit 전 값을 다시 캐시에 채운다. commit 뒤에 지워도 같은 경합이 드물게 남으니 TTL을 안전망으로 둔다.
 
 ## 운영에서 볼 것
 
 - cache cold와 cache warm 상태를 나눠 측정한다.
 - cache hit/miss, Redis timeout, fallback, invalidation failure를 로그로 남긴다.
 - hit ratio, Redis latency, DB QPS, evicted keys, hot key를 본다.
-- Redis timeout이나 장애 시 API가 fallback하는지 장애 실험으로 확인한다.
+- Redis timeout이나 장애가 났을 때 API가 fallback으로 넘어가는지 장애 실험으로 확인한다.
 - cache cold 상태에서 miss가 몰릴 때 DB QPS와 latency가 버티는지 부하 테스트로 확인한다.
 
 ## 한 번에 설명하기
 
-> 캐시는 반복 조회 비용을 줄이는 대신 정합성 비용을 만드는 도구입니다. 저는 적용 전에 옛 값을 얼마나 허용할지와 무효화 기준을 먼저 정하고, hit ratio만이 아니라 Redis latency, timeout, DB fallback, eviction을 같이 봅니다. Redis 장애가 API 장애로 번지지 않게 timeout과 fallback을 두고, miss가 몰려 DB가 넘어가는 stampede는 TTL jitter와 single-flight로 완화합니다.
+> 캐시는 같은 조회를 덜 하게 해 주지만, 그 대가로 옛 값을 보여 주는 시간이 생깁니다.
+>
+> 그래서 붙이기 전에 옛 값을 얼마나 봐줄지와 언제 캐시를 지울지부터 정합니다. 붙인 뒤에는 hit ratio만 보지 않고 Redis latency, timeout, DB fallback, eviction을 같이 봅니다.
+>
+> Redis 장애가 API 장애로 번지지 않게 timeout과 fallback을 두고, miss가 몰려 DB가 넘어가는 stampede는 TTL jitter와 single-flight로 줄입니다.
 
 ## 꼬리 질문
 
@@ -75,7 +79,7 @@ stampede 위험이 있는 key는 TTL jitter, mutex/single-flight, stale-while-re
 
 ## 참고
 
-공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+2026년 11월에 확인한 공식 문서다.
 
 - [Spring Framework: Cache Abstraction](https://docs.spring.io/spring-framework/reference/integration/cache.html)
 - [Redis Docs: Key eviction](https://redis.io/docs/latest/develop/reference/eviction/)

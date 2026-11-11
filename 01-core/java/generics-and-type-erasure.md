@@ -1,14 +1,14 @@
 ---
 title: 제네릭과 타입 소거
-description: Java 제네릭과 타입 소거의 실무 사용 기준과 한계
+description: 제네릭이 컴파일할 때 막아 주는 것과, 실행할 때 타입 정보가 지워져서 생기는 문제
 tags: [concept, java]
 ---
 
 # 제네릭과 타입 소거
 
-Generics는 컴파일 타임에 타입을 검사해 주는 문법이고, type erasure는 런타임에 제네릭 타입 정보 대부분을 지우는 Java의 구현 방식이다. 컴파일러가 막아 주는 것과 런타임에 남는 것이 다르다는 점이 실무 문제의 출발점이다.
+제네릭(generics)은 컴파일할 때 타입을 검사해 주는 문법이다. 그런데 Java는 컴파일이 끝나면 제네릭 타입 정보 대부분을 지운다. 이걸 타입 소거(type erasure)라고 한다. 실무에서 겪는 문제는 대부분 컴파일러가 막아 주는 것과 실행 중에 남아 있는 것이 서로 다르다는 데서 나온다.
 
-컬렉션, DTO, API 응답, Repository, JSON 역직렬화에서 제네릭은 계속 나온다. 잘못 이해하면 raw type 때문에 `ClassCastException`이 나고, `List<Object>`와 `List<?>`를 헷갈리고, Jackson이 `List<UserResponse>` 같은 타입을 제대로 복원하지 못한다.
+컬렉션, DTO, API 응답, Repository, JSON 역직렬화 어디에나 제네릭이 나온다. 잘못 알면 raw type 때문에 `ClassCastException`이 나고, `List<Object>`와 `List<?>`를 헷갈리고, Jackson이 `List<UserResponse>`를 DTO 목록이 아니라 Map 목록으로 읽어 온다.
 
 ## 상황별로 어떻게 쓰나
 
@@ -22,7 +22,7 @@ Generics는 컴파일 타임에 타입을 검사해 주는 문법이고, type er
 
 ## 기본 사용
 
-제네릭을 쓰면 잘못된 타입이 컴파일 단계에서 막힌다.
+제네릭을 쓰면 다른 타입을 넣으려는 순간 컴파일 에러가 난다.
 
 ```java
 List<String> names = new ArrayList<>();
@@ -31,7 +31,7 @@ names.add("kim");
 String first = names.get(0);
 ```
 
-raw type은 타입 검사를 건너뛰므로 실무 코드에서 쓰지 않는다. 잘못된 타입이 들어가도 컴파일되고, 꺼낼 때 터진다.
+raw type은 타입 검사를 건너뛰니 실무 코드에서는 쓰지 않는다. 다른 타입이 들어가도 컴파일되고, 꺼낼 때 터진다.
 
 ```java
 List raw = new ArrayList();
@@ -43,7 +43,7 @@ String name = (String) raw.get(1); // ClassCastException
 
 ## Type Erasure
 
-제네릭 타입 정보는 런타임에 대부분 사라진다.
+제네릭 타입 정보는 실행할 때 대부분 사라진다.
 
 ```java
 List<String> names = List.of("a");
@@ -59,7 +59,7 @@ if (value instanceof List<String>) { // 컴파일 불가
 }
 ```
 
-런타임에 제네릭 타입이 필요한 도구에는 타입 정보를 따로 넘긴다.
+실행 중에 제네릭 타입을 알아야 하는 도구에는 타입 정보를 따로 넘겨 준다.
 
 ```java
 List<UserResponse> users = objectMapper.readValue(
@@ -68,11 +68,11 @@ List<UserResponse> users = objectMapper.readValue(
 );
 ```
 
-Jackson, reflection 기반 라이브러리, 일부 프레임워크 코드가 이 한계를 자주 만난다.
+Jackson, reflection을 쓰는 라이브러리, 일부 프레임워크 코드가 이 한계에 자주 부딪힌다.
 
 ## `List<Object>`와 `List<?>`
 
-`List<Object>`는 모든 List를 받는 타입이 아니다. Object를 담는 List만 받는다.
+`List<Object>`는 아무 List나 받는 타입이 아니다. Object를 담는 List만 받는다.
 
 ```java
 void addAny(List<Object> values) {
@@ -81,7 +81,7 @@ void addAny(List<Object> values) {
 }
 ```
 
-`List<?>`는 어떤 타입의 List든 받지만, 원소 타입을 모르니 값을 안전하게 넣기 어렵다.
+`List<?>`는 어떤 타입의 List든 받지만, 원소 타입을 모르니 값을 안전하게 넣을 수 없다.
 
 ```java
 void printAll(List<?> values) {
@@ -111,33 +111,37 @@ void copy(List<? extends Number> source, List<? super Number> target) {
 }
 ```
 
-wildcard가 많아지면 API를 읽기 어려워진다. 실무에서는 복잡한 wildcard보다 명확한 DTO나 타입 파라미터가 나은 경우가 많다.
+wildcard가 많아지면 메서드 시그니처를 읽기 어려워진다. 실무에서는 복잡한 wildcard보다 DTO나 타입 파라미터를 분명하게 정하는 편이 나은 경우가 많다.
 
 ## 자주 깨지는 곳
 
-- **raw type을 쓴다.** 타입 검사가 꺼져 `ClassCastException`이 꺼내는 쪽에서 난다.
-- **`List<String>`과 `List<Integer>`가 런타임에도 다른 타입이라고 생각한다.** 런타임에는 둘 다 그냥 `List`다.
-- **`List<Object>`가 모든 List를 받는다고 오해한다.** `List<String>`을 넘기면 컴파일 에러다.
-- **JSON 역직렬화에서 `TypeReference`를 빠뜨린다.** 원소가 DTO가 아니라 Map으로 들어온다.
-- **wildcard를 남발한다.** 어디서 읽고 어디에 쓸 수 있는지가 흐려진다.
+- raw type을 쓰면, 타입 검사가 꺼져서 `ClassCastException`이 꺼내는 쪽에서 난다.
+- `List<String>`과 `List<Integer>`가 실행 중에도 다른 타입이라고 생각하면 틀린다. 실행 중에는 둘 다 그냥 `List`다.
+- `List<Object>`가 아무 List나 받는다고 생각하고 `List<String>`을 넘기면, 컴파일 에러가 난다.
+- JSON 역직렬화에서 `TypeReference`를 빠뜨리면, 원소가 DTO가 아니라 Map으로 들어온다.
+- wildcard를 여기저기 쓰면, 어디서 읽고 어디에 넣을 수 있는지 알아보기 어려워진다.
 
 ## 한 번에 설명하기
 
-> 제네릭은 컴파일 타임에 타입을 검사해 주지만, 런타임에는 type erasure 때문에 타입 파라미터 대부분이 사라집니다. 그래서 raw type은 쓰지 않고 컬렉션은 되도록 구체 타입으로 선언합니다. 타입을 모르는 값을 읽기만 할 때는 `List<?>`, 런타임에 제네릭 타입이 필요한 JSON 역직렬화에는 `TypeReference`를 씁니다. wildcard는 PECS로 고르되, public API가 복잡해지면 타입 설계를 먼저 다시 봅니다.
+> 제네릭은 컴파일할 때 타입을 검사해 주지만, 실행할 때는 type erasure 때문에 타입 파라미터 대부분이 사라집니다. 그래서 raw type은 쓰지 않고, 컬렉션은 되도록 구체 타입으로 선언합니다.
+>
+> 타입을 모르는 값을 읽기만 할 때는 `List<?>`를 쓰고, 실행 중에 제네릭 타입을 알아야 하는 JSON 역직렬화에는 `TypeReference`를 넘깁니다.
+>
+> wildcard는 PECS로 고르지만, public API가 복잡해지면 wildcard를 더 붙이기보다 타입 설계부터 다시 봅니다.
 
 ## 꼬리 질문
 
-> [!question]- Java의 type erasure란 무엇인가?
-> 컴파일 후 런타임에는 대부분의 제네릭 타입 파라미터 정보가 제거되는 방식입니다. 그래서 `List<String>`과 `List<Integer>`를 런타임에 직접 구분하기 어렵습니다.
+> [!question]- Java의 type erasure가 뭔가?
+> 컴파일이 끝나면 제네릭 타입 파라미터 정보 대부분이 지워지는 방식입니다. 그래서 실행 중에는 `List<String>`과 `List<Integer>`를 직접 구분하기 어렵습니다.
 
-> [!question]- raw type이 위험한 이유는?
-> 컴파일 타임 타입 검사를 우회해서 잘못된 타입이 들어가도 컴파일되고, 나중에 꺼낼 때 `ClassCastException`이 발생할 수 있습니다.
+> [!question]- raw type은 왜 위험한가?
+> 컴파일할 때 타입 검사를 건너뛰어서, 다른 타입이 들어가도 컴파일이 됩니다. 그러다 나중에 꺼낼 때 `ClassCastException`이 날 수 있습니다.
 
-> [!question]- `List<Object>`와 `List<?>`의 차이는?
-> `List<Object>`는 Object를 담는 List이고, `List<?>`는 어떤 타입의 List든 받을 수 있지만 값을 안전하게 추가하기 어렵습니다.
+> [!question]- `List<Object>`와 `List<?>`는 뭐가 다른가?
+> `List<Object>`는 Object를 담는 List 하나만 받습니다. `List<?>`는 어떤 타입의 List든 받지만, 대신 값을 안전하게 넣기 어렵습니다.
 
-> [!question]- PECS는 무엇인가?
-> Producer는 `extends`, Consumer는 `super`를 사용한다는 기준입니다. 읽기만 하면 `? extends T`, 넣어야 하면 `? super T`를 고려합니다.
+> [!question]- PECS가 뭔가?
+> 값을 꺼내 주는 쪽(Producer)은 `extends`, 값을 받는 쪽(Consumer)은 `super`를 쓴다는 기준입니다. 읽기만 하면 `? extends T`, 넣어야 하면 `? super T`를 검토합니다.
 
 ## 점검 퀴즈
 
@@ -176,7 +180,7 @@ wildcard가 많아지면 API를 읽기 어려워진다. 실무에서는 복잡�
 
 ## 참고
 
-공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+2026년 11월에 확인한 공식 문서다.
 
 - [JLS 21: Type Erasure](https://docs.oracle.com/javase/specs/jls/se21/html/jls-4.html#jls-4.6)
 

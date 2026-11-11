@@ -1,14 +1,14 @@
 ---
 title: QueryDSL
-description: QueryDSL을 이용한 타입 안전 동적 쿼리와 조회 성능 설계
+description: QueryDSL이 동적 검색 조건을 어떻게 쉽게 만들고, 무엇은 여전히 직접 챙겨야 하는지
 tags: [concept, jpa]
 ---
 
 # QueryDSL
 
-QueryDSL은 JPQL을 문자열 대신 Java 코드로, 타입 안전하게 쓰게 해 주는 도구다. 동적 검색 조건과 복잡한 조회 쿼리에 주로 쓴다.
+QueryDSL은 JPQL을 문자열 대신 Java 코드로 쓰게 해 주는 도구다. 필드 이름을 잘못 쓰면 컴파일할 때 잡힌다. 주문 검색처럼 조건이 선택적으로 붙는 쿼리와 복잡한 조회 쿼리에 주로 쓴다.
 
-검색 조건이 늘수록 JPQL 문자열 조합은 복잡해지고 런타임 오류가 늘어난다. QueryDSL은 이걸 컴파일 단계로 끌어온다. 다만 **JPA 위에서 도는 쿼리 작성 도구일 뿐**이라 N+1, fetch join, 영속성 컨텍스트 문제는 그대로 남는다.
+검색 조건이 늘수록 JPQL 문자열을 이어 붙이는 코드는 복잡해지고, 오타는 실행해 봐야 터진다. QueryDSL은 이런 실수를 컴파일할 때 잡아 준다. 다만 JPA 위에서 쿼리를 쓰는 도구일 뿐이라 N+1, fetch join, 영속성 컨텍스트 문제는 그대로 남는다.
 
 > [!tip] 함께 읽기
 > - [[querydsl-practical-usage]]: Repository에서 자주 쓰는 코드 패턴 모음
@@ -17,21 +17,21 @@ QueryDSL은 JPQL을 문자열 대신 Java 코드로, 타입 안전하게 쓰게 
 
 | 이유 | 설명 |
 |---|---|
-| 타입 안전성 | 컬럼명이나 필드 변경 시 컴파일 단계에서 오류를 찾기 쉽다 |
-| 동적 쿼리 | 조건이 있을 때만 `where` 절에 추가하기 쉽다 |
-| 가독성 | 복잡한 JPQL 문자열보다 Java 코드로 쿼리 흐름을 읽기 쉽다 |
-| 재사용 | BooleanExpression, predicate helper로 조건을 분리할 수 있다 |
-| DTO 조회 | 필요한 컬럼만 선택해 응답 전용 객체로 조회할 수 있다 |
+| 타입 안전성 | 컬럼명이나 필드가 바뀌면 컴파일할 때 오류가 난다 |
+| 동적 쿼리 | 조건이 있을 때만 `where` 절에 넣기 쉽다 |
+| 가독성 | 긴 JPQL 문자열보다 Java 코드가 쿼리 흐름을 읽기 쉽다 |
+| 재사용 | BooleanExpression이나 조건 메서드로 조건을 떼어 낼 수 있다 |
+| DTO 조회 | 필요한 컬럼만 골라 응답 전용 객체로 받을 수 있다 |
 
 ## 동작
 
-1. Entity를 기준으로 Q-Type이 생성된다.
+1. Entity마다 Q-Type 클래스가 만들어진다.
 2. `JPAQueryFactory`로 쿼리를 조립한다.
 3. `select`, `from`, `join`, `where`, `orderBy`, `offset`, `limit`을 Java 코드로 쓴다.
 4. QueryDSL이 이를 JPQL로 바꾼다.
 5. Hibernate 같은 JPA 구현체가 JPQL을 SQL로 바꿔 DB에 실행한다.
 
-QueryDSL이 SQL을 직접 실행하는 게 아니다. 그래서 JPA의 fetch 전략, 영속성 컨텍스트, N+1, flush 같은 특성이 그대로 영향을 준다.
+QueryDSL이 SQL을 직접 실행하는 게 아니다. 그래서 JPA의 fetch 전략, 영속성 컨텍스트, N+1, flush가 그대로 따라온다.
 
 ```java
 public List<OrderSummary> search(OrderSearchCondition condition) {
@@ -64,28 +64,28 @@ private BooleanExpression createdAtGoe(LocalDateTime from) {
 }
 ```
 
-`where`가 `null` 조건을 무시하기 때문에, 조건 메서드가 값이 없을 때 `null`을 돌려주게 하면 동적 검색 조건이 깔끔하게 조립된다.
+`where`는 `null` 조건을 그냥 건너뛴다. 그래서 조건 메서드가 값이 없을 때 `null`을 돌려주게 만들면, 들어온 조건만 붙는 쿼리가 깔끔하게 만들어진다.
 
 ## 언제 쓰나
 
-| 상황 | QueryDSL 사용 판단 | 이유 |
+| 상황 | QueryDSL을 쓸까 | 이유 |
 |---|---|---|
-| 단순 id 조회 | 불필요 | Spring Data JPA 메서드로 충분하다 |
-| 조건이 여러 개이고 선택적임 | 적합 | 동적 where 조립이 쉽다 |
-| 복잡한 join과 정렬이 필요함 | 적합 | JPQL 문자열보다 유지보수하기 쉽다 |
-| DB 특화 문법이 많음 | 주의 | native query나 SQL mapper가 더 적합할 수 있다 |
-| 대량 수정/삭제 | 주의 | 영속성 컨텍스트와 불일치가 생길 수 있다 |
-| 리포트성 복잡 쿼리 | 조건부 적합 | SQL 가독성과 실행 계획 확인이 더 중요할 수 있다 |
+| 단순 id 조회 | 필요 없다 | Spring Data JPA 메서드로 충분하다 |
+| 조건이 여러 개이고 선택적으로 붙는다 | 쓴다 | 동적 where를 만들기 쉽다 |
+| join과 정렬이 복잡하다 | 쓴다 | JPQL 문자열보다 고치기 쉽다 |
+| DB 전용 문법이 많다 | 조심 | native query나 SQL mapper가 나을 수 있다 |
+| 대량 수정/삭제 | 조심 | 영속성 컨텍스트와 DB 값이 어긋날 수 있다 |
+| 복잡한 리포트 쿼리 | 경우에 따라 | SQL로 읽히고 실행 계획을 보기 쉬운 게 더 중요할 수 있다 |
 
 ## DTO Projection
 
 | 방식 | 특징 | 주의점 |
 |---|---|---|
-| `Projections.constructor` | 생성자 기반 매핑 | 파라미터 순서가 바뀌면 위험하다 |
-| `Projections.fields` | 필드명 기반 매핑 | setter/field 접근과 이름 일치에 의존한다 |
-| `@QueryProjection` | 컴파일 타임 타입 체크 가능 | DTO가 QueryDSL 의존성을 가진다 |
+| `Projections.constructor` | 생성자 인자 순서대로 넣는다 | 파라미터 순서가 바뀌면 값이 엉뚱한 데 들어간다 |
+| `Projections.fields` | 필드 이름으로 넣는다 | setter나 필드 접근이 되고 이름이 같아야 한다 |
+| `@QueryProjection` | 컴파일할 때 타입을 검사한다 | DTO가 QueryDSL에 의존하게 된다 |
 
-API 응답 전용 조회라면 Entity를 그대로 돌려주기보다 필요한 컬럼만 DTO로 조회하는 편이 낫다. 그렇다고 projection만으로 쿼리가 빨라지지는 않는다. 성능은 join 조건, where 조건, 인덱스, 정렬 비용이 정한다.
+API 응답에만 쓸 조회라면 Entity를 통째로 가져오기보다 필요한 컬럼만 DTO로 받는 편이 낫다. 그렇다고 projection만 한다고 쿼리가 빨라지지는 않는다. 속도는 join 조건, where 조건, 인덱스, 정렬 비용이 정한다.
 
 ## 페이징과 Count Query
 
@@ -106,44 +106,48 @@ Long total = queryFactory
     .fetchOne();
 ```
 
-목록 쿼리와 count query는 따로 설계한다. 목록에 필요한 join과 projection이 count에는 대개 필요 없다. 데이터가 많아 count 비용이 크면 `Slice`, 다음 페이지 존재 여부만 조회, count 생략을 검토한다.
+목록 쿼리와 count query는 따로 짠다. 목록에 필요한 join과 projection이 count에는 대개 필요 없다. 데이터가 많아 count가 비싸면 `Slice`를 쓰거나, 다음 페이지가 있는지만 보거나, count를 아예 빼는 쪽을 따져 본다.
 
 ## 자주 깨지는 곳
 
-- **QueryDSL을 쓰면 N+1이 사라진다고 믿는다.** 조회 전략은 따로 설계해야 한다.
-- **목록 조회에 fetch join과 페이징을 같이 쓴다.** 컬렉션이면 메모리 페이징이 된다.
-- **count query에 목록용 join을 그대로 넣는다.** count가 목록보다 느린 병목이 된다.
-- **DTO projection만 하고 끝낸다.** 인덱스, 정렬, where 조건을 보지 않으면 느린 건 그대로다.
-- **BooleanExpression helper를 계속 늘린다.** 검색 조건 흐름이 오히려 안 읽힌다.
-- **벌크 update/delete 뒤 영속성 컨텍스트를 비우지 않는다.** 이미 로딩된 Entity와 DB 값이 어긋난다.
+- QueryDSL을 쓰면 N+1이 사라진다고 믿으면, 조회 전략을 안 짜서 N+1이 그대로 난다.
+- 목록 조회에 fetch join과 페이징을 같이 쓰면, 컬렉션일 때 메모리에서 페이징한다.
+- count query에 목록용 join을 그대로 넣으면, count가 목록보다 더 느려진다.
+- DTO projection만 하고 끝내면, 인덱스, 정렬, where 조건이 그대로라 느린 것도 그대로다.
+- BooleanExpression 조건 메서드를 자꾸 늘리면, 검색 조건이 어떻게 붙는지 오히려 안 읽힌다.
+- 벌크 update/delete 뒤 영속성 컨텍스트를 비우지 않으면, 이미 불러온 Entity와 DB 값이 어긋난다.
 
 ## 운영에서 볼 것
 
-- 테스트: 조건 조합별로 where 절이 의도대로 붙는지 확인한다.
-- 로그: 실행 SQL, 바인딩 파라미터, 쿼리 수.
-- 실행 계획: where, join, order by, limit에 인덱스가 쓰이는지.
-- 성능: 목록 쿼리와 count query의 실행 시간과 row scan 수를 따로 본다.
+- 테스트로 조건 조합마다 where 절이 생각대로 붙는지 확인한다.
+- 로그에서 실제로 나간 SQL, 바인딩된 파라미터, 쿼리 수를 본다.
+- 실행 계획으로 where, join, order by, limit에 인덱스가 쓰이는지 본다.
+- 목록 쿼리와 count query의 실행 시간과 읽은 행 수를 따로 본다.
 
 ## 한 번에 설명하기
 
-> QueryDSL은 JPQL을 Java 코드로 타입 안전하게 쓰게 해 주는 도구이고, 가장 큰 장점은 동적 검색 조건을 조립하기 쉽다는 점입니다. 하지만 JPA 위에서 동작하므로 N+1, fetch join, 벌크 연산의 주의점은 그대로 남습니다. 그래서 저는 QueryDSL을 쿼리 작성 편의 도구로 보고, 실행 SQL과 실행 계획을 꼭 확인하며, 페이징에서는 count query를 따로 단순하게 만듭니다.
+> QueryDSL은 JPQL을 Java 코드로 쓰게 해서 오타를 컴파일할 때 잡아 주는 도구이고, 무엇보다 선택적인 검색 조건을 붙이기 쉽습니다.
+>
+> 하지만 JPA 위에서 도는 거라 N+1, fetch join, 벌크 연산에서 조심할 점은 그대로입니다.
+>
+> 그래서 저는 QueryDSL을 쿼리를 편하게 쓰는 도구 정도로 보고, 실제로 나가는 SQL과 실행 계획은 꼭 확인합니다. 페이징에서는 count query를 따로, 단순하게 만듭니다.
 
 ## 꼬리 질문
 
 > [!question]- QueryDSL을 왜 사용하는가?
-> 문자열 JPQL보다 타입 안전하고, 동적 조건을 조립하기 쉽기 때문입니다. 특히 검색 조건이 많고 선택적으로 적용되는 목록 API에서 유용합니다.
+> 문자열 JPQL과 달리 오타가 컴파일할 때 잡히고, 조건을 골라 붙이기 쉬워서입니다. 검색 조건이 많고 그중 일부만 들어오는 목록 API에서 특히 편합니다.
 
 > [!question]- QueryDSL을 쓰면 N+1이 해결되는가?
-> 아닙니다. QueryDSL은 쿼리 작성 도구일 뿐입니다. N+1은 fetch join, batch size, DTO 직접 조회 등 조회 전략을 별도로 설계해야 해결됩니다.
+> 아닙니다. QueryDSL은 쿼리를 쓰는 도구일 뿐입니다. N+1은 fetch join, batch size, DTO 직접 조회 같은 조회 방법을 따로 정해야 풀립니다.
 
 > [!question]- QueryDSL DTO projection의 장점과 한계는?
-> 필요한 컬럼만 조회할 수 있어 API 응답 전용 조회에 유리합니다. 하지만 DTO 구조와 쿼리가 강하게 연결되고, join/where/order by가 비효율적이면 projection만으로 성능 문제가 해결되지 않습니다.
+> 필요한 컬럼만 가져오니까 API 응답에만 쓸 조회에 좋습니다. 대신 DTO 구조와 쿼리가 단단히 묶이고, join, where, order by가 비효율적이면 projection만으로는 빨라지지 않습니다.
 
 > [!question]- 페이징에서 count query를 왜 분리하는가?
-> 목록 조회에는 필요한 join이 count에는 불필요할 수 있습니다. count query를 단순화하지 않으면 페이지 목록보다 count가 더 느린 병목이 될 수 있습니다.
+> 목록에는 필요한 join이 count에는 필요 없는 경우가 많아서입니다. count query를 단순하게 만들지 않으면, 페이지 목록보다 count가 더 느려질 수 있습니다.
 
 > [!question]- QueryDSL 벌크 update/delete 후 주의할 점은?
-> 벌크 연산은 영속성 컨텍스트를 거치지 않으므로 이미 로딩된 Entity와 DB 상태가 달라질 수 있습니다. 실행 후 `clear()`하거나 트랜잭션 경계를 분리해야 합니다.
+> 벌크 연산은 영속성 컨텍스트를 거치지 않아서, 이미 불러온 Entity와 DB 값이 달라질 수 있습니다. 실행한 뒤 `clear()`하거나, 트랜잭션을 아예 나눠야 합니다.
 
 ## 점검 퀴즈
 
@@ -182,7 +186,7 @@ Long total = queryFactory
 
 ## 참고
 
-공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+2026년 11월에 확인한 공식 문서다.
 
 - [Querydsl Reference](http://querydsl.com/static/querydsl/latest/reference/html/)
 - [Querydsl (OpenFeign fork, maintained)](https://github.com/OpenFeign/querydsl)

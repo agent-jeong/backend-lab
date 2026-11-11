@@ -1,14 +1,14 @@
 ---
 title: Kotlin Coroutine 기본
-description: Kotlin coroutine의 기본 개념과 Spring 백엔드에서의 실무 주의점
+description: coroutine이 무엇이고, Spring 백엔드에서 쓸 때 어디서 기대와 다르게 도는지
 tags: [concept, kotlin]
 ---
 
 # Kotlin Coroutine 기본
 
-Coroutine은 중단했다가 다시 이어 갈 수 있는 비동기 작업을 순차 코드처럼 쓰게 해 주는 Kotlin의 동시성 추상화다. 대기하는 동안 스레드를 붙잡고 있지 않는다.
+Coroutine은 중간에 멈췄다가 다시 이어 갈 수 있는 작업이다. 비동기 코드를 위에서 아래로 읽히는 순차 코드처럼 쓸 수 있고, 기다리는 동안 스레드를 붙잡고 있지 않는다.
 
-비동기 I/O 코드는 읽기 쉬워지지만, 잘못 쓰면 오히려 장애 원인이 된다. coroutine을 thread와 같은 것으로 보거나, blocking JDBC와 HTTP client를 그대로 부르거나, `GlobalScope`로 작업 생명주기를 놓치는 경우다. 도입 전에 "지금 호출하는 API가 non-blocking인가"부터 확인한다.
+주문 조회에서 결제 API와 배송 API를 동시에 부르는 코드가 읽기 쉬워진다. 하지만 잘못 쓰면 오히려 장애를 부른다. coroutine을 thread와 같은 것으로 보거나, blocking JDBC와 HTTP client를 그대로 부르거나, `GlobalScope`로 띄운 작업이 언제 끝나는지 놓치는 경우다. 도입하기 전에 지금 부르는 API가 non-blocking인지부터 확인한다.
 
 ## 기본 개념
 
@@ -22,7 +22,7 @@ suspend fun findOrder(orderId: Long): OrderResponse {
 }
 ```
 
-`suspend`는 새 스레드를 만든다는 뜻이 아니다. 중단 지점에서 스레드를 내놓고, 나중에 다시 이어서 실행될 수 있다는 뜻이다.
+`suspend`가 붙었다고 새 스레드가 생기지는 않는다. 멈추는 지점에서 스레드를 내놓았다가, 나중에 다시 이어서 실행될 수 있다는 표시다.
 
 ## Dispatcher
 
@@ -34,7 +34,7 @@ Dispatcher는 coroutine을 어느 스레드 풀에서 돌릴지 정한다.
 | `Dispatchers.IO` | blocking I/O 작업 |
 | custom dispatcher | 외부 API, 제한된 병렬성 |
 
-blocking API를 불러야 하면 `Dispatchers.IO`나 별도 dispatcher로 명시적으로 옮긴다.
+blocking API를 불러야 하면 `Dispatchers.IO`나 별도 dispatcher로 직접 옮겨서 부른다.
 
 ```kotlin
 suspend fun loadUser(id: Long): User = withContext(Dispatchers.IO) {
@@ -42,11 +42,11 @@ suspend fun loadUser(id: Long): User = withContext(Dispatchers.IO) {
 }
 ```
 
-다만 Spring MVC + JDBC/JPA 기반이면 요청 처리 모델 전체가 blocking이라 coroutine을 들여도 얻는 게 적다.
+다만 Spring MVC와 JDBC/JPA로 만든 서비스는 요청을 처리하는 방식 자체가 blocking이라, coroutine을 들여도 얻는 게 적다.
 
 ## Structured Concurrency
 
-자식 작업은 부모 scope 안에서 시작하고 끝나야 한다. 그래야 하나가 실패하거나 취소될 때 나머지도 같이 정리된다.
+자식 작업은 부모 scope 안에서 시작하고 끝나야 한다. 그래야 하나가 실패하거나 취소될 때 나머지도 같이 정리된다. 이 규칙을 structured concurrency라고 한다.
 
 ```kotlin
 suspend fun loadOrderView(orderId: Long): OrderView = coroutineScope {
@@ -57,7 +57,7 @@ suspend fun loadOrderView(orderId: Long): OrderView = coroutineScope {
 }
 ```
 
-`GlobalScope`는 작업 생명주기가 요청이나 서비스 scope와 떨어져 있어서 일반 서버 코드에서는 쓰지 않는다.
+`GlobalScope`로 띄운 작업은 요청이나 서비스가 끝나도 상관없이 돈다. 그래서 일반 서버 코드에서는 쓰지 않는다.
 
 ## Timeout과 Cancellation
 
@@ -69,7 +69,7 @@ val result = withTimeout(1_000) {
 }
 ```
 
-cancellation은 협력적으로 동작한다. 취소 신호를 확인하는 지점에서만 멈추므로, blocking 호출은 신호를 바로 따르지 않을 수 있다.
+취소(cancellation)는 작업이 스스로 응해 줘야 먹힌다. 취소 신호를 확인하는 지점에서만 멈추기 때문에, blocking 호출 중에는 취소해도 바로 멈추지 않을 수 있다.
 
 ## 언제 쓰나
 
@@ -83,26 +83,30 @@ cancellation은 협력적으로 동작한다. 취소 신호를 확인하는 지�
 
 ## 자주 깨지는 곳
 
-- **coroutine이면 blocking 코드도 non-blocking이 된다고 믿는다.** blocking JDBC/JPA나 HTTP client는 그대로 스레드를 잡는다. 코드 리뷰에서 coroutine 안의 blocking 호출을 찾는다.
-- **`GlobalScope.launch`로 요청과 무관한 작업을 만든다.** 취소, 예외 전파, 종료 관리가 끊긴다.
-- **`async`를 쓰고 `await`를 빠뜨린다.** 결과와 예외를 받지 못한다.
-- **dispatcher 없이 CPU 작업과 I/O 작업을 섞는다.** 한쪽이 다른 쪽 스레드를 잡아먹는다. dispatcher별 스레드 사용량과 queue 지표를 본다.
-- **timeout과 cancellation 전파를 테스트하지 않는다.** 장애가 나야 취소가 안 먹는다는 걸 안다.
+- coroutine 안에서 부르면 blocking 코드도 non-blocking이 된다고 믿으면, blocking JDBC/JPA나 HTTP client가 그대로 스레드를 잡고 있는 걸 놓친다. 코드 리뷰에서 coroutine 안의 blocking 호출을 찾는다.
+- `GlobalScope.launch`로 요청과 상관없는 작업을 띄우면, 취소, 예외 전파, 종료 처리가 모두 끊긴다.
+- `async`를 쓰고 `await`를 빠뜨리면, 결과도 예외도 받지 못한다.
+- dispatcher를 나누지 않고 CPU 작업과 I/O 작업을 섞으면, 한쪽이 다른 쪽 스레드를 잡아먹는다. dispatcher별 스레드 사용량과 queue 지표를 본다.
+- timeout과 취소 전파를 테스트하지 않으면, 장애가 나고 나서야 취소가 안 먹는다는 걸 안다.
 
 ## 한 번에 설명하기
 
-> Coroutine은 thread가 아니라 중단했다가 재개할 수 있는 비동기 작업 단위입니다. `suspend`는 새 스레드를 만들지 않고, non-blocking API와 함께 쓸 때 효과가 큽니다. blocking JDBC나 HTTP client를 그대로 부르면 coroutine만으로는 빨라지지 않아서, 그럴 땐 `Dispatchers.IO`로 옮깁니다. 서버 코드에서는 `GlobalScope`를 피하고 structured concurrency로 생명주기를 묶은 뒤, timeout과 cancellation, 예외 전파를 같이 설계합니다.
+> Coroutine은 thread가 아니라, 멈췄다가 다시 이어 갈 수 있는 비동기 작업입니다. `suspend`는 새 스레드를 만들지 않고, non-blocking API와 같이 쓸 때 효과가 큽니다.
+>
+> blocking JDBC나 HTTP client를 그대로 부르면 coroutine만으로는 빨라지지 않습니다. 그럴 땐 `Dispatchers.IO`로 옮겨서 부릅니다.
+>
+> 서버 코드에서는 `GlobalScope`를 쓰지 않고, structured concurrency로 작업을 부모 scope에 묶습니다. timeout, 취소, 예외 전파도 그때 같이 정합니다.
 
 ## 꼬리 질문
 
 > [!question]- Coroutine과 Thread의 차이는 무엇인가?
-> Thread는 OS 실행 단위이고, coroutine은 Kotlin 런타임이 관리하는 중단 가능한 작업 단위입니다. Coroutine도 실행될 때는 결국 어떤 thread 위에서 돕니다.
+> Thread는 OS가 관리하는 실행 단위이고, coroutine은 Kotlin 런타임이 관리하는, 중간에 멈출 수 있는 작업입니다. 그래도 coroutine이 실제로 돌 때는 결국 어떤 thread 위에서 돕니다.
 
 > [!question]- `suspend`는 무슨 의미인가?
-> 함수가 중단됐다가 나중에 재개될 수 있다는 뜻입니다. `suspend` 자체가 새 스레드를 만들거나 blocking 코드를 non-blocking으로 바꾸지는 않습니다.
+> 이 함수가 중간에 멈췄다가 나중에 이어서 실행될 수 있다는 표시입니다. `suspend`를 붙인다고 새 스레드가 생기거나 blocking 코드가 non-blocking으로 바뀌지는 않습니다.
 
 > [!question]- `GlobalScope`를 서버 코드에서 피하는 이유는?
-> 요청이나 서비스 생명주기와 떨어져 있어서 취소, 예외 전파, 종료 관리가 어려워지기 때문입니다.
+> 요청이나 서비스가 끝나도 작업이 따로 살아 있어서, 취소하거나 예외를 받거나 종료할 때 정리하기가 어려워서입니다.
 
 ## 점검 퀴즈
 
@@ -141,7 +145,7 @@ cancellation은 협력적으로 동작한다. 취소 신호를 확인하는 지�
 
 ## 참고
 
-공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+2026년 11월에 확인한 공식 문서다.
 
 - [Kotlin: Coroutines](https://kotlinlang.org/docs/coroutines-overview.html)
 

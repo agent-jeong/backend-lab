@@ -1,20 +1,20 @@
 ---
 title: Resource Request와 Limit
-description: Kubernetes에서 CPU와 메모리 자원 예약과 제한을 설정하는 기준
+description: Kubernetes에서 CPU와 메모리를 얼마나 예약하고 어디까지 쓰게 할지 정하는 법
 tags: [concept, kubernetes]
 ---
 
 # Resource Request와 Limit
 
-Resource request는 Pod를 어디에 배치할지 정할 때 쓰는 최소 예약 자원이다. limit은 container가 쓸 수 있는 자원의 상한이다.
+Resource request는 Pod를 어느 Node에 배치할지 정할 때 쓰는 최소 예약량이다. limit은 container가 쓸 수 있는 자원의 상한이다.
 
-둘 다 잘못 잡으면 바로 장애로 드러난다. CPU limit이 낮으면 throttling으로 지연이 늘고, memory limit을 넘으면 container가 OOMKilled 된다. 값은 감이 아니라 실제 사용량과 부하 테스트 결과로 정한다.
+둘 다 잘못 잡으면 바로 장애로 드러난다. CPU limit이 낮으면 throttling 때문에 응답이 느려지고, memory limit을 넘으면 container가 OOMKilled로 죽는다. 그래서 값은 감으로 넣지 않고, 실제 사용량과 부하 테스트 결과를 보고 정한다.
 
 ## 동작
 
-1. Scheduler는 request를 기준으로 Pod를 배치할 Node를 고른다.
+1. Scheduler는 request를 보고 Pod를 배치할 Node를 고른다.
 2. container는 limit 안에서 CPU와 memory를 쓴다.
-3. CPU 사용이 limit에 걸리면 throttling이 생긴다.
+3. CPU 사용량이 limit에 걸리면 throttling이 생긴다.
 4. memory limit을 넘으면 container가 종료된다.
 5. 실제 사용량 메트릭을 보고 request와 limit을 조정한다.
 
@@ -46,22 +46,24 @@ resources:
 
 ## 자주 깨지는 곳
 
-- **request와 limit의 차이를 모른 채 같은 값만 넣는다.** 하나는 배치 기준, 하나는 상한이라 의도가 다르다.
-- **CPU throttling을 애플리케이션 성능 문제로만 본다.** 코드를 아무리 고쳐도 limit이 그대로면 지연도 그대로다.
-- **memory limit 없이 배포한다.** 한 container의 메모리 폭주가 노드 전체에 번진다.
-- **로컬 평균 사용량으로 값을 정한다.** 운영 peak에서 모자란다.
-- **JVM heap과 container memory limit을 따로 본다.** heap 외에 metaspace와 native memory도 limit 안에 들어가야 한다.
+- request와 limit이 무엇이 다른지 모르고 같은 값만 넣으면, 둘을 따로 둔 의미가 없어진다. request는 배치 기준이고 limit은 상한이다.
+- CPU throttling을 애플리케이션 성능 문제로만 보면, 코드를 아무리 고쳐도 지연이 그대로다. limit이 그대로이기 때문이다.
+- memory limit 없이 배포하면, container 하나의 메모리 폭주가 노드 전체로 번진다.
+- 로컬에서 잰 평균 사용량으로 값을 정하면, 운영 peak에서 자원이 모자란다.
+- JVM heap과 container memory limit을 따로 계산하면, heap은 남는데 container가 OOMKilled 된다. heap 말고도 metaspace와 native memory가 limit 안에 들어가야 한다.
 
 ## 운영에서 볼 것
 
 - `kubectl describe pod`로 request, limit, OOMKilled 이벤트를 본다.
-- 메트릭은 CPU usage, CPU throttling, memory working set, restart count.
+- 메트릭으로는 CPU usage, CPU throttling, memory working set, restart count를 본다.
 - peak 트래픽에서 latency와 자원 사용량을 같이 본다.
-- limit에 JVM heap, metaspace, native memory가 다 들어가는지 리뷰한다.
+- limit 안에 JVM heap, metaspace, native memory가 다 들어가는지 리뷰한다.
 
 ## 한 번에 설명하기
 
-> Request는 스케줄링 기준이고, limit은 쓸 수 있는 최대치입니다. CPU limit은 throttling으로 지연을 늘리고, memory limit을 넘으면 OOMKilled가 나며, request를 과하게 잡으면 Pod가 Pending에 걸립니다. 저는 값을 실제 메트릭과 peak 부하 기준으로 잡고, JVM 애플리케이션이면 heap뿐 아니라 native memory까지 limit 안에 넣어 계산합니다.
+> Request는 스케줄링 기준이고, limit은 쓸 수 있는 최대치입니다. CPU limit에 걸리면 throttling으로 지연이 늘고, memory limit을 넘으면 OOMKilled가 나고, request를 너무 크게 잡으면 Pod가 Pending에 걸립니다.
+>
+> 그래서 저는 값을 실제 메트릭과 peak 부하를 보고 정합니다. JVM 애플리케이션이면 heap뿐 아니라 native memory까지 limit 안에 들어가게 계산합니다.
 
 ## 꼬리 질문
 
@@ -71,7 +73,7 @@ resources:
 
 ## 참고
 
-공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+2026년 11월에 확인한 공식 문서다.
 
 - [Kubernetes: Resource Management for Pods and Containers](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/)
 

@@ -1,14 +1,14 @@
 ---
 title: 정렬·중복 제거·탐색의 시간 복잡도
-description: Java 컬렉션의 정렬, 중복 제거, 탐색 비용과 실무 판단
+description: 정렬, 중복 제거, 탐색이 자료구조마다 얼마나 드는지와 반복문 안에서 느려지는 경우
 tags: [concept, java]
 ---
 
 # 정렬·중복 제거·탐색의 시간 복잡도
 
-정렬, 중복 제거, 탐색은 컬렉션에서 가장 자주 하는 연산이고, 자료구조와 데이터 크기에 따라 비용이 크게 갈린다. 그중 실무에서 가장 자주 문제가 되는 건 **반복문 안의 탐색 비용**이다.
+정렬, 중복 제거, 탐색은 컬렉션으로 가장 자주 하는 일이다. 같은 일이라도 어떤 자료구조에 담았는지, 데이터가 몇 건인지에 따라 걸리는 시간이 크게 달라진다. 실무에서 가장 자주 문제가 되는 건 반복문 안에서 목록을 뒤지는 코드다.
 
-수십 건일 때는 무엇을 써도 차이가 없다. 수천~수만 건이 되면 잘못된 선택이 응답 시간으로 바로 드러난다. 흔한 경우는 반복문 안의 `List.contains()`가 O(n^2)이 되는 것, 정렬 기준이 여럿인데 `Comparator` 조합 대신 손으로 비교하는 것, `equals/hashCode`가 없어 중복이 안 빠지는 것, DB에서 정렬할 걸 애플리케이션에서 정렬해 메모리를 낭비하는 것, `TreeSet`에 `Comparable`이 없는 객체를 넣어 `ClassCastException`이 나는 것이다.
+수십 건일 때는 무엇을 써도 차이가 없다. 수천~수만 건이 되면 잘못 고른 자료구조가 바로 응답 시간에 드러난다. 흔히 보는 경우는 이렇다. 반복문 안의 `List.contains()`가 O(n^2)이 된다. 정렬 기준이 여럿인데 `Comparator`를 이어 붙이지 않고 손으로 비교한다. `equals/hashCode`가 없어서 중복이 안 빠진다. DB에서 정렬하면 될 걸 애플리케이션에서 정렬하느라 메모리를 쓴다. `Comparable`을 구현하지 않은 객체를 `TreeSet`에 넣어 `ClassCastException`이 난다.
 
 ## 탐색
 
@@ -31,7 +31,7 @@ for (Order order : orders) {
 }
 ```
 
-`processedIds`가 1만 건, `orders`가 1만 건이면 최악 1억 번 비교한다.
+`processedIds`가 1만 건, `orders`가 1만 건이면 최악의 경우 1억 번 비교한다.
 
 ```java
 // Set으로 변환하면 O(orders) - 각 contains가 O(1)
@@ -44,7 +44,7 @@ for (Order order : orders) {
 }
 ```
 
-반복문 안에서 `contains()`를 부르고 있으면 `Set`으로 바꾼다.
+반복문 안에서 `contains()`를 부르고 있으면 그 목록을 `Set`으로 바꾼다.
 
 ### 반복 조회는 Map으로
 
@@ -78,7 +78,7 @@ List<Order> orders = getOrders();
 orders.sort(Comparator.comparing(Order::getCreatedAt));
 ```
 
-기준이 여럿이면 `thenComparing()`으로 이어 붙인다. if-else 분기가 필요 없다.
+기준이 여럿이면 `thenComparing()`으로 이어 붙인다. if-else로 비교할 필요가 없다.
 
 ```java
 // 상태 우선, 같으면 생성일 최신순
@@ -88,7 +88,7 @@ orders.sort(
 );
 ```
 
-null이 들어올 수 있는 필드는 `nullsFirst()`나 `nullsLast()`로 감싼다. 안 그러면 null을 만나는 순간 `NullPointerException`이 난다.
+null이 들어올 수 있는 필드는 `nullsFirst()`나 `nullsLast()`로 감싼다. 그러지 않으면 null을 만나는 순간 `NullPointerException`이 난다.
 
 ```java
 // null이 포함될 수 있는 필드 정렬
@@ -110,11 +110,11 @@ orders.sort(
 | 페이지네이션과 함께 | ORDER BY + LIMIT | 전체 조회 후 잘라야 해서 비효율 |
 | 여러 API의 결과를 합쳐서 정렬 | 불가능 | 적합 |
 
-정렬 기준이 DB 컬럼이고 데이터가 크면 DB에서 정렬한다. 애플리케이션 정렬은 이미 메모리에 올라온 작은 데이터에 쓴다.
+정렬 기준이 DB 컬럼이고 데이터가 많으면 DB에서 정렬한다. 애플리케이션에서 정렬하는 건 이미 메모리에 올라온 작은 데이터일 때다.
 
 ## 중복 제거
 
-값 타입은 바로 된다.
+숫자나 문자열 같은 값은 바로 된다.
 
 ```java
 // primitive/wrapper 타입은 바로 가능
@@ -123,7 +123,7 @@ List<Long> uniqueIds = ids.stream().distinct().toList();
 // [1, 2, 3]
 ```
 
-객체는 다르다. `distinct()`는 `equals()` 기준이라, `equals/hashCode`를 재정의하지 않으면 참조 비교가 돼서 중복이 빠지지 않는다.
+객체는 다르다. `distinct()`는 `equals()`로 같은지 보는데, `equals/hashCode`를 재정의하지 않으면 같은 객체인지만 비교하게 돼서 중복이 빠지지 않는다.
 
 ```java
 // equals/hashCode가 없으면 모든 객체가 다르다고 판단
@@ -167,7 +167,7 @@ Set<Long> sortedUniqueIds = new TreeSet<>(idList);
 
 ### TreeSet은 compareTo()로 같은지 본다
 
-`TreeSet`은 `equals()`가 아니라 `compareTo()`(또는 넘겨준 `Comparator`)가 0을 반환하면 같은 원소로 친다.
+`TreeSet`은 `equals()`를 보지 않는다. `compareTo()`(또는 넘겨준 `Comparator`)가 0을 돌려주면 같은 원소로 친다.
 
 ```java
 // Comparable을 구현하지 않은 객체를 넣으면 ClassCastException
@@ -207,34 +207,38 @@ Set<User> users = new TreeSet<>(Comparator.comparing(User::getId));
 
 ## 자주 깨지는 곳
 
-- **반복문 안에서 `List.contains()`를 부른다.** 데이터가 늘면 O(n^2)으로 느려진다.
-- **`distinct()`가 `equals()` 기준인 걸 모른다.** 객체 중복이 그대로 남는다.
-- **`Comparator`에서 null을 처리하지 않는다.** null 하나에 정렬 전체가 `NullPointerException`으로 실패한다.
-- **DB에서 정렬할 수 있는데 전부 조회해 애플리케이션에서 정렬한다.** 메모리와 조회 시간이 낭비된다.
-- **`Comparable`이 없는 객체를 `TreeSet`에 넣는다.** `ClassCastException`이 난다.
-- **정렬 기준이 여럿인데 if-else로 비교한다.** `thenComparing()` 체이닝이면 한 줄로 끝난다.
-- **`HashSet`과 `LinkedHashSet`의 순서 차이를 모른다.** 결과 순서가 실행마다 달라진다.
+- 반복문 안에서 `List.contains()`를 부르면, 데이터가 늘수록 O(n^2)으로 느려진다.
+- `distinct()`가 `equals()`로 비교한다는 걸 모르면, 객체 중복이 그대로 남는다.
+- `Comparator`에서 null을 처리하지 않으면, null 하나 때문에 정렬 전체가 `NullPointerException`으로 실패한다.
+- DB에서 정렬할 수 있는데 전부 읽어 와서 애플리케이션에서 정렬하면, 메모리와 조회 시간을 버린다.
+- `Comparable`을 구현하지 않은 객체를 `TreeSet`에 넣으면, `ClassCastException`이 난다.
+- 정렬 기준이 여럿인데 if-else로 비교하면, `thenComparing()`으로 이어 붙이면 한 줄일 코드가 길어진다.
+- 순서가 필요한데 `LinkedHashSet` 대신 `HashSet`을 쓰면, 결과 순서가 실행할 때마다 달라진다.
 
 ## 한 번에 설명하기
 
-> 컬렉션 연산에서 제가 가장 먼저 보는 건 반복문 안의 탐색 비용입니다. `List.contains()`는 O(n)이라 반복문 안에서 부르면 O(n^2)이 되고, Set으로 바꾸면 탐색이 O(1)이라 전체가 O(n)으로 줄어듭니다. 정렬은 `comparing()`과 `thenComparing()`으로 기준을 잇고 null이 있으면 `nullsLast()`를 씁니다. `distinct()`는 equals 기준이라 객체에는 equals/hashCode가 있어야 하고, 정렬 기준이 DB 컬럼이면 애플리케이션이 아니라 ORDER BY로 처리합니다.
+> 컬렉션 코드를 볼 때 저는 반복문 안에서 무언가를 찾고 있는지부터 봅니다. `List.contains()`는 O(n)이라 반복문 안에서 부르면 O(n^2)이 됩니다. 그 목록을 Set으로 바꾸면 한 번 찾는 데 O(1)이라 전체가 O(n)으로 줄어듭니다.
+>
+> 정렬은 `comparing()`과 `thenComparing()`으로 기준을 이어 붙이고, null이 있으면 `nullsLast()`를 씁니다.
+>
+> `distinct()`는 equals로 비교하니 객체라면 equals/hashCode가 있어야 합니다. 정렬 기준이 DB 컬럼이면 애플리케이션에서 하지 않고 ORDER BY로 처리합니다.
 
 ## 꼬리 질문
 
-> [!question]- `List.contains()`와 `Set.contains()`의 시간 복잡도 차이는?
-> `List.contains()`는 O(n)으로 처음부터 순회하고, `HashSet.contains()`는 O(1) 평균으로 hash 기반 조회합니다.
+> [!question]- `List.contains()`와 `Set.contains()`는 시간 복잡도가 어떻게 다른가?
+> `List.contains()`는 처음부터 하나씩 훑어서 O(n)입니다. `HashSet.contains()`는 hash로 바로 위치를 찾아서 평균 O(1)입니다.
 
-> [!question]- `distinct()`가 동작하지 않는 경우는 언제인가?
-> 객체에 `equals()`와 `hashCode()`를 재정의하지 않으면 참조 비교가 되어 같은 값의 다른 인스턴스가 중복 제거되지 않습니다.
+> [!question]- `distinct()`가 중복을 못 거르는 건 언제인가?
+> 객체에 `equals()`와 `hashCode()`를 재정의하지 않았을 때입니다. 그러면 같은 객체인지만 비교해서, 값이 같은 다른 인스턴스는 그대로 남습니다.
 
-> [!question]- 다중 정렬 기준을 `Comparator`로 어떻게 표현하는가?
-> `Comparator.comparing(Order::getStatus).thenComparing(Order::getCreatedAt, Comparator.reverseOrder())`처럼 `thenComparing()`으로 체이닝합니다.
+> [!question]- 정렬 기준이 여럿이면 `Comparator`로 어떻게 쓰나?
+> `Comparator.comparing(Order::getStatus).thenComparing(Order::getCreatedAt, Comparator.reverseOrder())`처럼 `thenComparing()`으로 이어 붙입니다.
 
-> [!question]- DB 정렬과 애플리케이션 정렬은 언제 각각 적합한가?
-> 정렬 기준이 DB 컬럼이고 데이터가 크면 ORDER BY가 효율적입니다. 여러 API 결과를 합치거나 가공된 값 기준이면 애플리케이션 정렬을 사용합니다.
+> [!question]- DB에서 정렬할 때와 애플리케이션에서 정렬할 때는 어떻게 나누나?
+> 정렬 기준이 DB 컬럼이고 데이터가 많으면 ORDER BY가 낫습니다. 여러 API 결과를 합쳐야 하거나 계산해서 만든 값으로 정렬해야 하면 애플리케이션에서 정렬합니다.
 
-> [!question]- `TreeSet`의 동등성 판단 기준은 `equals()`인가 `compareTo()`인가?
-> `compareTo()`입니다. `compareTo()`가 0을 반환하면 같은 원소로 취급하므로, `equals()`와 일관되지 않으면 예상과 다르게 동작할 수 있습니다.
+> [!question]- `TreeSet`은 `equals()`와 `compareTo()` 중 무엇으로 같은지 보나?
+> `compareTo()`입니다. `compareTo()`가 0을 돌려주면 같은 원소로 칩니다. 그래서 `compareTo()`와 `equals()`의 판단이 서로 다르면 생각과 다르게 동작할 수 있습니다.
 
 ## 점검 퀴즈
 
@@ -273,7 +277,7 @@ Set<User> users = new TreeSet<>(Comparator.comparing(User::getId));
 
 ## 참고
 
-공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+2026년 11월에 확인한 공식 문서다.
 
 - [Java SE 21 API: List.sort](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html)
 - [Java SE 21 API: Collections](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Collections.html)

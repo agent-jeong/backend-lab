@@ -1,12 +1,14 @@
 ---
 title: SQL Injection
-description: 사용자 입력이 SQL 구조를 바꾸는 취약점과 방어 기준
+description: 사용자 입력이 SQL 문법으로 해석되는 취약점과, 값과 구조를 떼어 놓는 방어 방법
 tags: [concept, security]
 ---
 
 # SQL Injection
 
-SQL Injection은 사용자 입력이 SQL 값이 아니라 SQL 문법의 일부로 해석돼 의도하지 않은 조회, 변경, 인증 우회가 일어나는 취약점이다. 로그인 우회, 데이터 유출, 대량 수정·삭제로 이어진다. 방어의 원칙은 하나다. SQL 구조와 값을 분리한다.
+SQL Injection은 사용자가 보낸 입력이 SQL의 값이 아니라 SQL 문법의 일부로 해석되는 취약점이다. 그 결과 의도하지 않은 조회나 변경이 일어나고, 로그인 검사를 건너뛰기도 한다.
+
+로그인 우회, 데이터 유출, 대량 수정이나 삭제로 이어진다. 막는 원칙은 하나다. SQL 구조와 값을 섞지 않는다.
 
 ## 공격이 성립하는 순서
 
@@ -24,7 +26,7 @@ List<Order> findOrders(long userId, OrderStatus status);
 
 ## 상황별 대응
 
-검색, 정렬, 동적 조건처럼 사용자 입력이 SQL에 들어가는 경로에서 자주 터진다.
+검색, 정렬, 동적 조건처럼 사용자 입력이 SQL에 들어가는 곳에서 자주 터진다.
 
 | 상황 | 대응 | 이유 |
 |---|---|---|
@@ -44,11 +46,11 @@ List<Order> findOrders(long userId, OrderStatus status);
 
 ## 자주 깨지는 곳
 
-- **ORM을 쓰면 SQL Injection이 불가능하다고 생각한다.** native query, 문자열 기반 동적 query, order by 조립에는 위험이 그대로 남는다.
-- **`order by` 컬럼명을 사용자 입력으로 그대로 붙인다.**
-- **검색어를 문자열 연결로 `like '%...%'`에 넣는다.**
-- **관리자용 내부 도구라서 입력 검증을 생략한다.** 내부 도구도 같은 binding 기준을 적용한다.
-- **SQL 에러 원문을 API 응답으로 내보낸다.** 테이블 구조와 쿼리 형태가 드러난다.
+- ORM을 쓰니 SQL Injection은 없다고 여기면, native query, 문자열로 조립한 동적 query, order by 조립에 남은 구멍을 놓친다.
+- `order by` 컬럼명을 사용자 입력 그대로 붙이면, 정렬 자리로 SQL 조각이 들어온다.
+- 검색어를 문자열 연결로 `like '%...%'`에 넣으면, 검색창이 공격 입구가 된다.
+- 관리자용 내부 도구라고 입력 검사를 빼면, 그 도구가 우회로가 된다. 내부 도구도 같은 binding 기준을 따른다.
+- SQL 에러 원문을 API 응답으로 내보내면, 테이블 구조와 쿼리 모양이 드러난다.
 
 ## 확인하는 법
 
@@ -59,7 +61,11 @@ List<Order> findOrders(long userId, OrderStatus status);
 
 ## 한 번에 설명하기
 
-> SQL Injection은 사용자 입력이 값이 아니라 SQL 문법으로 해석될 때 생깁니다. 그래서 값은 parameter binding으로 SQL 구조와 분리합니다. ORM을 써도 native query나 동적 정렬처럼 문자열로 조립하는 곳은 위험이 남기 때문에, 컬럼명이나 정렬 방향처럼 binding할 수 없는 입력은 allowlist로 제한합니다. SQL 에러 원문은 응답에 노출하지 않고, 내부 도구에도 같은 기준을 적용합니다.
+> SQL Injection은 사용자 입력이 값이 아니라 SQL 문법으로 해석될 때 생깁니다. 그래서 값은 parameter binding으로 넘겨서 SQL 구조와 떼어 놓습니다.
+>
+> ORM을 써도 native query나 동적 정렬처럼 문자열로 조립하는 곳에는 위험이 남습니다. 컬럼명이나 정렬 방향처럼 binding할 수 없는 입력은 allowlist로 제한합니다.
+>
+> SQL 에러 원문은 응답에 내보내지 않고, 내부 도구에도 같은 기준을 적용합니다.
 
 ## 꼬리 질문
 
@@ -69,7 +75,7 @@ List<Order> findOrders(long userId, OrderStatus status);
 
 ## 참고
 
-공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+2026년 11월에 확인한 공식 문서다.
 
 - [OWASP: SQL Injection Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html)
 

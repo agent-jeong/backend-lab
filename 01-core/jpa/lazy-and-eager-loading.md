@@ -1,14 +1,14 @@
 ---
 title: "지연 로딩과 즉시 로딩의 차이"
-description: JPA 지연 로딩과 즉시 로딩의 실무 선택 기준
+description: 연관 Entity를 언제 불러오는지, 왜 전부 LAZY로 두는지
 tags: [concept, jpa]
 ---
 
 # 지연 로딩과 즉시 로딩의 차이
 
-지연 로딩(LAZY)은 연관 Entity를 실제로 쓸 때 조회하고, 즉시 로딩(EAGER)은 Entity를 조회할 때 연관 Entity까지 함께 조회한다.
+지연 로딩(LAZY)은 연관 Entity를 실제로 쓰는 순간에 조회하고, 즉시 로딩(EAGER)은 Entity를 조회할 때 연관 Entity까지 한꺼번에 조회한다.
 
-EAGER는 안 쓰는 데이터까지 매번 JOIN하고, LAZY는 트랜잭션 밖에서 접근하면 예외가 나고 반복문 안에서 N+1을 만든다. 실무 원칙은 **전부 LAZY로 두고, 필요한 데이터만 fetch join으로 가져오는 것**이다.
+주문을 EAGER로 두면 회원 정보가 필요 없는 화면에서도 매번 회원 테이블을 JOIN한다. LAZY는 트랜잭션 밖에서 건드리면 예외가 나고, 반복문 안에서 건드리면 N+1을 만든다. 그래서 실무에서는 전부 LAZY로 두고, 필요한 데이터만 fetch join으로 가져온다.
 
 ## 즉시 로딩 (EAGER)
 
@@ -18,13 +18,13 @@ EAGER는 안 쓰는 데이터까지 매번 JOIN하고, LAZY는 트랜잭션 밖�
 private User user;
 ```
 
-Order를 조회하면 연관된 User도 같이 조회된다.
+Order를 조회하면 연결된 User도 같이 조회된다.
 
 ```sql
 SELECT o.*, u.* FROM orders o LEFT JOIN users u ON o.user_id = u.id WHERE o.id = ?
 ```
 
-그 API에서 User 정보가 필요 없어도 JOIN은 항상 실행된다.
+그 API에서 User 정보가 필요 없어도 JOIN은 늘 실행된다.
 
 ## 지연 로딩 (LAZY)
 
@@ -34,7 +34,7 @@ SELECT o.*, u.* FROM orders o LEFT JOIN users u ON o.user_id = u.id WHERE o.id =
 private User user;
 ```
 
-조회 시 연관 Entity 자리에는 프록시 객체가 들어간다. `order.getUser().getName()`처럼 실제로 접근할 때 SELECT가 실행된다.
+조회하면 연관 Entity 자리에 프록시 객체가 대신 들어간다. `order.getUser().getName()`처럼 실제로 값을 꺼낼 때 SELECT가 나간다.
 
 ```sql
 -- Order 조회 시
@@ -46,7 +46,7 @@ SELECT u.* FROM users u WHERE u.id = ?
 
 ## 프록시
 
-지연 로딩은 프록시로 구현된다.
+지연 로딩은 프록시로 동작한다.
 
 ```java
 Order order = orderRepository.findById(1L).orElseThrow();
@@ -54,18 +54,18 @@ User user = order.getUser(); // 프록시 객체 (아직 SELECT 안 함)
 String name = user.getName(); // 이 시점에 SELECT 실행
 ```
 
-프록시는 실제 Entity를 상속한 가짜 객체다. 그래서 `getClass()`와 `==` 비교가 예상과 다르게 나온다.
+프록시는 실제 Entity를 상속한 가짜 객체다. 그래서 `getClass()`나 `==`로 비교하면 생각과 다른 결과가 나온다.
 
-| 특성 | 동작 |
+| 호출 | 동작 |
 |---|---|
-| `getId()` | 이미 가지고 있으므로 쿼리 없음 |
-| `getName()` 등 다른 필드 | 첫 접근 시 SELECT 실행 |
-| `getClass()` | 프록시 클래스 반환 (`User$HibernateProxy`) |
-| `instanceof User` | true (상속이므로) |
+| `getId()` | id는 이미 들고 있어서 쿼리가 안 나간다 |
+| `getName()` 등 다른 필드 | 처음 꺼낼 때 SELECT가 나간다 |
+| `getClass()` | 프록시 클래스가 나온다 (`User$HibernateProxy`) |
+| `instanceof User` | true (상속했으니까) |
 
 ## LazyInitializationException
 
-트랜잭션(영속성 컨텍스트) 밖에서 지연 로딩을 시도하면 발생한다.
+트랜잭션(영속성 컨텍스트)이 끝난 뒤에 지연 로딩을 하려고 하면 난다.
 
 ```java
 // Controller에서 직접 Entity를 반환하는 경우
@@ -76,7 +76,7 @@ public User getUser(Long id) {
 }
 ```
 
-트랜잭션 안에서 필요한 데이터를 다 꺼내 두면 된다. 방법은 두 가지다.
+트랜잭션이 끝나기 전에 필요한 데이터를 다 꺼내 두면 된다. 방법은 두 가지다.
 
 ```java
 // 1. 서비스 계층에서 DTO로 변환 (권장)
@@ -91,40 +91,44 @@ public UserResponse getUser(Long id) {
 Optional<User> findByIdWithOrders(@Param("id") Long id);
 ```
 
-## 실무 원칙
+## 실무에서 지키는 것
 
-| 원칙 | 이유 |
+| 지키는 것 | 이유 |
 |---|---|
-| 모든 연관관계를 LAZY로 설정 | 불필요한 JOIN 방지 |
-| 필요한 데이터만 fetch join으로 조회 | 사용하는 데이터만 로딩 |
-| Entity를 API 응답으로 직접 반환하지 않음 | LazyInitializationException 방지 |
-| `@Transactional(readOnly = true)` 사용 | 읽기 전용 트랜잭션으로 성능 최적화 |
+| 모든 연관관계를 LAZY로 둔다 | 필요 없는 JOIN을 막는다 |
+| 필요한 데이터만 fetch join으로 조회한다 | 쓰는 데이터만 불러온다 |
+| Entity를 API 응답으로 그대로 내보내지 않는다 | LazyInitializationException을 막는다 |
+| 조회에는 `@Transactional(readOnly = true)`를 쓴다 | 읽기 전용 트랜잭션이라 변경 감지 같은 일을 덜 한다 |
 
 ## 자주 깨지는 곳
 
-- **`@ManyToOne` 기본값 EAGER를 그대로 둔다.** 안 쓰는 연관 Entity까지 매번 JOIN한다.
-- **트랜잭션 밖에서 지연 로딩을 한다.** `LazyInitializationException`이 난다.
-- **`open-in-view`를 true로 두고 Controller에서 지연 로딩에 기댄다.** DB 커넥션을 요청 끝까지 잡는다.
-- **반복문 안에서 지연 로딩을 부른다.** N+1이 생긴다.
-- **프록시의 `getClass()`로 타입을 비교한다.** 프록시 클래스가 나와서 실제 클래스와 다르다.
+- `@ManyToOne` 기본값 EAGER를 그대로 두면, 안 쓰는 연관 Entity까지 매번 JOIN한다.
+- 트랜잭션 밖에서 지연 로딩을 하면, `LazyInitializationException`이 난다.
+- `open-in-view`를 true로 두고 Controller에서 지연 로딩에 기대면, DB 커넥션을 요청이 끝날 때까지 쥐고 있다.
+- 반복문 안에서 지연 로딩을 부르면, N+1이 생긴다.
+- 프록시의 `getClass()`로 타입을 비교하면, 프록시 클래스가 나와서 실제 클래스와 다르다고 판단한다.
 
 ## 한 번에 설명하기
 
-> 실무에서는 모든 연관관계를 LAZY로 두고, 필요한 데이터만 fetch join으로 조회합니다. EAGER는 안 쓰는 데이터까지 항상 JOIN해서 성능 문제를 만들고, LAZY는 프록시로 접근 시점에 쿼리를 날리지만 트랜잭션 밖에서는 `LazyInitializationException`이 납니다. 그래서 Entity를 API 응답으로 내보내지 않고 서비스 계층 트랜잭션 안에서 DTO로 바꿔서 이 문제를 원천적으로 막습니다.
+> 실무에서는 모든 연관관계를 LAZY로 두고, 필요한 데이터만 fetch join으로 조회합니다.
+>
+> EAGER는 안 쓰는 데이터까지 늘 JOIN해서 느려집니다. LAZY는 프록시를 넣어 뒀다가 실제로 꺼낼 때 쿼리를 날리는데, 트랜잭션이 끝난 뒤에 꺼내면 `LazyInitializationException`이 납니다.
+>
+> 그래서 Entity를 API 응답으로 그대로 내보내지 않고, 서비스 계층 트랜잭션 안에서 DTO로 바꿔서 이 예외가 날 자리를 아예 없앱니다.
 
 ## 꼬리 질문
 
 > [!question]- `open-in-view`란 무엇이고 왜 false로 설정하는가?
-> 영속성 컨텍스트를 Controller까지 열어두는 설정입니다. View에서 지연 로딩이 가능하지만, DB 커넥션을 오래 점유해서 커넥션 풀 고갈 위험이 있습니다.
+> 영속성 컨텍스트를 Controller와 View까지 열어 두는 설정입니다. View에서도 지연 로딩이 되긴 하지만, DB 커넥션을 오래 쥐고 있어서 트래픽이 몰리면 커넥션 풀이 바닥날 수 있습니다.
 
 > [!question]- 프록시 객체와 실제 Entity를 어떻게 구분하는가?
-> `Hibernate.isInitialized(entity)`로 초기화 여부를 확인할 수 있습니다. `getClass()`는 프록시 클래스를 반환하므로 타입 비교에는 `instanceof`를 사용해야 합니다.
+> 실제 값을 불러왔는지는 `Hibernate.isInitialized(entity)`로 확인합니다. `getClass()`는 프록시 클래스를 돌려주니까, 타입을 비교할 때는 `instanceof`를 씁니다.
 
 > [!question]- `@Transactional(readOnly = true)`의 효과는?
-> 영속성 컨텍스트의 변경 감지를 생략해서 flush 비용을 줄입니다. DB에 따라 읽기 전용 트랜잭션으로 최적화될 수 있습니다.
+> 영속성 컨텍스트가 변경 감지를 건너뛰어서 flush에 드는 비용이 줄어듭니다. DB에 따라서는 읽기 전용 트랜잭션으로 더 가볍게 처리하기도 합니다.
 
 > [!question]- 지연 로딩과 N+1의 관계는?
-> 지연 로딩 자체는 문제가 아닙니다. 반복문 안에서 N개의 Entity가 각각 지연 로딩을 실행하면 N+1 쿼리가 발생하는 것이 문제입니다. fetch join으로 해결합니다.
+> 지연 로딩 자체는 문제가 아닙니다. 반복문 안에서 Entity N개가 각자 지연 로딩을 하면 쿼리가 N+1번 나가는 게 문제입니다. 이건 fetch join으로 풉니다.
 
 ## 점검 퀴즈
 
@@ -163,7 +167,7 @@ Optional<User> findByIdWithOrders(@Param("id") Long id);
 
 ## 참고
 
-공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+2026년 11월에 확인한 공식 문서다.
 
 - [Hibernate ORM 6.6 User Guide: Fetching](https://docs.hibernate.org/orm/6.6/userguide/html_single/Hibernate_User_Guide.html#fetching)
 

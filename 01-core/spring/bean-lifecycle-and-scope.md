@@ -1,14 +1,14 @@
 ---
 title: Bean 생명주기와 Scope
-description: Spring Bean의 생명주기와 Scope별 동작 차이
+description: Bean이 언제 만들어지고 정리되는지, Scope마다 무엇을 공유하는지
 tags: [concept, spring]
 ---
 
 # Bean 생명주기와 Scope
 
-Spring Bean은 IoC 컨테이너가 생성부터 소멸까지 관리하는 객체다. Scope는 그 인스턴스를 어디까지 공유하는지 정한다.
+Spring Bean은 컨테이너가 만들고, 의존성을 넣고, 종료할 때 정리까지 해 주는 객체다. Scope는 그 인스턴스 하나를 누구와 나눠 쓰는지 정한다.
 
-실무 사고는 대개 둘 중 하나다. singleton에 상태를 넣어 동시 요청끼리 데이터가 섞이거나, 초기화와 정리 코드가 기대한 시점에 돌지 않는다.
+Bean 때문에 나는 사고는 대개 둘 중 하나다. singleton 서비스 필드에 주문 건수 같은 값을 넣었다가 동시 요청끼리 값이 섞이거나, 캐시를 채우고 커넥션을 닫는 코드가 생각한 시점에 돌지 않는다.
 
 ## 생명주기
 
@@ -41,7 +41,7 @@ public class CacheWarmer {
 }
 ```
 
-`@PostConstruct`는 의존성 주입이 끝난 뒤 실행된다. 생성자에서 초기화하면 아직 주입되지 않은 필드가 있을 수 있다.
+`@PostConstruct`는 의존성 주입이 끝난 뒤에 실행된다. 생성자에서 초기화하면 필드 주입이나 setter 주입으로 들어올 값이 아직 비어 있을 수 있다.
 
 ### 소멸 콜백
 
@@ -71,7 +71,7 @@ public class OrderService {
 ```
 
 - 컨테이너당 인스턴스가 하나다.
-- 모든 요청이 그 인스턴스를 공유하므로 상태를 두면 안 된다(아래 「singleton에 상태를 두면」).
+- 모든 요청이 그 인스턴스 하나를 같이 쓰므로 상태를 두면 안 된다(아래 「singleton에 상태를 두면」).
 
 ### prototype
 
@@ -99,7 +99,7 @@ public class RequestLog {
 
 - `request`: HTTP 요청마다 생기고 요청이 끝나면 사라진다.
 - `session`: HTTP 세션마다 생기고 세션이 끝나면 사라진다.
-- singleton에 주입하려면 `proxyMode`를 줘야 한다. singleton이 만들어질 때는 아직 요청이 없어서, 프록시를 넣어 두고 실제 요청 시점에 대상을 찾게 한다.
+- singleton에 주입하려면 `proxyMode`를 줘야 한다. singleton이 만들어질 때는 아직 요청이 없으니, 일단 프록시를 넣어 두고 실제 요청이 들어왔을 때 진짜 객체를 찾게 한다.
 
 ### 한눈에 비교
 
@@ -125,7 +125,7 @@ public class OrderService {
 }
 ```
 
-동시 요청이 같은 필드를 고치므로 값이 섞인다. 상태가 필요하면 메서드 지역 변수, ThreadLocal, request 스코프 Bean 중 하나에 둔다.
+동시 요청이 같은 필드를 함께 고치니 값이 섞인다. 상태가 필요하면 메서드 지역 변수, ThreadLocal, request 스코프 Bean 중 하나에 둔다.
 
 ## prototype을 singleton에 주입하면
 
@@ -146,7 +146,7 @@ public class SingletonService {
 }
 ```
 
-prototype은 singleton이 만들어질 때 한 번만 생성되고, 이후 계속 같은 인스턴스가 쓰인다. 매번 새 인스턴스가 필요하면 `ObjectProvider`로 꺼낸다.
+prototype이라도 singleton이 만들어질 때 한 번만 생성되고, 그 뒤로는 같은 인스턴스를 계속 쓴다. 쓸 때마다 새 인스턴스가 필요하면 `ObjectProvider`로 그때그때 꺼낸다.
 
 ```java
 @Service
@@ -166,29 +166,33 @@ public class SingletonService {
 
 ## 자주 깨지는 곳
 
-- **singleton 필드에 요청별 상태를 둔다.** 동시 요청끼리 값이 섞인다.
-- **prototype을 singleton에 생성자로 주입한다.** 새 인스턴스가 매번 생기지 않고 처음 하나가 계속 쓰인다.
-- **의존성이 필요한 초기화를 생성자에 넣는다.** 주입 전이라 필드가 비어 있을 수 있다. `@PostConstruct`로 옮긴다.
-- **prototype의 `@PreDestroy`를 믿는다.** 호출되지 않는다. 정리는 쓰는 쪽이 직접 한다.
-- **웹 스코프 Bean을 `proxyMode` 없이 singleton에 주입한다.** 주입 시점에 요청이 없어 실패한다.
+- singleton 필드에 요청마다 다른 값을 두면, 동시 요청끼리 값이 섞인다.
+- prototype을 singleton에 생성자로 주입하면, 새 인스턴스가 매번 생기지 않고 처음 하나를 계속 쓴다.
+- 주입받은 의존성을 쓰는 초기화를 생성자에 넣으면, 아직 주입 전이라 필드가 비어 있을 수 있다. `@PostConstruct`로 옮긴다.
+- prototype에 `@PreDestroy`를 달아 두면, 호출되지 않아 리소스가 정리되지 않는다. 정리는 쓰는 쪽이 직접 한다.
+- 웹 스코프 Bean을 `proxyMode` 없이 singleton에 주입하면, 주입 시점에 요청이 없어 애플리케이션이 뜨지 않는다.
 
 ## 한 번에 설명하기
 
-> Bean은 생성, 의존성 주입, `@PostConstruct` 초기화, 사용, `@PreDestroy` 소멸 순으로 관리됩니다. 주입된 의존성을 쓰는 초기화는 생성자가 아니라 `@PostConstruct`에 둡니다. 기본 Scope인 singleton은 모든 요청이 한 인스턴스를 공유하므로 상태를 두지 않습니다. prototype을 singleton에 주입하면 처음 하나만 생성되기 때문에, 매번 새 인스턴스가 필요하면 `ObjectProvider`를 씁니다.
+> Bean은 생성, 의존성 주입, `@PostConstruct` 초기화, 사용, `@PreDestroy` 소멸 순서로 관리됩니다. 주입받은 의존성을 쓰는 초기화는 생성자가 아니라 `@PostConstruct`에 둡니다.
+>
+> 기본 Scope인 singleton은 모든 요청이 인스턴스 하나를 같이 쓰기 때문에 상태를 두지 않습니다.
+>
+> prototype을 singleton에 주입하면 처음 하나만 만들어지니, 매번 새 인스턴스가 필요하면 `ObjectProvider`로 꺼냅니다.
 
 ## 꼬리 질문
 
 > [!question]- singleton Bean에 상태를 저장하면 어떤 문제가 생기는가?
-> 모든 요청이 같은 인스턴스를 공유하므로 동시 요청끼리 데이터가 섞이는 race condition이 생깁니다. 상태가 필요하면 메서드 지역 변수나 request 스코프를 씁니다.
+> 모든 요청이 같은 인스턴스를 쓰니까, 동시에 들어온 요청이 같은 필드를 고치면서 값이 섞입니다. race condition이죠. 상태가 필요하면 메서드 지역 변수나 request 스코프 Bean에 둡니다.
 
 > [!question]- `@PostConstruct`와 생성자의 차이는?
-> 생성자는 의존성 주입 전에 실행될 수 있지만, `@PostConstruct`는 DI가 완료된 후 실행됩니다. 주입된 의존성을 쓰는 초기화는 `@PostConstruct`에 둡니다.
+> 생성자는 의존성 주입이 다 끝나기 전에 실행될 수 있고, `@PostConstruct`는 주입이 끝난 다음에 실행됩니다. 그래서 주입받은 의존성을 쓰는 초기화는 `@PostConstruct`에 둡니다.
 
 > [!question]- prototype Bean의 `@PreDestroy`가 호출되지 않는 이유는?
-> 컨테이너가 prototype Bean은 생성까지만 관리하고 이후 생명주기를 추적하지 않기 때문입니다. 리소스 정리는 쓰는 쪽이 직접 해야 합니다.
+> 컨테이너는 prototype Bean을 만들어 넘겨주기만 하고, 그 뒤로는 따라가지 않습니다. 그래서 리소스 정리는 쓰는 쪽이 직접 해야 합니다.
 
 > [!question]- 웹 스코프 Bean에 `proxyMode`가 필요한 이유는?
-> singleton Bean이 생성되는 시점에는 아직 HTTP 요청이 없어서 request 스코프 Bean을 바로 주입할 수 없습니다. 프록시가 실제 요청 시점에 Bean을 가져오도록 위임합니다.
+> singleton Bean이 만들어질 때는 아직 HTTP 요청이 없어서 request 스코프 Bean을 바로 넣을 수 없습니다. 그래서 프록시를 대신 넣어 두고, 실제 요청이 오면 프록시가 그 요청의 Bean을 찾아 호출합니다.
 
 ## 점검 퀴즈
 
@@ -227,7 +231,7 @@ public class SingletonService {
 
 ## 참고
 
-공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+2026년 11월에 확인한 공식 문서다.
 
 - [Spring Framework: Bean Scopes](https://docs.spring.io/spring-framework/reference/core/beans/factory-scopes.html)
 - [Spring Framework: Customizing the Nature of a Bean](https://docs.spring.io/spring-framework/reference/core/beans/factory-nature.html)

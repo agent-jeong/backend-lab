@@ -1,14 +1,14 @@
 ---
 title: "DB 복제(Replication)와 샤딩"
-description: DB 복제와 샤딩의 동작 원리, 선택 기준, 실무 트레이드오프
+description: DB 한 대로 버티기 어려울 때 복제와 샤딩이 각각 무엇을 나누고, 무엇을 대가로 치르는지
 tags: [concept, database]
 ---
 
 # DB 복제(Replication)와 샤딩
 
-Replication은 같은 데이터를 여러 서버에 복제해 읽기를 나누고 가용성을 높인다. Sharding은 데이터를 여러 서버에 쪼개 저장해 쓰기와 저장 용량을 나눈다.
+Replication은 같은 데이터를 여러 서버에 복사해 두고 읽기를 나눠 받는다. 한 대가 죽어도 다른 서버가 남는다. Sharding은 데이터를 여러 서버에 쪼개 담아 쓰기와 저장 용량을 나눈다.
 
-둘 다 단일 DB 한계를 넘는 방법이지만 대가가 다르다. Replication은 복제 지연 때문에 "방금 저장한 데이터가 안 보이는" 버그를 만들고, Sharding은 Shard Key를 잘못 고르면 한 샤드에 데이터가 몰려 나눈 의미가 없어진다.
+둘 다 DB 한 대로는 버티기 어려울 때 쓰지만 치르는 대가가 다르다. Replication은 복제가 늦어져서 방금 쓴 글이 목록에 안 보이는 버그를 만든다. Sharding은 Shard Key를 잘못 고르면 한 샤드에 데이터가 몰려서 나눈 보람이 없다.
 
 ## Replication
 
@@ -27,16 +27,16 @@ Client ────────────────────────�
         읽기 (SELECT)
 ```
 
-| 구성 요소 | 역할 |
+| 구성 요소 | 하는 일 |
 |---|---|
-| Master (Primary) | 모든 쓰기 처리, binlog 생성 |
-| Replica (Secondary) | Master의 binlog를 받아 재실행, 읽기 처리 |
+| Master (Primary) | 쓰기를 전부 받고 binlog를 남긴다 |
+| Replica (Secondary) | Master의 binlog를 받아 다시 실행하고, 읽기를 받는다 |
 
 MySQL에서는 이렇게 흘러간다.
 
 1. Master가 데이터를 바꾸면 binlog에 기록한다.
 2. Replica의 IO Thread가 binlog를 가져와 relay log에 저장한다.
-3. Replica의 SQL Thread가 relay log를 재실행해 데이터를 맞춘다.
+3. Replica의 SQL Thread가 relay log를 다시 실행해 데이터를 맞춘다.
 
 ### 복제 지연 (Replication Lag)
 
@@ -48,13 +48,13 @@ Replica:              ───── lag ─── INSERT 반영
                       이 시점에 Replica를 읽으면 데이터가 없음
 ```
 
-사용자가 글을 쓴 직후 목록을 열면 방금 쓴 글이 안 보인다. 대응은 셋 중 하나다.
+사용자가 글을 쓰고 바로 목록을 열면 방금 쓴 글이 안 보인다. 대응은 셋 중 하나다.
 
-| 전략 | 방법 | 적용 |
+| 전략 | 방법 | 언제 |
 |---|---|---|
-| 쓰기 후 읽기는 Master | 방금 쓴 사용자의 조회는 Master로 라우팅 | 가장 흔함 |
-| 강제 동기화 대기 | semi-synchronous replication | 정합성이 꼭 필요할 때 |
-| 버전 체크 | 쓰기 시점의 binlog position과 Replica position 비교 | 복잡하지만 정밀 |
+| 쓰고 나서 읽는 건 Master로 | 방금 쓴 사용자의 조회만 Master로 보낸다 | 가장 흔하다 |
+| 복제될 때까지 기다리기 | semi-synchronous replication | 바로 보여야만 할 때 |
+| 위치 비교 | 쓸 때의 binlog position과 Replica의 position을 비교한다 | 복잡하지만 정확하다 |
 
 ### Spring에서 읽기/쓰기 분리
 
@@ -66,7 +66,7 @@ public List<Order> getOrders() { ... }
 public void createOrder() { ... }
 ```
 
-`AbstractRoutingDataSource`로 트랜잭션의 readOnly 속성을 보고 DataSource를 나눈다.
+`AbstractRoutingDataSource`가 트랜잭션의 readOnly 값을 보고 어느 DataSource로 보낼지 고른다.
 
 ## Sharding
 
@@ -85,37 +85,37 @@ Shard0 Shard1 Shard2 Shard3
    여기에 저장
 ```
 
-데이터를 Shard Key 기준으로 여러 DB에 나눠 저장한다.
+Shard Key 값을 보고 데이터를 여러 DB에 나눠 담는다.
 
 | 전략 | 방법 | 장단점 |
 |---|---|---|
-| Hash Sharding | `shard = hash(key) % N` | 균등 분산, 샤드 추가 시 재배치 필요 |
-| Range Sharding | `0~999 → Shard0, 1000~1999 → Shard1` | 범위 조회 유리, 핫스팟 발생 가능 |
-| Directory Sharding | 별도 라우팅 테이블로 관리 | 유연하지만 라우팅 테이블이 SPOF |
+| Hash Sharding | `shard = hash(key) % N` | 고르게 퍼지지만, 샤드를 늘리면 데이터를 다시 옮겨야 한다 |
+| Range Sharding | `0~999 → Shard0, 1000~1999 → Shard1` | 범위 조회가 쉽지만, 한 샤드에 몰릴 수 있다(핫스팟) |
+| Directory Sharding | 어느 키가 어느 샤드인지 라우팅 테이블에 적어 둔다 | 유연하지만, 라우팅 테이블이 죽으면 전부 멈춘다(SPOF) |
 
 ### Shard Key 고르기
 
-좋은 Shard Key는 세 조건을 만족한다.
+좋은 Shard Key는 세 가지를 갖췄다.
 
-1. **균등 분산**: 특정 샤드에 데이터가 몰리지 않는다.
-2. **쿼리 라우팅 가능**: 대부분의 쿼리에 Shard Key가 들어 있다.
-3. **변하지 않음**: 키가 바뀌면 데이터를 다른 샤드로 옮겨야 한다.
+1. 데이터가 특정 샤드에 몰리지 않고 고르게 퍼진다.
+2. 대부분의 쿼리에 Shard Key가 들어 있어서, 어느 샤드로 갈지 바로 안다.
+3. 값이 바뀌지 않는다. 바뀌면 데이터를 다른 샤드로 옮겨야 한다.
 
-| 예시 | 적합도 | 이유 |
+| 예시 | 괜찮은가 | 이유 |
 |---|---|---|
-| `user_id` | 좋음 | 대부분의 쿼리가 사용자 기준, 균등 분산 |
-| `created_date` | 나쁨 | 최신 데이터에 쓰기가 집중 (핫스팟) |
-| `country` | 주의 | 국가별 데이터량 차이가 크면 편향 발생 |
+| `user_id` | 좋음 | 쿼리 대부분이 사용자 기준이고, 고르게 퍼진다 |
+| `created_date` | 나쁨 | 최신 날짜 샤드에만 쓰기가 몰린다 (핫스팟) |
+| `country` | 조심 | 나라별 데이터 양 차이가 크면 한쪽으로 쏠린다 |
 
 ### Sharding이 어려운 이유
 
 | 문제 | 설명 |
 |---|---|
-| Cross-shard JOIN | 여러 샤드에 걸친 JOIN이 불가하거나 매우 비쌈 |
-| Cross-shard 트랜잭션 | 분산 트랜잭션 필요, 성능과 복잡도 증가 |
-| 샤드 추가/리밸런싱 | 데이터 이동이 필요, 서비스 영향 |
-| Global unique ID | AUTO_INCREMENT 불가, 별도 ID 생성 전략 필요 (Snowflake 등) |
-| 집계 쿼리 | 모든 샤드를 조회하고 합쳐야 함 |
+| Cross-shard JOIN | 여러 샤드에 걸친 JOIN은 안 되거나 매우 비싸다 |
+| Cross-shard 트랜잭션 | 분산 트랜잭션이 필요해서 느려지고 복잡해진다 |
+| 샤드 추가/리밸런싱 | 데이터를 옮겨야 하고, 그동안 서비스가 영향을 받는다 |
+| Global unique ID | AUTO_INCREMENT를 못 쓰니 ID를 따로 만들어야 한다 (Snowflake 등) |
+| 집계 쿼리 | 모든 샤드를 조회해서 합쳐야 한다 |
 
 ## 무엇을 언제 쓰나
 
@@ -139,29 +139,33 @@ Shard0 Shard1 Shard2 Shard3
 
 ## 자주 깨지는 곳
 
-- **쓰기 직후 Replica에서 읽는다.** 복제 지연 때문에 방금 쓴 데이터가 안 보인다.
-- **Shard Key를 시간 기반으로 잡는다.** 최신 샤드에만 쓰기가 몰린다.
-- **필요 없는 시점에 Sharding을 들인다.** 얻는 것 없이 복잡도만 는다.
-- **Cross-shard 쿼리가 많은 설계에 Sharding을 적용한다.** 모든 샤드를 훑느라 오히려 느려진다.
+- 쓰자마자 Replica에서 읽으면, 복제가 늦어서 방금 쓴 데이터가 안 보인다.
+- Shard Key를 시간으로 잡으면, 최신 샤드에만 쓰기가 몰린다.
+- 아직 필요 없는데 Sharding을 들이면, 얻는 것 없이 복잡하기만 하다.
+- 여러 샤드에 걸친 쿼리가 많은 설계에 Sharding을 하면, 모든 샤드를 훑느라 오히려 느려진다.
 
 ## 한 번에 설명하기
 
-> Replication은 데이터를 복제해 읽기를 나누고 가용성을 높이는 방법입니다. 복제 지연이 있어서, 저는 쓰기 직후의 읽기는 Master로 보냅니다. Sharding은 데이터를 쪼개 쓰기와 용량을 나누는데, Shard Key는 고르게 분산되고, 대부분의 쿼리에 들어 있고, 바뀌지 않는 값이어야 합니다. 확장은 인덱스 최적화, 캐시, Replication 순으로 하고, Sharding은 복잡도가 매우 커서 마지막에 검토합니다.
+> Replication은 데이터를 복사해 두고 읽기를 나눠 받는 방법이라, 한 대가 죽어도 버틸 수 있습니다. 복제가 늦을 수 있어서, 저는 쓰자마자 읽는 요청은 Master로 보냅니다.
+>
+> Sharding은 데이터를 쪼개서 쓰기와 용량을 나눕니다. Shard Key는 고르게 퍼지고, 대부분의 쿼리에 들어 있고, 바뀌지 않는 값으로 고릅니다.
+>
+> 확장은 인덱스와 쿼리 손보기, 캐시, Replication 순서로 하고, Sharding은 너무 복잡해서 맨 마지막에 꺼냅니다.
 
 ## 꼬리 질문
 
 > [!question]- Replication lag으로 인한 정합성 문제를 어떻게 해결하는가?
-> 쓰기 직후 읽기는 Master로 라우팅합니다. 또는 semi-synchronous replication으로 최소 1개 Replica에 전파를 보장합니다. 모든 읽기를 Master로 보내면 Replication의 의미가 없으므로 선별적으로 적용합니다.
+> 쓰자마자 읽는 요청만 Master로 보냅니다. 아니면 semi-synchronous replication으로 Replica 하나 이상에 전달된 걸 확인하고 나서 응답합니다. 읽기를 다 Master로 보내면 Replica를 둔 이유가 없으니, 꼭 필요한 요청만 골라서 보냅니다.
 
 > [!question]- Shard Key를 잘못 선택하면 어떤 문제가 생기는가?
-> 특정 샤드에 데이터가 집중(핫스팟)되어 해당 샤드만 과부하가 걸립니다. 또한 대부분의 쿼리에 Shard Key가 포함되지 않으면 모든 샤드를 조회(scatter-gather)해야 해서 오히려 느려집니다.
+> 데이터가 한 샤드에 몰려서(핫스팟) 그 샤드만 과부하가 걸립니다. 그리고 쿼리 대부분에 Shard Key가 없으면 매번 모든 샤드를 조회해서 합쳐야(scatter-gather) 해서 오히려 느려집니다.
 
 > [!question]- Sharding 없이 확장할 수 있는 방법은?
-> 인덱스/쿼리 최적화, 캐시(Redis), Read Replica, 테이블 수직 분할, 아카이빙 등으로 단일 DB의 한계를 최대한 늘린 뒤에 Sharding을 검토합니다.
+> 인덱스와 쿼리를 손보고, 캐시(Redis)를 두고, Read Replica를 붙이고, 테이블을 수직으로 나누고, 오래된 데이터를 아카이빙합니다. 이렇게 DB 한 대로 갈 수 있는 데까지 간 다음에 Sharding을 꺼냅니다.
 
 ## 참고
 
-공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+2026년 11월에 확인한 공식 문서다.
 
 - [MySQL 8.4: Replication](https://dev.mysql.com/doc/refman/8.4/en/replication.html)
 

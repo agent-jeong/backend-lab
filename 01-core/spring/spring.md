@@ -1,13 +1,13 @@
 ---
 title: Spring
-description: Spring 핵심 개념과 실무 학습 인덱스
+description: Spring 노트 목록과 읽는 순서
 tags: [spring]
 comments: false
 ---
 
 # Spring
 
-IoC/DI, 빈 생명주기, AOP와 프록시, MVC 요청 흐름, 트랜잭션을 다룬다. 요청 하나가 어떤 객체와 프록시를 지나 처리되는지가 중심이다.
+IoC와 DI, 빈 생명주기, AOP와 프록시, MVC 요청 흐름, 트랜잭션을 다룬다. 요청 하나가 들어와서 어떤 객체와 프록시를 지나 처리되는지를 따라가며 읽으면 된다.
 
 ## 읽는 순서
 
@@ -23,12 +23,12 @@ IoC/DI, 빈 생명주기, AOP와 프록시, MVC 요청 흐름, 트랜잭션을 �
 10. [[threadlocal-and-async-transaction|ThreadLocal과 비동기 트랜잭션]]
 11. [[configuration-and-profile|Configuration과 Profile]]
 
-## 핵심 질문
+## 먼저 답해 볼 질문
 
 - Spring을 실무에서 왜 사용하는가?
 - Spring은 객체 생성과 의존성 관리를 어떻게 해결하는가?
 - Spring Bean은 언제 생성되고 어떻게 주입되는가?
-- AOP는 어떤 문제를 해결하기 위해 사용하는가?
+- AOP는 어떤 문제를 풀려고 쓰는가?
 - @Transactional은 어떤 원리로 동작하고 언제 실패하는가?
 - Spring MVC에서 요청은 어떤 순서로 처리되는가?
 - 검증과 예외 처리는 어떤 계층에서 해야 하는가?
@@ -36,7 +36,7 @@ IoC/DI, 빈 생명주기, AOP와 프록시, MVC 요청 흐름, 트랜잭션을 �
 
 ## 실무에서 보는 것
 
-- annotation 이름보다 "언제, 어떤 객체(프록시, 컨테이너, DispatcherServlet)가 끼어드는가"를 설명할 수 있게 공부한다.
+- annotation 이름을 외우기보다, 언제 어떤 객체가 끼어드는지를 말할 수 있게 공부한다. 끼어드는 쪽은 대개 프록시, 컨테이너, DispatcherServlet이다.
 - 실무 장애는 대부분 Bean 주입, 프록시, 트랜잭션, 예외 처리의 경계에서 난다. 같은 클래스 안에서 호출한 `@Transactional` 메서드가 프록시를 거치지 않아 트랜잭션이 안 걸리는 게 대표적이다.
 
 ## 내 사례

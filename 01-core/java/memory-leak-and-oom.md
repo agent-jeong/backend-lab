@@ -1,14 +1,14 @@
 ---
 title: 메모리 누수와 OOM 원인 분석
-description: Java 메모리 누수와 OOM 실무 원인 분석 및 대응
+description: 메모리 누수가 생기는 흔한 코드와, OOM이 났을 때 heap dump로 원인을 찾는 순서
 tags: [concept, java]
 ---
 
 # 메모리 누수와 OOM 원인 분석
 
-메모리 누수는 더 이상 필요 없는 객체가 GC에 회수되지 않고 heap에 계속 남는 현상이다. OOM(OutOfMemoryError)은 JVM이 더 이상 메모리를 할당하지 못할 때 나는 에러이고, 누수가 쌓인 끝에 오는 경우가 많다.
+메모리 누수는 이제 쓸 일이 없는 객체를 어딘가에서 계속 붙잡고 있어서, GC가 치우지 못하고 heap에 쌓이는 것이다. OOM(OutOfMemoryError)은 JVM이 더 이상 메모리를 내줄 수 없을 때 나는 에러이고, 누수가 쌓이다 끝내 터지는 경우가 많다.
 
-누수는 바로 장애가 나지 않아서 늦게 발견된다. 배포 며칠 뒤에야 OOM이 나 원인 추적이 어렵고, 그 전에는 GC가 점점 잦아지며 응답 시간이 서서히 나빠진다. 컨테이너에서는 OOM Killer가 프로세스를 갑자기 죽인다. 그리고 heap dump가 없으면 어떤 객체가 문제인지 알 방법이 없다.
+누수는 바로 장애로 이어지지 않아서 늦게 발견된다. 배포하고 며칠 지나서야 OOM이 나니 무엇을 바꿨을 때부터인지 찾기 어렵다. 그 전까지는 GC가 점점 자주 돌면서 응답 시간이 조금씩 나빠진다. 컨테이너에서는 OOM Killer가 프로세스를 예고 없이 죽인다. heap dump가 없으면 어떤 객체가 문제인지 알 방법이 없다.
 
 ## OOM 메시지별 원인
 
@@ -33,7 +33,7 @@ public void process(String key, Object value) {
 }
 ```
 
-static 컬렉션은 애플리케이션이 살아 있는 동안 GC 대상이 아니다. 크기 제한이 없으면 시간이 갈수록 메모리를 먹는다. 캐시가 목적이라면 크기 제한과 만료 정책이 있는 구현체(Caffeine, Guava Cache 등)를 쓴다.
+static 컬렉션은 애플리케이션이 떠 있는 동안 GC가 치우지 않는다. 크기 제한이 없으면 시간이 갈수록 메모리를 차지한다. 캐시로 쓰려는 거라면 크기 제한과 만료 시간을 둘 수 있는 구현체(Caffeine, Guava Cache 등)를 쓴다.
 
 ### 리소스를 닫지 않는다
 
@@ -55,9 +55,9 @@ public String readFile(String path) throws IOException {
 }
 ```
 
-DB Connection, HTTP Connection, InputStream이 대표적이다.
+DB Connection, HTTP Connection, InputStream을 특히 자주 빠뜨린다.
 
-### 리스너·콜백을 등록하고 해제하지 않는다
+### 리스너나 콜백을 등록하고 해제하지 않는다
 
 ```java
 // 이벤트 리스너를 등록만 하고 해제하지 않으면
@@ -78,7 +78,7 @@ public void process() {
 }
 ```
 
-스레드 풀에서는 스레드가 반환돼도 `remove()`하지 않은 값이 그대로 남는다.
+스레드 풀에서는 작업이 끝나 스레드가 풀로 돌아가도, `remove()`하지 않은 값은 그 스레드에 그대로 남는다.
 
 ### 큰 객체를 필요 이상 오래 잡고 있다
 
@@ -94,7 +94,7 @@ public class ReportGenerator {
 }
 ```
 
-지역 변수로 충분한 데이터를 필드에 두면 객체가 쓸데없이 오래 산다.
+지역 변수로 충분한 데이터를 필드에 두면, 메서드가 끝난 뒤에도 객체가 쓸데없이 오래 살아남는다.
 
 ## 분석 순서
 
@@ -122,7 +122,7 @@ java -XX:+HeapDumpOnOutOfMemoryError \
      -jar app.jar
 ```
 
-운영에서는 `-XX:+HeapDumpOnOutOfMemoryError`를 미리 켜 둔다. OOM이 난 뒤에는 dump를 뜰 기회가 없다.
+운영에서는 `-XX:+HeapDumpOnOutOfMemoryError`를 미리 켜 둔다. OOM이 나고 나면 dump를 뜰 기회가 없다.
 
 ### 3. Heap dump 분석
 
@@ -155,33 +155,37 @@ java -XX:MaxRAMPercentage=75.0 -jar app.jar
 
 ## 자주 깨지는 곳
 
-- **`-XX:+HeapDumpOnOutOfMemoryError`를 켜 두지 않는다.** OOM이 나도 분석할 dump가 없다.
-- **heap dump 없이 `-Xmx`만 올린다.** 누수는 그대로고 터지는 시점만 미뤄진다.
-- **`ThreadLocal`을 `remove()`하지 않는다.** 재사용된 스레드에 이전 요청 값이 남는다.
-- **static 컬렉션에 크기 제한 없이 계속 넣는다.** 시간이 지날수록 heap을 다 차지한다.
-- **Connection, Stream을 try-with-resources 없이 쓴다.** 예외 경로에서 닫히지 않는다.
-- **컨테이너 한도와 JVM 메모리 설정을 따로 본다.** heap 밖 메모리까지 합쳐 한도를 넘는다.
+- `-XX:+HeapDumpOnOutOfMemoryError`를 켜 두지 않으면, OOM이 나도 열어 볼 dump가 없다.
+- heap dump를 보지 않고 `-Xmx`만 올리면, 누수는 그대로이고 터지는 시점만 늦어진다.
+- `ThreadLocal`을 `remove()`하지 않으면, 다시 쓰이는 스레드에 이전 요청의 값이 남는다.
+- static 컬렉션에 크기 제한 없이 계속 넣으면, 시간이 지날수록 heap을 다 차지한다.
+- Connection이나 Stream을 try-with-resources 없이 쓰면, 예외가 났을 때 닫히지 않는다.
+- 컨테이너 한도와 JVM 메모리 설정을 따로따로 보면, heap 밖 메모리까지 더해져 한도를 넘는다.
 
 ## 한 번에 설명하기
 
-> 메모리 누수는 필요 없는 객체가 GC에 회수되지 않고 heap에 남는 현상이고, 쌓이면 GC가 점점 잦아지다 OOM으로 끝납니다. 흔한 원인은 제거 없는 static 컬렉션, 닫지 않은 리소스, remove하지 않은 ThreadLocal입니다. 그래서 운영에는 HeapDumpOnOutOfMemoryError를 미리 켜 두고, 문제가 나면 Eclipse MAT에서 Dominator Tree와 GC Roots로 무엇이 왜 안 지워지는지 추적합니다. 컨테이너에서는 heap 밖 메모리를 감안해 `-Xmx`를 한도의 70~80% 이하로 둡니다.
+> 메모리 누수는 필요 없는 객체를 GC가 치우지 못하고 heap에 남는 것입니다. 쌓이면 GC가 점점 자주 돌다가 결국 OOM이 납니다. 흔한 원인은 넣기만 하고 빼지 않는 static 컬렉션, 닫지 않은 리소스, remove하지 않은 ThreadLocal입니다.
+>
+> 그래서 운영 환경에는 HeapDumpOnOutOfMemoryError를 미리 켜 둡니다. 문제가 나면 Eclipse MAT에서 Dominator Tree와 GC Roots로 무엇이 왜 안 치워지는지 따라갑니다.
+>
+> 컨테이너에서는 heap 밖에서 쓰는 메모리를 생각해서 `-Xmx`를 한도의 70~80% 이하로 둡니다.
 
 ## 꼬리 질문
 
-> [!question]- 메모리 누수와 메모리 부족의 차이는?
-> 메모리 부족은 단순히 데이터가 많아서 heap이 모자란 것이고, 메모리 누수는 필요 없는 객체가 GC되지 않고 계속 쌓여서 결국 OOM에 이르는 것입니다.
+> [!question]- 메모리 누수와 메모리 부족은 뭐가 다른가?
+> 메모리 부족은 그냥 데이터가 많아서 heap이 모자란 겁니다. 메모리 누수는 필요 없는 객체가 치워지지 않고 계속 쌓이다가 결국 OOM이 나는 겁니다.
 
-> [!question]- `OutOfMemoryError: Java heap space`와 `GC overhead limit exceeded`의 차이는?
-> `heap space`는 할당할 공간 자체가 없는 것이고, `GC overhead limit exceeded`는 GC에 98% 이상 시간을 쓰면서 2% 미만만 회수하는 상태입니다.
+> [!question]- `OutOfMemoryError: Java heap space`와 `GC overhead limit exceeded`는 뭐가 다른가?
+> `heap space`는 객체를 둘 공간이 아예 없는 겁니다. `GC overhead limit exceeded`는 전체 시간의 98% 넘게 GC를 돌리는데도 heap의 2%도 못 돌려받는 상태입니다.
 
-> [!question]- heap dump에서 메모리 누수를 어떻게 찾는가?
-> Eclipse MAT에서 Dominator Tree로 가장 큰 객체를 찾고, GC Roots 경로를 추적해서 어떤 참조가 회수를 막고 있는지 확인합니다.
+> [!question]- heap dump에서 누수를 어떻게 찾나?
+> Eclipse MAT에서 Dominator Tree로 메모리를 가장 많이 차지하는 객체를 찾습니다. 그다음 GC Roots까지 참조 경로를 따라가서, 어떤 참조가 그 객체를 붙잡고 있는지 확인합니다.
 
-> [!question]- ThreadLocal이 스레드 풀 환경에서 누수를 일으키는 이유는?
-> 스레드 풀의 스레드는 재사용되므로 `remove()`를 호출하지 않으면 이전 요청의 값이 남아있습니다. 스레드 수만큼 값이 계속 유지됩니다.
+> [!question]- 스레드 풀에서 ThreadLocal은 왜 누수를 일으키나?
+> 스레드 풀의 스레드는 계속 다시 쓰이기 때문에, `remove()`를 안 부르면 이전 요청의 값이 그대로 남아 있습니다. 그렇게 스레드 수만큼 값이 계속 붙잡혀 있게 됩니다.
 
-> [!question]- 컨테이너 환경에서 JVM 메모리를 어떻게 설정하는가?
-> `-Xmx`를 컨테이너 한도의 70~80%로 설정합니다. heap 외에 Metaspace, Stack, Direct Buffer 등이 필요하므로 한도와 같게 설정하면 OOM Kill됩니다.
+> [!question]- 컨테이너에서는 JVM 메모리를 어떻게 잡나?
+> `-Xmx`를 컨테이너 한도의 70~80%로 잡습니다. heap 말고도 Metaspace, Stack, Direct Buffer 같은 곳에 메모리가 필요해서, 한도와 똑같이 잡으면 OOM Kill을 당합니다.
 
 ## 점검 퀴즈
 
@@ -220,7 +224,7 @@ java -XX:MaxRAMPercentage=75.0 -jar app.jar
 
 ## 참고
 
-공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+2026년 11월에 확인한 공식 문서다.
 
 - [Java SE 21 Troubleshooting Guide: Memory Leaks](https://docs.oracle.com/en/java/javase/21/troubleshoot/troubleshooting-memory-leaks.html)
 

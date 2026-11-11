@@ -1,14 +1,14 @@
 ---
 title: OSIV (Open Session In View)
-description: OSIV의 동작 원리, Spring Boot 기본값, 실무에서 끄는 판단 기준
+description: Spring Boot에서 기본으로 켜져 있는 OSIV가 커넥션을 어떻게 붙잡고, 언제 끄는지
 tags: [concept, jpa]
 ---
 
 # OSIV (Open Session In View)
 
-OSIV는 영속성 컨텍스트(EntityManager)의 생명주기를 트랜잭션이 아니라 HTTP 요청 전체로 늘려서, 컨트롤러나 뷰 렌더링에서도 지연 로딩이 되게 하는 설정이다.
+OSIV는 영속성 컨텍스트(EntityManager)를 트랜잭션이 끝날 때 닫지 않고 HTTP 요청이 끝날 때까지 열어 두는 설정이다. 그래서 컨트롤러나 뷰를 그릴 때도 지연 로딩이 된다.
 
-Spring Boot에서는 **기본값이 `true`**라서 모르면 켜진 채로 운영한다. 컨트롤러에서 지연 로딩이 편하게 되는 대가로 DB 커넥션을 응답이 끝날 때까지 잡고 있고, 트래픽이 늘면 커넥션 풀이 고갈되어 갑자기 장애가 난다.
+Spring Boot는 기본값이 `true`라서, 모르고 있으면 켜진 채로 운영하게 된다. 컨트롤러에서 지연 로딩이 편해지는 대신 DB 커넥션을 응답이 끝날 때까지 쥐고 있다. 평소엔 멀쩡하다가 트래픽이 몰리는 날 커넥션 풀이 바닥나 갑자기 장애가 난다.
 
 ## 동작
 
@@ -31,9 +31,9 @@ HTTP 요청 시작 ────────────────────�
 └────────────────────────────────────────────────┘
 ```
 
-- 영속성 컨텍스트가 HTTP 요청 전체 동안 살아 있다. 트랜잭션이 끝나도 유지된다.
-- 컨트롤러와 뷰에서 지연 로딩이 된다(읽기 전용 쿼리 실행).
-- DB 커넥션을 응답이 끝날 때까지 반환하지 않는다.
+- 영속성 컨텍스트가 HTTP 요청 내내 살아 있다. 트랜잭션이 끝나도 닫히지 않는다.
+- 컨트롤러와 뷰에서 지연 로딩이 된다(읽기 쿼리만 나간다).
+- DB 커넥션을 응답이 끝날 때까지 돌려주지 않는다.
 
 ### OSIV OFF
 
@@ -51,8 +51,8 @@ HTTP 요청 시작 ────────────────────�
 └────────────────────────────────────────────────┘
 ```
 
-- 영속성 컨텍스트가 트랜잭션과 함께 종료된다.
-- DB 커넥션을 트랜잭션이 끝나는 즉시 반환한다.
+- 영속성 컨텍스트가 트랜잭션과 함께 닫힌다.
+- DB 커넥션을 트랜잭션이 끝나자마자 돌려준다.
 - 컨트롤러에서 지연 로딩하면 `LazyInitializationException`이 난다.
 
 ## 설정
@@ -64,7 +64,7 @@ spring:
     open-in-view: false  # OSIV 비활성화 (기본값: true)
 ```
 
-OSIV가 켜진 채로 Spring Boot를 띄우면 경고 로그가 나온다.
+`spring.jpa.open-in-view`를 따로 설정하지 않은 채 띄우면, 기본값으로 켜졌다는 경고 로그가 나온다. 값을 `true`로 직접 적으면 이 경고는 사라진다.
 ```
 WARN: spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering.
 ```
@@ -73,21 +73,21 @@ WARN: spring.jpa.open-in-view is enabled by default. Therefore, database queries
 
 | 상황 | 선택 | 이유 |
 |---|---|---|
-| 트래픽이 적고 빠르게 개발해야 할 때 | OSIV ON | 편의성 우선 |
-| 트래픽이 많고 커넥션 풀이 중요한 서비스 | OSIV OFF | 커넥션 점유 시간 최소화 |
-| API 서버 (뷰 렌더링 없음) | OSIV OFF | 지연 로딩 편의가 필요 없음 |
-| 외부 API 호출이 응답에 포함되는 경우 | OSIV OFF | 외부 대기 중에도 커넥션을 점유하면 위험 |
+| 트래픽이 적고 빨리 만들어야 할 때 | OSIV ON | 편한 게 먼저다 |
+| 트래픽이 많아 커넥션이 모자랄 수 있는 서비스 | OSIV OFF | 커넥션을 쥐는 시간을 줄인다 |
+| API 서버 (뷰 렌더링 없음) | OSIV OFF | 뷰에서 지연 로딩할 일이 없다 |
+| 요청 처리 중에 외부 API를 부를 때 | OSIV OFF | 외부 응답을 기다리는 동안에도 커넥션을 쥐고 있게 된다 |
 
 ## 끈 뒤에 할 일
 
-OSIV를 끄면 `LazyInitializationException`이 나는 곳이 생기므로 코드 구조를 바꿔야 한다. 원칙은 Service 계층의 트랜잭션 안에서 필요한 데이터를 다 로딩하는 것이다.
+OSIV를 끄면 `LazyInitializationException`이 나는 곳이 생기니 코드를 고쳐야 한다. 방향은 하나다. Service 계층의 트랜잭션 안에서 필요한 데이터를 다 불러 둔다.
 
-| 전략 | 방법 |
+| 방법 | 어떻게 |
 |---|---|
-| Fetch Join | `@Query`에서 `JOIN FETCH`로 필요한 연관 엔티티를 한 번에 로딩 |
-| DTO 조회 | Service에서 필요한 데이터만 DTO로 변환해서 반환 |
-| @EntityGraph | 특정 조회에서 EAGER로 가져올 연관 관계 지정 |
-| batch size | `default_batch_fetch_size` 설정으로 IN 쿼리로 일괄 로딩 |
+| Fetch Join | `@Query`에서 `JOIN FETCH`로 필요한 연관 엔티티를 한 번에 불러온다 |
+| DTO 조회 | Service에서 필요한 데이터만 DTO로 바꿔서 돌려준다 |
+| @EntityGraph | 이 조회에서만 바로 가져올 연관 관계를 지정한다 |
+| batch size | `default_batch_fetch_size`를 걸어 IN 쿼리로 묶어서 불러온다 |
 
 ```java
 // OSIV OFF 환경에서의 Service 설계
@@ -107,24 +107,28 @@ public class OrderService {
 
 ## 자주 깨지는 곳
 
-- **OSIV가 기본으로 켜져 있는 걸 모른다.** 개발 환경에서는 커넥션이 남아돌다가 운영 트래픽에서 갑자기 장애가 난다.
-- **예외가 난 곳을 전부 EAGER로 바꿔서 막는다.** N+1이 생긴다.
-- **Service가 엔티티를 그대로 컨트롤러에 넘긴다.** 직렬화 시점에 지연 로딩이 일어난다.
+- OSIV가 기본으로 켜져 있는 걸 모르면, 개발 환경에서는 커넥션이 남아돌다가 운영 트래픽에서 갑자기 장애가 난다.
+- OSIV를 끈 뒤 예외가 난 곳을 전부 EAGER로 바꿔 막으면, N+1이 생긴다.
+- Service가 엔티티를 그대로 컨트롤러에 넘기면, JSON으로 바꾸는 순간 지연 로딩이 일어난다.
 
 ## 한 번에 설명하기
 
-> OSIV는 영속성 컨텍스트를 HTTP 요청 전체로 늘리는 설정이고 Spring Boot 기본값은 `true`입니다. 켜 두면 컨트롤러에서도 지연 로딩이 되지만 DB 커넥션을 응답이 끝날 때까지 잡고 있어서, 트래픽이 많은 서비스에서는 커넥션 풀 고갈을 막으려고 끕니다. 끈 뒤에는 Service 트랜잭션 안에서 fetch join이나 batch size로 필요한 데이터를 다 읽고 DTO로 바꿔서 반환합니다.
+> OSIV는 영속성 컨텍스트를 HTTP 요청이 끝날 때까지 열어 두는 설정이고, Spring Boot 기본값은 `true`입니다.
+>
+> 켜 두면 컨트롤러에서도 지연 로딩이 되지만, DB 커넥션을 응답이 끝날 때까지 쥐고 있습니다. 그래서 트래픽이 많은 서비스에서는 커넥션 풀이 바닥나지 않게 끕니다.
+>
+> 끈 뒤에는 Service 트랜잭션 안에서 fetch join이나 batch size로 필요한 데이터를 다 읽고, DTO로 바꿔서 돌려줍니다.
 
 ## 꼬리 질문
 
 > [!question]- OSIV를 켜면 왜 커넥션 풀이 고갈되는가?
-> 영속성 컨텍스트가 요청 끝까지 유지되면서 DB 커넥션도 함께 점유합니다. 외부 API 호출이나 뷰 렌더링이 느리면 그 시간 동안 커넥션이 묶여 있어서 다른 요청이 커넥션을 얻지 못합니다.
+> 영속성 컨텍스트가 요청 끝까지 열려 있으면서 DB 커넥션도 같이 쥐고 있어서입니다. 외부 API 호출이나 뷰 렌더링이 느리면 그동안 커넥션이 묶여 있고, 다른 요청은 커넥션을 못 얻어 기다립니다.
 
 > [!question]- OSIV를 끄면 LazyInitializationException이 나는 이유는?
-> 트랜잭션이 끝나면 영속성 컨텍스트도 종료됩니다. 이후 엔티티의 지연 로딩 프록시에 접근하면 세션이 없어서 예외가 발생합니다.
+> 트랜잭션이 끝나면 영속성 컨텍스트도 같이 닫히니까요. 그 뒤에 지연 로딩 프록시를 건드리면 쿼리를 날릴 세션이 없어서 예외가 납니다.
 
 > [!question]- OSIV OFF에서 지연 로딩 문제를 해결하는 방법은?
-> Fetch Join, DTO 조회, @EntityGraph, batch_fetch_size 설정 등으로 Service 계층에서 필요한 데이터를 미리 로딩합니다. 엔티티 대신 DTO를 컨트롤러에 반환하는 것이 근본적인 해결입니다.
+> Fetch Join, DTO 조회, @EntityGraph, batch_fetch_size 설정 같은 방법으로 Service 계층에서 필요한 데이터를 미리 불러 둡니다. 결국은 엔티티 대신 DTO를 컨트롤러에 넘기는 게 제대로 된 해결입니다.
 
 ## 점검 퀴즈
 
@@ -163,7 +167,7 @@ public class OrderService {
 
 ## 참고
 
-공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+2026년 11월에 확인한 공식 문서다.
 
 - [Spring Boot: Open EntityManager in View](https://docs.spring.io/spring-boot/reference/data/sql.html)
 

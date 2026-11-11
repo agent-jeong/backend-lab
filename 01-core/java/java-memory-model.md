@@ -1,18 +1,18 @@
 ---
 title: Java 메모리 모델
-description: Java 동시성에서 visibility, atomicity, happens-before를 이해하는 기준
+description: 한 스레드가 바꾼 값을 다른 스레드가 언제 보는지 정하는 Java 메모리 모델과 volatile, synchronized
 tags: [concept, java]
 ---
 
 # Java 메모리 모델과 happens-before
 
-Java Memory Model(JMM)은 여러 스레드가 공유 변수를 읽고 쓸 때 값이 언제 보이는지, 어떤 순서로 보이는지, 동기화가 무엇을 보장하는지를 정한 규칙이다. 코드가 순서대로 실행되는 것처럼 보여도, 다른 스레드가 바뀐 값을 바로 본다는 보장은 없다.
+Java Memory Model(JMM)은 여러 스레드가 같은 변수를 읽고 쓸 때, 바뀐 값이 다른 스레드에 언제 보이는지, 어떤 순서로 보이는지, `volatile`이나 `synchronized`를 쓰면 무엇이 달라지는지를 정한 규칙이다. 코드가 위에서 아래로 실행되는 것처럼 보여도, 다른 스레드가 바뀐 값을 바로 본다는 보장은 없다.
 
-이걸 모르면 한 스레드가 바꾼 값을 다른 스레드가 계속 못 보고, `volatile`이면 다 해결된다고 믿고, `count++`가 원자적이라고 착각하고, double-checked locking을 잘못 만든다. 이런 버그는 재현이 잘 안 돼서 테스트는 통과하고 운영에서 간헐적으로 터진다.
+이걸 모르면 이런 일이 생긴다. 한 스레드가 바꾼 값을 다른 스레드가 계속 옛 값으로 본다. `volatile`만 붙이면 다 해결된다고 믿는다. `count++`가 한 번에 끝나는 연산이라고 착각한다. double-checked locking을 잘못 만든다. 이런 버그는 재현이 잘 안 돼서, 테스트는 통과하고 운영에서 가끔씩 터진다.
 
 ## Visibility와 Atomicity
 
-visibility는 한 스레드의 변경이 다른 스레드에 보이느냐의 문제다.
+visibility는 한 스레드가 바꾼 값이 다른 스레드에 보이느냐의 문제다.
 
 ```java
 class StopFlag {
@@ -36,7 +36,7 @@ class StopFlag {
 private volatile boolean running = true;
 ```
 
-하지만 `volatile`은 복합 연산의 atomicity를 보장하지 않는다.
+하지만 `volatile`을 붙여도 여러 단계로 된 연산이 한 번에 끝나지는(atomicity) 않는다.
 
 ```java
 volatile int count = 0;
@@ -46,11 +46,11 @@ void increment() {
 }
 ```
 
-카운터처럼 원자성이 필요하면 `AtomicInteger`, `LongAdder`, `synchronized`, lock 중에서 고른다.
+카운터처럼 읽고 더하고 쓰는 과정이 중간에 끊기면 안 되면 `AtomicInteger`, `LongAdder`, `synchronized`, lock 중에서 고른다.
 
 ## happens-before
 
-happens-before는 한 작업의 결과가 다른 작업에 보이도록 보장하는 관계다. 동시성 코드에서 "다른 스레드가 이 값을 언제 볼 수 있나"를 판단하는 기준이 이것이다.
+happens-before는 "A 작업의 결과가 B 작업에서 반드시 보인다"는 관계다. 동시성 코드에서 "다른 스레드가 이 값을 언제 볼 수 있나"를 따질 때 이 관계가 있는지를 본다.
 
 | 관계 | 의미 |
 |---|---|
@@ -69,7 +69,7 @@ happens-before는 한 작업의 결과가 다른 작업에 보이도록 보장�
 | lock | 사용하지 않음 | monitor lock 사용 |
 | 용도 | 상태 플래그, 단순 publish | 복합 상태 변경, 불변식 보호 |
 
-`volatile`은 상태 플래그처럼 단순한 공유 값에 쓴다. 여러 값을 함께 바꾸거나 read-modify-write가 필요하면 lock이나 atomic class를 쓴다.
+`volatile`은 멈춤 플래그처럼 단순한 공유 값에 쓴다. 여러 값을 함께 바꾸거나, 읽고 고치고 다시 쓰는(read-modify-write) 연산이면 lock이나 atomic class를 쓴다.
 
 ## 상황별로 무엇을 쓰나
 
@@ -81,40 +81,44 @@ happens-before는 한 작업의 결과가 다른 작업에 보이도록 보장�
 | 읽기 위주 공유 데이터 | 불변 객체, copy-on-write |
 | 요청 단위 상태 | 공유하지 않고 지역 변수로 유지 |
 
-가장 좋은 방법은 공유 상태 자체를 줄이는 것이다.
+가장 좋은 방법은 여러 스레드가 함께 건드리는 상태를 처음부터 줄이는 것이다.
 
 ## 자주 깨지는 곳
 
-- **`volatile`로 `count++`가 안전해진다고 생각한다.** 읽기와 쓰기 사이에 다른 스레드가 끼어들어 증가분이 사라진다.
-- **mutable 객체를 동기화 없이 여러 스레드가 공유한다.** 반쯤 바뀐 상태가 다른 스레드에 보인다.
-- **`HashMap`을 여러 스레드가 동시에 수정한다.** 값이 유실된다.
-- **lazy initialization을 동기화 없이 만든다.** 객체가 두 번 만들어지거나 초기화가 덜 된 객체가 보인다.
-- **테스트에서 재현되지 않으니 문제없다고 본다.** 동시성 버그는 운영 부하에서 간헐적으로만 드러난다.
+- `volatile`을 붙이면 `count++`가 안전해진다고 생각하면, 읽기와 쓰기 사이에 다른 스레드가 끼어들어 더한 값이 사라진다.
+- 바뀌는 객체를 동기화 없이 여러 스레드가 함께 쓰면, 반쯤 바뀐 상태가 다른 스레드에 보인다.
+- `HashMap`을 여러 스레드가 동시에 고치면, 값이 사라진다.
+- 처음 쓸 때 만드는(lazy initialization) 코드를 동기화 없이 짜면, 객체가 두 번 만들어지거나 초기화가 덜 된 객체가 보인다.
+- 테스트에서 재현되지 않으니 괜찮다고 보면, 운영에서 부하가 걸릴 때 가끔씩만 터지는 버그를 놓친다.
 
 ## 확인하는 방법
 
-- 코드 리뷰에서 static mutable state와 singleton의 mutable field를 찾는다.
-- 공유 변수에 read-modify-write 연산이 있는지 본다.
-- 동시성 테스트는 `CountDownLatch`로 스레드 시작 시점을 맞춘다.
-- thread dump와 메트릭으로 lock contention이나 blocked thread를 본다.
+- 코드 리뷰에서 바뀔 수 있는 static 필드와, singleton 객체의 바뀔 수 있는 필드를 찾는다.
+- 공유 변수에 읽고 고치고 쓰는 연산이 있는지 본다.
+- 동시성 테스트는 `CountDownLatch`로 스레드들이 동시에 출발하게 맞춘다.
+- thread dump와 메트릭으로 lock을 서로 기다리는 경합(lock contention)이나 blocked thread를 본다.
 
 ## 한 번에 설명하기
 
-> Java Memory Model은 여러 스레드가 공유 데이터를 볼 때 visibility와 실행 순서를 정하는 규칙입니다. volatile은 변경이 보이는 것은 보장하지만 count++ 같은 복합 연산의 원자성은 보장하지 않고, synchronized는 같은 monitor 기준으로 가시성과 임계 영역의 원자성을 함께 줍니다. 한 스레드의 변경이 언제 다른 스레드에 보이는지는 happens-before 관계로 설명합니다. 실무에서는 공유 상태부터 줄이고, 필요한 곳에만 atomic class, lock, 불변 객체를 골라 씁니다.
+> Java Memory Model은 여러 스레드가 같은 데이터를 볼 때, 바뀐 값이 언제 보이고 어떤 순서로 보이는지를 정한 규칙입니다. 한 스레드가 바꾼 값이 다른 스레드에 언제 보이는지는 happens-before 관계로 설명합니다.
+>
+> volatile은 바뀐 값이 보이게는 해 주지만, count++처럼 여러 단계로 된 연산을 한 번에 끝내 주지는 않습니다. synchronized는 같은 monitor를 잡는 스레드끼리 바뀐 값이 보이게 하고, 임계 영역 전체를 한 번에 하나만 실행하게 합니다.
+>
+> 실무에서는 여러 스레드가 함께 쓰는 상태부터 줄이고, 꼭 필요한 곳에만 atomic class, lock, 불변 객체를 골라 씁니다.
 
 ## 꼬리 질문
 
-> [!question]- visibility와 atomicity의 차이는 무엇인가?
-> visibility는 한 스레드의 변경이 다른 스레드에 보이는지이고, atomicity는 작업이 중간 상태 없이 하나의 단위로 수행되는지입니다.
+> [!question]- visibility와 atomicity는 뭐가 다른가?
+> visibility는 한 스레드가 바꾼 값이 다른 스레드에 보이느냐이고, atomicity는 작업이 중간에 끊기지 않고 한 덩어리로 끝나느냐입니다.
 
-> [!question]- `volatile`은 어떤 문제를 해결하고 어떤 문제를 해결하지 못하는가?
-> visibility와 일부 ordering을 보장하지만, `count++` 같은 read-modify-write 연산의 atomicity는 보장하지 못합니다.
+> [!question]- `volatile`로 풀리는 문제와 안 풀리는 문제는?
+> 바뀐 값이 보이는 문제와 일부 순서 문제는 풀립니다. 하지만 `count++`처럼 읽고 고치고 쓰는 연산이 한 번에 끝나게 해 주지는 못합니다.
 
-> [!question]- happens-before란 무엇인가?
-> 한 작업의 결과가 다른 작업에 보이도록 보장하는 관계입니다. `volatile`, `synchronized`, `start`, `join` 등이 대표적인 happens-before 관계를 만듭니다.
+> [!question]- happens-before가 뭔가?
+> 한 작업의 결과가 다른 작업에서 반드시 보이게 해 주는 관계입니다. `volatile`, `synchronized`, `start`, `join` 같은 것들이 이 관계를 만듭니다.
 
-> [!question]- `synchronized`는 어떤 보장을 제공하는가?
-> 같은 monitor를 기준으로 한 번에 하나의 스레드만 임계 영역에 들어가게 하고, unlock 이후 lock한 스레드가 이전 변경을 볼 수 있게 합니다.
+> [!question]- `synchronized`를 쓰면 무엇이 보장되나?
+> 같은 monitor를 쓰는 스레드 중 한 번에 하나만 임계 영역에 들어갑니다. 그리고 앞 스레드가 unlock하고 나면, 다음에 lock을 잡은 스레드가 앞에서 바꾼 값을 볼 수 있습니다.
 
 ## 점검 퀴즈
 
@@ -153,7 +157,7 @@ happens-before는 한 작업의 결과가 다른 작업에 보이도록 보장�
 
 ## 참고
 
-공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+2026년 11월에 확인한 공식 문서다.
 
 - [JLS 21: Threads and Locks (Memory Model)](https://docs.oracle.com/javase/specs/jls/se21/html/jls-17.html)
 

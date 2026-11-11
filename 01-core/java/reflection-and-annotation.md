@@ -1,14 +1,14 @@
 ---
 title: 리플렉션과 애노테이션 동작 원리
-description: Spring, JPA, Jackson의 기반이 되는 Reflection과 Annotation의 실무 이해
+description: Spring, JPA, Jackson이 안에서 쓰는 Reflection과 Annotation이 어떻게 동작하고 언제 막히는지
 tags: [concept, java]
 ---
 
 # 리플렉션과 애노테이션 동작 원리
 
-Reflection은 런타임에 클래스, 메서드, 필드 정보를 조회하거나 호출하는 기능이고, Annotation은 코드에 메타데이터를 붙여 프레임워크가 그걸 보고 동작하게 하는 문법이다. annotation은 스스로 아무것도 하지 않는다. 그것을 읽고 처리하는 코드가 있어야 동작한다.
+Reflection은 프로그램이 실행되는 중에 클래스의 메서드와 필드 목록을 읽고, 필요하면 그 메서드를 호출하거나 필드 값을 바꾸는 기능이다. Annotation은 코드에 표시를 붙여 두고, 프레임워크가 그 표시를 보고 동작하게 하는 문법이다. annotation은 혼자서는 아무것도 하지 않는다. 그 표시를 읽고 처리하는 코드가 있어야 동작한다.
 
-Spring, JPA, Jackson의 자동화는 대부분 이 둘 위에 서 있다. 원리를 모르면 이런 것들이 설명되지 않는다. Spring이 `@Component`, `@Service`, `@Autowired`를 어떻게 찾아 Bean으로 등록하는지, JPA가 Entity 필드를 어떻게 읽고 프록시를 만드는지, Jackson이 왜 기본 생성자나 getter, record constructor를 요구하는지, annotation을 붙였는데 runtime retention이 아니라서 동작하지 않는 이유, reflection 코드가 왜 컴파일 타임 검사와 성능에서 불리한지.
+Spring, JPA, Jackson이 알아서 해 주는 일은 대부분 이 둘로 돌아간다. 원리를 모르면 이런 질문에 답하지 못한다. Spring은 `@Component`, `@Service`, `@Autowired`를 어떻게 찾아 Bean으로 등록하나? JPA는 Entity 필드를 어떻게 읽고 프록시를 만드나? Jackson은 왜 기본 생성자나 getter, record constructor를 요구하나? annotation을 붙였는데 retention이 RUNTIME이 아니라서 아무 일도 안 일어나는 건 왜인가? reflection 코드는 왜 컴파일러가 검사해 주지 못하고 느린가?
 
 ## Annotation
 
@@ -19,7 +19,7 @@ public @interface TraceLog {
 }
 ```
 
-볼 설정은 `@Target`과 `@Retention` 두 가지다.
+정해야 할 설정은 `@Target`과 `@Retention` 두 가지다.
 
 | 설정 | 의미 |
 |---|---|
@@ -29,11 +29,11 @@ public @interface TraceLog {
 | `CLASS` | class 파일에는 있지만 런타임 reflection에서 일반적으로 읽지 않음 |
 | `RUNTIME` | 런타임 reflection으로 읽을 수 있음 |
 
-Spring처럼 런타임에 annotation을 읽어 동작하려면 보통 `RetentionPolicy.RUNTIME`이어야 한다.
+Spring처럼 실행 중에 annotation을 읽어서 동작하게 하려면 보통 `RetentionPolicy.RUNTIME`이어야 한다.
 
 ## Reflection
 
-런타임에 클래스 정보를 조회한다.
+실행 중에 클래스 정보를 읽는다. 아래는 `@TraceLog`가 붙은 메서드를 찾는 코드다.
 
 ```java
 Class<?> clazz = UserService.class;
@@ -45,7 +45,7 @@ for (Method method : clazz.getDeclaredMethods()) {
 }
 ```
 
-필드나 메서드의 접근 제한을 우회할 수도 있다.
+private 필드나 메서드에 접근 제한을 무시하고 들어갈 수도 있다.
 
 ```java
 Field field = User.class.getDeclaredField("name");
@@ -53,7 +53,7 @@ field.setAccessible(true);
 Object value = field.get(user);
 ```
 
-캡슐화를 깨고 오류를 런타임으로 미루는 기능이라, 일반 비즈니스 코드에서는 직접 쓰지 않는다.
+객체가 숨겨 둔 필드를 건드리고, 이름이 틀려도 실행해 봐야 알 수 있는 기능이다. 그래서 일반 비즈니스 코드에서는 직접 쓰지 않는다.
 
 ## 프레임워크는 어디에 쓰나
 
@@ -64,9 +64,9 @@ Object value = field.get(user);
 | Jackson | JSON field 매핑, constructor/property 탐색 |
 | Validation | `@NotNull`, `@Size` 같은 제약 조건 탐색 |
 
-Spring은 특정 annotation이 붙은 클래스를 찾아 BeanDefinition을 만들고, 런타임에 객체를 생성해 컨테이너에 등록한다.
+Spring은 정해진 annotation이 붙은 클래스를 찾아 BeanDefinition을 만들고, 실행 중에 객체를 생성해 컨테이너에 등록한다.
 
-JPA는 Entity를 프록시로 감싸거나 필드 값을 읽어 변경 감지를 한다. 그래서 Entity에는 기본 생성자, 상속 가능한 class 구조, 프레임워크가 접근할 수 있는 접근 제어가 필요하다.
+JPA는 Entity를 프록시로 감싸거나, 필드 값을 읽어서 무엇이 바뀌었는지 확인한다. 그래서 Entity에는 기본 생성자가 있어야 하고, 상속할 수 있는 class여야 하고, 프레임워크가 접근할 수 있는 접근 제어자를 써야 한다.
 
 ## 언제 쓰나
 
@@ -80,36 +80,40 @@ JPA는 Entity를 프록시로 감싸거나 필드 값을 읽어 변경 감지를
 
 ## 자주 깨지는 곳
 
-- **custom annotation에 `@Retention(RUNTIME)`을 빠뜨린다.** 런타임에 읽히지 않아 아무 일도 일어나지 않는다.
-- **reflection으로 private field를 직접 바꾼다.** 객체가 지키던 불변식이 깨진다.
-- **annotation만 붙이면 동작한다고 생각한다.** 처리하는 코드나 프레임워크 설정이 빠져 있으면 그냥 메타데이터다.
-- **reflection 예외를 런타임에서야 발견한다.** 이름 오타나 시그니처 변경을 컴파일러가 잡아 주지 않는다.
-- **record, final class, private constructor가 프레임워크 요구사항과 부딪힌다.** 프록시 생성이나 역직렬화가 실패한다.
+- 직접 만든 annotation에 `@Retention(RUNTIME)`을 빠뜨리면, 실행 중에 읽히지 않아서 아무 일도 일어나지 않는다.
+- reflection으로 private 필드를 직접 바꾸면, 객체가 지키던 규칙이 깨진다. 예를 들어 음수가 될 수 없던 재고 수량이 음수가 된다.
+- annotation만 붙이면 동작한다고 생각하면 틀린다. 처리하는 코드나 프레임워크 설정이 없으면 그냥 표시일 뿐이다.
+- reflection으로 이름을 문자열로 넘기면, 오타나 메서드 시그니처 변경을 컴파일러가 못 잡아서 실행 중에야 예외가 난다.
+- record, final class, private 생성자를 쓰면, 프레임워크가 요구하는 조건과 부딪혀서 프록시 생성이나 역직렬화가 실패한다.
 
 ## 확인하는 방법
 
-- 런타임에 필요한 annotation인지 `@Retention`을 본다.
+- 실행 중에 읽어야 하는 annotation이라면 `@Retention`이 RUNTIME인지 본다.
 - 프레임워크가 요구하는 생성자, 접근 제어자, final 여부를 본다.
-- reflection을 쓰는 곳은 테스트로 런타임 오류를 미리 잡는다.
-- 반복 호출되는 reflection metadata는 캐싱하는지 본다.
+- reflection을 쓰는 곳은 테스트를 돌려서 실행 중 오류를 미리 잡는다.
+- 자주 호출되는 곳에서 reflection으로 읽은 정보를 매번 다시 읽지 않고 캐시해 두는지 본다.
 
 ## 한 번에 설명하기
 
-> Reflection은 런타임에 클래스와 멤버 정보를 조회하거나 호출하는 기능이고, Annotation은 프레임워크가 읽을 메타데이터를 코드에 붙이는 방식입니다. Spring, JPA, Jackson은 annotation을 스캔하고 reflection으로 객체 생성, 필드 접근, 메서드 호출을 합니다. annotation 자체가 동작하는 게 아니라 그걸 읽는 코드가 있어야 하고, 런타임에 읽으려면 RetentionPolicy.RUNTIME이 필요합니다. reflection은 컴파일 타임 검사가 약하고 캡슐화와 성능 비용이 있어서 비즈니스 코드에서는 직접 쓰지 않습니다.
+> Reflection은 실행 중에 클래스의 메서드와 필드 정보를 읽거나 호출하는 기능이고, Annotation은 프레임워크가 읽을 표시를 코드에 붙이는 방식입니다. Spring, JPA, Jackson은 annotation을 찾아 읽은 뒤 reflection으로 객체를 만들고, 필드에 접근하고, 메서드를 호출합니다.
+>
+> annotation이 스스로 동작하는 게 아니라 그걸 읽는 코드가 있어야 하고, 실행 중에 읽으려면 RetentionPolicy.RUNTIME이어야 합니다.
+>
+> reflection은 컴파일러가 검사해 주지 못하고, 객체가 숨긴 필드를 건드리고, 일반 호출보다 느립니다. 그래서 비즈니스 코드에서는 직접 쓰지 않습니다.
 
 ## 꼬리 질문
 
-> [!question]- Reflection이란 무엇인가?
-> 런타임에 클래스, 메서드, 필드 정보를 조회하고 필요하면 접근하거나 호출할 수 있게 해주는 기능입니다.
+> [!question]- Reflection이 뭔가?
+> 실행 중에 클래스, 메서드, 필드 정보를 읽고, 필요하면 필드에 접근하거나 메서드를 호출할 수 있게 해 주는 기능입니다.
 
-> [!question]- Annotation은 붙이기만 하면 동작하는가?
-> 아닙니다. Annotation은 메타데이터일 뿐이고, 이를 읽고 처리하는 프레임워크나 코드가 있어야 동작합니다.
+> [!question]- Annotation은 붙이기만 하면 동작하나?
+> 아닙니다. Annotation은 표시일 뿐이고, 그걸 읽고 처리하는 프레임워크나 코드가 있어야 뭔가 일어납니다.
 
-> [!question]- `RetentionPolicy.RUNTIME`은 왜 중요한가?
-> 런타임에 reflection으로 annotation을 읽어야 하는 경우 annotation 정보가 런타임까지 유지되어야 하기 때문입니다.
+> [!question]- `RetentionPolicy.RUNTIME`은 왜 필요한가?
+> 실행 중에 reflection으로 annotation을 읽으려면, annotation 정보가 실행 시점까지 남아 있어야 하기 때문입니다.
 
-> [!question]- Reflection의 단점은 무엇인가?
-> 컴파일 타임 안정성이 낮고, 캡슐화를 깰 수 있으며, 일반 메서드 호출보다 비용이 크고 런타임 오류 가능성이 있습니다.
+> [!question]- Reflection의 단점은?
+> 컴파일러가 검사해 주지 못해서 실행해 봐야 오류를 압니다. 객체가 숨겨 둔 필드를 건드릴 수 있고, 일반 메서드 호출보다 비용도 큽니다.
 
 ## 점검 퀴즈
 
@@ -148,7 +152,7 @@ JPA는 Entity를 프록시로 감싸거나 필드 값을 읽어 변경 감지를
 
 ## 참고
 
-공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+2026년 11월에 확인한 공식 문서다.
 
 - [Java SE 21 API: java.lang.reflect](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/reflect/package-summary.html)
 - [JLS 21: Annotations](https://docs.oracle.com/javase/specs/jls/se21/html/jls-9.html#jls-9.6)

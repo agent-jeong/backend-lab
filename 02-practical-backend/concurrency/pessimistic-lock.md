@@ -1,14 +1,14 @@
 ---
 title: 비관적 락
-description: 충돌 가능성이 높은 상황에서 DB row를 선점해 동시 변경을 막는 방식
+description: 충돌이 잦은 곳에서 행을 먼저 잠가 다른 수정이 기다리게 하는 방식
 tags: [concept, concurrency]
 ---
 
 # 비관적 락
 
-비관적 락은 충돌이 잦다고 보고, 트랜잭션 동안 대상 row를 잠가 다른 트랜잭션의 변경을 기다리게 하는 방식이다.
+비관적 락은 충돌이 잦을 거라고 보고, 트랜잭션이 도는 동안 대상 행을 잠가서 다른 트랜잭션의 수정을 기다리게 하는 방식이다.
 
-재고, 쿠폰, 포인트처럼 같은 row에 쓰기가 몰리는 곳에서 충돌을 미리 막는다. 대가는 lock wait, timeout, deadlock이다. 그래서 락을 잡은 시간을 짧게 유지하는 것이 설계의 대부분이다.
+재고, 쿠폰, 포인트처럼 한 행에 쓰기가 몰리는 곳에서 충돌을 미리 막는다. 대신 lock wait, timeout, 데드락을 감수해야 한다. 그래서 설계할 때 신경 쓰는 일의 대부분은 락을 쥐는 시간을 짧게 만드는 것이다.
 
 > [!tip] 함께 읽기
 > - [[lock]]: DB 락의 종류와 동작
@@ -16,11 +16,11 @@ tags: [concept, concurrency]
 
 ## 동작
 
-1. 트랜잭션이 `select ... for update` 또는 JPA lock mode로 row lock을 얻는다.
-2. 같은 row를 수정하려는 다른 트랜잭션은 기다린다.
-3. 첫 번째 트랜잭션이 commit 또는 rollback하면 락이 풀린다.
+1. 트랜잭션이 `select ... for update`나 JPA lock mode로 행 락을 얻는다.
+2. 같은 행을 고치려는 다른 트랜잭션은 기다린다.
+3. 첫 번째 트랜잭션이 commit하거나 rollback하면 락이 풀린다.
 4. 기다리던 트랜잭션이 이어서 실행된다.
-5. 대기가 길어지면 lock wait timeout이나 deadlock이 난다.
+5. 기다림이 길어지면 lock wait timeout이나 데드락이 난다.
 
 ```java
 @Lock(LockModeType.PESSIMISTIC_WRITE)
@@ -35,7 +35,7 @@ public void decreaseStock(Long productId, int quantity) {
 }
 ```
 
-`PESSIMISTIC_WRITE`는 대상 row에 쓰기 락을 걸어 다른 트랜잭션의 동시 변경을 기다리게 한다. 트랜잭션은 짧게 두고, 그 안에서 외부 API를 호출하지 않는다. DB와 JPA 설정에 맞춰 lock timeout, `NOWAIT`, `SKIP LOCKED` 같은 대기 정책을 검토한다.
+`PESSIMISTIC_WRITE`는 대상 행에 쓰기 락을 걸어, 같은 행을 고치려는 다른 트랜잭션을 기다리게 한다. 트랜잭션은 짧게 두고, 그 안에서 외부 API를 부르지 않는다. 쓰는 DB와 JPA 설정에 맞춰 lock timeout, `NOWAIT`, `SKIP LOCKED` 같은 대기 방식을 검토한다.
 
 ## 언제 쓰나
 
@@ -48,37 +48,41 @@ public void decreaseStock(Long productId, int quantity) {
 | 단순 수량 차감 | 조건부 update 우선 검토 | 락 범위를 더 줄일 수 있다 |
 | 대기 시간이 사용자 경험에 직결됨 | lock timeout 설정 | 무한 대기와 connection 고갈을 막는다 |
 
-낙관적 락 재시도가 너무 많아 처리량이 떨어지는 곳도 비관적 락으로 바꿀 후보다. 경합이 높을 때 재시도 폭증을 줄이고, 트랜잭션 안에서 일관된 판단을 하기 쉽다.
+낙관적 락 재시도가 너무 많아 처리량이 떨어지는 곳도 비관적 락으로 바꿔 볼 만하다. 경합이 심할 때 재시도가 몰리는 걸 줄이고, 트랜잭션 안에서 잠근 값을 기준으로 판단하기 쉽다.
 
 ## 자주 깨지는 곳
 
-- **락을 잡은 뒤 결제 API나 알림 API를 호출한다.** 외부 장애가 락 대기로 번져 전체 요청이 느려진다.
-- **인덱스 없는 조건으로 조회한다.** 예상보다 넓은 범위가 잠긴다. 실행 계획에서 lock 대상 조회가 인덱스를 타는지 본다.
-- **여러 테이블을 요청마다 다른 순서로 잠근다.** 데드락이 난다.
-- **lock timeout 없이 오래 기다리게 둔다.** 응답 시간이 늘고 connection이 고갈된다.
-- **lock wait timeout을 단순 장애로만 보고 재현하지 않는다.**
-- **비관적 락이면 데드락이 절대 없다고 생각한다.**
-- **"없으면 insert"를 `select ... for update`로 막으려 한다.** MySQL InnoDB `REPEATABLE READ`에서 존재하지 않는 row를 잠그면 gap lock이 걸리고, 두 트랜잭션이 같은 gap을 잡은 뒤 서로 insert하면 데드락이 난다. 중복 생성 방지는 unique 제약으로 한다.
+- 락을 잡은 뒤 결제나 알림 API를 부르면, 외부 장애가 락 대기로 번져 모든 요청이 느려진다.
+- 인덱스 없는 조건으로 조회하면 생각보다 넓은 범위가 잠긴다. 잠그는 조회가 인덱스를 타는지 실행 계획에서 확인한다.
+- 여러 테이블을 요청마다 다른 순서로 잠그면 데드락이 난다.
+- lock timeout 없이 오래 기다리게 두면, 응답 시간이 늘고 커넥션이 바닥난다.
+- lock wait timeout을 일시적인 장애로만 보고 재현해 보지 않으면, 같은 경합이 계속 반복된다.
+- 비관적 락을 쓰면 데드락이 없다고 생각하면 틀린다. 잠그는 순서가 엇갈리면 그대로 난다.
+- "없으면 insert"를 `select ... for update`로 막으려 하면 데드락이 난다. MySQL InnoDB `REPEATABLE READ`에서 존재하지 않는 행을 잠그면 gap lock이 걸리는데, 두 트랜잭션이 같은 gap을 잡은 뒤 서로 insert하면 데드락이 된다. 중복 생성은 unique 제약으로 막는다.
 
 ## 운영에서 볼 것
 
-- 같은 row를 동시에 수정하는 테스트로 대기와 timeout을 확인한다.
-- lock wait timeout, deadlock, transaction duration 로그를 본다.
-- lock wait time, active transaction, DB connection active count를 본다.
+- 같은 행을 동시에 고치는 테스트로 대기와 timeout을 확인한다.
+- lock wait timeout, deadlock, 트랜잭션 지속 시간 로그를 본다.
+- lock wait time, 활성 트랜잭션 수, DB 커넥션 active 수를 본다.
 
 ## 한 번에 설명하기
 
-> 비관적 락은 row를 먼저 잠가 동시 변경을 기다리게 하는 방식이라, 경합이 높고 충돌 시 실패 비용이 큰 곳에 씁니다. 대가는 lock wait와 데드락이어서, 저는 트랜잭션을 짧게 두고 인덱스를 타는 조건으로 잠그고 여러 자원은 같은 순서로 잠급니다. 단순 수량 차감이라면 조건부 update가 더 단순합니다.
+> 비관적 락은 행을 먼저 잠가서 다른 수정이 기다리게 하는 방식입니다. 경합이 심하고, 충돌했을 때 잃는 게 큰 곳에 씁니다.
+>
+> 대신 lock wait와 데드락이 생깁니다. 그래서 저는 트랜잭션을 짧게 두고, 인덱스를 타는 조건으로 잠그고, 여러 자원은 늘 같은 순서로 잠급니다.
+>
+> 단순히 수량만 깎는 거라면 조건부 update가 더 간단합니다.
 
 ## 꼬리 질문
 
-- 비관적 락은 언제 낙관적 락보다 적합한가?
-- 비관적 락을 사용할 때 데드락을 줄이는 방법은 무엇인가?
-- `select for update`를 쓸 때 인덱스가 중요한 이유는 무엇인가?
+- 비관적 락이 낙관적 락보다 나은 경우는?
+- 비관적 락을 쓸 때 데드락을 줄이는 방법은?
+- `select for update`를 쓸 때 인덱스가 중요한 이유는?
 
 ## 참고
 
-공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+2026년 11월에 확인한 공식 문서다.
 
 - [Hibernate ORM 6.6 User Guide: Locking](https://docs.hibernate.org/orm/6.6/userguide/html_single/Hibernate_User_Guide.html#locking)
 - [MySQL 8.4: Locking Reads](https://dev.mysql.com/doc/refman/8.4/en/innodb-locking-reads.html)

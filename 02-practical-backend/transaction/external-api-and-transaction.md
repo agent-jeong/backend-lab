@@ -1,22 +1,22 @@
 ---
 title: 외부 API와 트랜잭션
-description: 외부 시스템 호출과 DB 트랜잭션을 함께 다룰 때의 실패 대응 기준
+description: 결제 같은 외부 호출을 DB 트랜잭션과 섞을 때 생기는 실패와 대응
 tags: [concept, transaction]
 ---
 
 # 외부 API와 트랜잭션
 
-외부 API 호출은 DB 트랜잭션으로 rollback할 수 없는 부작용이다. 그래서 DB 변경과 한 덩어리로 묶지 않고, 실패와 재시도를 따로 설계한다.
+외부 API 호출은 DB 트랜잭션이 rollback으로 되돌릴 수 없는 일이다. 그래서 DB 변경과 한 덩어리로 묶지 않고, 실패했을 때와 다시 시도할 때를 따로 설계한다.
 
-둘을 하나의 원자적 작업처럼 다루면 DB는 rollback됐는데 외부 결제는 승인되는 불일치가 생긴다. 외부 API가 느리면 그동안 DB 커넥션과 락을 쥐고 있게 되고, 외부 호출이 성공한 뒤 애플리케이션이 죽으면 DB 상태가 갱신되지 않는다. 재시도하면 외부 요청이 중복 처리된다.
+둘을 한 번에 성공하거나 실패하는 작업처럼 다루면 DB는 rollback됐는데 결제는 승인된 상태가 생긴다. 결제 API가 느리면 그동안 DB 커넥션과 락을 계속 쥐고 있게 되고, 결제가 승인된 직후 서버가 죽으면 주문 상태는 갱신되지 않는다. 이걸 그냥 다시 시도하면 결제가 두 번 나간다.
 
 ## 동작
 
 1. 애플리케이션이 DB 상태를 바꾼다.
 2. 외부 API를 호출한다.
-3. DB commit, 외부 API 성공, 애플리케이션 장애는 서로 다른 순서로 일어날 수 있다.
-4. DB rollback은 외부 시스템에 이미 전달된 요청을 되돌리지 못한다.
-5. 그래서 상태 모델, 멱등키, 재시도, 보상 처리로 최종 정합성을 맞춘다.
+3. DB commit, 외부 API 성공, 애플리케이션 장애는 어떤 순서로든 일어날 수 있다.
+4. DB를 rollback해도 외부 시스템에 이미 간 요청은 되돌아오지 않는다.
+5. 그래서 상태 모델, 멱등키, 재시도, 보상 처리를 조합해 결국 양쪽이 맞게 만든다.
 
 ```java
 public void requestPayment(Long orderId) {
@@ -38,7 +38,7 @@ public Order markPaymentPending(Long orderId) {
 }
 ```
 
-외부 결제 호출을 긴 DB 트랜잭션 안에 넣지 않고, 상태를 먼저 `PAYMENT_PENDING`으로 남긴다. 성공/실패 결과는 별도 트랜잭션에서 반영하고, 중간 장애는 pending 상태를 기준으로 재조회하거나 보상한다.
+결제 호출을 긴 DB 트랜잭션 안에 넣지 않고, 주문 상태를 먼저 `PAYMENT_PENDING`으로 남겨 둔다. 성공이나 실패 결과는 별도 트랜잭션에서 반영한다. 중간에 장애가 나면 pending으로 남은 주문을 찾아 결제 결과를 다시 조회하거나 보상한다.
 
 ## 상황별 전략
 
@@ -60,28 +60,32 @@ public Order markPaymentPending(Long orderId) {
 
 ## 자주 깨지는 곳
 
-- **`@Transactional` 안에서 결제, 배송, 알림 API를 호출한다.** 락과 커넥션 점유 시간이 길어지고 외부 장애가 그대로 번진다.
-- **외부 API가 성공했으니 DB commit도 성공한다고 가정한다.**
-- **timeout이 났을 때 실패인지 성공인지 확인하지 않는다.**
-- **재시도에 멱등키를 쓰지 않는다.** 중복 결제나 중복 발송이 생긴다.
-- **외부 호출 결과를 상태로 남기지 않는다.** 복구 작업의 출발점이 없다.
+- `@Transactional` 안에서 결제, 배송, 알림 API를 부르면, 락과 커넥션을 쥐는 시간이 길어지고 외부 장애가 우리 서비스로 그대로 번진다.
+- 외부 API가 성공했으니 DB commit도 성공할 거라고 가정하면, 결제는 됐는데 주문은 미결제로 남는 건을 놓친다.
+- timeout이 났을 때 실제로 실패했는지 확인하지 않으면, 이미 승인된 결제를 실패로 처리하게 된다.
+- 멱등키 없이 재시도하면 결제나 발송이 두 번 나간다.
+- 외부 호출 결과를 상태로 남기지 않으면, 장애 뒤 어디서부터 복구할지 알 수 없다.
 
 ## 운영에서 볼 것
 
-- 외부 API 성공 후 DB commit 실패, 외부 timeout, 애플리케이션 재시작을 테스트로 시뮬레이션한다.
+- 외부 API 성공 후 DB commit 실패, 외부 timeout, 애플리케이션 재시작을 테스트로 흉내 내 본다.
 - 외부 요청 id, idempotency key, 응답 코드, 상태 전이를 로그로 남긴다.
-- 외부 API latency, timeout, retry count, compensation count를 본다.
+- 외부 API latency, timeout, 재시도 횟수, 보상 횟수를 본다.
 - pending 상태로 오래 남은 데이터를 조회할 수 있게 해 둔다.
 
 ## 한 번에 설명하기
 
-> 외부 API 호출은 DB 트랜잭션으로 rollback할 수 없어서, 트랜잭션 안에서 호출하면 락과 커넥션 점유가 길어지고 불일치가 생깁니다. 저는 상태를 먼저 pending으로 남기고, 외부 호출은 트랜잭션 밖에서 짧은 timeout과 멱등키로 처리합니다. 외부는 성공했는데 내부 반영이 실패한 경우는 pending 상태를 기준으로 재조회, 보상, 운영 복구 흐름으로 맞춥니다.
+> 외부 API 호출은 DB 트랜잭션으로 되돌릴 수 없습니다. 그래서 트랜잭션 안에서 부르면 락과 커넥션을 오래 쥐게 되고, DB와 외부 시스템이 서로 다른 결과를 갖게 됩니다.
+>
+> 저는 주문 상태를 먼저 pending으로 저장하고, 외부 호출은 트랜잭션 밖에서 짧은 timeout과 멱등키를 붙여 보냅니다.
+>
+> 외부는 성공했는데 우리 쪽 반영이 실패한 건은 pending 상태를 기준으로 결과를 다시 조회하거나, 보상하거나, 운영자가 복구합니다.
 
 ## 꼬리 질문
 
-- 결제 API를 트랜잭션 안에서 호출하면 어떤 문제가 생기는가?
+- 결제 API를 트랜잭션 안에서 부르면 어떤 문제가 생기나?
 - 외부 API timeout은 항상 실패인가?
-- 외부 API 성공 후 DB 반영이 실패하면 어떻게 복구할 것인가?
+- 외부 API는 성공했는데 DB 반영이 실패하면 어떻게 복구하나?
 - idempotency key는 왜 필요한가?
 
 ## 내 사례
@@ -90,7 +94,7 @@ public Order markPaymentPending(Long orderId) {
 
 ## 참고
 
-공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+2026년 11월에 확인한 공식 문서다.
 
 - [Spring Framework: Transaction-bound Events](https://docs.spring.io/spring-framework/reference/data-access/transaction/event.html)
 - [microservices.io: Transactional outbox](https://microservices.io/patterns/data/transactional-outbox.html)

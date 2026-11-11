@@ -1,14 +1,14 @@
 ---
 title: "@Transactional 동작 원리와 롤백"
-description: Spring의 트랜잭션 관리와 @Transactional 동작 원리
+description: "@Transactional이 프록시로 트랜잭션을 여닫는 방식, 어떤 예외에 롤백하는지, 전파 옵션이 어떻게 동작하는지"
 tags: [concept, spring]
 ---
 
 # @Transactional 동작 원리와 롤백
 
-Spring은 `@Transactional`을 AOP로 처리한다. 프록시가 메서드 앞뒤에서 트랜잭션을 시작하고, 커밋하거나 롤백한다.
+Spring은 `@Transactional`을 AOP로 처리한다. 메서드를 부르면 프록시가 먼저 트랜잭션을 열고, 메서드가 끝나면 커밋하거나 롤백한다.
 
-어노테이션을 붙였다고 끝이 아니다. checked 예외는 기본으로 롤백되지 않고, 같은 클래스 안에서 부른 메서드에는 트랜잭션이 걸리지 않고, 전파 설정을 잘못 잡으면 의도하지 않은 커밋이나 롤백이 생긴다. 여기서는 롤백 규칙과 전파를 중심으로 본다.
+어노테이션만 붙였다고 주문과 결제가 한 번에 묶이지는 않는다. checked 예외는 기본으로 롤백되지 않고, 같은 클래스 안에서 부른 메서드에는 트랜잭션이 걸리지 않는다. 전파 설정을 잘못 잡으면 알림 하나가 실패했다고 주문까지 롤백되기도 한다. 이 글은 롤백 규칙과 전파를 주로 다룬다.
 
 > [!tip] 함께 읽기
 > - [[transactional-pitfalls]]: `@Transactional`이 적용되지 않을 때 원인을 찾는 체크리스트
@@ -33,7 +33,7 @@ public class OrderService {
 }
 ```
 
-프록시가 메서드 시작 전에 트랜잭션을 열고, 정상으로 끝나면 커밋, 예외가 나면 롤백한다.
+프록시가 메서드가 시작되기 전에 트랜잭션을 열고, 정상으로 끝나면 커밋하고, 예외가 나면 롤백한다.
 
 ## 어떤 예외에 롤백하나
 
@@ -105,12 +105,12 @@ public class NotificationService {
 }
 ```
 
-REQUIRES_NEW는 트랜잭션을 나눌 뿐 **예외를 막아 주지 않는다.** 내부에서 던진 예외가 외부 메서드로 올라오면 외부 트랜잭션도 롤백된다. "알림이 실패해도 주문은 유지"하려면 호출부에서 예외를 잡아야 한다.
+REQUIRES_NEW는 트랜잭션을 나눌 뿐 **예외를 막아 주지 않는다.** 안쪽에서 던진 예외가 바깥 메서드로 올라오면 바깥 트랜잭션도 롤백된다. 알림이 실패해도 주문은 남기려면 호출하는 쪽에서 예외를 잡아야 한다.
 
-REQUIRES_NEW를 쓰기 전에 두 가지를 더 본다.
+REQUIRES_NEW를 쓰기 전에 두 가지를 더 따져 본다.
 
-- 외부 트랜잭션이 커넥션을 쥔 채로 내부가 커넥션을 하나 더 가져간다. 동시 요청이 몰리면 커넥션 풀이 바닥나서 서로를 기다리는 교착이 생길 수 있다.
-- 외부가 나중에 롤백돼도 내부는 이미 커밋됐다. "주문은 롤백됐는데 알림 기록은 남는" 상태를 허용해도 되는지 먼저 정한다.
+- 바깥 트랜잭션이 커넥션을 쥔 채로 안쪽이 커넥션을 하나 더 가져간다. 동시 요청이 몰리면 커넥션 풀이 바닥나서 요청끼리 서로 커넥션을 기다리며 멈출 수 있다.
+- 바깥이 나중에 롤백돼도 안쪽은 이미 커밋됐다. 주문은 롤백됐는데 알림 기록은 남아 있는 상태가 괜찮은지 먼저 정한다.
 
 ### REQUIRED 안에서 예외를 잡았는데 UnexpectedRollbackException이 나는 경우
 
@@ -126,7 +126,7 @@ public void createOrder() {
 } // 커밋 시점에 UnexpectedRollbackException
 ```
 
-`pointService.earn()`은 같은 트랜잭션에 참여한다. 예외가 프록시를 지나가는 순간 트랜잭션 전체가 rollback-only로 표시되고, 바깥에서 예외를 잡아도 이 표시는 되돌릴 수 없다. 포인트 실패와 무관하게 주문을 살리려면 `earn()`을 REQUIRES_NEW로 분리하거나, `earn()` 안에서 예외를 던지지 않도록 바꾼다.
+`pointService.earn()`은 같은 트랜잭션에 들어간다. 예외가 `earn()`의 프록시를 지나 나오는 순간 트랜잭션 전체에 rollback-only 표시가 붙고, 바깥에서 예외를 잡아도 이 표시는 지울 수 없다. 포인트 적립이 실패해도 주문은 살리려면 `earn()`을 REQUIRES_NEW로 떼어 내거나, `earn()` 안에서 예외를 던지지 않게 바꾼다.
 
 ## readOnly 트랜잭션
 
@@ -139,37 +139,41 @@ public List<OrderResponse> getOrders() {
 }
 ```
 
-JPA가 변경 감지(dirty checking)를 건너뛰어 스냅샷 비교 비용이 줄어든다. DB에 따라 읽기 전용 쿼리 최적화가 추가로 적용될 수 있다. 조회 전용 메서드에는 습관처럼 붙인다.
+JPA가 변경 감지(dirty checking)를 건너뛰어서 스냅샷을 비교하는 비용이 줄어든다. DB에 따라 읽기 전용 쿼리 최적화가 더 붙을 수 있다. 조회만 하는 메서드에는 습관처럼 붙인다.
 
 ## @Transactional이 동작하지 않는 경우
 
-프록시를 거치지 않는 호출에는 걸리지 않는다. 내부 호출, private 메서드, final 클래스가 대표적이다. 실패 케이스 6가지와 진단 순서는 [[transactional-pitfalls]]에 정리했다.
+프록시를 거치지 않는 호출에는 걸리지 않는다. 내부 호출, private 메서드, final 클래스가 그렇다. 실패 케이스 6가지와 확인 순서는 [[transactional-pitfalls]]에 정리했다.
 
 ## 자주 깨지는 곳
 
-- **checked 예외에 `rollbackFor`를 주지 않는다.** 예외가 나도 커밋된다.
-- **REQUIRED 내부 예외를 바깥에서 잡고 안심한다.** 트랜잭션이 이미 rollback-only라 커밋 시점에 `UnexpectedRollbackException`이 난다.
-- **REQUIRES_NEW면 내부 실패가 바깥에 영향이 없다고 믿는다.** 예외가 올라오면 바깥도 롤백된다.
-- **조회 메서드에 `readOnly = true`를 붙이지 않는다.** 쓸데없는 변경 감지 비용을 낸다.
-- **트랜잭션 범위를 너무 넓게 잡는다.** DB 커넥션을 오래 쥐고 있게 된다.
+- checked 예외를 던지는데 `rollbackFor`를 주지 않으면, 예외가 나도 커밋된다.
+- REQUIRED로 참여한 안쪽 메서드의 예외를 바깥에서 잡고 안심하면, 트랜잭션이 이미 rollback-only라 커밋할 때 `UnexpectedRollbackException`이 난다.
+- REQUIRES_NEW면 안쪽 실패가 바깥에 번지지 않는다고 믿으면, 예외가 올라와서 바깥도 롤백된다.
+- 조회 메서드에 `readOnly = true`를 붙이지 않으면, 하지 않아도 될 변경 감지 비용을 낸다.
+- 트랜잭션 범위를 너무 넓게 잡으면, DB 커넥션을 오래 쥐고 있게 된다.
 
 ## 한 번에 설명하기
 
-> `@Transactional`은 프록시가 메서드 앞뒤에서 트랜잭션을 열고 닫는 구조입니다. 기본 롤백 대상은 RuntimeException과 Error이고, checked 예외는 `rollbackFor`로 추가합니다. 전파에서 실수가 많은 곳은 두 군데입니다. REQUIRED로 참여한 내부 메서드가 예외를 던지면 바깥에서 잡아도 rollback-only가 되어 `UnexpectedRollbackException`이 나고, REQUIRES_NEW는 트랜잭션만 나눌 뿐 예외 전파는 막지 않아서 호출부에서 잡아야 합니다.
+> `@Transactional`은 프록시가 메서드 앞뒤에서 트랜잭션을 열고 닫습니다. 기본으로 롤백하는 건 RuntimeException과 Error이고, checked 예외는 `rollbackFor`로 넣어 줘야 합니다.
+>
+> 전파에서는 두 군데서 많이 틀립니다. REQUIRED로 참여한 안쪽 메서드가 예외를 던지면, 바깥에서 잡아도 이미 rollback-only라 `UnexpectedRollbackException`이 납니다.
+>
+> REQUIRES_NEW는 트랜잭션만 나눌 뿐 예외가 올라오는 건 막지 않아서, 호출하는 쪽에서 잡아야 합니다.
 
 ## 꼬리 질문
 
 > [!question]- checked 예외에서 롤백되지 않는 이유는?
-> Spring의 기본 롤백 정책이 unchecked 예외(RuntimeException)와 Error만 대상이기 때문입니다. checked 예외는 호출자가 복구할 수 있다는 가정으로 롤백하지 않습니다. `rollbackFor`로 바꿀 수 있습니다.
+> Spring이 기본으로 롤백하는 건 unchecked 예외(RuntimeException)와 Error뿐이라서입니다. checked 예외는 호출한 쪽이 복구할 수 있다고 보고 롤백하지 않습니다. 바꾸고 싶으면 `rollbackFor`를 씁니다.
 
 > [!question]- `REQUIRED`와 `REQUIRES_NEW`의 차이는?
-> `REQUIRED`는 기존 트랜잭션에 참여하고, `REQUIRES_NEW`는 항상 새 트랜잭션을 생성합니다. `REQUIRES_NEW`는 외부 트랜잭션이 롤백되어도 내부 트랜잭션이 독립적으로 커밋됩니다. 다만 내부 예외가 외부로 전파되면 외부도 롤백되므로 호출부에서 잡아야 하고, 커넥션을 하나 더 쓴다는 점도 따져야 합니다.
+> `REQUIRED`는 이미 열린 트랜잭션에 들어가고, `REQUIRES_NEW`는 늘 새 트랜잭션을 엽니다. 그래서 `REQUIRES_NEW` 쪽은 바깥이 롤백돼도 따로 커밋됩니다. 다만 안쪽 예외가 바깥으로 올라오면 바깥도 롤백되니 호출하는 쪽에서 잡아야 하고, 커넥션을 하나 더 쓴다는 것도 따져 봐야 합니다.
 
 > [!question]- `readOnly = true`의 효과는?
-> JPA 영속성 컨텍스트에서 변경 감지(dirty checking)를 생략해서 스냅샷 비교 비용이 줄어듭니다. DB에 따라 읽기 전용 최적화가 추가로 적용될 수 있습니다.
+> JPA 영속성 컨텍스트가 변경 감지(dirty checking)를 건너뛰어서 스냅샷을 비교하는 비용이 줄어듭니다. DB에 따라서는 읽기 전용 최적화가 더 붙기도 합니다.
 
 > [!question]- 트랜잭션 범위를 어떻게 설정해야 하는가?
-> 꼭 필요한 범위만 묶습니다. 외부 API 호출이나 파일 I/O는 트랜잭션 밖으로 빼고, DB 작업만 안에 둡니다.
+> 꼭 묶어야 하는 것만 묶습니다. 외부 API 호출이나 파일 I/O는 트랜잭션 밖으로 빼고, DB 작업만 안에 둡니다. 그래야 커넥션을 쥐고 있는 시간이 짧아집니다.
 
 ## 점검 퀴즈
 
@@ -208,7 +212,7 @@ JPA가 변경 감지(dirty checking)를 건너뛰어 스냅샷 비교 비용이 
 
 ## 참고
 
-공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+2026년 11월에 확인한 공식 문서다.
 
 - [Spring Framework: Declarative Transaction Management](https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative.html)
 - [Spring Framework: Transaction Propagation](https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/tx-propagation.html)

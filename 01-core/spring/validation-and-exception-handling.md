@@ -1,14 +1,14 @@
 ---
 title: 요청 검증과 예외 처리
-description: Spring의 입력 검증과 예외 처리 전략
+description: 잘못된 요청을 어디서 걸러 내고, 난 예외를 어디서 하나의 에러 응답으로 바꾸는지
 tags: [concept, spring]
 ---
 
 # 요청 검증과 예외 처리
 
-Validation은 외부 입력을 시스템 경계에서 걸러 내는 일이고, 예외 처리는 이미 난 예외를 맞는 계층에서 일관된 응답으로 바꾸는 일이다.
+검증(validation)은 밖에서 들어온 요청을 받자마자 잘못된 값을 걸러 내는 일이다. 예외 처리는 이미 난 예외를 한곳에서 받아 모든 API가 같은 모양의 에러 응답을 내게 하는 일이다.
 
-둘 다 빠지면 증상이 비슷하다. 잘못된 입력이 Service까지 들어와 엉뚱한 곳에서 터지고, API마다 에러 응답 모양이 달라 클라이언트가 처리를 통일하지 못한다. 반대로 메서드마다 try-catch를 넣으면 코드만 복잡해지고, catch 후 무시한 예외는 원인 추적을 끊는다. 검증 에러와 시스템 에러를 구분하는 것부터 시작한다.
+둘 다 빠지면 증상이 비슷하다. 수량이 0인 주문 요청이 Service까지 들어와 엉뚱한 곳에서 터지고, API마다 에러 응답 모양이 달라 클라이언트가 에러를 한 가지 방식으로 처리하지 못한다. 반대로 메서드마다 try-catch를 넣으면 코드만 복잡해지고, 잡고 나서 그냥 넘긴 예외는 원인을 찾을 길을 끊는다. 먼저 사용자가 고칠 수 있는 입력 오류와 서버 쪽 오류를 나눠서 생각한다.
 
 ## Bean Validation
 
@@ -64,7 +64,7 @@ public class OrderRequest {
 }
 ```
 
-중첩 객체 필드에 `@Valid`가 없으면 그 안의 필드는 검증되지 않는다.
+중첩 객체 필드에 `@Valid`가 없으면 그 안쪽 필드는 검증하지 않는다.
 
 ### 그룹별 검증
 
@@ -87,7 +87,7 @@ public class UserRequest {
 public ResponseEntity<?> create(@Validated(Create.class) @RequestBody UserRequest request) { }
 ```
 
-생성과 수정에서 검증할 필드가 다를 때 쓴다. 그룹은 `@Validated`에 지정한다.
+회원 가입과 정보 수정처럼 검증할 필드가 다를 때 쓴다. 그룹은 `@Validated`에 적는다.
 
 ## 예외 처리
 
@@ -178,34 +178,36 @@ public record ErrorResponse(String code, String message) { }
 }
 ```
 
-모든 API가 같은 에러 응답 구조를 써야 클라이언트가 한 가지 방식으로 처리할 수 있다.
+모든 API가 같은 모양으로 에러를 내야 클라이언트가 에러 처리 코드를 하나로 쓸 수 있다.
 
 ## 자주 깨지는 곳
 
-- **`@Valid`를 빠뜨린다.** 검증 어노테이션이 있어도 실행되지 않는다.
-- **중첩 객체에 `@Valid`를 붙이지 않는다.** 내부 필드가 검증되지 않는다.
-- **예외를 catch하고 로그만 남긴다.** 예외가 삼켜져 호출자는 실패를 모른다.
-- **API마다 에러 응답 형식이 다르다.** 클라이언트가 파싱할 수 없다.
-- **비즈니스 예외와 시스템 예외를 구분하지 않는다.** 잔액 부족도 500으로 나간다.
-- **`@ExceptionHandler` 우선순위를 모른다.** 구체적인 예외 타입 핸들러가 먼저 선택된다.
+- 파라미터에 `@Valid`를 빠뜨리면, 필드에 검증 어노테이션을 달아 둬도 검증이 돌지 않는다.
+- 중첩 객체에 `@Valid`를 붙이지 않으면, 안쪽 필드는 검증되지 않는다.
+- 예외를 catch하고 로그만 남기면, 호출한 쪽은 실패한 줄 모른다.
+- API마다 에러 응답 형식이 다르면, 클라이언트가 에러를 한 가지 방식으로 파싱할 수 없다.
+- 비즈니스 예외와 시스템 예외를 나누지 않으면, 잔액 부족 같은 사용자 쪽 오류도 500으로 나간다.
+- `@ExceptionHandler` 우선순위를 모르면, 생각한 핸들러 대신 다른 핸들러가 불린다. 더 구체적인 예외 타입의 핸들러가 먼저 고른다.
 
 ## 한 번에 설명하기
 
-> 입력 검증은 Controller 계층에서 `@Valid`와 Bean Validation으로 하고, 중첩 객체에도 `@Valid`를 붙입니다. 재고 확인처럼 DB가 필요한 비즈니스 규칙은 Service에서 검증합니다. 예외는 `@RestControllerAdvice` 한곳에서 일관된 형식으로 바꿉니다. 비즈니스 예외는 커스텀 예외와 ErrorCode로 상태 코드를 나누고, 예상하지 못한 예외는 로그를 남긴 뒤 500으로 응답합니다.
+> 입력 형식 검증은 Controller에서 `@Valid`와 Bean Validation으로 하고, 중첩 객체에도 `@Valid`를 붙입니다. 재고 확인처럼 DB를 봐야 하는 비즈니스 규칙은 Service에서 검사합니다.
+>
+> 예외는 `@RestControllerAdvice` 한곳에서 같은 형식의 응답으로 바꿉니다. 비즈니스 예외는 커스텀 예외와 ErrorCode로 상태 코드를 나누고, 예상하지 못한 예외는 로그를 남긴 뒤 500으로 응답합니다.
 
 ## 꼬리 질문
 
 > [!question]- `@Valid`와 `@Validated`의 차이는?
-> `@Valid`는 Java 표준(JSR-303)이고, `@Validated`는 Spring 어노테이션입니다. `@Validated`는 그룹별 검증을 지원합니다. Controller 파라미터에서 그룹이 필요 없으면 어느 쪽을 써도 됩니다.
+> `@Valid`는 Java 표준(JSR-303)이고, `@Validated`는 Spring이 만든 어노테이션입니다. 그룹별 검증은 `@Validated`로만 됩니다. Controller 파라미터에서 그룹이 필요 없으면 어느 쪽을 써도 됩니다.
 
 > [!question]- 검증 로직을 Service에 넣어야 하는 경우는?
-> Bean Validation은 필드 하나의 형식 검증용입니다. "주문 수량이 재고보다 많은지" 같은 비즈니스 규칙은 Service에서 검증합니다. DB 조회가 필요한 검증은 Controller에서 할 수 없습니다.
+> Bean Validation은 필드 하나하나의 형식을 보는 용도입니다. 주문 수량이 재고보다 많은지 같은 비즈니스 규칙은 Service에서 봅니다. DB를 조회해야 알 수 있는 건 Controller에서 검사할 수 없으니까요.
 
 > [!question]- `@ExceptionHandler`의 우선순위는?
-> 구체적인 예외 타입이 우선입니다. `IllegalArgumentException`과 `Exception` 핸들러가 모두 있으면, `IllegalArgumentException`이 발생했을 때 더 구체적인 핸들러가 실행됩니다.
+> 더 구체적인 예외 타입이 먼저입니다. `IllegalArgumentException` 핸들러와 `Exception` 핸들러가 둘 다 있을 때 `IllegalArgumentException`이 나면, `IllegalArgumentException` 쪽 핸들러가 실행됩니다.
 
 > [!question]- checked 예외와 unchecked 예외 중 어떤 것을 사용하는가?
-> Spring에서는 주로 unchecked 예외(RuntimeException)를 씁니다. checked 예외는 호출부가 꼭 처리해야 해서 코드가 복잡해지고, `@Transactional`의 기본 롤백 대상도 unchecked 예외입니다.
+> Spring에서는 주로 unchecked 예외(RuntimeException)를 씁니다. checked 예외는 부르는 쪽마다 처리 코드를 넣어야 해서 코드가 복잡해지고, `@Transactional`이 기본으로 롤백하는 것도 unchecked 예외입니다.
 
 ## 점검 퀴즈
 
@@ -244,7 +246,7 @@ public record ErrorResponse(String code, String message) { }
 
 ## 참고
 
-공식 문서와 원문 자료다. 링크는 2026-11에 확인했다.
+2026년 11월에 확인한 공식 문서다.
 
 - [Spring Framework: Java Bean Validation](https://docs.spring.io/spring-framework/reference/core/validation/beanvalidation.html)
 - [Spring Framework: Exceptions (@ExceptionHandler)](https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller/ann-exceptionhandler.html)
