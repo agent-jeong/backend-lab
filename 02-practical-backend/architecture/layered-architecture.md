@@ -66,6 +66,6 @@ Layered Architecture는 애플리케이션을 표현, 비즈니스, 데이터 �
 
 ## 관련 문서
 
-- [[architecture]]
+- [[02-practical-backend/architecture/architecture|architecture]]
 - [[service-responsibility]]
 - [[dependency-direction]]

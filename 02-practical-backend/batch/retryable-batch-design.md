@@ -63,4 +63,4 @@ tags: [concept, batch]
 
 - [[batch-processing]]
 - [[batch-failure-state]]
-- [[idempotency]]
+- [[02-practical-backend/idempotency/idempotency|idempotency]]

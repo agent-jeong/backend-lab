@@ -57,6 +57,6 @@ DTO는 API로 주고받거나 계층 사이에 데이터를 넘길 때 쓰는 �
 
 ## 관련 문서
 
-- [[architecture]]
+- [[02-practical-backend/architecture/architecture|architecture]]
 - [[entity-table-mapping]]
 - [[serialization-and-jackson]]

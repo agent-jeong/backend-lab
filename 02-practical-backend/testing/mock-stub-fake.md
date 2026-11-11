@@ -56,5 +56,5 @@ Mock, Stub, Fake는 테스트에서 실제 의존성 자리에 대신 끼워 넣
 
 ## 관련 문서
 
-- [[testing]]
+- [[02-practical-backend/testing/testing|testing]]
 - [[unit-vs-integration-test]]

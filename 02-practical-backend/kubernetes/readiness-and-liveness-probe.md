@@ -12,7 +12,7 @@ Readiness probe는 Pod가 지금 요청을 받아도 되는지 묻는다. Livene
 
 ## 동작
 
-1. kubelet이 주기적으로 probe를 실행한다.
+1. 노드의 kubelet이 정해진 주기마다 probe를 실행한다. HTTP probe면 지정한 경로를 호출해서 200번대·300번대 응답이면 성공으로 본다.
 2. readiness가 실패하면 Service endpoint에서 Pod를 뺀다.
 3. readiness가 다시 성공하면 트래픽 대상에 넣는다.
 4. liveness가 반복해서 실패하면 kubelet이 container를 재시작한다.
@@ -33,6 +33,15 @@ livenessProbe:
   periodSeconds: 10
 ```
 
+| 필드 | 뜻 | 기본값 |
+|---|---|---|
+| `initialDelaySeconds` | container가 뜬 뒤 첫 probe까지 기다리는 시간 | 0초 |
+| `periodSeconds` | probe 주기 | 10초 |
+| `timeoutSeconds` | 응답을 기다리는 시간. 넘으면 실패 | 1초 |
+| `failureThreshold` | 몇 번 연속 실패해야 실패로 판정하나 | 3번 |
+
+기본값이면 liveness는 10초 간격으로 3번, 약 30초 동안 연속 실패해야 재시작된다. 1초 timeout은 GC 한 번에도 넘을 수 있어서, 응답이 느린 앱은 `timeoutSeconds`부터 본다.
+
 트래픽을 받아도 되는지와 재시작이 필요한지는 다른 질문이라 endpoint도 나눈다. 하나의 endpoint로 묶으면 트래픽을 끊는 기준과 재시작하는 기준이 섞인다.
 
 ## 상태별로 어떤 probe를 쓰나
@@ -42,8 +51,8 @@ livenessProbe:
 | 요청 받을 준비 안 됨 | Readiness 실패 | endpoint에서 제외한다 |
 | 복구 불가능한 hang | Liveness 실패 | container 재시작을 유도한다 |
 | 구동 시간이 긴 앱 | Startup probe | 초기화 중 liveness 실패를 막는다 |
-| 외부 API 장애 | Readiness에 신중히 반영 | 전체 트래픽이 차단될 위험을 본다 |
-| DB 연결 일시 지연 | 서비스 특성별 판단 | 재시작이 해결책인지 확인한다 |
+| 외부 API 장애 | readiness·liveness 어디에도 넣지 않는 쪽이 기본 | readiness에 넣으면 외부 API 하나가 느려질 때 모든 Pod가 endpoint에서 빠져 서비스 전체가 503이 된다 |
+| DB가 잠깐 느림 | liveness에는 넣지 않는다 | 재시작해도 DB는 빨라지지 않고, 재시작하는 동안 처리량만 더 줄어든다 |
 
 startup probe는 초기화 시간만 다룬다. 실제로 트래픽을 받아도 되는지는 readiness 기준을 따로 둬야 한다.
 
@@ -59,7 +68,7 @@ startup probe는 초기화 시간만 다룬다. 실제로 트래픽을 받아도
 ## 운영에서 볼 것
 
 - `kubectl describe pod`로 probe 실패 event를 본다.
-- `kubectl get endpoints`로 readiness가 실패한 Pod가 Service에서 빠지는지 확인한다.
+- `kubectl get endpointslices -l kubernetes.io/service-name=example-service`로 readiness가 실패한 Pod가 ready=false로 바뀌는지 확인한다.
 - 배포 중 초기화가 끝나기 전에 요청이 들어가지 않는지 테스트한다.
 - 메트릭으로는 restart count, readiness failure, liveness failure를 본다.
 
@@ -83,9 +92,10 @@ startup probe는 초기화 시간만 다룬다. 실제로 트래픽을 받아도
 
 - [Kubernetes: Configure Liveness, Readiness and Startup Probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/)
 - [Spring Boot: Kubernetes Probes](https://docs.spring.io/spring-boot/reference/actuator/endpoints.html)
+- [Kubernetes API: Probe 필드와 기본값](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#Probe)
 
 ## 관련 문서
 
-- [[kubernetes]]
+- [[02-practical-backend/kubernetes/kubernetes|kubernetes]]
 - [[deployment-service-ingress]]
 - [[02-practical-backend/observability/metrics|metrics]]

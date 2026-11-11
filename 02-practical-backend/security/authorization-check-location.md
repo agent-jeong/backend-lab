@@ -83,7 +83,7 @@ public List<OrderSummary> findMyOrders(AuthenticatedUser user, OrderSearchCondit
 
 ## 관련 문서
 
-- [[security]]
+- [[02-practical-backend/security/security|security]]
 - [[authentication-and-authorization]]
 - [[session-and-token]]
 - [[01-core/spring/filter-interceptor-aop|filter-interceptor-aop]]

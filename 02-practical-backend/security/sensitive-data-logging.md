@@ -86,7 +86,7 @@ public String maskHeader(String name, String value) {
 
 ## 관련 문서
 
-- [[security]]
+- [[02-practical-backend/security/security|security]]
 - [[password-storage]]
 - [[02-practical-backend/observability/logging|logging]]
 - [[02-practical-backend/observability/trace-id-and-correlation-id|trace-id-and-correlation-id]]

@@ -11,13 +11,11 @@ comments: false
 
 ## 읽는 순서
 
-1. 테스트가 필요한 이유
-2. [[unit-vs-integration-test|Unit Test와 Integration Test]]
-3. [[mock-stub-fake|Mock과 Stub]]
-4. [[test-fixture|Test Fixture]]
-5. [[transactional-test|Transactional Test]]
-6. [[testcontainers|Testcontainers]]
-7. E2E Test
+1. [[unit-vs-integration-test|Unit Test와 Integration Test]]
+2. [[mock-stub-fake|Mock, Stub, Fake]]
+3. [[test-fixture|테스트 픽스처]]
+4. [[transactional-test|테스트와 @Transactional]]
+5. [[testcontainers|Testcontainers]]
 
 ## 먼저 답해 볼 질문
 

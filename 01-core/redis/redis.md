@@ -11,13 +11,15 @@ comments: false
 
 ## 읽는 순서
 
+무엇을 담나 → 어떻게 캐시하나 → 장애와 운영 순서다.
+
 1. [[why-redis|Redis를 사용하는 이유]]
-2. [[cache-aside-and-ttl|Cache Aside와 TTL]]
-3. [[redis-failure-and-fallback|Redis 장애 대응과 fallback]]
-4. [[redis-distributed-lock|Redis 분산 락]]
-5. [[redis-data-structures|Redis 자료구조]]
-6. [[redis-key-and-memory|Key 설계와 메모리 관리]]
-7. [[redis-monitoring|운영 모니터링]]
+2. [[redis-data-structures|Redis 자료구조]]
+3. [[redis-key-and-memory|Redis Key 설계와 메모리 관리]]
+4. [[cache-aside-and-ttl|Cache Aside와 TTL]]
+5. [[redis-distributed-lock|Redis 분산 락]]
+6. [[redis-failure-and-fallback|Redis 장애 대응과 fallback]]
+7. [[redis-monitoring|Redis 운영 모니터링]]
 
 ## 먼저 답해 볼 질문
 

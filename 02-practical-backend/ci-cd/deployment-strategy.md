@@ -57,6 +57,6 @@ Rolling이 가장 흔하지만 readiness와 replica가 받쳐 줘야 무중단�
 
 ## 관련 문서
 
-- [[ci-cd]]
+- [[02-practical-backend/ci-cd/ci-cd|ci-cd]]
 - [[02-practical-backend/kubernetes/rolling-update-and-rollback|rolling-update-and-rollback]]
 - [[rollback-strategy]]

@@ -163,6 +163,8 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
 
 목록 쿼리와 count query는 나눈다. 목록에는 DTO projection과 join이 필요하지만, count query에서는 필요 없는 join을 뺄 수 있다.
 
+이때 조건 메서드가 join한 별칭(`user`)을 쓰면 안 된다. join이 없는 count query에서 `user.id`를 쓰면 쿼리가 깨지거나 엉뚱한 결과가 나온다. 그래서 `userIdEq`는 `user.id`가 아니라 `order.user.id`를 쓴다. 이렇게 쓰면 Hibernate는 join 없이 `orders.user_id` 컬럼으로 거른다.
+
 ## 동적 조건 메서드
 
 ```java
@@ -171,7 +173,7 @@ private BooleanExpression statusEq(OrderStatus status) {
 }
 
 private BooleanExpression userIdEq(Long userId) {
-    return userId == null ? null : user.id.eq(userId);
+    return userId == null ? null : order.user.id.eq(userId); // user join 없이 orders.user_id로 거른다
 }
 
 private BooleanExpression orderedAtGoe(LocalDateTime from) {
@@ -284,7 +286,7 @@ public Slice<OrderSummaryResponse> searchOrdersSlice(
 - count query에 목록용 join을 그대로 두면, DTO projection을 써도 필요 없는 join 때문에 count가 느려진다.
 - `Page`가 필요 없는데 습관처럼 count query를 돌리면, `Slice`로 충분한 곳에서 비용만 쓴다.
 - 정렬 파라미터를 검증하지 않으면, 생각지 못한 정렬이나 인덱스를 못 타는 정렬이 들어온다.
-- `offset`이 큰 페이지도 같은 방식으로 조회하면, 데이터가 커질수록 느려진다. 그때는 keyset pagination을 따져 본다.
+- `offset`이 큰 페이지도 같은 방식으로 조회하면, 데이터가 커질수록 느려진다. 그때는 마지막으로 본 값 다음부터 읽는 커서 기반 페이징(keyset pagination)을 따져 본다([[pagination-and-bulk-query]]).
 - QueryDSL을 썼으니 됐다고 실행 계획을 안 보면, 느린 SQL은 그대로 남는다.
 - 벌크 연산 뒤 영속성 컨텍스트를 정리하지 않으면, 이미 불러온 Entity와 DB 값이 어긋난다.
 

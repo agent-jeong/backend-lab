@@ -28,7 +28,7 @@ Client                     Server
 2. **SYN+ACK**: 서버가 요청을 수락하고 확인 응답을 보낸다.
 3. **ACK**: 클라이언트가 확인 응답을 보내면 연결이 완료된다.
 
-연결을 맺는 데 1.5 RTT(Round Trip Time)가 든다. 서버가 물리적으로 멀면 수십~수백ms다.
+패킷은 세 번 오가지만, 클라이언트는 SYN+ACK를 받는 순간(왕복 1번, 1 RTT) 세 번째 ACK와 함께 데이터를 보낼 수 있다. RTT(Round Trip Time)는 서버가 물리적으로 멀면 수십~수백ms다.
 
 ## 4-way Handshake: 연결 끊기
 

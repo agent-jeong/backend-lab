@@ -56,7 +56,7 @@ closed model과 open model은 결과가 다르게 나오니 구분해서 쓴다.
 - 외부 API를 mock으로 바꿔 놓고 결과를 운영 성능처럼 읽으면, 실제 외부 지연이 빠진 숫자를 믿게 된다.
 - 테스트하는 동안 DB, Redis, JVM, OS 지표를 같이 보지 않으면, 한계에 닿아도 어디서 막혔는지 모른다.
 - closed model만 쓰면, 응답이 느려질수록 요청도 줄어서 과부하를 낮게 본다.
-- coordinated omission을 모르면, 실제 tail latency보다 낮게 잰 결과를 믿게 된다.
+- coordinated omission(부하 도구가 느린 응답을 기다리느라 다음 요청을 늦게 보내서, 그동안 밀렸어야 할 요청의 대기 시간이 측정에서 빠지는 현상)을 모르면, 실제 tail latency보다 낮게 잰 결과를 믿게 된다. 도착률을 고정하는 open model 도구로 재면 줄어든다.
 
 ## 운영에서 볼 것
 

@@ -77,7 +77,7 @@ Dashboard는 서비스가 지금 괜찮은지, 사용자가 피해를 보는지,
 
 ## 관련 문서
 
-- [[observability]]
+- [[02-practical-backend/observability/observability|observability]]
 - [[metrics]]
 - [[alert-and-slo]]
 - [[incident-analysis-flow]]

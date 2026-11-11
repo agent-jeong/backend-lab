@@ -12,11 +12,11 @@ Pod는 언제든 사라지고 다시 만들어진다. 그래서 Pod IP를 다른
 
 ## 동작
 
-1. Deployment 같은 controller가 Pod template으로 Pod를 만든다.
-2. Scheduler가 Pod를 실행할 Node를 고른다.
-3. kubelet이 container runtime으로 container를 띄운다.
-4. 같은 Pod 안의 container들은 network namespace를 공유해서 localhost로 통신한다.
-5. container가 종료되면 restart policy와 controller 상태에 따라 재시작되거나 새 Pod가 만들어진다.
+1. Deployment 같은 controller(선언해 둔 개수와 모양대로 Pod를 계속 맞춰 주는 관리자)가 Pod template(Pod를 찍어 내는 틀)으로 Pod를 만든다.
+2. 컨트롤 플레인의 Scheduler가 Pod를 올릴 노드를 고른다.
+3. 그 노드에서 도는 에이전트인 kubelet이 container runtime(containerd 같은 컨테이너 실행 프로그램)으로 container를 띄운다.
+4. 같은 Pod 안의 container들은 IP와 포트를 같이 쓴다. 그래서 서로 `localhost:포트`로 부른다.
+5. container가 죽으면 kubelet이 restart policy(재시작 규칙)에 따라 같은 Pod 안에서 다시 띄운다. Pod 자체가 사라지면 controller가 새 Pod를 만든다. 새 Pod는 IP가 다르다.
 
 ```yaml
 apiVersion: v1
@@ -39,9 +39,9 @@ spec:
 |---|---|---|
 | Pod 재시작 반복 | restart count, last state | OOM, 예외 종료, probe 실패를 구분한다 |
 | 로그가 없음 | container 이름 | multi-container Pod일 수 있다 |
-| Pod IP 직접 사용 | 피함 | Pod가 다시 만들어지면 IP가 바뀐다 |
-| sidecar 필요 | 같은 Pod 배치 검토 | 로그 수집, 프록시처럼 생명주기를 공유한다 |
-| 임시 파일 저장 | emptyDir 또는 외부 저장소 | container 파일시스템은 영속적이지 않다 |
+| 다른 서비스가 이 Pod를 불러야 함 | Service 이름으로 부른다 | Pod가 다시 만들어지면 IP가 바뀐다 |
+| 로그 수집기, 프록시를 붙이고 싶음 | 같은 Pod에 sidecar로 넣는다 | 앱과 같이 뜨고 같이 죽어야 하는 보조 container다 |
+| 파일을 저장해야 함 | 잠깐 쓸 파일은 emptyDir, 남겨야 할 파일은 외부 저장소 | emptyDir은 Pod가 사라지면 같이 지워지는 임시 디렉터리다 |
 
 한 Pod에 container를 여러 개 넣으면 생명주기와 자원 사용이 함께 묶인다. sidecar처럼 같이 뜨고 같이 죽어야 하는 것만 넣는다.
 
@@ -51,13 +51,13 @@ spec:
 - Pod가 다시 만들어져도 로컬 파일이 남는다고 생각하면, 재배포 뒤에 파일이 사라진 걸 보고 놀란다. 남지 않는다.
 - multi-container Pod에서 어느 container의 로그인지 확인하지 않으면, 엉뚱한 로그를 보고 "로그가 없다"고 판단한다.
 - Pod IP를 설정 파일이나 외부 시스템에 직접 등록하면, Pod가 다시 만들어질 때 IP가 바뀌어 연결이 끊긴다.
-- CrashLoopBackOff를 애플리케이션 로그만 보고 판단하면, 원인을 잘못 짚는다. 애플리케이션 버그인지, OOM인지, probe 실패인지, 노드 문제인지는 event와 last state를 봐야 갈린다.
+- CrashLoopBackOff(container가 계속 죽어서 kubelet이 재시작 간격을 늘려 가며 기다리는 상태)를 애플리케이션 로그만 보고 판단하면, 원인을 잘못 짚는다. 애플리케이션 버그인지, OOM인지, probe 실패인지, 노드 문제인지는 event와 last state를 봐야 갈린다.
 
 ## 운영에서 볼 것
 
 - `kubectl get pods`로 상태와 재시작 횟수를 본다.
 - `kubectl describe pod`로 이벤트, 종료 사유, probe 실패를 본다.
-- `kubectl logs pod-name -c container-name`으로 container별 로그를 본다.
+- `kubectl logs pod-name -c container-name`으로 container별 로그를 본다. 재시작 전 로그는 `--previous`를 붙여 본다.
 - Pod 안에 꼭 남아야 하는 데이터를 저장하는 설계가 아닌지 점검한다.
 
 ## 한 번에 설명하기
@@ -81,7 +81,7 @@ spec:
 
 ## 관련 문서
 
-- [[kubernetes]]
+- [[02-practical-backend/kubernetes/kubernetes|kubernetes]]
 - [[deployment-service-ingress]]
 - [[readiness-and-liveness-probe]]
 - [[graceful-shutdown]]

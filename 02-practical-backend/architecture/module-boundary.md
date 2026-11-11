@@ -56,7 +56,7 @@ tags: [concept, architecture]
 
 ## 관련 문서
 
-- [[architecture]]
+- [[02-practical-backend/architecture/architecture|architecture]]
 - [[dependency-direction]]
 - [[transaction-boundary]]
 - [[monolith-and-msa]]

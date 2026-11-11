@@ -159,7 +159,7 @@ class ModuleStructureTest {
 
 ## 관련 문서
 
-- [[architecture]]
+- [[02-practical-backend/architecture/architecture|architecture]]
 - [[module-boundary]]
 - [[compensation-and-outbox]]
 - [[distributed-tracing]]

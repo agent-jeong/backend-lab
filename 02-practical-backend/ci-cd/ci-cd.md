@@ -11,12 +11,12 @@ comments: false
 
 ## 읽는 순서
 
-1. [[ci-vs-cd|CI와 CD의 차이]]
-2. [[build-pipeline|Build Pipeline]]
-3. Test Automation
-4. [[deployment-strategy|Deployment Strategy]]
-5. [[rollback-strategy|Rollback]]
-6. [[config-and-secret-management|환경 변수와 Secret 관리]]
+1. [[ci-vs-cd|CI와 CD]]
+2. [[build-pipeline|빌드 파이프라인]]
+3. [[02-practical-backend/testing/testing|테스트]]: 파이프라인에서 돌릴 테스트를 고르는 기준
+4. [[deployment-strategy|배포 전략]]
+5. [[rollback-strategy|Rollback 전략]]
+6. [[config-and-secret-management|Config와 Secret 관리]]
 7. [[gitops|GitOps]]
 
 ## 먼저 답해 볼 질문

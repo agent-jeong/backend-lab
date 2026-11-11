@@ -121,7 +121,11 @@ public List<UserResponse> getUsers() {
 @Transactional
 public void order() {
     orderRepository.save(order);
-    notificationService.sendNotification(order); // 알림 실패해도 주문은 유지
+    try {
+        notificationService.sendNotification(order);
+    } catch (NotificationException e) {
+        log.warn("Notification failed. orderId={}", order.getId(), e); // 잡아야 주문이 유지된다
+    }
 }
 
 @Service
@@ -133,6 +137,8 @@ public class NotificationService {
     }
 }
 ```
+
+`REQUIRES_NEW`가 떼어 주는 건 트랜잭션뿐이다. 알림 쪽에서 난 예외는 그대로 `order()`까지 올라오기 때문에, 위처럼 잡지 않으면 주문 트랜잭션도 롤백된다.
 
 `REQUIRES_NEW`는 DB 커넥션을 하나 더 쓴다. 기존 트랜잭션이 커넥션을 쥔 채로 멈춰 있기 때문이다.
 

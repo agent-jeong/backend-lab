@@ -35,11 +35,11 @@ Socket I/O는 프로세스가 네트워크 연결로 데이터를 주고받는 �
 
 | 상황 | 확인할 것 | 이유 |
 |---|---|---|
-| connection refused | port listen 여부, backlog, 서버 상태 | 연결 자체가 거절됐다 |
+| connection refused | 그 port를 듣는 프로세스가 있는지, 서버 프로세스가 떠 있는지 | 듣는 곳이 없어서 OS가 바로 거절했다 |
 | connection timeout | 방화벽, 라우팅, 서버 도달성 | SYN 응답을 받지 못했을 가능성이 크다 |
 | read timeout | 상대 서버 처리 시간, thread pool | 연결은 됐지만 응답이 늦다 |
 | connection reset | 서버/LB 종료, keep-alive mismatch | 기존 연결이 중간에 끊겼다 |
-| 요청 폭증 | SYN queue, accept queue, thread pool | 연결을 받는 속도와 처리하는 속도를 같이 봐야 한다 |
+| 요청 폭증 | SYN queue, accept queue, thread pool | accept queue가 차면 Linux는 새 연결을 거절하지 않고 버린다. 그래서 refused가 아니라 connect timeout으로 보인다 |
 
 ## 자주 깨지는 곳
 

@@ -57,7 +57,7 @@ tags: [concept, architecture]
 
 ## 관련 문서
 
-- [[architecture]]
+- [[02-practical-backend/architecture/architecture|architecture]]
 - [[layered-architecture]]
 - [[module-boundary]]
 - [[oop-design-principles]]

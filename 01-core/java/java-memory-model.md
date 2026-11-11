@@ -8,7 +8,14 @@ tags: [concept, java]
 
 Java Memory Model(JMM)은 여러 스레드가 같은 변수를 읽고 쓸 때, 바뀐 값이 다른 스레드에 언제 보이는지, 어떤 순서로 보이는지, `volatile`이나 `synchronized`를 쓰면 무엇이 달라지는지를 정한 규칙이다. 코드가 위에서 아래로 실행되는 것처럼 보여도, 다른 스레드가 바뀐 값을 바로 본다는 보장은 없다.
 
-이걸 모르면 이런 일이 생긴다. 한 스레드가 바꾼 값을 다른 스레드가 계속 옛 값으로 본다. `volatile`만 붙이면 다 해결된다고 믿는다. `count++`가 한 번에 끝나는 연산이라고 착각한다. double-checked locking을 잘못 만든다. 이런 버그는 재현이 잘 안 돼서, 테스트는 통과하고 운영에서 가끔씩 터진다.
+이걸 모르면 이런 일이 생긴다.
+
+- 한 스레드가 바꾼 값을 다른 스레드가 계속 옛 값으로 본다.
+- `volatile`만 붙이면 다 해결된다고 믿는다.
+- `count++`가 한 번에 끝나는 연산이라고 착각한다.
+- double-checked locking(락을 줄이려고 null 검사를 락 안팎에서 두 번 하는 초기화 방식)을 잘못 만든다.
+
+이런 버그는 재현이 잘 안 돼서, 테스트는 통과하고 운영에서 가끔씩 터진다.
 
 ## Visibility와 Atomicity
 
@@ -163,7 +170,7 @@ happens-before는 "A 작업의 결과가 B 작업에서 반드시 보인다"는 
 
 ## 관련 문서
 
-- [[java]]
+- [[01-core/java/java|java]]
 - [[java-concurrency-basics]]
 - [[02-practical-backend/concurrency/concurrency|concurrency]]
 - [[02-practical-backend/concurrency/concurrency-test|concurrency-test]]

@@ -83,7 +83,7 @@ Authorization header로 인증하는 API는 CSRF 위험이 상대적으로 낮�
 
 ## 관련 문서
 
-- [[security]]
+- [[02-practical-backend/security/security|security]]
 - [[session-and-token]]
 - [[01-core/network/cors|cors]]
 - [[xss]]

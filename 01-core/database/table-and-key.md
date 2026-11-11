@@ -49,7 +49,7 @@ PK는 업무와 상관없는 대리 키(surrogate key)로 잡는다. 이메일 �
 | 기준 | AUTO_INCREMENT | UUID |
 |---|---|---|
 | 크기 | 8 bytes (BIGINT) | 16 bytes (BINARY) 또는 36자 (문자열) |
-| 인덱스 성능 | 차례로 들어가서 B-Tree에 유리 | 아무 데나 들어가서 페이지 분할이 생김 |
+| 인덱스 성능 | 늘 맨 끝에 붙어서 B-Tree에 유리 | 중간 아무 데나 끼어들어 꽉 찬 페이지를 둘로 쪼개는 일(페이지 분할)이 잦다 |
 | 여러 서버 | DB 한 대 안에서만 유일 | 어디서 만들어도 유일 |
 | 보안 | 다음 값을 짐작할 수 있음 | 짐작할 수 없음 |
 
@@ -86,7 +86,7 @@ ALTER TABLE users ADD UNIQUE KEY uk_email (email);
 | PK | BIGINT | INT는 약 21억이 끝이라, 데이터가 많은 서비스에서는 모자란다 |
 | 금액 | DECIMAL | FLOAT/DOUBLE은 부동소수점 오차가 생긴다 |
 | 상태값 | ENUM 또는 VARCHAR | ENUM은 값을 바꿀 때 DDL이 필요하다 |
-| 날짜/시간 | DATETIME 또는 TIMESTAMP | TIMESTAMP는 2038년 문제가 있다 (MySQL) |
+| 날짜·시간 | DATETIME 또는 TIMESTAMP | MySQL TIMESTAMP는 2038-01-19 이후 값을 담지 못한다 |
 | 긴 텍스트 | TEXT | 길이 제한이 큰 본문은 아주 긴 VARCHAR보다 TEXT가 맞다 (VARCHAR는 행 크기 제한 65,535바이트를 나눠 쓴다) |
 | 불리언 | TINYINT(1) | MySQL에는 BOOLEAN 타입이 따로 없다 (내부적으로 TINYINT) |
 

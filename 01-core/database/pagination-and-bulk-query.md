@@ -96,6 +96,17 @@ Stream<Order> findByStatusAsStream(@Param("status") String status);
 
 전체를 메모리에 올리지 않고 한 건씩 처리한다. 트랜잭션 안에서만 쓸 수 있고, 다 쓰고 나면 Stream을 닫아야 한다.
 
+```java
+@Transactional(readOnly = true)
+public void exportCompleted() {
+    try (Stream<Order> orders = orderRepository.findByStatusAsStream("COMPLETED")) {
+        orders.forEach(this::write);
+    }
+}
+```
+
+MySQL은 조심한다. MySQL Connector/J는 기본으로 결과 전체를 한 번에 받아 메모리에 올리기 때문에, fetch size를 1000으로 줘도 나눠 받지 않는다. 나눠 받으려면 JDBC URL에 `useCursorFetch=true`를 켜거나 fetch size를 `Integer.MIN_VALUE`로 줘서 한 행씩 받게 한다. 그리고 읽은 Entity가 영속성 컨텍스트에 쌓이니, 주기적으로 `clear()`를 부르거나 DTO로 읽는다.
+
 ## 자주 깨지는 곳
 
 - 데이터가 많은 테이블에 OFFSET 페이징을 쓰면, 뒷페이지로 갈수록 느려진다.

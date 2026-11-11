@@ -47,7 +47,7 @@ SELECT * FROM products WHERE id BETWEEN 15 AND 25 FOR UPDATE;
 -- → 다른 트랜잭션이 id=12, id=22 등을 INSERT할 수 없음
 ```
 
-Gap Lock 덕분에 Phantom Read가 생기지 않는다. 대신 그 구간에는 INSERT를 못 해서 동시에 처리할 수 있는 양이 줄고, 데드락이 나는 원인이 되기도 한다.
+InnoDB는 Repeatable Read에서 범위를 잠글 때 행 락과 그 앞 구간의 Gap Lock을 합친 Next-Key Lock을 기본으로 쓴다. 덕분에 잠금 읽기(`FOR UPDATE`)에서는 Phantom Read가 생기지 않는다. 대신 그 구간에는 INSERT를 못 해서 동시에 처리할 수 있는 양이 줄고, 데드락이 나는 원인이 되기도 한다. Read Committed에서는 Gap Lock을 거의 쓰지 않는다.
 
 ## 비관적 락과 낙관적 락
 

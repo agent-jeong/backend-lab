@@ -187,7 +187,7 @@ public OrderDetail getOrder(long orderId) { ... }
 
 ## 관련 문서
 
-- [[security]]
+- [[02-practical-backend/security/security|security]]
 - [[authentication-and-authorization]]
 - [[session-and-token]]
 - [[csrf]]

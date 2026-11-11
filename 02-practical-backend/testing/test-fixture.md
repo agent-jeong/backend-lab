@@ -56,5 +56,5 @@ fixture는 "이런 상황에서"에 해당하는 부분이다. 예를 들어 "�
 
 ## 관련 문서
 
-- [[testing]]
+- [[02-practical-backend/testing/testing|testing]]
 - [[unit-vs-integration-test]]

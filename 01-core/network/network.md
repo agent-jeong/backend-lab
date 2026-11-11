@@ -11,18 +11,20 @@ HTTP, DNS, TCP 연결, TLS, 타임아웃과 재시도를 다룬다. 결제 API �
 
 ## 읽는 순서
 
-1. [[http-basics|HTTP 기본 구조]]
-2. [[rest-api-design|REST API 설계]]
-3. [[tcp-connection|TCP와 연결]]
-4. [[timeout|Timeout]]
-5. [[retry|Retry]]
-6. [[circuit-breaker|서킷 브레이커]]
-7. [[status-code|Status Code]]
-8. [[dns|DNS]]
-9. [[load-balancer|Load Balancer]]
-10. [[cors|CORS]]
-11. [[tls|TLS]]
-12. [[request-journey|URL을 입력하면 일어나는 일]]
+HTTP 자체 → 요청이 서버까지 가는 길 → 느리거나 실패하는 상대를 다루는 법 순서다.
+
+1. [[http-basics|HTTP 기초와 요청·응답 구조]]
+2. [[status-code|HTTP 상태 코드 사용 기준]]
+3. [[rest-api-design|REST API 설계]]
+4. [[dns|DNS]]
+5. [[tcp-connection|TCP 연결과 3-way 핸드셰이크]]
+6. [[tls|TLS 동작 원리]]
+7. [[load-balancer|로드 밸런서 동작과 분산 전략]]
+8. [[request-journey|URL을 입력하면 일어나는 일]]: 4~7을 한 줄로 잇는 글
+9. [[timeout|타임아웃 설계와 실무 기준]]
+10. [[retry|재시도 전략과 백오프]]
+11. [[circuit-breaker|서킷 브레이커]]
+12. [[cors|CORS]]
 13. [[websocket|WebSocket]]
 
 ## 먼저 답해 볼 질문

@@ -76,7 +76,7 @@ HTTP Header:
 
 ## 관련 문서
 
-- [[observability]]
+- [[02-practical-backend/observability/observability|observability]]
 - [[logging]]
 - [[distributed-tracing]]
 - [[02-practical-backend/idempotency/idempotency-key|idempotency-key]]

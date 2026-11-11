@@ -106,6 +106,25 @@ WHERE u.status = 'ACTIVE';
 
 MySQL 옵티마이저는 서브쿼리를 대부분 JOIN으로 바꿔서 실행한다. 그래서 둘의 속도 차이가 크지 않은 경우가 많다. 확실히 알고 싶으면 실행 계획을 본다.
 
+## ON과 WHERE는 LEFT JOIN에서 결과가 다르다
+
+"주문이 없는 회원도 포함해서, 회원별 완료 주문"을 보고 싶다고 하자.
+
+```sql
+-- 조건을 ON에: 회원은 전부 남고, 완료 주문만 붙는다. 완료 주문이 없는 회원은 o.id가 NULL
+SELECT u.name, o.id
+FROM users u
+LEFT JOIN orders o ON u.id = o.user_id AND o.status = 'COMPLETED';
+
+-- 조건을 WHERE에: JOIN이 끝난 뒤 걸러서, o.status가 NULL인 회원이 사라진다. INNER JOIN과 같은 결과
+SELECT u.name, o.id
+FROM users u
+LEFT JOIN orders o ON u.id = o.user_id
+WHERE o.status = 'COMPLETED';
+```
+
+ON은 "어떤 행끼리 짝지을지"를, WHERE는 "짝지은 결과 중 무엇을 남길지"를 정한다. LEFT JOIN의 오른쪽 테이블 조건은 ON에 둔다.
+
 ## 자주 깨지는 곳
 
 - JOIN 컬럼에 인덱스가 없으면, Nested Loop가 드리븐 테이블을 매번 처음부터 끝까지 읽는다.

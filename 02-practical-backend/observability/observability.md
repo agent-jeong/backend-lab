@@ -12,12 +12,12 @@ comments: false
 ## 읽는 순서
 
 1. [[why-observability|Observability가 필요한 이유]]
-2. [[logging|Logging]]
-3. [[metrics|Metrics]]
-4. [[distributed-tracing|Distributed Tracing]]
+2. [[logging|로깅]]
+3. [[metrics|메트릭]]
+4. [[distributed-tracing|분산 추적]]
 5. [[trace-id-and-correlation-id|traceId와 correlationId]]
 6. [[alert-and-slo|Alert와 SLO]]
-7. [[dashboard|Dashboard]]
+7. [[dashboard|대시보드]]
 8. [[incident-analysis-flow|장애 분석 흐름]]
 
 ## 먼저 답해 볼 질문

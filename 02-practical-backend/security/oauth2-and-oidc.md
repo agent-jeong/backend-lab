@@ -152,7 +152,7 @@ Spring Security의 `oauth2Login()`은 위 흐름의 2번부터 7번을 대신 �
 
 ## 관련 문서
 
-- [[security]]
+- [[02-practical-backend/security/security|security]]
 - [[authentication-and-authorization]]
 - [[session-and-token]]
 - [[spring-security-flow]]

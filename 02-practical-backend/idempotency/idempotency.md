@@ -13,7 +13,7 @@ comments: false
 
 1. [[why-idempotency|멱등성이 필요한 이유]]
 2. [[duplicate-request-and-retry|중복 요청과 재시도]]
-3. [[idempotency-key|Idempotency Key]]
+3. [[idempotency-key|멱등키]]
 4. [[state-transition-and-unique-constraint|상태 전이와 Unique 제약]]
 5. [[message-consumer-idempotency|메시지 소비 멱등성]]
 6. [[payment-order-idempotency|결제와 주문 멱등성]]

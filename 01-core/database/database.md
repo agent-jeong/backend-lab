@@ -11,17 +11,19 @@ comments: false
 
 ## 읽는 순서
 
-1. [[why-rdb|RDB를 사용하는 이유]]
-2. [[table-and-key|Table, Row, Column, Key]]
-3. [[db-index|Index 기본 원리]]
-4. [[execution-plan|실행 계획]]
-5. [[transaction-and-isolation|Transaction과 Isolation Level]]
-6. [[lock|Lock]]
-7. [[normalization-and-denormalization|정규화와 반정규화]]
-8. [[join|Join]]
-9. [[replication-and-sharding|Replication과 Sharding]]
-10. [[nosql-and-cap|NoSQL과 CAP 정리]]
-11. [[pagination-and-bulk-query|Pagination과 대용량 조회]]
+설계 → 조회 → 성능 → 동시성 → 확장 순서다. 앞 글에서 쓴 용어를 뒤 글이 그대로 쓴다.
+
+1. [[why-rdb|관계형 DB를 사용하는 이유]]
+2. [[table-and-key|테이블 설계와 키 전략]]
+3. [[normalization-and-denormalization|정규화와 반정규화 판단 기준]]
+4. [[join|JOIN의 종류와 동작 원리]]
+5. [[db-index|인덱스 동작 원리와 설계 기준]]
+6. [[execution-plan|실행 계획(EXPLAIN) 읽는 법]]
+7. [[pagination-and-bulk-query|페이징과 대량 조회 전략]]
+8. [[transaction-and-isolation|트랜잭션 격리 수준과 동시성 문제]]
+9. [[lock|DB 락의 종류와 동작]]
+10. [[replication-and-sharding|DB 복제(Replication)와 샤딩]]
+11. [[nosql-and-cap|NoSQL과 CAP 정리]]
 
 ## 먼저 답해 볼 질문
 

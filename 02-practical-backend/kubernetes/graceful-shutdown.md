@@ -19,9 +19,9 @@ Kubernetes에서는 배포할 때마다 모든 Pod가 한 번씩 종료된다. �
 Pod 삭제 요청(배포, 스케일 다운, 노드 drain)이 오면 두 갈래 일이 동시에 시작된다.
 
 1. API 서버가 Pod를 Terminating으로 표시하고 grace period를 기록한다. `terminationGracePeriodSeconds` 기본값은 30초다.
-2. 노드의 kubelet은 `preStop` hook이 있으면 먼저 실행한다. hook이 끝나야 컨테이너의 PID 1에 SIGTERM을 보낸다.
-3. 같은 순간 control plane은 이 Pod를 Service의 EndpointSlice에서 종료 중(ready=false)으로 표시한다. kube-proxy와 Ingress controller는 이 변경을 받아 라우팅 목록에서 Pod를 뺀다.
-4. grace period가 끝났는데도 컨테이너가 살아 있으면 SIGKILL로 강제 종료한다. 이 시간은 `preStop`이 시작되기 전부터 세며, `preStop`과 SIGTERM 이후의 종료 시간을 합친 시간이다.
+2. 노드의 kubelet은 `preStop` hook(종료 직전에 실행할 명령)이 있으면 먼저 실행한다. hook이 끝나야 컨테이너의 PID 1(컨테이너 안에서 처음 뜬 프로세스)에 SIGTERM(정리하고 끝내라는 신호)을 보낸다.
+3. 같은 순간 control plane은 이 Pod를 Service의 EndpointSlice(Service가 요청을 보낼 Pod 주소 목록)에서 종료 중(ready=false)으로 표시한다. kube-proxy와 Ingress controller는 이 변경을 받아 라우팅 목록에서 Pod를 뺀다.
+4. grace period가 끝났는데도 컨테이너가 살아 있으면 SIGKILL(정리할 틈 없이 바로 죽이는 신호)로 강제 종료한다. 이 시간은 `preStop`이 시작되기 전부터 세며, `preStop`과 SIGTERM 이후의 종료 시간을 합친 시간이다.
 
 ```
 t=0  Pod 삭제 요청
@@ -132,7 +132,7 @@ HTTP 요청 말고도 종료 때 끊기는 일이 있다. 일의 종류마다 �
 
 ## 관련 문서
 
-- [[kubernetes]]
+- [[02-practical-backend/kubernetes/kubernetes|kubernetes]]
 - [[rolling-update-and-rollback]]
 - [[readiness-and-liveness-probe]]
 - [[pod-and-container]]

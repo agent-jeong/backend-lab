@@ -6,9 +6,9 @@ tags: [concept, kubernetes]
 
 # Resource Request와 Limit
 
-Resource request는 Pod를 어느 Node에 배치할지 정할 때 쓰는 최소 예약량이다. limit은 container가 쓸 수 있는 자원의 상한이다.
+Resource request는 Pod를 어느 노드에 배치할지 정할 때 쓰는 예약량이다. 노드는 request만큼을 그 container 몫으로 떼어 둔다. limit은 container가 쓸 수 있는 자원의 상한이다.
 
-둘 다 잘못 잡으면 바로 장애로 드러난다. CPU limit이 낮으면 throttling 때문에 응답이 느려지고, memory limit을 넘으면 container가 OOMKilled로 죽는다. 그래서 값은 감으로 넣지 않고, 실제 사용량과 부하 테스트 결과를 보고 정한다.
+둘 다 잘못 잡으면 바로 장애로 드러난다. CPU limit이 낮으면 throttling(limit만큼 쓴 container를 커널이 잠시 멈춰 세우는 것) 때문에 응답이 느려지고, memory limit을 넘으면 커널이 container를 강제 종료한다. 이 종료 사유가 `OOMKilled`로 남는다. 그래서 값은 감으로 넣지 않고, 실제 사용량과 부하 테스트 결과를 보고 정한다.
 
 ## 동작
 
@@ -28,6 +28,8 @@ resources:
     memory: "1Gi"
 ```
 
+CPU의 `500m`은 0.5코어다(`m`은 1/1000코어). 메모리의 `Mi`, `Gi`는 1024 단위다. request는 사용량의 바닥이 아니다. 노드에 여유가 있으면 container는 request보다 더 쓸 수 있고, limit에서 막힌다. limit만 적고 request를 비우면 Kubernetes가 limit 값을 request로 그대로 쓴다.
+
 | 설정 | 역할 | 잘못 잡으면 |
 |---|---|---|
 | Request | 스케줄링과 자원 예약의 기준 | 없으면 노드에 과밀 배치돼 부하 시 성능이 급격히 나빠진다. 과하면 자원이 남아도 Pod가 배치되지 않는다 |
@@ -38,11 +40,10 @@ resources:
 
 | 상황 | 확인 대상 | 이유 |
 |---|---|---|
-| Pod Pending | request와 node allocatable | 요청 자원이 커서 배치가 안 될 수 있다 |
-| 응답 지연 증가 | CPU throttling | CPU limit 설정이 병목일 수 있다 |
-| 재시작 반복 | OOMKilled | memory limit 초과를 확인한다 |
-| 비용 최적화 | 실제 사용량 p95 | 과도한 request를 줄인다 |
-| 안정성 우선 서비스 | request 명확히 설정 | 필요한 자원을 예약한다 |
+| Pod가 Pending에 머묾 | request, 노드의 allocatable(Pod에 내줄 수 있는 자원량) | request를 채울 수 있는 노드가 없으면 배치되지 않는다. `kubectl describe pod` 이벤트에 `Insufficient cpu` 같은 문구가 남는다 |
+| 응답 지연 증가 | CPU throttling 지표 | CPU limit에 걸려 멈추는 시간이 늘었다 |
+| 재시작 반복 | 종료 사유 `OOMKilled` | memory limit을 넘었다 |
+| 비용을 줄이고 싶음 | 실제 사용량 p95(100번 중 95번째로 큰 값) | 쓰지도 않는 request가 노드 자리를 차지하고 있다 |
 
 ## 자주 깨지는 곳
 
@@ -55,7 +56,7 @@ resources:
 ## 운영에서 볼 것
 
 - `kubectl describe pod`로 request, limit, OOMKilled 이벤트를 본다.
-- 메트릭으로는 CPU usage, CPU throttling, memory working set, restart count를 본다.
+- 메트릭으로는 CPU 사용량, CPU throttling, memory working set(container가 지금 실제로 쥐고 있는 메모리), restart count를 본다.
 - peak 트래픽에서 latency와 자원 사용량을 같이 본다.
 - limit 안에 JVM heap, metaspace, native memory가 다 들어가는지 리뷰한다.
 
@@ -79,6 +80,6 @@ resources:
 
 ## 관련 문서
 
-- [[kubernetes]]
+- [[02-practical-backend/kubernetes/kubernetes|kubernetes]]
 - [[01-core/java/jvm-memory-structure|jvm-memory-structure]]
 - [[02-practical-backend/performance/latency-and-throughput|latency-and-throughput]]

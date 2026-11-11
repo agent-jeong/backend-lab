@@ -96,7 +96,10 @@ def write_folder_indexes(content: Path) -> int:
             found = re.search(r"^title:\s*(.+)$", hub.read_text(encoding="utf-8"), re.M)
             title = found.group(1).strip() if found else folder.name
             desc = f"{title} 주제의 글 목록"
-            body = f"먼저 [[{hub.stem}|{title} 안내 글]]을 보면 읽는 순서와 핵심 질문이 있다."
+            # 이름만 쓰면 folder/folder.md 와 folder/index.md 가 겹쳐 없는 주소로 간다. 별칭의 "/" 는 블로그에서 잘린다.
+            hub_path = hub.relative_to(content).with_suffix("").as_posix()
+            alias = title.replace("/", "·")
+            body = f"먼저 [[{hub_path}|{alias} 안내 글]]을 보면 읽는 순서와 핵심 질문이 있다."
         index.write_text(
             f"---\ntitle: {title}\ndescription: {desc}\ncomments: false\n---\n\n{body}\n",
             encoding="utf-8",

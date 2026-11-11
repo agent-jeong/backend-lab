@@ -88,7 +88,7 @@ public AuthenticatedUser authenticate(String accessToken) {
 
 ## 관련 문서
 
-- [[security]]
+- [[02-practical-backend/security/security|security]]
 - [[authentication-and-authorization]]
 - [[authorization-check-location]]
 - [[oauth2-and-oidc]]

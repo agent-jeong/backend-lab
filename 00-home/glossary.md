@@ -37,17 +37,19 @@ comments: false
 
 - **Transaction**: 하나로 묶은 여러 작업. 전부 반영되거나 전부 롤백된다. → [[acid-and-isolation]]
 - **ACID**: Atomicity, Consistency, Isolation, Durability. 트랜잭션이 지켜야 하는 네 가지 속성. → [[acid-and-isolation]]
-- **Isolation Level**: 동시에 도는 트랜잭션끼리 서로의 데이터를 얼마나 보게 할지 정하는 수준. 실무 기본은 READ COMMITTED이고, 수준을 올리면 정합성은 높아지지만 동시성은 떨어진다. → [[acid-and-isolation]]
+- **Isolation Level**: 동시에 도는 트랜잭션끼리 서로의 데이터를 얼마나 보게 할지 정하는 수준. 기본값은 DB마다 다르다(MySQL InnoDB는 REPEATABLE READ, PostgreSQL은 READ COMMITTED). 수준을 올리면 정합성은 높아지지만 동시성은 떨어진다. → [[acid-and-isolation]]
 - **Lock**: 여러 요청이 같은 데이터를 동시에 건드리지 못하게 막는 장치. 비관적 락은 DB에서 행을 잠그고, 낙관적 락은 버전을 비교해 충돌을 잡는다. → [[lock-and-deadlock]]
 - **Deadlock**: 둘 이상의 트랜잭션이 서로가 잡은 Lock을 기다리며 영원히 멈춘 상태. → [[lock-and-deadlock]]
 - **Race Condition**: 두 요청이 같은 데이터를 동시에 읽고 쓸 때 결과가 실행 순서에 따라 달라지는 문제. → [[race-condition-and-critical-section]]
+- **MVCC**: 데이터의 옛 버전을 남겨 두고, 읽는 쪽은 락 없이 자기 시점의 버전을 보게 하는 방식. 그래서 일반 SELECT와 UPDATE가 서로를 기다리지 않는다. → [[transaction-and-isolation]]
+- **Outbox**: DB 변경과 "보낼 이벤트" 기록을 같은 트랜잭션에 저장하고, 발행은 따로 하는 패턴. 이벤트 유실은 막지만 중복은 생길 수 있다. → [[compensation-and-outbox]]
 
 ## Idempotency / Reliability
 
 - **Idempotency (멱등성)**: 같은 요청을 여러 번 보내도 한 번 보낸 것과 결과가 같은 성질. 결제, 주문처럼 부작용이 있는 API에는 꼭 필요하다. → [[why-idempotency]]
 - **Idempotency Key**: 같은 요청이 다시 왔는지 알아보려고 클라이언트가 함께 보내는 고유 키. → [[idempotency-key]]
 - **Retry**: 실패한 요청을 다시 보내는 패턴. 멱등하지 않은 API에 retry하면 중복 처리가 생긴다. → [[duplicate-request-and-retry]]
-- **Circuit Breaker**: 외부 호출이 계속 실패하면 한동안 호출을 아예 막아서, 장애가 내 서비스로 번지지 않게 하는 패턴. → [[retry]]
+- **Circuit Breaker**: 외부 호출이 계속 실패하면 한동안 호출을 아예 막아서, 장애가 내 서비스로 번지지 않게 하는 패턴. → [[circuit-breaker]]
 
 ## Cache / Redis
 
@@ -70,6 +72,7 @@ comments: false
 - **TraceId**: 요청 하나가 여러 서비스를 거칠 때, 그 흐름을 처음부터 끝까지 따라가려고 붙이는 고유 ID. → [[trace-id-and-correlation-id]]
 - **SLO (Service Level Objective)**: 서비스가 지키기로 정한 품질 목표. "p99 latency 200ms 이내" 같은 식으로 정한다. → [[alert-and-slo]]
 - **Latency**: 요청부터 응답까지 걸리는 시간. 실무에서는 평균보다 p95, p99를 본다. → [[latency-and-throughput]]
+- **p95 / p99**: 요청 100개를 느린 순으로 줄 세웠을 때 95번째, 99번째의 응답 시간. 평균에 가려지는 느린 요청을 드러낸다. → [[latency-and-throughput]]
 - **Throughput**: 정해진 시간 동안 처리하는 요청 수. TPS(Transactions Per Second)로 측정한다. → [[latency-and-throughput]]
 
 ## CI/CD / Deployment
@@ -78,3 +81,10 @@ comments: false
 - **CD (Continuous Deployment)**: 테스트를 통과한 코드를 운영 환경까지 자동으로 배포하는 과정. → [[ci-vs-cd]]
 - **Rollback**: 배포 뒤 문제가 생기면 이전 버전으로 되돌리는 절차. → [[rollback-strategy]]
 - **GitOps**: 인프라와 배포 설정을 Git에 두고, Git에 적힌 상태를 유일한 기준(Single Source of Truth)으로 삼아 관리하는 방식. → [[gitops]]
+
+## Kubernetes
+
+- **Pod**: Kubernetes가 배포하고 노드에 올리는 가장 작은 단위. 컨테이너 하나 이상이 IP와 포트를 같이 쓴다. 언제든 다시 만들어지고, 그때 IP가 바뀐다. → [[pod-and-container]]
+- **Service**: 계속 바뀌는 Pod들 앞에 고정된 이름과 주소를 주는 리소스. label이 맞는 준비된 Pod로만 요청을 보낸다. → [[deployment-service-ingress]]
+- **Readiness / Liveness Probe**: readiness는 요청을 받아도 되는지, liveness는 재시작해야 하는지 묻는 검사. 실패했을 때 일어나는 일이 다르다. → [[readiness-and-liveness-probe]]
+- **kubeconfig**: `kubectl`이 어느 클러스터에 누구로 접속할지 적어 둔 파일. clusters, users, contexts로 되어 있다. → [[cluster-access-and-kubeconfig]]

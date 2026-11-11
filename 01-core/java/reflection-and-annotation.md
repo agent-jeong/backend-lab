@@ -8,7 +8,13 @@ tags: [concept, java]
 
 Reflection은 프로그램이 실행되는 중에 클래스의 메서드와 필드 목록을 읽고, 필요하면 그 메서드를 호출하거나 필드 값을 바꾸는 기능이다. Annotation은 코드에 표시를 붙여 두고, 프레임워크가 그 표시를 보고 동작하게 하는 문법이다. annotation은 혼자서는 아무것도 하지 않는다. 그 표시를 읽고 처리하는 코드가 있어야 동작한다.
 
-Spring, JPA, Jackson이 알아서 해 주는 일은 대부분 이 둘로 돌아간다. 원리를 모르면 이런 질문에 답하지 못한다. Spring은 `@Component`, `@Service`, `@Autowired`를 어떻게 찾아 Bean으로 등록하나? JPA는 Entity 필드를 어떻게 읽고 프록시를 만드나? Jackson은 왜 기본 생성자나 getter, record constructor를 요구하나? annotation을 붙였는데 retention이 RUNTIME이 아니라서 아무 일도 안 일어나는 건 왜인가? reflection 코드는 왜 컴파일러가 검사해 주지 못하고 느린가?
+Spring, JPA, Jackson이 알아서 해 주는 일은 대부분 이 둘로 돌아간다. 원리를 알면 이런 질문에 답할 수 있다.
+
+- Spring은 `@Component`, `@Service`, `@Autowired`를 어떻게 찾아 Bean으로 등록하나?
+- JPA는 Entity 필드를 어떻게 읽고 프록시를 만드나?
+- Jackson은 왜 기본 생성자나 getter, record 생성자를 요구하나?
+- annotation을 붙였는데 아무 일도 안 일어나는 건 왜인가? (retention이 RUNTIME이 아닐 때)
+- reflection 코드는 왜 컴파일러가 검사해 주지 못하고 느린가?
 
 ## Annotation
 
@@ -24,10 +30,10 @@ public @interface TraceLog {
 | 설정 | 의미 |
 |---|---|
 | `@Target` | annotation을 붙일 수 있는 위치 |
-| `@Retention` | annotation 정보가 유지되는 시점 |
-| `SOURCE` | 컴파일 후 사라짐 |
-| `CLASS` | class 파일에는 있지만 런타임 reflection에서 일반적으로 읽지 않음 |
-| `RUNTIME` | 런타임 reflection으로 읽을 수 있음 |
+| `@Retention` | annotation 정보를 언제까지 남길지. 아래 세 값 중 하나 |
+| └ `SOURCE` | 컴파일하면 사라진다(`@Override` 등) |
+| └ `CLASS` | class 파일에는 남지만 실행 중 reflection으로는 읽지 못한다. 지정하지 않으면 이 값이다 |
+| └ `RUNTIME` | 실행 중 reflection으로 읽을 수 있다 |
 
 Spring처럼 실행 중에 annotation을 읽어서 동작하게 하려면 보통 `RetentionPolicy.RUNTIME`이어야 한다.
 
@@ -159,7 +165,7 @@ JPA는 Entity를 프록시로 감싸거나, 필드 값을 읽어서 무엇이 �
 
 ## 관련 문서
 
-- [[java]]
+- [[01-core/java/java|java]]
 - [[class-interface-enum-record]]
 - [[serialization-and-jackson]]
 - [[01-core/spring/ioc-and-di|ioc-and-di]]

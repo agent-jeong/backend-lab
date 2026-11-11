@@ -12,15 +12,14 @@ comments: false
 ## 읽는 순서
 
 1. [[oop-design-principles|객체지향 설계 원칙]]
-2. [[layered-architecture|Layered Architecture]]
-3. [[service-responsibility|Controller · Service · Repository 책임]]
-4. Domain Model
-5. [[dto-vs-entity|DTO와 Entity 분리]]
-6. [[dependency-direction|의존성 방향]]
-7. [[module-boundary|모듈 분리]]
-8. [[monolith-and-msa|모놀리스와 마이크로서비스]]
-9. [[transaction-boundary|Transaction 경계]]
-10. 테스트 가능한 설계
+2. [[layered-architecture|계층형 아키텍처]]
+3. [[service-responsibility|Controller, Service, Repository 책임]]
+4. [[dto-vs-entity|DTO와 Entity 분리]]
+5. [[dependency-direction|의존성 방향]]
+6. [[module-boundary|모듈 경계]]
+7. [[monolith-and-msa|모놀리스와 마이크로서비스]]
+8. [[transaction-boundary|Transaction 경계]]
+9. [[02-practical-backend/testing/testing|테스트]]: 테스트하기 쉬운 구조는 여기서 이어진다
 
 ## 먼저 답해 볼 질문
 

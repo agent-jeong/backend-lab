@@ -11,14 +11,13 @@ comments: false
 
 ## 읽는 순서
 
-1. Batch가 필요한 이유
-2. Scheduling
-3. [[chunk-processing|Chunk 처리]]
-4. [[retryable-batch-design|재처리 설계]]
-5. [[batch-failure-state|실패 복구]]
-6. [[large-data-query|대용량 조회]]
-7. [[duplicate-execution-prevention|중복 실행 방지]]
-8. [[batch-monitoring|모니터링과 알림]]
+1. [[02-practical-backend/kubernetes/cronjob|CronJob]]: 정해진 시각에 배치를 띄우는 법
+2. [[chunk-processing|Chunk 처리]]
+3. [[retryable-batch-design|재처리 설계]]
+4. [[batch-failure-state|실패 상태 관리]]
+5. [[large-data-query|대용량 조회]]
+6. [[duplicate-execution-prevention|중복 실행 방지]]
+7. [[batch-monitoring|배치 모니터링]]
 
 ## 먼저 답해 볼 질문
 

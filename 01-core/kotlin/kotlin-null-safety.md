@@ -142,7 +142,7 @@ val user = userRepository.findByIdOrNull(id)
 
 ## 관련 문서
 
-- [[kotlin]]
+- [[01-core/kotlin/kotlin|kotlin]]
 - [[kotlin-java-interop]]
 - [[kotlin-data-class-and-immutability]]
 - [[01-core/java/primitive-and-reference-types|primitive-and-reference-types]]

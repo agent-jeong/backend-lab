@@ -177,7 +177,7 @@ Entity를 `data class`로 만들었을 때 생기는 문제는 플러그인으�
 
 ## 관련 문서
 
-- [[kotlin]]
+- [[01-core/kotlin/kotlin|kotlin]]
 - [[kotlin-null-safety]]
 - [[kotlin-data-class-and-immutability]]
 - [[01-core/java/reflection-and-annotation|reflection-and-annotation]]

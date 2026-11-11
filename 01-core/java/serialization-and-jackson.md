@@ -8,7 +8,16 @@ tags: [concept, java]
 
 직렬화(Serialization)는 객체를 네트워크로 보내거나 저장할 수 있는 형태로 바꾸는 일이다. 반대로 그 형태를 다시 객체로 만드는 일이 역직렬화다. 백엔드 실무에서는 대부분 Jackson으로 객체와 JSON을 오가는 일을 말한다.
 
-Spring Boot API 서버는 요청과 응답이 거의 다 JSON이다. Jackson이 알아서 바꿔 주지만, 어떤 규칙으로 바꾸는지 모르면 이런 일을 겪는다. 응답에서 필드가 빠지거나 null로 나온다. 날짜가 숫자 timestamp나 예상과 다른 포맷으로 나온다. JPA Entity를 그대로 반환해 순환 참조로 `StackOverflowError`가 난다. 요청 JSON과 Java 필드명이 달라 바인딩이 안 된다. enum 대소문자가 안 맞아 역직렬화가 실패한다. record DTO가 역직렬화되지 않는다.
+Spring Boot API 서버는 요청과 응답이 거의 다 JSON이다. Jackson이 알아서 바꿔 주지만, 어떤 규칙으로 바꾸는지 모르면 이런 일을 겪는다.
+
+- 응답에서 필드가 빠지거나 null로 나온다.
+- 날짜가 숫자 timestamp나 예상과 다른 포맷으로 나온다.
+- JPA Entity를 그대로 반환해 순환 참조로 `StackOverflowError`가 난다.
+- 요청 JSON과 Java 필드명이 달라 값이 안 들어온다.
+- enum 대소문자가 안 맞아 역직렬화가 실패한다.
+
+> [!note] 기준 버전
+> 이 글의 클래스 이름과 설정은 Spring Boot 3.x(Jackson 2) 기준이다. Spring Boot 4부터는 Jackson 3이 기본이고, 패키지가 `tools.jackson`으로, 자동 구성되는 bean이 `ObjectMapper`에서 `JsonMapper`로 바뀐다. 동작 원리와 어노테이션 사용법은 같다.
 
 > **버전 기준**: 이 노트의 클래스 이름과 기본값은 Spring Boot 3 + Jackson 2 기준이다. Spring Boot 4부터는 Jackson 3가 기본이다. 패키지가 `com.fasterxml.jackson`에서 `tools.jackson`으로 바뀌고, 자동 설정 빈은 `ObjectMapper` 대신 `JsonMapper`, 컨버터는 `JacksonJsonHttpMessageConverter`다. Jackson 2 지원(`spring-boot-jackson2` 모듈)은 이전을 돕는 용도로만 남아 있고 deprecated다. 일부 기본값도 달라졌으므로, 이전할 때 날짜·enum 직렬화 결과를 테스트로 확인한다. Jackson 2 시절 기본값에 가깝게 맞추려면 `spring.jackson.use-jackson2-defaults=true`를 쓴다.
 
@@ -137,14 +146,18 @@ public enum OrderStatus {
 // 요청: {"status": "pending"} → 기본적으로 실패 (대소문자 불일치)
 ```
 
-```java
-// 해결 1: 대소문자 무시 설정
+해결 1은 대소문자를 무시하는 전역 설정이다.
+
+```yaml
 spring:
   jackson:
     mapper:
       accept-case-insensitive-enums: true
+```
 
-// 해결 2: @JsonValue + @JsonCreator로 커스텀 매핑
+해결 2는 `@JsonValue`와 `@JsonCreator`로 JSON 값을 직접 정하는 방법이다.
+
+```java
 public enum OrderStatus {
     PENDING("pending"),
     APPROVED("approved"),

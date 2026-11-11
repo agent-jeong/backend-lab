@@ -38,7 +38,7 @@ public void example() {
 }
 ```
 
-`persist()`를 부를 때는 SQL이 나가지 않고, flush할 때 모아서 실행한다.
+`persist()`를 부를 때는 SQL이 나가지 않고, flush할 때 모아서 실행한다. flush는 영속성 컨텍스트에 쌓인 변경을 SQL로 DB에 보내는 일이고, 보통 트랜잭션 커밋 직전에 저절로 일어난다. 언제 일어나는지는 [[transaction-and-flush]]에 있다.
 
 예외가 하나 있다. `@GeneratedValue(strategy = IDENTITY)`는 id를 DB가 만들기 때문에 `persist()`하자마자 INSERT가 나간다. 그래서 MySQL auto_increment를 쓰면 쓰기 지연도 JDBC batch insert도 덕을 못 본다. 자세한 내용은 [[entity-table-mapping]]에 있다.
 

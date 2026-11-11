@@ -114,7 +114,7 @@ public class NotificationService {
 |---|---|---|
 | 자체 `@Transactional` 선언 | 비동기 메서드에 독립 트랜잭션 | DB 작업이 필요한 경우 |
 | 파라미터로 값 전달 | ThreadLocal 값을 인자로 넘김 | traceId, userId 등 |
-| SecurityContext 전파 설정 | `MODE_INHERITABLETHREADLOCAL` | 인증 정보 전파 |
+| SecurityContext 전파 | `DelegatingSecurityContextAsyncTaskExecutor`로 executor를 감싼다 | 인증 정보 전파. `MODE_INHERITABLETHREADLOCAL`은 스레드 풀에서 깨지니 쓰지 않는다(아래 「자주 깨지는 곳」) |
 | TaskDecorator | 실행 전 ThreadLocal 복사 | MDC, SecurityContext 일괄 전파 |
 
 ### TaskDecorator로 ThreadLocal 전파

@@ -16,7 +16,7 @@ Unit Test는 작은 단위의 로직을 빠르게 확인한다. Integration Test
 |---|---|
 | 계산, 정책, 상태 전이 | Unit Test |
 | Repository query, DB 제약 | Integration Test |
-| Controller validation, serialization | Slice 또는 Integration Test |
+| Controller validation, serialization | Slice Test(`@WebMvcTest`처럼 한 계층만 띄우는 테스트) 또는 Integration Test |
 | 트랜잭션, lock, 동시성 | Integration Test |
 | 외부 API 실패 대응 | Mock server 또는 contract test |
 
@@ -58,6 +58,6 @@ Unit Test는 작은 단위의 로직을 빠르게 확인한다. Integration Test
 
 ## 관련 문서
 
-- [[testing]]
+- [[02-practical-backend/testing/testing|testing]]
 - [[mock-stub-fake]]
 - [[testcontainers]]

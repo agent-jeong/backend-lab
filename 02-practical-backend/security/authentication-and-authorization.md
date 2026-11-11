@@ -84,7 +84,7 @@ public OrderDetail getOrder(long orderId, AuthenticatedUser user) {
 
 ## 관련 문서
 
-- [[security]]
+- [[02-practical-backend/security/security|security]]
 - [[session-and-token]]
 - [[authorization-check-location]]
 - [[01-core/spring/filter-interceptor-aop|filter-interceptor-aop]]

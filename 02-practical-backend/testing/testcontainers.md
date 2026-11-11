@@ -57,6 +57,6 @@ DB dialect, migration, lock, transaction을 확인할 때 특히 쓸모 있다. 
 
 ## 관련 문서
 
-- [[testing]]
+- [[02-practical-backend/testing/testing|testing]]
 - [[unit-vs-integration-test]]
-- [[database]]
+- [[01-core/database/database|database]]

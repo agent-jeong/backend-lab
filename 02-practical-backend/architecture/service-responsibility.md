@@ -62,6 +62,6 @@ Controller는 HTTP 요청을 받는 입구이고, Service는 유스케이스 하
 
 ## 관련 문서
 
-- [[architecture]]
+- [[02-practical-backend/architecture/architecture|architecture]]
 - [[transaction-boundary]]
 - [[authorization-check-location]]

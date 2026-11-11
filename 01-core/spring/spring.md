@@ -11,17 +11,19 @@ IoC와 DI, 빈 생명주기, AOP와 프록시, MVC 요청 흐름, 트랜잭션�
 
 ## 읽는 순서
 
+컨테이너 → 웹 요청 → 트랜잭션 → 설정 순서다. 글 대부분은 Spring Boot 3.x 기준이고, Boot 4에서 이름이 바뀐 곳은 글 안에 적었다.
+
 1. [[why-spring|Spring을 사용하는 이유]]
-2. [[ioc-and-di|IoC와 DI]]
+2. [[ioc-and-di|IoC 컨테이너와 의존성 주입]]
 3. [[bean-lifecycle-and-scope|Bean 생명주기와 Scope]]
-4. [[aop|AOP]]
-5. [[spring-mvc-request-flow|Spring MVC 요청 흐름]]
-6. [[validation-and-exception-handling|Validation과 예외 처리]]
-7. [[filter-interceptor-aop|Filter, Interceptor, AOP]]
-8. [[transaction-integration|Transaction 연동]]
-9. [[transactional-pitfalls|@Transactional 주의점]]
-10. [[threadlocal-and-async-transaction|ThreadLocal과 비동기 트랜잭션]]
-11. [[configuration-and-profile|Configuration과 Profile]]
+4. [[aop|AOP 동작 원리와 프록시 제약]]
+5. [[spring-mvc-request-flow|Spring MVC 요청 처리 흐름]]
+6. [[filter-interceptor-aop|Filter vs Interceptor vs AOP]]
+7. [[validation-and-exception-handling|요청 검증과 예외 처리]]
+8. [[transaction-integration|@Transactional 동작 원리와 롤백]]
+9. [[transactional-pitfalls|@Transactional 동작 실패 케이스]]
+10. [[threadlocal-and-async-transaction|@Async와 ThreadLocal 함정]]
+11. [[configuration-and-profile|설정 관리와 Profile 분리]]
 12. [[spring-boot-auto-configuration|Spring Boot 자동 설정]]
 
 ## 먼저 답해 볼 질문

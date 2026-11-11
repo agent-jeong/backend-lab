@@ -8,7 +8,13 @@ tags: [concept, java]
 
 Java에서 여러 작업을 동시에 돌리는 방법은 `Thread`, `ExecutorService`, `Future`, `CompletableFuture`가 있다. 각각 작업을 어떻게 띄우고 결과를 어떻게 받는지가 다르니 알고 골라야 한다. thread pool은 빠르게 하려고 쓰기 전에, 동시에 도는 작업 수를 묶어 두어 서버가 무너지지 않게 하려고 쓴다.
 
-백엔드 서버는 요청 처리, 외부 API 호출, 배치, 메시지 소비를 한꺼번에 한다. 여기서 흔히 터지는 일은 이렇다. 요청마다 `Thread`를 만들어 OS 스레드와 메모리를 낭비한다. pool 크기를 근거 없이 키워서 DB connection pool이나 외부 API 호출 한도를 더 빨리 바닥낸다. `Future.get()`을 바로 불러서 비동기로 띄운 작업을 결국 기다리고 앉아 있는다. `CompletableFuture`에 executor를 안 넘겨서 공용 pool을 붐비게 한다. timeout, 취소, 예외 처리 없이 비동기 작업을 띄워 놓고 내버려 둔다.
+백엔드 서버는 요청 처리, 외부 API 호출, 배치, 메시지 소비를 한꺼번에 한다. 여기서 흔히 터지는 일은 이렇다.
+
+- 요청마다 `Thread`를 만들어 OS 스레드와 메모리를 낭비한다.
+- pool 크기를 근거 없이 키워서 DB connection pool이나 외부 API 호출 한도를 더 빨리 바닥낸다.
+- `Future.get()`을 바로 불러서, 비동기로 띄운 작업을 결국 기다리고 앉아 있는다.
+- `CompletableFuture`에 executor를 안 넘겨서 공용 pool을 붐비게 한다.
+- timeout, 취소, 예외 처리 없이 비동기 작업을 띄워 놓고 내버려 둔다.
 
 ## Thread를 직접 만들지 않는 이유
 
@@ -37,12 +43,11 @@ OrderResult result = future.get(500, TimeUnit.MILLISECONDS);
 
 ```java
 ExecutorService executor = new ThreadPoolExecutor(
-    10,
-    10,
-    0L,
-    TimeUnit.MILLISECONDS,
-    new ArrayBlockingQueue<>(100),
-    new ThreadPoolExecutor.CallerRunsPolicy()
+    10,                                  // 평소 유지할 스레드 수
+    10,                                  // 최대 스레드 수
+    0L, TimeUnit.MILLISECONDS,           // 남는 스레드를 정리하기 전 대기 시간
+    new ArrayBlockingQueue<>(100),       // 스레드가 다 바쁠 때 쌓아 둘 작업 수의 상한
+    new ThreadPoolExecutor.CallerRunsPolicy() // 큐까지 차면: 작업을 넘긴 스레드가 직접 실행한다
 );
 ```
 
@@ -161,7 +166,7 @@ pool 크기는 CPU 수, I/O를 기다리는 시간, DB connection pool 크기, �
 
 ## 관련 문서
 
-- [[java]]
+- [[01-core/java/java|java]]
 - [[java-memory-model]]
 - [[02-practical-backend/concurrency/concurrency|concurrency]]
 - [[02-practical-backend/performance/connection-pool-and-timeout|connection-pool-and-timeout]]

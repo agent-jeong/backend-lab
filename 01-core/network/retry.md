@@ -125,7 +125,8 @@ Retry-After: 30
 | 목적 | 일시적 실패를 복구 | 지속적 실패 시 빠른 실패 처리 |
 | 동작 | 실패하면 다시 시도 | 실패율이 높으면 요청 차단 |
 | 적합한 상황 | 네트워크 순단, 간헐적 에러 | 서버 다운, 지속적 과부하 |
-| 조합 | Retry 후에도 실패하면 Circuit Breaker가 동작 |
+
+둘을 같이 쓰면 Retry가 바깥, Circuit Breaker가 안쪽에 선다. 재시도 하나하나가 Circuit Breaker에 호출 하나로 쌓이고, 실패가 쌓여 회로가 열리면 그 뒤 재시도는 바로 막힌다. 이때 막힌 호출(`CallNotPermittedException`)까지 재시도하지 않게 빼 둔다. 순서와 설정은 [[circuit-breaker]]에 있다.
 
 ## 자주 깨지는 곳
 

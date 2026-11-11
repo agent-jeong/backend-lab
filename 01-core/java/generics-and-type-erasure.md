@@ -186,7 +186,7 @@ wildcard가 많아지면 메서드 시그니처를 읽기 어려워진다. 실�
 
 ## 관련 문서
 
-- [[java]]
+- [[01-core/java/java|java]]
 - [[collection-selection]]
 - [[serialization-and-jackson]]
 - [[reflection-and-annotation]]

@@ -12,8 +12,8 @@ Alert는 사용자가 피해를 보고 있거나 곧 볼 것 같을 때 운영�
 
 ## 설계 순서
 
-1. 사용자가 실제로 겪는 것을 재는 SLI를 정한다.
-2. 그 SLI가 지켜야 할 목표인 SLO를 정한다.
+1. 사용자가 실제로 겪는 것을 재는 SLI(Service Level Indicator)를 정한다. 예: 결제 요청 중 성공한 비율, 1초 안에 끝난 비율.
+2. 그 SLI가 지켜야 할 목표인 SLO를 정한다. 예: 30일 동안 성공 비율 99.9%.
 3. SLO를 어길 것 같은 상황에 알림 조건을 건다.
 4. 알림에 영향 범위, 최근 변경, 대시보드, 대응 문서를 넣는다.
 5. 장애가 끝나면 알림이 제때 울렸는지, 쓸데없이 울리지 않았는지 보고 조정한다.
@@ -49,7 +49,7 @@ CPU나 메모리 같은 자원 지표만으로는 사용자가 피해를 보는�
 
 - 장애 시나리오에서 알림이 정해 둔 시간 안에 울리는지 테스트한다.
 - 알림 시간대의 error log와 배포 이력을 확인한다.
-- 메트릭으로는 SLI, error budget, burn rate를 본다.
+- 메트릭으로는 SLI, error budget, burn rate를 본다. error budget은 SLO가 허용하는 실패량이다. 99.9%면 30일 요청 중 0.1%까지는 실패해도 된다. burn rate는 그 예산을 평소보다 몇 배 빨리 쓰고 있는지다. burn rate가 높으면 아직 실패율이 낮아 보여도 며칠 안에 SLO를 어기게 되니 알림을 건다.
 - 알림에서 바로 원인 후보를 볼 수 있는 대시보드로 이어지는지 확인한다.
 
 ## 한 번에 설명하기
@@ -75,7 +75,7 @@ CPU나 메모리 같은 자원 지표만으로는 사용자가 피해를 보는�
 
 ## 관련 문서
 
-- [[observability]]
+- [[02-practical-backend/observability/observability|observability]]
 - [[metrics]]
 - [[dashboard]]
 - [[02-practical-backend/performance/latency-and-throughput|latency-and-throughput]]

@@ -81,9 +81,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 @Controller
 public class ChatController {
 
-    @MessageMapping("/chat/send")        // 클라이언트 → 서버
-    @SendTo("/topic/chat/room/{roomId}") // 서버 → 구독자 전체
-    public ChatMessage send(ChatMessage message) {
+    @MessageMapping("/chat/room/{roomId}/send") // 클라이언트 → 서버 (/app/chat/room/7/send)
+    @SendTo("/topic/chat/room/{roomId}")         // 서버 → 그 방 구독자 전체
+    public ChatMessage send(@DestinationVariable Long roomId, ChatMessage message) {
         return message;
     }
 }
@@ -162,7 +162,7 @@ User A가 메시지 전송 → Server 1에서 처리
 그래서 외부 메시지 브로커를 두고 서버끼리 메시지를 넘겨준다.
 
 ```
-User A → Server 1 → 외부 메시지 브로커 (RabbitMQ 등) 또는 Redis Pub/Sub
+User A → Server 1 → 외부 메시지 브로커 (RabbitMQ 등). Redis Pub/Sub을 쓰려면 중계 코드를 직접 짠다
                           ↓
                      Server 2 → User B
 ```

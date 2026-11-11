@@ -80,6 +80,6 @@ env:
 
 ## 관련 문서
 
-- [[kubernetes]]
+- [[02-practical-backend/kubernetes/kubernetes|kubernetes]]
 - [[02-practical-backend/security/sensitive-data-logging|sensitive-data-logging]]
 - [[02-practical-backend/ci-cd/config-and-secret-management|config-and-secret-management]]

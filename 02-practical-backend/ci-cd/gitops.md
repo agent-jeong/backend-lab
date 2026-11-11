@@ -55,6 +55,6 @@ controller는 클러스터 상태가 Git과 달라진 것(drift)을 감지해서
 
 ## 관련 문서
 
-- [[ci-cd]]
+- [[02-practical-backend/ci-cd/ci-cd|ci-cd]]
 - [[config-and-secret-management]]
 - [[deployment-strategy]]

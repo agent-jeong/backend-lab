@@ -142,7 +142,7 @@ class Cart(
 
 ## 관련 문서
 
-- [[kotlin]]
+- [[01-core/kotlin/kotlin|kotlin]]
 - [[kotlin-null-safety]]
 - [[01-core/java/class-interface-enum-record|class-interface-enum-record]]
 - [[01-core/jpa/entity-table-mapping|entity-table-mapping]]

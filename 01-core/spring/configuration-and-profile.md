@@ -163,15 +163,13 @@ public class AppConfig {
     }
 
     @Bean
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper()
-            .registerModule(new JavaTimeModule())
-            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    public Clock clock() {
+        return Clock.system(ZoneId.of("Asia/Seoul")); // 테스트에서 고정 시계로 바꿔 끼운다
     }
 }
 ```
 
-`@Configuration` 클래스는 CGLIB 프록시로 감싸진다. 그래서 `@Bean` 메서드를 여러 번 불러도 같은 인스턴스가 나오고, singleton이 지켜진다. Spring Boot가 자동으로 등록하는 Bean(예: `ObjectMapper`)과 같은 타입을 `@Bean`으로 직접 정의하면 자동 설정 대신 내 Bean이 쓰인다.
+`@Configuration` 클래스는 CGLIB 프록시로 감싸진다. 그래서 `@Bean` 메서드를 여러 번 불러도 같은 인스턴스가 나오고, singleton이 지켜진다. Spring Boot가 자동으로 등록하는 Bean(예: `ObjectMapper`)과 같은 타입을 `@Bean`으로 직접 정의하면 자동 설정 대신 내 Bean이 쓰이고, Boot가 넣어 주던 기본값도 같이 사라진다. 일부만 바꾸려면 설정값이나 `...Customizer` 빈을 쓴다([[spring-boot-auto-configuration]]).
 
 ## 민감 정보 관리
 
@@ -194,7 +192,7 @@ spring:
 - 비밀번호를 `application.yml`에 쓰고 커밋하면, 저장소를 볼 수 있는 누구나 운영 비밀번호를 본다.
 - Profile 대신 if문으로 환경을 가르면, 환경이 하나 늘 때마다 코드를 고쳐야 한다.
 - 모든 설정을 `@Value`로 넣으면, 관련 설정이 클래스마다 흩어져 어디서 무엇을 읽는지 찾기 어렵다.
-- `@ConfigurationProperties` 클래스에 getter/setter를 빠뜨리면, 값이 바인딩되지 않는다.
+- `@ConfigurationProperties` 클래스에 setter를 빠뜨리면, 값이 바인딩되지 않는다. setter 없이 쓰려면 record로 만들어 생성자로 받는다.
 - Profile을 지정하지 않고 띄우면, 운영 서버가 기본 설정으로 뜬다.
 
 ## 한 번에 설명하기

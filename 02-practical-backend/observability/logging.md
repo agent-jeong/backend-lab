@@ -84,7 +84,7 @@ log.warn("payment retry traceId={} orderId={} attempt={} reason={}",
 
 ## 관련 문서
 
-- [[observability]]
+- [[02-practical-backend/observability/observability|observability]]
 - [[trace-id-and-correlation-id]]
 - [[metrics]]
 - [[01-core/network/http-basics|http-basics]]

@@ -33,11 +33,11 @@ tags: [concept, database]
 - MySQL InnoDB 기본값: Repeatable Read
 - PostgreSQL 기본값: Read Committed
 
-MySQL InnoDB의 Repeatable Read는 일반 SELECT에서는 MVCC 스냅샷으로, `SELECT ... FOR UPDATE` 같은 잠금 읽기에서는 Next-Key Lock(Gap Lock 포함)으로 Phantom Read를 막는다. 그래도 완전히 막지는 못한다. 같은 트랜잭션에서 일반 SELECT와 UPDATE나 잠금 읽기를 섞으면, 잠금 읽기는 스냅샷이 아니라 가장 최근에 커밋된 데이터를 읽기 때문에 다른 트랜잭션이 INSERT한 행이 보일 수 있다.
+MySQL InnoDB의 Repeatable Read는 일반 SELECT에서는 MVCC 스냅샷으로, `SELECT ... FOR UPDATE` 같은 잠금 읽기에서는 Next-Key Lock(행 락과 그 앞 빈 구간의 락을 합친 것. [[lock]]의 Gap Lock 참고)으로 Phantom Read를 막는다. 그래도 완전히 막지는 못한다. 같은 트랜잭션에서 일반 SELECT와 UPDATE나 잠금 읽기를 섞으면, 잠금 읽기는 스냅샷이 아니라 가장 최근에 커밋된 데이터를 읽기 때문에 다른 트랜잭션이 INSERT한 행이 보일 수 있다.
 
 ### MVCC (Multi-Version Concurrency Control)
 
-InnoDB는 MVCC로 트랜잭션끼리 떼어 놓는다. 데이터를 고치면 이전 버전을 Undo Log에 남겨 두고, 읽을 때는 스냅샷(read view)을 기준으로 어느 버전을 보여 줄지 고른다.
+InnoDB는 MVCC로 트랜잭션끼리 떼어 놓는다. 데이터를 고치면 이전 버전을 Undo Log(고치기 전 값을 적어 두는 로그)에 남겨 두고, 읽을 때는 스냅샷(read view)을 기준으로 어느 버전을 보여 줄지 고른다.
 
 - Repeatable Read는 트랜잭션에서 처음 일반 SELECT를 실행할 때 스냅샷을 만들고 끝까지 그걸 쓴다. `BEGIN` 시점이 아니다.
 - Read Committed는 SELECT마다 스냅샷을 새로 만든다.

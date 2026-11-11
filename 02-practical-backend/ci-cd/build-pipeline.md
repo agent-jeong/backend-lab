@@ -56,6 +56,6 @@ tags: [concept, ci-cd]
 
 ## 관련 문서
 
-- [[ci-cd]]
+- [[02-practical-backend/ci-cd/ci-cd|ci-cd]]
 - [[ci-vs-cd]]
 - [[02-practical-backend/security/sensitive-data-logging|sensitive-data-logging]]

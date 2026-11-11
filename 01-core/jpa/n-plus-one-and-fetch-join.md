@@ -127,7 +127,7 @@ JPQL을 쓰지 않고도 fetch join처럼 가져온다. 간단할 때는 편하�
 
 | 방법 | 장점 | 단점 |
 |---|---|---|
-| Fetch Join | 쿼리 한 번으로 끝난다 | 컬렉션은 페이징 불가, 컬렉션 여러 개 동시 fetch 불가 |
+| Fetch Join | 쿼리 한 번으로 끝난다 | 컬렉션은 페이징 불가, `List` 컬렉션 둘 이상은 동시에 fetch 불가 |
 | `@BatchSize` | 페이징과 같이 쓸 수 있고, 설정이 간단하다 | 쿼리가 몇 번 더 나갈 수 있다 |
 | `@EntityGraph` | 어노테이션 하나로 끝난다 | 조건이 복잡하면 표현하기 어렵다 |
 | DTO 직접 조회 | 필요한 컬럼만 가져와서 가장 가볍다 | 코드가 복잡해진다 |
@@ -138,7 +138,7 @@ JPQL을 쓰지 않고도 fetch join처럼 가져온다. 간단할 때는 편하�
 
 - 쿼리 수를 세 보지 않고 코드를 쓰면, 개발 환경은 데이터가 적어서 N+1이 안 보인다.
 - 컬렉션 fetch join에 페이징을 붙이면, 전체 데이터가 메모리에 올라간다.
-- 컬렉션 여러 개를 동시에 fetch join하면, `MultipleBagFetchException`이 난다.
+- `List` 타입 컬렉션 둘 이상을 동시에 fetch join하면, `MultipleBagFetchException`이 난다. 행이 곱으로 불어나는 걸 막으려는 제한이라, 하나만 fetch join하고 나머지는 `@BatchSize`로 읽는다.
 - `@BatchSize` 없이 모든 곳을 fetch join으로 막으면, 페이징이 필요한 곳에서 막힌다.
 - `spring.jpa.show-sql=true` 로그만 보고 있으면, 로그가 흘러가 버려서 실제 쿼리 수를 세지 못한다.
 

@@ -154,7 +154,7 @@ scope function은 블록이 짧을 때만 읽기 좋다. 중첩되면 일반 변
 
 ## 관련 문서
 
-- [[kotlin]]
+- [[01-core/kotlin/kotlin|kotlin]]
 - [[kotlin-data-class-and-immutability]]
 - [[01-core/java/collection-selection|collection-selection]]
 - [[01-core/java/stream-and-optional|stream-and-optional]]

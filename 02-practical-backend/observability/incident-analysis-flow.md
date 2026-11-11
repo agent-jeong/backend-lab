@@ -84,7 +84,7 @@ tags: [concept, observability]
 
 ## 관련 문서
 
-- [[observability]]
+- [[02-practical-backend/observability/observability|observability]]
 - [[dashboard]]
 - [[alert-and-slo]]
 - [[02-practical-backend/performance/bottleneck-analysis|bottleneck-analysis]]

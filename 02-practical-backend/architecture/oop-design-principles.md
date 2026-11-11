@@ -192,7 +192,7 @@ public void cancel() {
 
 ## 관련 문서
 
-- [[architecture]]
+- [[02-practical-backend/architecture/architecture|architecture]]
 - [[dependency-direction]]
 - [[service-responsibility]]
 - [[layered-architecture]]

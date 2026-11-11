@@ -55,6 +55,6 @@ pipeline이 초록불로 끝났다고 배포가 성공한 게 아니다. 배포 
 
 ## 관련 문서
 
-- [[ci-cd]]
+- [[02-practical-backend/ci-cd/ci-cd|ci-cd]]
 - [[build-pipeline]]
 - [[deployment-strategy]]

@@ -7,22 +7,24 @@ comments: false
 
 # Kubernetes
 
-Pod, Deployment·Service·Ingress, 프로브, 리소스, 롤링 업데이트, CronJob을 다룬다. 배포한 서비스가 트래픽을 받지 못할 때 무엇부터 볼지를 주로 이야기한다.
+클러스터 접속, Pod, Deployment·Service·Ingress, 프로브, 리소스, 롤링 업데이트, CronJob을 다룬다. 배포한 서비스가 트래픽을 받지 못할 때 무엇부터 볼지를 주로 이야기한다.
 
 ## 읽는 순서
 
-1. [[deployment-service-ingress|Deployment, Service, Ingress]]
+1. [[cluster-access-and-kubeconfig|클러스터 접속과 kubeconfig]]
 2. [[pod-and-container|Pod와 Container]]
-3. [[configmap-and-secret|ConfigMap과 Secret]]
-4. [[readiness-and-liveness-probe|Readiness Probe와 Liveness Probe]]
-5. [[resource-request-and-limit|Resource Request와 Limit]]
-6. [[rolling-update-and-rollback|Rolling Update와 Rollback]]
-7. [[graceful-shutdown|Graceful Shutdown]]
-8. [[cronjob|CronJob]]
-9. [[kubernetes-logging-and-metrics|로그와 메트릭 확인]]
+3. [[deployment-service-ingress|Deployment, Service, Ingress]]
+4. [[configmap-and-secret|ConfigMap과 Secret]]
+5. [[readiness-and-liveness-probe|Readiness Probe와 Liveness Probe]]
+6. [[resource-request-and-limit|Resource Request와 Limit]]
+7. [[rolling-update-and-rollback|Rolling Update와 Rollback]]
+8. [[graceful-shutdown|Graceful Shutdown]]
+9. [[cronjob|CronJob]]
+10. [[kubernetes-logging-and-metrics|Kubernetes 로그와 메트릭 확인]]
 
 ## 먼저 답해 볼 질문
 
+- kubectl은 어느 클러스터에 누구로 접속할지 어디서 정하나?
 - Kubernetes에서 애플리케이션을 배포하는 단위는 무엇인가?
 - 외부 요청은 어떤 경로를 거쳐 Pod까지 가는가?
 - 배포 중 일부 Pod가 실패하면 트래픽은 어디로 가는가?

@@ -143,7 +143,7 @@ HttpOnly 쿠키는 JS의 `document.cookie`로 읽히지 않는다. 그래서 공
 
 ## 관련 문서
 
-- [[security]]
+- [[02-practical-backend/security/security|security]]
 - [[csrf]]
 - [[session-and-token]]
 - [[sensitive-data-logging]]

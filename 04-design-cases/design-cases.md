@@ -23,7 +23,9 @@ comments: false
 | [[first-come-limited-stock\|선착순 한정 수량을 초과 없이 팔기]] | 확인과 차감을 한 번에 처리하고, 최종 판정은 DB가 한다 | Redis·MySQL 공식 문서 |
 | [[like-count\|좋아요 수를 빠르고 틀리지 않게 세기]] | 누가 눌렀는지는 정확히 남기고, 수는 따로 세서 원본 기록으로 맞춘다 | Redis·MySQL 공식 문서 |
 
-## 쓰는 형식
+## 아래 일반 사례의 형식
+
+위 목록의 글은 각자 구성이 있고, 이 아래의 짧은 일반 사례 여섯 개는 이 형식을 따른다.
 
 | 구간 | 쓸 내용 |
 |---|---|
@@ -36,7 +38,7 @@ comments: false
 
 ## 일반 사례
 
-특정 회사에서 겪은 일이 아니라, 백엔드 개발자라면 흔히 만나는 문제를 위 형식으로 풀어 본 짧은 예시다. 실제로 겪은 일은 [[work-cases]]에 있다.
+특정 회사에서 겪은 일이 아니라, 백엔드 개발자라면 흔히 만나는 문제를 가정하고 위 형식으로 풀어 본 짧은 예시다. 읽기 쉽게 "~했다"로 썼지만 실제 사례는 아니다. 실제로 겪은 일은 [[work-cases]]에 있다.
 
 | 번호 | 사례 | 관련 개념 | 답해 봐야 할 질문 |
 |---:|---|---|---|
@@ -83,7 +85,7 @@ JPA 연관 조회가 필요한 화면에도 fetch join을 무조건 넣지는 �
 - 인덱스는 조회를 빠르게 하지만 쓰기 비용과 저장 공간을 늘린다.
 - 특정 검색 조건에 맞춘 인덱스는 다른 조건에서는 효과가 없기도 하다.
 - 커서 기반 페이징은 offset이 클 때 느려지는 문제를 줄이지만, 원하는 페이지로 바로 건너뛰기는 어렵다.
-- fetch join은 N+1을 줄이지만, 다대다 관계에서는 중복 행이 생기고 메모리를 많이 쓴다.
+- fetch join은 N+1을 줄이지만, 컬렉션(일대다)을 fetch join하면 부모 행이 자식 수만큼 불어나고 페이징을 같이 쓸 수 없다([[n-plus-one-and-fetch-join]]).
 
 ### 한 번에 설명하기
 
@@ -270,7 +272,7 @@ readiness probe로 준비된 Pod만 트래픽을 받게 하고, rolling update �
 
 ### 관련 문서
 
-- [[ci-cd]]
+- [[02-practical-backend/ci-cd/ci-cd|ci-cd]]
 - [[rolling-update-and-rollback]]
 - [[readiness-and-liveness-probe]]
 - [[configmap-and-secret]]
@@ -314,7 +316,7 @@ readiness probe로 준비된 Pod만 트래픽을 받게 하고, rolling update �
 
 ### 관련 문서
 
-- [[observability]]
+- [[02-practical-backend/observability/observability|observability]]
 - [[logging]]
 - [[metrics]]
 - [[distributed-tracing]]

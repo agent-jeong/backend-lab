@@ -85,7 +85,7 @@ val result = withTimeout(1_000) {
 
 - coroutine 안에서 부르면 blocking 코드도 non-blocking이 된다고 믿으면, blocking JDBC/JPA나 HTTP client가 그대로 스레드를 잡고 있는 걸 놓친다. 코드 리뷰에서 coroutine 안의 blocking 호출을 찾는다.
 - `GlobalScope.launch`로 요청과 상관없는 작업을 띄우면, 취소, 예외 전파, 종료 처리가 모두 끊긴다.
-- `async`를 쓰고 `await`를 빠뜨리면, 결과도 예외도 받지 못한다.
+- `async`를 쓰고 `await`를 빠뜨리면, 결과를 받지 못한다. 예외는 사라지지 않는다. `coroutineScope` 안이라면 실패한 `async`가 부모 scope를 취소시켜, 함께 띄운 다른 작업까지 멈춘다. 한 작업의 실패가 다른 작업을 멈추지 않게 하려면 `supervisorScope`를 쓴다.
 - dispatcher를 나누지 않고 CPU 작업과 I/O 작업을 섞으면, 한쪽이 다른 쪽 스레드를 잡아먹는다. dispatcher별 스레드 사용량과 queue 지표를 본다.
 - timeout과 취소 전파를 테스트하지 않으면, 장애가 나고 나서야 취소가 안 먹는다는 걸 안다.
 
@@ -151,7 +151,7 @@ val result = withTimeout(1_000) {
 
 ## 관련 문서
 
-- [[kotlin]]
+- [[01-core/kotlin/kotlin|kotlin]]
 - [[kotlin-java-interop]]
 - [[01-core/java/java-concurrency-basics|java-concurrency-basics]]
 - [[02-practical-backend/concurrency/concurrency|concurrency]]

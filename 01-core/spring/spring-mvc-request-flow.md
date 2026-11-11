@@ -21,9 +21,10 @@ Spring MVC에서는 DispatcherServlet이 모든 HTTP 요청을 먼저 받는다.
 6. HandlerAdapter → Controller 메서드 실행
    - ArgumentResolver: 파라미터 바인딩 (@RequestBody, @PathVariable 등)
    - Controller → Service → Repository
-   - ReturnValueHandler: 반환값 처리 (@ResponseBody → JSON 변환)
+   - ReturnValueHandler: 반환값 처리
+     @ResponseBody(JSON)면 여기서 HttpMessageConverter가 응답 본문을 바로 쓴다
 7. HandlerInterceptor.postHandle()
-8. ViewResolver (뷰 반환 시) 또는 HttpMessageConverter (JSON 반환 시)
+8. ViewResolver → View 렌더링 (뷰 이름을 반환했을 때만)
 9. HandlerInterceptor.afterCompletion()
 10. Filter (응답)
 11. 클라이언트 ← HTTP 응답
@@ -96,6 +97,8 @@ public class GlobalExceptionHandler {
     }
 }
 ```
+
+REST API(`@RestController`)에서는 6단계에서 JSON이 이미 응답에 쓰인다. 그래서 `postHandle()`에서 응답 본문이나 헤더를 바꾸려 해도 늦다. 응답을 손봐야 하면 `ResponseBodyAdvice`나 Filter를 쓴다.
 
 `@ExceptionHandler`는 Controller 쪽에서 난 예외만 잡는다. Filter는 DispatcherServlet보다 앞에 있어서, 거기서 난 예외는 여기까지 오지 않는다. Filter 안에서 따로 처리해야 한다.
 

@@ -82,6 +82,6 @@ salt가 있으면 같은 비밀번호도 사용자마다 다른 해시가 된다
 
 ## 관련 문서
 
-- [[security]]
+- [[02-practical-backend/security/security|security]]
 - [[authentication-and-authorization]]
 - [[sensitive-data-logging]]

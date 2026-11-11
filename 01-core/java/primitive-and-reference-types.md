@@ -58,6 +58,8 @@ System.out.println(a == b); // false일 수 있음
 System.out.println(Objects.equals(a, b)); // true
 ```
 
+`Integer a = 127`이면 `==`도 true가 나온다. Java는 -128부터 127까지의 boxing 결과를 미리 만들어 둔 같은 객체로 돌려주기 때문이다. 그래서 테스트 데이터가 작은 숫자일 때는 `==` 버그가 숨어 있다가, 운영에서 큰 id가 들어오는 순간 드러난다.
+
 ## 어떤 타입을 고르나
 
 - 값이 늘 있어야 하면 primitive type을 먼저 쓴다.

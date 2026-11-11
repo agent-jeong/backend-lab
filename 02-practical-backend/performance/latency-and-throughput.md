@@ -40,7 +40,7 @@ throughput이 늘다가 어느 지점부터 latency와 error rate가 치솟으�
 | timeout 감소 | p99, dependency latency | timeout, fallback, pool 대기 확인 |
 | 배치 시간 단축 | jobs/min, total duration | chunk, parallelism, I/O 최적화 |
 | 안정성 유지 | error rate, saturation | 과부하 보호, backpressure |
-| 사용자 경험 관리 | Apdex, SLO | 기술 지표를 사용자가 만족하는 기준에 맞춘다 |
+| 사용자 경험 관리 | Apdex(응답 시간을 만족·참음·불만으로 나눠 0~1 점수로 낸 값), SLO | 기술 지표를 사용자가 만족하는 기준에 맞춘다 |
 
 batch, API, 스트리밍 작업은 성능 목표가 서로 다르다. latency는 사용자가 느끼는 속도에 가깝지만 처리량 한계는 알려 주지 않는다. throughput은 얼마나 많이 처리하는지 보여 주지만, 그 사이 응답이 얼마나 늦었는지는 가린다. percentile은 꼬리 지연(tail latency)을 드러내지만, 표본이 충분하고 제대로 모았을 때만 믿을 수 있다. 사용자가 겪는 장애는 평균보다 p95/p99에서 더 잘 보일 때가 많다.
 

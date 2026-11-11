@@ -56,6 +56,6 @@ tags: [concept, testing]
 
 ## 관련 문서
 
-- [[testing]]
+- [[02-practical-backend/testing/testing|testing]]
 - [[transaction-and-flush]]
 - [[spring-transaction]]

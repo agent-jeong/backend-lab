@@ -58,6 +58,6 @@ rollback은 배포 도구의 버튼 하나로 끝나지 않는다. 되돌려야 
 
 ## 관련 문서
 
-- [[ci-cd]]
+- [[02-practical-backend/ci-cd/ci-cd|ci-cd]]
 - [[deployment-strategy]]
 - [[02-practical-backend/kubernetes/rolling-update-and-rollback|rolling-update-and-rollback]]

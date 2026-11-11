@@ -12,8 +12,8 @@ Metrics는 시간에 따라 바뀌는 시스템 상태를 숫자로 모은 것�
 
 ## 수집에서 알림까지
 
-1. 애플리케이션과 인프라에서 카운터, 게이지, 히스토그램을 수집한다.
-2. endpoint, status, dependency처럼 cardinality가 낮은 label을 붙인다.
+1. 애플리케이션과 인프라에서 카운터(계속 늘기만 하는 누적값, 예: 요청 수), 게이지(오르내리는 현재값, 예: 사용 중인 커넥션 수), 히스토그램(값의 분포, 예: 응답 시간)을 수집한다.
+2. endpoint, status, dependency처럼 cardinality(label 값의 가짓수)가 낮은 label을 붙인다.
 3. 정해진 주기로 수집 저장소에 쌓는다.
 4. 대시보드와 알림에서 시간 범위별로 집계한다.
 5. 장애 분석 때 latency, traffic, error, saturation을 같이 본다.
@@ -50,7 +50,7 @@ API 기본 지표:
 
 - 부하를 걸어 latency, error, saturation이 예상대로 움직이는지 테스트한다.
 - 지표가 튄 시간대의 request id와 error log를 대조한다.
-- 대시보드는 RED 또는 USE 기준으로 구성한다.
+- 대시보드는 RED 또는 USE 기준으로 구성한다. RED는 요청 기준으로 Rate(초당 요청 수), Errors(실패 수), Duration(걸린 시간)을 본다. USE는 자원 기준으로 Utilization(사용률), Saturation(대기열이 쌓인 정도), Errors를 본다.
 - 지표가 나빠진 dependency 구간은 trace로 확인한다.
 
 ## 한 번에 설명하기
@@ -76,7 +76,7 @@ API 기본 지표:
 
 ## 관련 문서
 
-- [[observability]]
+- [[02-practical-backend/observability/observability|observability]]
 - [[logging]]
 - [[alert-and-slo]]
 - [[02-practical-backend/performance/latency-and-throughput|latency-and-throughput]]

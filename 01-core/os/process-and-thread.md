@@ -65,8 +65,8 @@ Java 웹 서버는 프로세스 하나 안에서 여러 스레드가 요청을 �
 
 스레드를 매번 만들고 없애면 비용이 크다. 스레드 풀은 스레드를 미리 만들어 두고, 들어온 작업을 큐에 넣었다가 놀고 있는 스레드에 맡긴다.
 
-```java
-// Tomcat 스레드 풀 설정
+```yaml
+# Tomcat 스레드 풀 설정 (application.yml)
 server:
   tomcat:
     threads:
@@ -83,7 +83,8 @@ Thread Pool (max=200):
 [Thread-1: 처리 중] [Thread-2: 처리 중] [Thread-3: 유휴] ... [Thread-200]
 
 모든 스레드가 처리 중이면 → Accept Queue에서 대기
-Accept Queue도 가득 차면 → 요청 거부 (Connection Refused)
+Accept Queue도 가득 차면 → Linux 기본 설정에서는 새 연결 요청(SYN)을 버린다.
+                            클라이언트는 재전송하다 connect timeout을 맞는다
 ```
 
 ### 스레드 풀 크기 정하기

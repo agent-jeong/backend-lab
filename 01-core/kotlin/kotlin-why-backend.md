@@ -112,7 +112,7 @@ Kotlin은 Java를 몰아낸다기보다, JVM 백엔드에서 Java의 불편한 �
 
 ## 관련 문서
 
-- [[kotlin]]
+- [[01-core/kotlin/kotlin|kotlin]]
 - [[kotlin-null-safety]]
 - [[kotlin-java-interop]]
 - [[01-core/java/java|java]]

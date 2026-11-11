@@ -31,7 +31,7 @@ return summary;
 
 가장 단순한 cache aside 흐름이다. 실제로는 Redis timeout, 캐시 저장 실패, stampede, 원본이 바뀌었는데 캐시 삭제가 실패하는 경우까지 다뤄야 한다.
 
-stampede가 걱정되는 key에는 TTL jitter, mutex/single-flight, stale-while-revalidate 같은 방어를 검토한다. 어느 쪽이든 miss 난 요청이 한꺼번에 DB로 몰리지 않게 하려는 것이다.
+stampede(인기 key가 만료되는 순간 miss가 한꺼번에 DB로 몰리는 현상)가 걱정되는 key에는 이런 방어를 검토한다. TTL jitter는 만료 시각에 무작위 값을 더해 흩뜨린다. mutex·single-flight는 miss가 나도 한 요청만 DB를 읽고 나머지는 그 결과를 기다리게 한다. stale-while-revalidate는 만료된 값을 잠깐 더 내주면서 뒤에서 새 값을 채운다. 어느 쪽이든 miss 난 요청이 한꺼번에 DB로 몰리지 않게 하려는 것이다.
 
 ## 어떤 데이터에 맞나
 

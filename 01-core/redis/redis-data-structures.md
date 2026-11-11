@@ -39,7 +39,7 @@ Redis에는 String 말고도 Hash, Set, Sorted Set, List, Stream, Pub/Sub이 있
 - 자료구조 하나에 데이터를 계속 쌓으면 Hash, Set, Sorted Set이 big key가 되고, 이 key를 다루는 명령이 Redis 전체를 느리게 만든다.
 - 운영 중에 `KEYS *`를 쓰면 key가 많을 때 Redis가 그동안 다른 명령을 처리하지 못한다. key를 조사할 때는 scan을 쓴다.
 - Pub/Sub을 주문이나 결제 이벤트에 쓰면, 장애 때 잃으면 안 되는 이벤트가 그대로 사라진다.
-- key 단위 TTL과 field 단위 만료를 헷갈리면 데이터가 의도와 다른 때에 지워지거나 남는다. field별 만료가 지원되는지 먼저 확인한다.
+- key 단위 TTL과 field 단위 만료를 헷갈리면 데이터가 의도와 다른 때에 지워지거나 남는다. Redis 7.4부터는 Hash field 하나에 TTL을 거는 `HEXPIRE`가 있다. 그 전 버전이면 field 단위 만료가 없으니, 따로 만료돼야 하는 값은 key를 나눈다.
 
 ## 운영에서 볼 것
 

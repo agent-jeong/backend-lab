@@ -53,8 +53,7 @@ Replica:              ───── lag ─── INSERT 반영
 | 전략 | 방법 | 언제 |
 |---|---|---|
 | 쓰고 나서 읽는 건 Master로 | 방금 쓴 사용자의 조회만 Master로 보낸다 | 가장 흔하다 |
-| 복제될 때까지 기다리기 | semi-synchronous replication | 바로 보여야만 할 때 |
-| 위치 비교 | 쓸 때의 binlog position과 Replica의 position을 비교한다 | 복잡하지만 정확하다 |
+| Replica가 따라잡을 때까지 기다리기 | 쓰기 때의 GTID(트랜잭션마다 붙는 전역 번호)를 기억했다가, Replica에서 `WAIT_FOR_EXECUTED_GTID_SET`로 그 트랜잭션이 반영될 때까지 기다린 뒤 읽는다 | Replica에서 읽되 방금 쓴 값이 꼭 보여야 할 때 |
 
 ### Spring에서 읽기/쓰기 분리
 
@@ -66,7 +65,9 @@ public List<Order> getOrders() { ... }
 public void createOrder() { ... }
 ```
 
-`AbstractRoutingDataSource`가 트랜잭션의 readOnly 값을 보고 어느 DataSource로 보낼지 고른다.
+`AbstractRoutingDataSource`가 트랜잭션의 readOnly 값을 보고 어느 DataSource로 보낼지 고른다. 다만 Spring 트랜잭션은 readOnly 값을 정하기 전에 커넥션부터 잡기 때문에, `LazyConnectionDataSourceProxy`로 감싸 실제 쿼리 직전까지 커넥션 획득을 미뤄야 라우팅이 맞게 된다.
+
+semi-synchronous replication(Replica 하나 이상이 받았다고 답해야 커밋을 끝내는 방식)은 이 문제의 해법이 아니다. Replica가 binlog를 받았다는 것까지만 보장하고, 반영(실행)까지 기다리지는 않는다. Primary가 죽었을 때 데이터를 잃지 않으려고 쓰는 설정이다.
 
 ## Sharding
 
@@ -155,7 +156,7 @@ Shard Key 값을 보고 데이터를 여러 DB에 나눠 담는다.
 ## 꼬리 질문
 
 > [!question]- Replication lag으로 인한 정합성 문제를 어떻게 해결하는가?
-> 쓰자마자 읽는 요청만 Master로 보냅니다. 아니면 semi-synchronous replication으로 Replica 하나 이상에 전달된 걸 확인하고 나서 응답합니다. 읽기를 다 Master로 보내면 Replica를 둔 이유가 없으니, 꼭 필요한 요청만 골라서 보냅니다.
+> 쓰자마자 읽는 요청만 Master로 보냅니다. Replica에서 꼭 읽어야 하면, 쓸 때의 GTID를 기억했다가 Replica가 그 트랜잭션을 반영할 때까지 기다린 뒤 읽습니다. semi-synchronous replication은 Replica가 받은 것까지만 보장해서 이 문제를 풀지 못합니다. 읽기를 다 Master로 보내면 Replica를 둔 이유가 없으니, 꼭 필요한 요청만 골라서 보냅니다.
 
 > [!question]- Shard Key를 잘못 선택하면 어떤 문제가 생기는가?
 > 데이터가 한 샤드에 몰려서(핫스팟) 그 샤드만 과부하가 걸립니다. 그리고 쿼리 대부분에 Shard Key가 없으면 매번 모든 샤드를 조회해서 합쳐야(scatter-gather) 해서 오히려 느려집니다.

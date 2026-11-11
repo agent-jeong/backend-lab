@@ -11,14 +11,14 @@ comments: false
 
 ## 읽는 순서
 
-1. [[process-and-thread|Process와 Thread]]
-2. [[context-switching|Context Switching]]
-3. [[memory|Memory]]
-4. [[cpu-scheduling|CPU Scheduling]]
+1. [[process-and-thread|프로세스와 스레드의 차이]]
+2. [[context-switching|컨텍스트 스위칭 비용과 원리]]
+3. [[cpu-scheduling|CPU 스케줄링 알고리즘]]
+4. [[memory|OS 메모리 관리 (가상 메모리, 페이징)]]
 5. [[file-io|파일 입출력]]
 6. [[socket-io|소켓 입출력]]
 7. [[blocking-and-non-blocking|Blocking과 Non-blocking]]
-8. [[system-resource-monitoring|System Resource Monitoring]]
+8. [[system-resource-monitoring|시스템 자원 모니터링]]
 
 ## 먼저 답해 볼 질문
 

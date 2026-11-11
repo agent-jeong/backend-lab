@@ -79,7 +79,7 @@ Trace:
 
 ## 관련 문서
 
-- [[observability]]
+- [[02-practical-backend/observability/observability|observability]]
 - [[trace-id-and-correlation-id]]
 - [[metrics]]
 - [[02-practical-backend/performance/bottleneck-analysis|bottleneck-analysis]]

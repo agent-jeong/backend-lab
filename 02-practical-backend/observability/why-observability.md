@@ -81,7 +81,7 @@ Observability는 시스템이 밖으로 남기는 신호만 보고도 안에서 
 
 ## 관련 문서
 
-- [[observability]]
+- [[02-practical-backend/observability/observability|observability]]
 - [[logging]]
 - [[metrics]]
 - [[distributed-tracing]]

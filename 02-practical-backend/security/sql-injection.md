@@ -81,6 +81,6 @@ List<Order> findOrders(long userId, OrderStatus status);
 
 ## 관련 문서
 
-- [[security]]
+- [[02-practical-backend/security/security|security]]
 - [[01-core/database/database|database]]
 - [[01-core/jpa/querydsl|querydsl]]

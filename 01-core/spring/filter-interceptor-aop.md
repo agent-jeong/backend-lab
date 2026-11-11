@@ -45,7 +45,7 @@ HTTP 요청
 | 소속 | Servlet Container | Spring MVC | Spring Bean |
 | 동작 위치 | DispatcherServlet 이전/이후 | Controller 이전/이후 | 빈 메서드 실행 전후 |
 | 설정 대상 | URL 패턴 | URL 패턴 + Handler | 포인트컷 (클래스, 메서드) |
-| Spring 빈 접근 | 제한적 (DelegatingFilterProxy 필요) | 가능 | 가능 |
+| Spring 빈 접근 | Spring Boot에서 빈으로 등록하면 가능 | 가능 | 가능 |
 | 예외 처리 | 직접 처리 (try-catch) | Spring MVC 예외 처리 활용 가능 | Spring MVC 예외 처리 활용 가능 |
 | Request/Response 조작 | 가능 (래핑) | 가능 | 불가 |
 | 적용 대상 | 모든 요청 (정적 리소스 포함) | Spring MVC 요청만 | 지정한 빈의 메서드 |
@@ -96,6 +96,7 @@ public class AuthInterceptor implements HandlerInterceptor {
     public void postHandle(HttpServletRequest request, HttpServletResponse response,
                            Object handler, ModelAndView modelAndView) {
         // Controller 실행 후, 뷰 렌더링 전
+        // @ResponseBody(JSON) 응답은 이미 쓰인 뒤라 여기서 본문을 바꿀 수 없다
     }
 
     @Override
@@ -144,7 +145,7 @@ public class ServiceLoggingAspect {
 
 ## 자주 깨지는 곳
 
-- Filter에 `@Autowired`로 빈을 넣으려 하면, 동작하지 않는다. `DelegatingFilterProxy`가 필요하다.
+- Filter를 `new`로 만들어 서블릿 컨테이너에 직접 등록하면, Spring 빈이 아니라서 주입이 되지 않는다. Spring Boot에서는 `@Component`나 `FilterRegistrationBean`으로 빈으로 등록한다(Spring Security의 Filter Chain은 `DelegatingFilterProxy`가 이 다리를 놓는다).
 - Interceptor에서 request body를 읽으면, body는 한 번만 읽히는 스트림이라 Controller가 다시 읽지 못한다.
 - AOP를 URL 기준으로 걸려고 하면, 걸 방법이 없다. AOP는 빈과 메서드를 기준으로 고른다.
 - 공통 코드를 전부 AOP로 풀려고 하면, Filter나 Interceptor가 더 맞는 자리를 놓친다.

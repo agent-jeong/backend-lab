@@ -75,18 +75,20 @@ resources:
 CPU limit을 넘으면 Throttling이 걸린다. 프로세스가 죽지는 않지만, 한동안 실행을 못 하고 기다린다.
 
 ```
-CPU limit = 1000m (1코어)
-실제 사용 = 1500m
+CPU limit = 1000m (1코어) → 100ms마다 CPU 시간 100ms까지 쓸 수 있다
+스레드들이 1.5코어만큼 쓰려고 함
 
-→ OS가 100ms 중 66ms만 실행 허용, 34ms는 강제 대기
-→ 응답 시간 증가, GC 시간 증가
+→ 약 66ms 만에 이번 100ms 몫을 다 쓴다
+→ 남은 34ms 동안 컨테이너의 모든 스레드가 멈춘다
+→ 그 사이 들어온 요청과 GC가 같이 늦어진다
 ```
 
 ```bash
-# Throttling 확인
-cat /sys/fs/cgroup/cpu/cpu.stat
-# nr_throttled: 발생 횟수
-# throttled_time: 총 throttle 시간 (ns)
+# Throttling 확인 (cgroup v2)
+cat /sys/fs/cgroup/cpu.stat
+# nr_throttled: throttle이 걸린 구간 수
+# throttled_usec: 멈춰 있던 시간 합계 (µs)
+# cgroup v1이면 /sys/fs/cgroup/cpu/cpu.stat 의 throttled_time(ns)
 ```
 
 Throttling은 로그에 남지 않아서 찾기 어렵다. 응답 시간이 불규칙하게 늘어나면 먼저 의심해 본다.

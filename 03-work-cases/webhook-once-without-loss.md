@@ -267,7 +267,7 @@ T5 REQUIRES_NEW  이벤트 PROCESSED / FAILED + 사유   바로 커밋
 ## 관련 문서
 
 - [[irreversible-approval-once]]
-- [[idempotency]] · [[message-consumer-idempotency]] · [[duplicate-request-and-retry]]
+- [[02-practical-backend/idempotency/idempotency|idempotency]] · [[message-consumer-idempotency]] · [[duplicate-request-and-retry]]
 - [[transaction-boundary]] · [[transaction-integration]] · [[transactional-pitfalls]]
 - [[optimistic-lock]] · [[pessimistic-lock]]
 - [[compensation-and-outbox]]
