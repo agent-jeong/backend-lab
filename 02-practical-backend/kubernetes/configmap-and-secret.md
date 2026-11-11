@@ -15,7 +15,7 @@ ConfigMap은 일반 설정을, Secret은 비밀번호나 API key 같은 민감�
 1. 환경마다 다른 설정을 ConfigMap이나 Secret으로 뺀다.
 2. Pod는 환경 변수나 volume mount로 값을 받는다.
 3. 애플리케이션은 시작할 때, 또는 파일이 바뀔 때 설정을 읽는다.
-4. 설정을 바꿔도 애플리케이션이 알아서 다시 읽지(reload) 않으면 Pod를 재시작해야 반영된다.
+4. 환경 변수로 넣은 값은 Pod를 다시 띄워야 바뀐다. volume으로 마운트한 값은 kubelet이 잠시 뒤 파일을 갱신하지만, `subPath`로 마운트한 파일은 갱신되지 않는다. 파일이 갱신돼도 애플리케이션이 다시 읽지(reload) 않으면 옛 값으로 돈다.
 5. Secret은 RBAC, 암호화, 외부 secret manager와 함께 관리한다.
 
 ```yaml

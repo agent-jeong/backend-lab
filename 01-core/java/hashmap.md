@@ -86,7 +86,7 @@ Map<UserKey, String> map = new HashMap<>();
 
 map.put(new UserKey(1L), "ACTIVE");
 
-String status = map.get(new UserKey(1L)); // equals/hashCode가 없으면 null 가능
+String status = map.get(new UserKey(1L)); // equals/hashCode가 없으면 null
 ```
 
 꼭 객체 key가 필요한 게 아니라면 `Long`, `String`, enum처럼 비교 기준이 정해진 값을 key로 쓰는 편이 안전하다.

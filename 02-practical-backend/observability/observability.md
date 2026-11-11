@@ -38,7 +38,7 @@ comments: false
 
 ## 내 사례
 
-- [[inherited-access-system-incidents|이어받은 출입 시스템의 장애 추적]]: 성공한 날과 실패한 날을 대조해 원인 좁히기, 삼켜지던 에러에 로그 붙이기
+- [[inherited-access-system-incidents|이어받은 시스템의 장애 추적]]: 성공한 날과 실패한 날을 대조해 원인 좁히기, 삼켜지던 에러에 로그 붙이기
 
 ## 관련 문서
 

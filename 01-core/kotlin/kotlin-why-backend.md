@@ -51,7 +51,7 @@ Kotlin은 Java를 몰아낸다기보다, JVM 백엔드에서 Java의 불편한 �
 
 ## 한 번에 설명하기
 
-> Kotlin은 Java 라이브러리와 Spring을 그대로 쓰면서 null 안정성, data class, 컬렉션 처리, coroutine을 쓸 수 있게 해 줍니다. 저는 문법이 짧은 것보다 타입으로 실수를 미리 막아 주는 점을 더 크게 봅니다.
+> Kotlin은 Java 라이브러리와 Spring을 그대로 쓰면서 null 안전성, data class, 컬렉션 처리, coroutine을 쓸 수 있게 해 줍니다. 저는 문법이 짧은 것보다 타입으로 실수를 미리 막아 주는 점을 더 크게 봅니다.
 >
 > 다만 Java 코드와 섞이는 곳, JPA, Jackson, Spring 프록시와 맞물리는 곳에서는 Kotlin의 특징이 오히려 걸림돌이 됩니다.
 >
@@ -60,7 +60,7 @@ Kotlin은 Java를 몰아낸다기보다, JVM 백엔드에서 Java의 불편한 �
 ## 꼬리 질문
 
 > [!question]- Kotlin을 백엔드에서 사용하는 이유는 무엇인가?
-> null 안정성, data class, 컬렉션 extension, coroutine 덕분에 Java로 쓸 때의 반복 코드가 줄고, 실행해 봐야 알던 오류 일부를 컴파일할 때 잡을 수 있어서입니다.
+> null 안전성, data class, 컬렉션 extension, coroutine 덕분에 Java로 쓸 때의 반복 코드가 줄고, 실행해 봐야 알던 오류 일부를 컴파일할 때 잡을 수 있어서입니다.
 
 > [!question]- Kotlin을 쓰면 Java가 필요 없어지는가?
 > 아닙니다. Kotlin은 대개 JVM 위에서 Java 라이브러리와 함께 쓰여서, Java, Spring, JPA가 어떻게 도는지는 여전히 알아야 합니다.

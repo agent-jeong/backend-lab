@@ -62,7 +62,7 @@ public final class OrderService { // ❌ CGLIB이 상속 불가
 }
 ```
 
-CGLIB은 클래스를 상속해 프록시를 만드니, `final`이면 만들 수 없다.
+CGLIB은 클래스를 상속해 프록시를 만드니, `final` 클래스는 프록시를 만들 수 없다. 이 경우는 조용히 빠지지 않고 애플리케이션이 뜰 때 `Could not generate CGLIB subclass` 오류로 실패한다. 조용히 빠지는 쪽은 `final` 메서드다. 프록시가 그 메서드를 오버라이드하지 못해 트랜잭션이 걸리지 않는데, 기동 오류도 예외도 나지 않는다.
 
 ### 4. checked 예외에서 롤백 안 됨
 
@@ -129,7 +129,7 @@ public class OrderService {
 - 리팩터링하다 메서드를 한 클래스로 합치면, 다른 빈을 부르던 호출이 내부 호출로 바뀌어 트랜잭션이 사라진다.
 - 어노테이션이 붙어 있으니 된다고 믿으면, 위 여섯 가지 중 하나에 걸려 조용히 빠진 걸 놓친다.
 - catch로 예외를 삼키면, 테스트에서는 멀쩡해 보이고 운영에서 데이터가 어긋난다.
-- Kotlin에서 all-open 플러그인을 빠뜨리면, 프록시가 만들어지지 않는다. Kotlin 클래스와 메서드는 기본이 `final`이고, `kotlin-spring`(all-open) 플러그인이 `@Service`, `@Transactional` 같은 어노테이션이 붙은 클래스를 `open`으로 바꿔 준다.
+- Kotlin에서 all-open 플러그인을 빠뜨리면, 클래스가 `final`로 남아 기동할 때 CGLIB 오류가 난다. 클래스만 열고 메서드가 `final`이면 그 메서드에서 트랜잭션이 조용히 빠진다. Kotlin 클래스와 메서드는 기본이 `final`이고, `kotlin-spring`(all-open) 플러그인이 `@Service`, `@Transactional` 같은 어노테이션이 붙은 클래스를 `open`으로 바꿔 준다.
 
 ## 한 번에 설명하기
 
@@ -184,7 +184,7 @@ public class OrderService {
 
 ## 내 사례
 
-- [[inherited-access-system-incidents|이어받은 출입 시스템의 장애 추적]]: `parallelStream` 안 저장에 적용되지 않은 `@Transactional`
+- [[inherited-access-system-incidents|이어받은 시스템의 장애 추적]]: `parallelStream` 안 저장에 적용되지 않은 `@Transactional`
 
 ## 참고
 
@@ -195,6 +195,7 @@ public class OrderService {
 
 ## 관련 문서
 
+- [[01-core/spring/spring|spring]]
 - [[aop]]
 - [[transaction-integration]]
 - [[02-practical-backend/transaction/spring-transaction|spring-transaction]]

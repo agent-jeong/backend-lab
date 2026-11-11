@@ -8,7 +8,7 @@ tags: [concept, spring]
 
 AOP(Aspect-Oriented Programming)는 트랜잭션, 로깅, 권한 체크처럼 여러 메서드에 똑같이 붙는 코드를 비즈니스 로직 밖으로 빼내는 방법이다.
 
-Spring AOP는 프록시로 동작한다. 그래서 `@Transactional`을 붙여도 내부 호출, `private` 메서드, `final` 클래스에서는 아무 경고 없이 빠진다. 주문 저장과 재고 차감을 한 트랜잭션으로 묶었다고 믿었는데, 실제로는 각자 따로 커밋되는 일이 이렇게 생긴다.
+Spring AOP는 프록시로 동작한다. 그래서 `@Transactional`을 붙여도 내부 호출, `private` 메서드, `final` 메서드에서는 아무 경고 없이 빠진다. `final` 클래스는 CGLIB이 상속하지 못해 애플리케이션이 뜰 때 바로 실패한다. 주문 저장과 재고 차감을 한 트랜잭션으로 묶었다고 믿었는데, 실제로는 각자 따로 커밋되는 일이 이렇게 생긴다.
 
 ## 용어
 
@@ -52,7 +52,7 @@ Spring Boot는 `proxyTargetClass=true`가 기본값이라 인터페이스가 있
 
 ### 프록시라서 생기는 제약
 
-프록시를 거치지 않는 호출에는 AOP가 걸리지 않는다. 같은 클래스 안에서 자기 메서드를 부르는 경우, `private` 메서드, `final` 클래스가 그렇다. 실패 사례와 확인하는 방법은 [[transactional-pitfalls|@Transactional 동작 실패 케이스]]에 모아 두었다.
+프록시를 거치지 않는 호출에는 AOP가 걸리지 않는다. 같은 클래스 안에서 자기 메서드를 부르는 경우, `private` 메서드, `final` 메서드가 그렇다. `final` 클래스는 프록시를 만들 수 없어서, 조용히 빠지는 대신 기동할 때 `Could not generate CGLIB subclass` 오류로 실패한다. 실패 사례와 확인하는 방법은 [[transactional-pitfalls|@Transactional 동작 실패 케이스]]에 모아 두었다.
 
 ## 커스텀 AOP 예시
 
@@ -90,14 +90,14 @@ public class ExecutionTimeAspect {
 ## 자주 깨지는 곳
 
 - `@Around`에서 `joinPoint.proceed()`를 빠뜨리면, 실제 메서드가 아예 실행되지 않는다.
-- AOP가 늘 걸린다고 믿으면, 내부 호출, `private`, `final`처럼 프록시를 거치지 않는 곳에서 트랜잭션이나 로깅이 빠진 걸 모르고 지나간다.
+- AOP가 늘 걸린다고 믿으면, 내부 호출, `private`, `final` 메서드처럼 프록시를 거치지 않는 곳에서 트랜잭션이나 로깅이 빠진 걸 모르고 지나간다.
 - 이것저것 AOP로 빼면, 코드만 봐서는 무엇이 언제 실행되는지 알 수 없게 된다.
 
 ## 한 번에 설명하기
 
 > Spring AOP는 프록시로 동작합니다. 외부에서 메서드를 부르면 프록시가 먼저 트랜잭션이나 로깅 같은 부가 기능을 실행하고, 그다음 실제 객체를 호출합니다.
 >
-> 그래서 프록시를 거치지 않는 내부 호출, `private` 메서드, `final` 클래스에는 걸리지 않습니다. `@Transactional`이 안 먹을 때 저는 이 세 가지부터 봅니다([[transactional-pitfalls]]).
+> 그래서 프록시를 거치지 않는 내부 호출, `private` 메서드, `final` 메서드에는 걸리지 않습니다. `@Transactional`이 안 먹을 때 저는 이 세 가지부터 봅니다([[transactional-pitfalls]]).
 
 ## 꼬리 질문
 

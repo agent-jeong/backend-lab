@@ -52,7 +52,7 @@ val responses = orders.map { order ->
 }
 ```
 
-Java의 `stream().collect(toMap())`보다 짧다. 다만 key가 겹칠 수 있는지는 여전히 직접 확인해야 한다.
+Java의 `stream().collect(toMap())`보다 짧다. 다만 동작이 다르다. Java `toMap()`은 key가 겹치면 `IllegalStateException`을 던지지만, `associateBy`는 마지막 원소로 조용히 덮어쓴다. key가 겹칠 수 있으면 `groupBy`를 쓰거나 중복을 먼저 검사한다.
 
 ## Scope Functions
 

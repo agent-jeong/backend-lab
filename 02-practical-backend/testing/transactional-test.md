@@ -31,7 +31,7 @@ tags: [concept, testing]
 ## 점검할 것
 
 - `flush`와 `clear` 후 실제 DB 조회 결과를 본다.
-- commit 이후 동작은 별도 테스트에서 실제로 commit되게 구성한다.
+- commit 이후 동작은 별도 테스트에서 실제로 commit되게 구성한다. `@Transactional`을 빼고 테스트 데이터를 직접 지우거나, `@Commit` 또는 `TestTransaction.flagForCommit()`과 `TestTransaction.end()`로 commit을 일으킨다.
 - 제약 조건 검증은 예외가 나는 시점을 확인한다.
 
 ## 한 번에 설명하기

@@ -44,7 +44,7 @@ System.out.println(a.equals(b)); // true
 Integer count = null;
 
 if (count == 0) {
-    // NullPointerException 발생 가능
+    // 비교하려고 unboxing하는 순간 NullPointerException
 }
 ```
 

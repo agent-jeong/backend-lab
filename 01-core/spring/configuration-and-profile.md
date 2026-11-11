@@ -98,8 +98,8 @@ public class AppConfig { }
 ```yaml
 # application.yml (공통)
 spring:
-  profiles:
-    active: dev
+  application:
+    name: example-service
 
 # application-dev.yml
 spring:
@@ -149,7 +149,7 @@ spring:
     active: dev
 ```
 
-운영에서는 환경 변수나 커맨드 라인으로 지정한다. 파일에 박아 두면 Profile 지정이 빠졌을 때 기본 설정으로 운영이 뜬다.
+운영에서는 환경 변수나 커맨드 라인으로 지정한다. 공통 파일에 `active: dev`를 박아 두면, 운영에서 Profile 지정이 빠졌을 때 운영 서버가 dev 설정으로 떠서 개발 DB에 붙는다.
 
 ## @Configuration
 
@@ -192,7 +192,7 @@ spring:
 - 비밀번호를 `application.yml`에 쓰고 커밋하면, 저장소를 볼 수 있는 누구나 운영 비밀번호를 본다.
 - Profile 대신 if문으로 환경을 가르면, 환경이 하나 늘 때마다 코드를 고쳐야 한다.
 - 모든 설정을 `@Value`로 넣으면, 관련 설정이 클래스마다 흩어져 어디서 무엇을 읽는지 찾기 어렵다.
-- `@ConfigurationProperties` 클래스에 setter를 빠뜨리면, 값이 바인딩되지 않는다. setter 없이 쓰려면 record로 만들어 생성자로 받는다.
+- `@ConfigurationProperties` 클래스에 setter를 빠뜨리면, 값이 바인딩되지 않는다. setter 없이 쓰려면 record나 생성자가 하나뿐인 불변 클래스로 만들어 생성자로 받는다.
 - Profile을 지정하지 않고 띄우면, 운영 서버가 기본 설정으로 뜬다.
 
 ## 한 번에 설명하기

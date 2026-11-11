@@ -14,7 +14,7 @@ traceId는 HTTP 요청 하나가 서비스들을 거쳐 간 길을 따라간다.
 
 1. 요청이 들어올 때 기존 trace id가 있으면 쓰고, 없으면 만든다.
 2. 로그 MDC나 context에 식별자를 넣는다.
-3. 내부 로그, 메트릭 tag, trace span에 식별자를 연결한다.
+3. 내부 로그와 trace span에 식별자를 넣는다. 메트릭에는 label로 넣지 않고 exemplar로 trace를 연결한다. 요청마다 값이 달라서 label로 넣으면 시계열이 요청 수만큼 늘어난다.
 4. 외부 HTTP 호출, 메시지 header, async task로 식별자를 넘긴다.
 5. 장애 분석 때 식별자로 관련 로그와 trace를 찾는다.
 

@@ -173,7 +173,7 @@ Entity를 값 객체처럼 모든 필드로 `equals()`와 `hashCode()`를 만들
 
 <div class="quiz-list">
   <div class="quiz-card" data-quiz-card>
-    <p class="quiz-question"><span class="quiz-label">OX</span>equals가 true인 두 객체는 hashCode도 반드시 같아야 한다.</p>
+    <p class="quiz-question"><span class="quiz-label">OX</span>equals가 true인 두 객체의 hashCode가 다르면 hashCode 계약을 어긴 것이다.</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="HashMap/HashSet은 hashCode로 버킷을 먼저 찾기 때문에 이 규칙이 깨지면 같은 객체를 찾지 못할 수 있다." aria-pressed="false">O</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="hashCode 계약상 equals가 true면 hashCode도 같아야 한다." aria-pressed="false">X</button>

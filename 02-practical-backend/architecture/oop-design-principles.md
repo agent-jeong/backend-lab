@@ -83,6 +83,7 @@ LSP와 ISP는 한 장면에서 같이 깨진다. 결제 취소를 `PaymentProces
 ```java
 // PaymentProcessor에 cancel(Order)이 있다고 하자
 class BankTransferProcessor implements PaymentProcessor {
+    // method(), pay()는 생략
     public void cancel(Order order) {
         throw new UnsupportedOperationException("계좌이체는 환불 요청으로 처리");
     }
@@ -130,7 +131,7 @@ public void cancel() {
 }
 ```
 
-상태를 꺼내서 밖에서 판단하지 말고, 객체에게 하라고 시킨다. Martin Fowler는 이것을 Tell, Don't Ask라고 불렀다. 취소 규칙이 바뀌면 `cancel()` 하나만 고친다. JPA Entity도 같다. setter를 열어 두면 변경 감지 때문에 어디서 값을 바꿨는지 추적하기 어려워진다.
+상태를 꺼내서 밖에서 판단하지 말고, 객체에게 하라고 시킨다. 이 원칙을 Tell, Don't Ask라고 부르고, Andy Hunt와 Dave Thomas(The Pragmatic Programmers)가 널리 알렸다. 취소 규칙이 바뀌면 `cancel()` 하나만 고친다. JPA Entity도 같다. setter를 열어 두면 변경 감지 때문에 어디서 값을 바꿨는지 추적하기 어려워진다.
 
 ## 원칙을 과하게 쓰면 생기는 일
 

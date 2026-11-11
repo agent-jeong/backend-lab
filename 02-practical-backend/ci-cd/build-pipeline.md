@@ -16,7 +16,8 @@ tags: [concept, ci-cd]
 |---|---|
 | Checkout | 정확한 commit 기준인지 |
 | Dependency | lockfile 또는 버전 고정 여부 |
-| Test | 단위/통합 테스트 범위 |
+| Lint·정적 분석 | 규칙 위반이 빌드를 실패시키는지 |
+| Test | 단위·통합 테스트 범위 |
 | Build | 재현 가능한 artifact 생성 |
 | Image | tag, digest, 취약점 스캔 |
 | Publish | artifact 저장소와 권한 |
@@ -27,7 +28,7 @@ tags: [concept, ci-cd]
 
 - latest tag만 쓰면, 어떤 버전이 배포됐는지 추적할 수 없다.
 - 테스트 실패를 임시로 skip하고 배포하면, 배포 전에 잡았어야 할 결함을 운영에서 만난다.
-- 빌드할 때 쓴 secret을 이미지에 남기면, build log나 image layer에서 누구나 읽을 수 있다.
+- 빌드할 때 쓴 secret을 이미지에 남기면, build log를 보거나 이미지를 pull할 수 있는 사람은 누구나 layer에서 꺼내 읽는다.
 - CI cache에 기대 빌드하면, 깨끗한 환경에서는 빌드가 안 되는 상태를 모른 채 지나간다.
 
 ## 운영에서 볼 것

@@ -108,7 +108,7 @@ val user = userRepository.findByIdOrNull(id)
     <p class="quiz-question"><span class="quiz-label">객관식</span>Kotlin의 nullable 타입과 non-null 타입 차이로 맞는 설명은?</p>
     <div class="quiz-options">
       <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="String?은 null 가능성을 타입에 포함하고, String은 컴파일러가 null 대입을 제한한다." aria-pressed="false">A. null 가능성을 타입 시스템에 명시하느냐의 차이다.</button>
-      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="non-null 타입도 Java 경계나 lateinit 등에서 런타임 NPE 가능성이 완전히 사라지는 것은 아니다." aria-pressed="false">B. non-null 타입은 어떤 상황에서도 NPE가 절대 발생하지 않는다.</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="non-null 타입도 Java 경계, !!, 생성자에서 초기화 전 this가 새는 경우에는 런타임 NPE가 날 수 있다." aria-pressed="false">B. non-null 타입은 어떤 상황에서도 NPE가 절대 발생하지 않는다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="nullable 타입은 null만 담는 타입이 아니라 값 또는 null을 담을 수 있는 타입이다." aria-pressed="false">C. nullable 타입은 null 값만 담을 수 있다.</button>
     </div>
     <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
@@ -126,7 +126,7 @@ val user = userRepository.findByIdOrNull(id)
   <div class="quiz-card" data-quiz-card>
     <p class="quiz-question"><span class="quiz-label">객관식</span>Kotlin 코드에서도 NPE가 발생할 수 있는 대표적인 경우는?</p>
     <div class="quiz-options">
-      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="Java platform type, !!, lateinit 미초기화, 프레임워크 리플렉션 경계에서 NPE가 발생할 수 있다." aria-pressed="false">A. Java platform type이나 !!를 잘못 다룬 경우</button>
+      <button type="button" class="quiz-option" data-quiz-option data-correct="true" data-explanation="Java platform type, !!, 생성자에서 초기화 전 this가 새는 경우, 프레임워크 리플렉션 경계에서 NPE가 발생할 수 있다. lateinit을 초기화 전에 읽으면 NPE가 아니라 UninitializedPropertyAccessException이 난다." aria-pressed="false">A. Java platform type이나 !!를 잘못 다룬 경우</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="Kotlin의 non-null 문법만으로 모든 런타임 경계가 안전해지지는 않는다." aria-pressed="false">B. Kotlin 파일 안에서는 NPE가 원천적으로 불가능하다.</button>
       <button type="button" class="quiz-option" data-quiz-option data-correct="false" data-explanation="val은 재할당을 막을 뿐 참조 대상의 null 경계 전체를 제거하지 않는다." aria-pressed="false">C. val을 쓰면 모든 NPE가 사라진다.</button>
     </div>

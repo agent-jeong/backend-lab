@@ -82,7 +82,8 @@ public enum PaymentType {
     CARD {
         @Override
         public long calculateFee(long amount) {
-            return (long) (amount * 0.03);
+            // 정수 연산, 1원 미만은 버린다. multiplyExact는 곱이 long 범위를 넘으면 조용히 틀리지 않고 예외를 던진다
+            return Math.multiplyExact(amount, 3) / 100;
         }
     },
     BANK_TRANSFER {

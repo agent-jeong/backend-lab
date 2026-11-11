@@ -47,7 +47,7 @@ public List<OrderSummary> findMyOrders(AuthenticatedUser user, OrderSearchCondit
 
 ## 자주 깨지는 곳
 
-- `@PreAuthorize("isAuthenticated()")`만 붙이고 끝났다고 여기면, 소유권 검사가 빠진다. 공통 어노테이션으로는 "이 주문의 주인인가" 같은 데이터에 따른 권한을 표현하기 어렵다.
+- `@PreAuthorize("isAuthenticated()")`만 붙이고 끝났다고 여기면, 소유권 검사가 빠진다. 이 표현식은 로그인 여부만 본다. 소유권은 `@orderAccess.isOwner(#orderId, authentication)`처럼 정책 빈을 부르거나 Service에서 따로 검사한다.
 - 목록 API에서 전체를 읽은 뒤 애플리케이션에서 거르면, 거르는 과정에서 권한 없는 데이터가 새어 나갈 틈이 생긴다.
 - Service 메서드를 Controller 말고 다른 곳에서도 부른다는 걸 놓치면, Controller에서만 검사한 그 경로는 무방비가 된다.
 - 관리자 role이면 모든 리소스에 접근하게 두면, 관리자 계정 하나가 털렸을 때 피해가 전체로 번진다.
@@ -72,7 +72,7 @@ public List<OrderSummary> findMyOrders(AuthenticatedUser user, OrderSearchCondit
 
 - 권한 검증은 Controller와 Service 중 어디에 두는 게 좋은가?
 - 목록 조회에서 권한 검증을 어떻게 보장하나?
-- 공통 보안 어노테이션으로 해결하기 어려운 권한은?
+- 공통 보안 어노테이션만으로 소유권을 검사하려면 무엇이 더 필요한가?
 
 ## 참고
 

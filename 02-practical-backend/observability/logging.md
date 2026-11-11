@@ -43,7 +43,7 @@ log.warn("payment retry traceId={} orderId={} attempt={} reason={}",
 ## 자주 깨지는 곳
 
 - `e.getMessage()`만 남기면, stack trace와 앞뒤 상황이 없어 어디서 왜 실패했는지 모른다.
-- user id, token, raw request body를 그대로 남기면, 로그 자체가 보안 사고가 된다.
+- 토큰, 세션 id, 비밀번호, raw request body를 그대로 남기면, 로그 자체가 보안 사고가 된다. 사용자는 내부 id로 남기고, 이메일과 전화번호는 마스킹한다.
 - 로그를 통문자열로만 남기면, 필드로 검색하거나 집계하기 어렵다.
 - 같은 예외를 여러 계층에서 또 남기면, 한 번 실패한 것이 여러 번처럼 보여 헷갈린다.
 - 예외 로그만 있고 주문 상태 같은 업무 상태가 없으면, 무엇을 하다 실패했는지 알 수 없다.
@@ -73,7 +73,7 @@ log.warn("payment retry traceId={} orderId={} attempt={} reason={}",
 
 ## 내 사례
 
-- [[inherited-access-system-incidents|이어받은 출입 시스템의 장애 추적]]: 삼켜지던 비동기 에러에 로그 붙이기
+- [[inherited-access-system-incidents|이어받은 시스템의 장애 추적]]: 삼켜지던 비동기 에러에 로그 붙이기
 
 ## 참고
 

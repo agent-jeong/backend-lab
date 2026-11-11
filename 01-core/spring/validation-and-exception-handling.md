@@ -87,7 +87,7 @@ public class UserRequest {
 public ResponseEntity<?> create(@Validated(Create.class) @RequestBody UserRequest request) { }
 ```
 
-회원 가입과 정보 수정처럼 검증할 필드가 다를 때 쓴다. 그룹은 `@Validated`에 적는다.
+회원 가입과 정보 수정처럼 검증할 필드가 다를 때 쓴다. 그룹은 `@Validated`에 적는다. 그룹을 지정하면 그룹을 적지 않은 제약(`Default` 그룹)은 검사하지 않는다. 둘 다 보려면 `@Validated({Create.class, Default.class})`처럼 적는다.
 
 ## 예외 처리
 
@@ -183,11 +183,13 @@ public record ErrorResponse(String code, String message) { }
 ## 자주 깨지는 곳
 
 - 파라미터에 `@Valid`를 빠뜨리면, 필드에 검증 어노테이션을 달아 둬도 검증이 돌지 않는다.
+- `spring-boot-starter-validation`을 빠뜨리면, 클래스패스에 Bean Validation 구현체가 없어 `@Valid`를 붙여도 검증이 돌지 않는다. 오류도 나지 않는다.
 - 중첩 객체에 `@Valid`를 붙이지 않으면, 안쪽 필드는 검증되지 않는다.
 - 예외를 catch하고 로그만 남기면, 호출한 쪽은 실패한 줄 모른다.
 - API마다 에러 응답 형식이 다르면, 클라이언트가 에러를 한 가지 방식으로 파싱할 수 없다.
 - 비즈니스 예외와 시스템 예외를 나누지 않으면, 잔액 부족 같은 사용자 쪽 오류도 500으로 나간다.
-- `@ExceptionHandler` 우선순위를 모르면, 생각한 핸들러 대신 다른 핸들러가 불린다. 더 구체적인 예외 타입의 핸들러가 먼저 고른다.
+- `@ExceptionHandler(Exception.class)` 하나로 나머지를 받으면, 잘못된 JSON(400), 지원하지 않는 HTTP 메서드(405), 없는 경로(Spring 6.1부터 `NoResourceFoundException`, 404)처럼 Spring MVC가 상태 코드를 정해 둔 예외까지 500으로 나간다. `ResponseEntityExceptionHandler`를 상속하거나 이 예외들을 따로 처리한다.
+- `@ExceptionHandler` 우선순위를 모르면, 생각한 핸들러 대신 다른 핸들러가 불린다. 한 advice 안에서는 더 구체적인 예외 타입의 핸들러가 선택된다. advice가 여럿이면 `@Order`가 높은 advice가 먼저 매칭되므로, 공통 `Exception` 핸들러는 가장 낮은 우선순위의 advice에 둔다.
 
 ## 한 번에 설명하기
 
@@ -204,7 +206,7 @@ public record ErrorResponse(String code, String message) { }
 > Bean Validation은 필드 하나하나의 형식을 보는 용도입니다. 주문 수량이 재고보다 많은지 같은 비즈니스 규칙은 Service에서 봅니다. DB를 조회해야 알 수 있는 건 Controller에서 검사할 수 없으니까요.
 
 > [!question]- `@ExceptionHandler`의 우선순위는?
-> 더 구체적인 예외 타입이 먼저입니다. `IllegalArgumentException` 핸들러와 `Exception` 핸들러가 둘 다 있을 때 `IllegalArgumentException`이 나면, `IllegalArgumentException` 쪽 핸들러가 실행됩니다.
+> 더 구체적인 예외 타입이 먼저입니다. `IllegalArgumentException` 핸들러와 `Exception` 핸들러가 둘 다 있을 때 `IllegalArgumentException`이 나면, `IllegalArgumentException` 쪽 핸들러가 실행됩니다. 다만 이건 한 `@ControllerAdvice` 안에서의 규칙입니다. advice가 여럿이면 우선순위가 높은 advice에 맞는 핸들러가 하나라도 있으면 그쪽이 먼저 불립니다.
 
 > [!question]- checked 예외와 unchecked 예외 중 어떤 것을 사용하는가?
 > Spring에서는 주로 unchecked 예외(RuntimeException)를 씁니다. checked 예외는 부르는 쪽마다 처리 코드를 넣어야 해서 코드가 복잡해지고, `@Transactional`이 기본으로 롤백하는 것도 unchecked 예외입니다.

@@ -143,7 +143,7 @@ JPA가 변경 감지(dirty checking)를 건너뛰어서 스냅샷을 비교하�
 
 ## @Transactional이 동작하지 않는 경우
 
-프록시를 거치지 않는 호출에는 걸리지 않는다. 내부 호출, private 메서드, final 클래스가 그렇다. 실패 케이스 6가지와 확인 순서는 [[transactional-pitfalls]]에 정리했다.
+프록시를 거치지 않는 호출에는 걸리지 않는다. 내부 호출, private 메서드, final 메서드가 그렇다. final 클래스는 프록시를 만들지 못해 애플리케이션이 뜰 때 실패한다. 실패 케이스 6가지와 확인 순서는 [[transactional-pitfalls]]에 정리했다.
 
 ## 자주 깨지는 곳
 

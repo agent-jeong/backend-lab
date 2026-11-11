@@ -91,7 +91,7 @@ public PaymentResponse markPaid(Long orderId, String approvalId) {
 
 ## 내 사례
 
-- [[irreversible-approval-once|되돌릴 수 없는 승인을 한 번만 보내기]]: 송금 승인 중복 방지
+- [[irreversible-approval-once|되돌릴 수 없는 승인을 한 번만 보내기]]: 되돌릴 수 없는 외부 승인 중복 방지
 
 ## 참고
 

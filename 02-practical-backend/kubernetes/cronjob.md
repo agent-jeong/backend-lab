@@ -46,7 +46,7 @@ spec:
 | 겹쳐 돌면 안 됨 | `concurrencyPolicy: Forbid` | 앞 실행이 안 끝났으면 이번 실행을 건너뛴다. 기본값 `Allow`는 겹쳐 돌린다 |
 | 최신 실행만 의미 있음 | `concurrencyPolicy: Replace` | 앞 실행을 멈추고 새 실행으로 바꾼다 |
 | 실패 재시도 횟수 | `backoffLimit` | 정한 횟수를 넘으면 Job이 실패로 끝난다 |
-| 늦게라도 돌릴지 | `startingDeadlineSeconds` | 예정 시각을 놓친 뒤 이 초 안에 시작 못 하면 그 회차는 건너뛴다. 없으면 기한 없이 늦게라도 돈다 |
+| 늦게라도 돌릴지 | `startingDeadlineSeconds` | 예정 시각을 놓친 뒤 이 초 안에 시작 못 하면 그 회차는 건너뛴다. 없으면 기한 없이 늦게라도 돈다. 다만 놓친 회차가 100번을 넘으면 Job을 만들지 않고 오류를 남긴다 |
 | 끝난 Job을 몇 개 남길지 | `successfulJobsHistoryLimit`, `failedJobsHistoryLimit` | 기본값은 성공 3개, 실패 1개다. 실패 로그를 더 보려면 실패 쪽을 늘린다 |
 
 공식 문서도 CronJob이 한 회차에 Job을 두 번 만들거나 한 번도 안 만드는 일이 드물게 있다고 적고, Job을 멱등하게(여러 번 돌려도 결과가 같게) 만들라고 한다. concurrencyPolicy는 실행이 겹치는 것만 막는다. 같은 작업이 다시 돌아도 데이터가 깨지지 않게 하는 일은 배치 코드가 해야 한다. 대상별 중복 방지와 lock을 고르는 기준은 [[duplicate-execution-prevention]]에 있다.

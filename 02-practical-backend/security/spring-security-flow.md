@@ -77,7 +77,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 토큰이 없거나 틀려도 필터가 직접 응답을 쓰지 않는다. 인증 정보를 비운 채 넘기면 뒤쪽 `AuthorizationFilter`가 막고, `ExceptionTranslationFilter`가 응답 코드를 정한다. 그래야 401, 403 응답이 한 곳에서 나온다. 새 `SecurityContext`를 만들어 넣는 이유는 `getContext().setAuthentication()`이 여러 스레드 사이에서 경합을 일으킬 수 있어서다(Spring Security 문서 권고).
 
-서명, 만료, 발급자 검증이 표준 JWT라면 직접 만들기 전에 `oauth2ResourceServer().jwt()`를 먼저 검토한다. 이 설정은 `BearerTokenAuthenticationFilter`와 401 응답용 진입점까지 함께 등록한다.
+서명, 만료, 발급자 검증이 표준 JWT라면 직접 만들기 전에 `oauth2ResourceServer(o -> o.jwt(Customizer.withDefaults()))`를 먼저 검토한다. 이 설정은 `BearerTokenAuthenticationFilter`와 401 응답용 진입점까지 함께 등록한다.
 
 ## 필터를 끼우고 규칙을 적는 곳
 
@@ -107,7 +107,7 @@ public class SecurityConfig {
 }
 ```
 
-JWT 필터는 `UsernamePasswordAuthenticationFilter` 앞에 둔다. 인증 필터 자리에 있어야 `AnonymousAuthenticationFilter`보다 먼저 사용자를 넣는다. 필터를 `new`로 만든 이유도 있다. `@Component`로 등록하면 Spring Boot가 같은 필터를 서블릿 컨테이너에도 등록해서 요청마다 두 번, 다른 순서로 돈다. 빈이어야 한다면 `FilterRegistrationBean`을 만들고 `setEnabled(false)`로 컨테이너 등록을 끈다.
+JWT 필터는 `UsernamePasswordAuthenticationFilter` 앞에 둔다. 인증 필터 자리에 있어야 `AnonymousAuthenticationFilter`보다 먼저 사용자를 넣는다. 필터를 `new`로 만든 이유도 있다. `@Component`로 등록하면 Spring Boot가 같은 필터를 서블릿 컨테이너에도 등록해서, 두 번 불리거나 의도하지 않은 순서로 돌 수 있다(Spring Security 문서 경고). `OncePerRequestFilter`는 같은 요청의 두 번째 호출을 건너뛰지만, 어느 쪽이 먼저 도는지는 보장하지 않는다. 빈이어야 한다면 `FilterRegistrationBean`을 만들고 `setEnabled(false)`로 컨테이너 등록을 끈다.
 
 `authorizeHttpRequests`의 규칙은 위에서부터 보고 처음 맞는 하나만 적용한다. 넓은 규칙을 위에 두면 아래 규칙은 영영 안 쓰인다. `anyRequest()`는 맨 아래에 둔다.
 
@@ -137,7 +137,7 @@ public OrderDetail getOrder(long orderId) { ... }
 
 - `permitAll`이 필터를 건너뛴다고 여기면, 공개 API에서 401을 맞는다. 인가 판단은 마지막 필터에서 하므로 앞쪽 인증 필터는 그대로 돈다. 만료된 토큰을 들고 공개 API를 부르면 `oauth2ResourceServer`가 먼저 401을 낸다.
 - 공개 API를 막지 않으려고 `web.ignoring()`으로 경로를 빼면, 그 경로는 보안 헤더를 포함한 Security 체인 전체를 타지 않는다. Spring Security는 `ignoring` 대신 `permitAll`을 권한다.
-- JWT 필터를 `@Component`로 등록하면, 서블릿 컨테이너와 Security 체인에서 한 번씩 두 번 돈다.
+- JWT 필터를 `@Component`로 등록하면, 서블릿 컨테이너와 Security 체인 양쪽에 등록돼 두 번 불리거나 의도하지 않은 순서로 돈다.
 - 진입점을 설정하지 않은 채 커스텀 인증 필터만 쓰면, 로그인하지 않은 요청이 401 대신 403으로 나가서 클라이언트가 재로그인 흐름을 타지 못한다.
 - `@ControllerAdvice`에서 `Exception`을 통째로 잡으면, `@PreAuthorize`가 던진 `AccessDeniedException`까지 잡혀서 403이 500으로 바뀐다.
 - 공개 API에서 예외가 나면 `/error`로 한 번 더 디스패치되는데, `AuthorizationFilter`는 이 ERROR 디스패치도 검사한다. `/error`가 인증 필요로 묶여 있으면 원래 오류 대신 401이 나간다.
@@ -172,7 +172,7 @@ public OrderDetail getOrder(long orderId) { ... }
 > 인증 방식을 등록하지 않고 커스텀 필터만 끼우면 기본 `AuthenticationEntryPoint`가 `Http403ForbiddenEntryPoint`입니다. `exceptionHandling`에 401을 내는 진입점을 설정하거나 `oauth2ResourceServer`를 씁니다.
 
 > [!question]- JWT 필터는 어디에 넣고, 빈으로 등록해도 되나?
-> `addFilterBefore(..., UsernamePasswordAuthenticationFilter.class)`로 인증 필터 자리에 넣습니다. `@Component`로 등록하면 Spring Boot가 서블릿 컨테이너에도 등록해서 두 번 돌기 때문에, 빈이어야 한다면 `FilterRegistrationBean`으로 컨테이너 등록을 끕니다.
+> `addFilterBefore(..., UsernamePasswordAuthenticationFilter.class)`로 인증 필터 자리에 넣습니다. `@Component`로 등록하면 Spring Boot가 서블릿 컨테이너에도 등록해서 두 번 불리거나 순서가 어긋날 수 있기 때문에, 빈이어야 한다면 `FilterRegistrationBean`으로 컨테이너 등록을 끕니다.
 
 > [!question]- @PreAuthorize가 실패했는데 500이 나간다. 어디를 보나?
 > 전역 예외 처리기가 `Exception`을 통째로 잡고 있는지 봅니다. `AccessDeniedException`이 거기서 잡히면 `ExceptionTranslationFilter`까지 올라가지 못해 403이 되지 않습니다.

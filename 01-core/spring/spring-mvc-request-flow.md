@@ -70,7 +70,7 @@ HTTP 요청에서 값을 꺼내 Controller 메서드 파라미터에 채워 넣�
 ## Filter, Interceptor, AOP의 위치
 
 ```
-HTTP 요청 → Filter → DispatcherServlet → Interceptor → AOP → Controller
+HTTP 요청 → Filter → DispatcherServlet → Interceptor → Controller → AOP 프록시 → Service
 ```
 
 계층별 비교, 코드 예제, 고르는 기준은 [[filter-interceptor-aop]]에 있다.
@@ -100,11 +100,11 @@ public class GlobalExceptionHandler {
 
 REST API(`@RestController`)에서는 6단계에서 JSON이 이미 응답에 쓰인다. 그래서 `postHandle()`에서 응답 본문이나 헤더를 바꾸려 해도 늦다. 응답을 손봐야 하면 `ResponseBodyAdvice`나 Filter를 쓴다.
 
-`@ExceptionHandler`는 Controller 쪽에서 난 예외만 잡는다. Filter는 DispatcherServlet보다 앞에 있어서, 거기서 난 예외는 여기까지 오지 않는다. Filter 안에서 따로 처리해야 한다.
+`@ExceptionHandler`는 Controller 쪽에서 난 예외만 잡는다. Filter는 DispatcherServlet보다 앞에 있어서, 거기서 난 예외는 여기까지 오지 않는다. Filter 안에서 따로 처리해야 한다. `Exception` 핸들러 하나가 Spring MVC 표준 예외까지 500으로 바꾸는 문제는 [[validation-and-exception-handling]]에 있다.
 
 ## 자주 깨지는 곳
 
-- `@RequestBody`로 받는 클래스에 기본 생성자가 없으면, 바인딩이 실패한다.
+- `@RequestBody`로 받는 클래스를 Jackson이 만들 방법(기본 생성자, record, `@JsonCreator`, `-parameters`로 컴파일한 생성자)이 하나도 없으면, 바인딩이 실패한다.
 - Filter에서 난 예외를 `@ExceptionHandler`로 잡으려 하면, 잡히지 않는다.
 - `preHandle()`이 `false`를 반환하면 Controller가 실행되지 않는데, 이걸 모르고 응답을 안 쓰면 클라이언트는 빈 응답을 받는다.
 - `@Controller`에서 JSON을 반환하면서 `@ResponseBody`를 빠뜨리면, 반환값이 View 이름으로 해석된다.
@@ -112,7 +112,7 @@ REST API(`@RestController`)에서는 6단계에서 JSON이 이미 응답에 쓰�
 
 ## 한 번에 설명하기
 
-> Spring MVC에서는 DispatcherServlet이 모든 요청을 받아 HandlerMapping으로 Controller를 찾고, 결과를 ViewResolver나 MessageConverter로 응답에 씁니다. 요청은 Filter, Interceptor, AOP, Controller 순서로 지나갑니다.
+> Spring MVC에서는 DispatcherServlet이 모든 요청을 받아 HandlerMapping으로 Controller를 찾고, 결과를 ViewResolver나 MessageConverter로 응답에 씁니다. 요청은 Filter, Interceptor, Controller 순서로 지나가고, Service 메서드 앞에서 AOP 프록시가 끼어듭니다.
 >
 > `@ExceptionHandler`는 Controller 쪽 예외만 잡아서, Filter에서 나는 예외는 따로 처리합니다.
 
@@ -122,7 +122,7 @@ REST API(`@RestController`)에서는 6단계에서 JSON이 이미 응답에 쓰�
 > `@RestController`는 `@Controller`에 `@ResponseBody`를 합친 것입니다. `@Controller`가 돌려준 문자열은 View 이름으로 쓰이고, `@RestController`가 돌려준 객체는 JSON으로 바뀌어 응답 본문에 들어갑니다.
 
 > [!question]- `@RequestBody` 바인딩이 실패하는 원인은?
-> 자주 보는 건 넷입니다. 기본 생성자가 없거나, JSON 필드 이름과 클래스 필드 이름이 다르거나, Content-Type을 `application/json`으로 안 보냈거나, Jackson 어노테이션을 잘못 단 경우입니다.
+> 자주 보는 건 넷입니다. Jackson이 객체를 만들 생성자를 찾지 못하거나, JSON 필드 이름과 클래스 필드 이름이 다르거나, Content-Type을 `application/json`으로 안 보냈거나, Jackson 어노테이션을 잘못 단 경우입니다.
 
 > [!question]- DispatcherServlet의 역할은?
 > Front Controller 패턴을 구현한 것으로, 모든 HTTP 요청을 한곳에서 받아 맞는 Handler에 넘깁니다. 직접 일을 다 하지는 않고 HandlerMapping, HandlerAdapter, ViewResolver 같은 부품을 불러서 요청을 처리합니다.

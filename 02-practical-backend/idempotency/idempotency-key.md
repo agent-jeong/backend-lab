@@ -40,7 +40,7 @@ public OrderResponse createOrder(CreateOrderCommand command) {
 
 `tryStart`는 `idempotency_key`에 걸린 unique 제약을 이용해 처음 온 요청만 시작 상태로 저장한다. 같은 키가 다시 오면 payload hash를 확인하고, 이미 끝난 요청이면 저장해 둔 응답을 돌려준다. 같은 키로 동시에 들어온 요청은 같은 행을 두고 기다리게 할지, "처리 중"이라고 응답할지 정해 둔다.
 
-`tryStart`는 예외를 던지지 않는 조건부 insert(`INSERT ... ON CONFLICT DO NOTHING`, MySQL `INSERT IGNORE` 등)로 만든다. 일반 insert를 하고 중복 키 예외를 같은 트랜잭션 안에서 잡으면, PostgreSQL은 트랜잭션 전체를 abort 상태로 만들고 Spring은 트랜잭션을 rollback-only로 표시할 수 있다. 그러면 뒤에 오는 조회와 commit이 실패한다.
+`tryStart`는 예외를 던지지 않는 조건부 insert로 만든다. PostgreSQL은 `INSERT ... ON CONFLICT DO NOTHING`, MySQL은 `INSERT ... ON DUPLICATE KEY UPDATE id = id`를 쓴다. MySQL `INSERT IGNORE`는 중복 키 말고 값 변환 오류 같은 다른 오류도 경고로 바꿔 버리니 피한다. 일반 insert를 하고 중복 키 예외를 같은 트랜잭션 안에서 잡으면, PostgreSQL은 트랜잭션 전체를 abort 상태로 만들고 Spring은 트랜잭션을 rollback-only로 표시할 수 있다. 그러면 뒤에 오는 조회와 commit이 실패한다.
 
 ## 설계 기준
 

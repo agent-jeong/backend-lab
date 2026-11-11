@@ -11,7 +11,7 @@ tags: [concept, concurrency]
 애플리케이션에서 먼저 조회하고 없으면 insert하는 방식은 요청 두 개가 동시에 오면 둘 다 "없음"을 보고 중복을 만든다. 상태 전이 조건이 없으면 재시도나 중복 요청이 같은 결과를 여러 번 반영하고, 이미 취소된 주문이 배송되는 식으로 상태가 꼬인다. 중복 가입, 중복 쿠폰 발급, 중복 결제 요청은 DB 제약으로 막는 게 가장 확실하다.
 
 > [!tip] 함께 읽기
-> - [[state-transition-and-unique-constraint]]: 같은 도구를 멱등성 관점(재시도·중복 요청)에서 본 글
+> - [[state-transition-and-unique-constraint]]: 이렇게 막힌 요청이 재시도라면 무엇을 돌려줄지(앞서 낸 결과 반환) 다룬 글
 
 ## 동작
 
@@ -22,7 +22,7 @@ tags: [concept, concurrency]
 5. DB 제약 위반과 조건부 update 실패는 업무 응답으로 바꿔 돌려준다.
 
 ```java
-@Modifying
+@Modifying(clearAutomatically = true) // bulk update는 영속성 컨텍스트를 건너뛰므로, 끝나면 비워서 다음 조회가 DB를 다시 읽게 한다
 @Query("""
     update Order o
        set o.status = 'PAID'

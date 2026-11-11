@@ -45,7 +45,7 @@ IoC와 DI, 빈 생명주기, AOP와 프록시, MVC 요청 흐름, 트랜잭션�
 ## 내 사례
 
 - [[webhook-once-without-loss|웹훅을 잃지 않고 한 번만 처리하기]]: `AFTER_COMMIT` 비동기와 `REQUIRES_NEW`
-- [[inherited-access-system-incidents|이어받은 출입 시스템의 장애 추적]]: `@Scheduled` 단일 스레드, `parallelStream`과 `@Transactional`
+- [[inherited-access-system-incidents|이어받은 시스템의 장애 추적]]: `@Scheduled` 단일 스레드, `parallelStream`과 `@Transactional`
 
 ## 관련 문서
 

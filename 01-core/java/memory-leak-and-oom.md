@@ -15,7 +15,7 @@ tags: [concept, java]
 | 에러 메시지 | 원인 |
 |---|---|
 | `Java heap space` | heap에 객체를 할당할 공간이 없다 |
-| `GC overhead limit exceeded` | GC에 전체 시간의 98% 이상을 쓰면서 heap의 2% 미만만 회수 |
+| `GC overhead limit exceeded` | GC에 전체 시간의 98% 이상을 쓰면서 heap의 2% 미만만 회수 (Parallel GC의 검사) |
 | `Metaspace` | 클래스 메타데이터 공간 부족 (동적 프록시, 리플렉션 과다) |
 | `unable to create new native thread` | OS 스레드 생성 한도 초과 |
 | `Direct buffer memory` | NIO Direct Buffer 할당 실패 |
@@ -38,7 +38,7 @@ static 컬렉션은 애플리케이션이 떠 있는 동안 GC가 치우지 않�
 ### 리소스를 닫지 않는다
 
 ```java
-// Connection, Stream 등을 닫지 않으면 관련 객체가 회수되지 않을 수 있다
+// 닫지 않으면 파일 디스크립터·커넥션 같은 자원이 바닥난다 (heap 누수가 아니라 자원 누수다)
 public String readFile(String path) throws IOException {
     BufferedReader reader = new BufferedReader(new FileReader(path));
     return reader.readLine();
@@ -55,7 +55,7 @@ public String readFile(String path) throws IOException {
 }
 ```
 
-DB Connection, HTTP Connection, InputStream을 특히 자주 빠뜨린다.
+DB Connection, HTTP Connection, InputStream을 특히 자주 빠뜨린다. 이때 바닥나는 것은 heap이 아니라 OS 파일 디스크립터나 커넥션 풀이라서, OOM보다 `Too many open files`나 커넥션 대기 timeout으로 먼저 드러난다.
 
 ### 리스너나 콜백을 등록하고 해제하지 않는다
 
@@ -116,7 +116,7 @@ jstat -gc <pid> 1000
 # 수동 생성
 jmap -dump:format=b,file=heap.hprof <pid>
 
-# OOM 발생 시 자동 생성 (운영 환경에서 반드시 설정)
+# OOM 발생 시 heap dump 자동 생성 (운영에서 켜 두지 않으면 원인을 볼 자료가 없다)
 java -XX:+HeapDumpOnOutOfMemoryError \
      -XX:HeapDumpPath=/var/log/app/ \
      -jar app.jar
@@ -140,7 +140,7 @@ Eclipse MAT이나 VisualVM으로 연다.
 ```bash
 # 잘못된 설정: JVM이 컨테이너 한도를 넘길 수 있다
 # 컨테이너 메모리: 2GB
-# -Xmx=2g → heap 외 메모리(Metaspace, Stack, Direct Buffer 등)가 추가되어 OOM Kill
+# -Xmx2g → heap 외 메모리(Metaspace, Stack, Direct Buffer 등)가 추가되어 OOM Kill
 
 # 권장: 컨테이너 한도의 70~80%를 -Xmx로 설정
 # 컨테이너 메모리: 2GB

@@ -57,15 +57,15 @@ void increment() {
 
 ## happens-before
 
-happens-before는 "A 작업의 결과가 B 작업에서 반드시 보인다"는 관계다. 동시성 코드에서 "다른 스레드가 이 값을 언제 볼 수 있나"를 따질 때 이 관계가 있는지를 본다.
+happens-before는 "A가 B보다 happens-before이면, A의 결과가 B에 보인다"는 관계다. 이 관계가 없으면 다른 스레드가 바뀐 값을 볼지 말지 아무 보장이 없다. 그래서 동시성 코드에서 "다른 스레드가 이 값을 언제 보나"를 따질 때 이 관계가 있는지를 본다.
 
 | 관계 | 의미 |
 |---|---|
-| 같은 스레드 내 앞선 작업 | 뒤 작업에서 앞 작업 결과를 볼 수 있다 |
-| `volatile` write 후 read | read한 스레드는 write 이전 변경을 볼 수 있다 |
-| `synchronized` unlock 후 lock | 같은 monitor를 잡은 스레드가 변경을 볼 수 있다 |
-| thread start | 시작 전 설정한 값을 새 thread가 볼 수 있다 |
-| thread join | 종료한 thread의 결과를 join한 thread가 볼 수 있다 |
+| 같은 스레드 내 앞선 작업 | 뒤 작업에 앞 작업 결과가 보인다 |
+| `volatile` write 후 read | read한 스레드에 write 이전 변경이 보인다 |
+| `synchronized` unlock 후 lock | 같은 monitor를 잡은 스레드에 앞 스레드의 변경이 보인다 |
+| thread start | 시작 전 설정한 값이 새 thread에 보인다 |
+| thread join | 종료한 thread의 결과가 join한 thread에 보인다 |
 
 ## synchronized와 volatile
 
@@ -90,6 +90,44 @@ happens-before는 "A 작업의 결과가 B 작업에서 반드시 보인다"는 
 
 가장 좋은 방법은 여러 스레드가 함께 건드리는 상태를 처음부터 줄이는 것이다.
 
+## double-checked locking은 volatile과 함께
+
+락 밖에서 한 번, 락 안에서 한 번 null을 검사하는 지연 초기화는 필드에 `volatile`이 있어야 맞다.
+
+```java
+class ConfigHolder {
+    private volatile Config config;
+
+    Config get() {
+        Config result = config;
+        if (result == null) {
+            synchronized (this) {
+                result = config;
+                if (result == null) {
+                    result = new Config();
+                    config = result;
+                }
+            }
+        }
+        return result;
+    }
+}
+```
+
+`volatile`이 없으면 락 밖에서 읽는 스레드와 생성한 스레드 사이에 happens-before가 없다. 그래서 참조는 보이는데 생성자가 채운 필드는 아직 안 보이는, 초기화가 덜 된 객체를 받을 수 있다. static 필드라면 holder class를 쓰는 편이 더 간단하다. 클래스 초기화는 JVM이 스레드 안전하게 한 번만 하기 때문이다.
+
+```java
+class StaticConfigHolder {
+    private static class Lazy {
+        static final Config INSTANCE = new Config();
+    }
+
+    static Config get() {
+        return Lazy.INSTANCE;
+    }
+}
+```
+
 ## 자주 깨지는 곳
 
 - `volatile`을 붙이면 `count++`가 안전해진다고 생각하면, 읽기와 쓰기 사이에 다른 스레드가 끼어들어 더한 값이 사라진다.
@@ -98,7 +136,7 @@ happens-before는 "A 작업의 결과가 B 작업에서 반드시 보인다"는 
 - 처음 쓸 때 만드는(lazy initialization) 코드를 동기화 없이 짜면, 객체가 두 번 만들어지거나 초기화가 덜 된 객체가 보인다.
 - 테스트에서 재현되지 않으니 괜찮다고 보면, 운영에서 부하가 걸릴 때 가끔씩만 터지는 버그를 놓친다.
 
-## 확인하는 방법
+## 코드 리뷰와 테스트에서 볼 것
 
 - 코드 리뷰에서 바뀔 수 있는 static 필드와, singleton 객체의 바뀔 수 있는 필드를 찾는다.
 - 공유 변수에 읽고 고치고 쓰는 연산이 있는지 본다.
@@ -122,7 +160,7 @@ happens-before는 "A 작업의 결과가 B 작업에서 반드시 보인다"는 
 > 바뀐 값이 보이는 문제와 일부 순서 문제는 풀립니다. 하지만 `count++`처럼 읽고 고치고 쓰는 연산이 한 번에 끝나게 해 주지는 못합니다.
 
 > [!question]- happens-before가 뭔가?
-> 한 작업의 결과가 다른 작업에서 반드시 보이게 해 주는 관계입니다. `volatile`, `synchronized`, `start`, `join` 같은 것들이 이 관계를 만듭니다.
+> A가 B보다 happens-before이면 A의 결과가 B에 보인다고 정해 주는 관계입니다. 이 관계가 없으면 다른 스레드가 바뀐 값을 본다는 보장이 없습니다. `volatile`, `synchronized`, `start`, `join` 같은 것들이 이 관계를 만듭니다.
 
 > [!question]- `synchronized`를 쓰면 무엇이 보장되나?
 > 같은 monitor를 쓰는 스레드 중 한 번에 하나만 임계 영역에 들어갑니다. 그리고 앞 스레드가 unlock하고 나면, 다음에 lock을 잡은 스레드가 앞에서 바꾼 값을 볼 수 있습니다.

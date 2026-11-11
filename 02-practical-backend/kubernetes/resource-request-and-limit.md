@@ -43,7 +43,7 @@ CPU의 `500m`은 0.5코어다(`m`은 1/1000코어). 메모리의 `Mi`, `Gi`는 1
 | Pod가 Pending에 머묾 | request, 노드의 allocatable(Pod에 내줄 수 있는 자원량) | request를 채울 수 있는 노드가 없으면 배치되지 않는다. `kubectl describe pod` 이벤트에 `Insufficient cpu` 같은 문구가 남는다 |
 | 응답 지연 증가 | CPU throttling 지표 | CPU limit에 걸려 멈추는 시간이 늘었다 |
 | 재시작 반복 | 종료 사유 `OOMKilled` | memory limit을 넘었다 |
-| 비용을 줄이고 싶음 | 실제 사용량 p95(100번 중 95번째로 큰 값) | 쓰지도 않는 request가 노드 자리를 차지하고 있다 |
+| 비용을 줄이고 싶음 | 실제 사용량 p95(100번 중 95번은 이 값 이하로 나오는 값) | 쓰지도 않는 request가 노드 자리를 차지하고 있다 |
 
 ## 자주 깨지는 곳
 

@@ -113,7 +113,7 @@ Entity를 `data class`로 만들었을 때 생기는 문제는 플러그인으�
 - Java API가 돌려준 값을 non-null로 믿고 쓰면, platform type이라 컴파일은 되고 실행 중에 NPE가 난다. Java를 부르는 자리마다 platform type 경고와 null 처리를 본다.
 - default parameter만 믿고 overload를 만들지 않으면, Java에서 부르는 쪽이 인자를 전부 넘겨야 한다.
 - Java checked exception을 Kotlin이 강제하지 않는다고 그냥 두면, 실패가 아무 처리 없이 그대로 위로 올라간다.
-- `kotlin("plugin.spring")`, `kotlin("plugin.jpa")` 없이 쓰면, proxy가 필요한 class가 final로 남아 proxy가 안 만들어진다. Entity는 no-arg 생성자와 open 처리가 둘 다 들어갔는지 따로 확인한다.
+- `kotlin("plugin.spring")` 없이 쓰면 Spring Bean class가 final로 남아, Spring AOP 대상 Bean은 기동할 때 CGLIB 오류가 난다. `kotlin("plugin.jpa")`는 Entity에 no-arg 생성자만 만들어 주고 class를 열지는 않는다. Entity를 지연 로딩 프록시로 쓰려면 `allOpen`에 `jakarta.persistence.Entity` 같은 어노테이션을 따로 등록한다.
 - Java DTO와 Kotlin DTO의 nullability annotation이 어긋나면, 같은 필드가 한쪽에서는 필수, 다른 쪽에서는 선택이 된다.
 
 ## 한 번에 설명하기

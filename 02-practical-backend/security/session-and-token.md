@@ -52,7 +52,7 @@ public AuthenticatedUser authenticate(String accessToken) {
 ## 자주 깨지는 곳
 
 - JWT를 쓰면 로그아웃이 저절로 해결된다고 여기면, 로그아웃한 뒤에도 토큰이 살아 있다. 발급한 토큰은 만료 전까지 유효하므로 강제 무효화는 따로 설계해야 한다.
-- token payload에 민감 정보를 넣으면 누구나 읽는다. JWT payload는 암호화가 아니라 인코딩된 값이다.
+- token payload에 민감 정보를 넣으면 누구나 읽는다. 서명만 한 JWT(JWS)의 payload는 암호화가 아니라 base64url 인코딩이라 누구나 읽는다.
 - access token 만료 시간을 너무 길게 두면, 탈취되거나 권한이 바뀌어도 그 토큰이 오래 쓰인다.
 - refresh token을 access token처럼 매 요청에 보내면, 오래 사는 토큰이 노출될 경로가 늘어난다.
 - access token, refresh token, session cookie가 각각 무슨 일을 하는지 섞어 쓰면, 만료와 재발급 정책이 꼬인다.
@@ -71,7 +71,7 @@ public AuthenticatedUser authenticate(String accessToken) {
 >
 > 세션은 강제 로그아웃이 쉽지만 저장소와 서버를 늘릴 때의 설계가 필요하고, 토큰은 서버에 상태 없이 검증할 수 있지만 발급한 뒤에는 무효화하거나 바뀐 권한을 반영하기 어렵습니다. 그래서 확장성보다 만료, 탈취, 로그아웃, 권한 변경에 어떻게 대응할지를 기준으로 고릅니다.
 >
-> JWT payload는 인코딩일 뿐이라 민감 정보를 넣지 않고, 쿠키를 쓰면 CSRF와 쿠키 옵션을 같이 봅니다.
+> 서명만 한 JWT의 payload는 인코딩일 뿐이라 민감 정보를 넣지 않고, 쿠키를 쓰면 CSRF와 쿠키 옵션을 같이 봅니다.
 
 ## 꼬리 질문
 

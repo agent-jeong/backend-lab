@@ -90,9 +90,9 @@ JPA는 Entity를 프록시로 감싸거나, 필드 값을 읽어서 무엇이 �
 - reflection으로 private 필드를 직접 바꾸면, 객체가 지키던 규칙이 깨진다. 예를 들어 음수가 될 수 없던 재고 수량이 음수가 된다.
 - annotation만 붙이면 동작한다고 생각하면 틀린다. 처리하는 코드나 프레임워크 설정이 없으면 그냥 표시일 뿐이다.
 - reflection으로 이름을 문자열로 넘기면, 오타나 메서드 시그니처 변경을 컴파일러가 못 잡아서 실행 중에야 예외가 난다.
-- record, final class, private 생성자를 쓰면, 프레임워크가 요구하는 조건과 부딪혀서 프록시 생성이나 역직렬화가 실패한다.
+- final class나 record를 JPA Entity로 쓰면, 상속할 수 없어서 프록시를 만들지 못한다. Jackson은 record는 지원하지만, 기본 생성자도 `@JsonCreator`도 없고 `-parameters`로 컴파일해 파라미터 이름을 남기지도 않은 class는 역직렬화하지 못한다.
 
-## 확인하는 방법
+## 코드 리뷰에서 볼 것
 
 - 실행 중에 읽어야 하는 annotation이라면 `@Retention`이 RUNTIME인지 본다.
 - 프레임워크가 요구하는 생성자, 접근 제어자, final 여부를 본다.

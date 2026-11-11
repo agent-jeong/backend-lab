@@ -52,7 +52,8 @@ fixture는 "이런 상황에서"에 해당하는 부분이다. 예를 들어 "�
 
 2026년 11월에 확인한 공식 문서다.
 
-- [JUnit 5 User Guide](https://junit.org/junit5/docs/current/user-guide/)
+- [JUnit User Guide](https://docs.junit.org/current/user-guide/)
+- [Martin Fowler: Object Mother](https://martinfowler.com/bliki/ObjectMother.html)
 
 ## 관련 문서
 

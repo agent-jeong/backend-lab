@@ -23,6 +23,7 @@ tags: [concept, concurrency]
 void 동시에_재고를_차감해도_초과_판매되지_않는다() throws Exception {
     int initialStock = 10;
     int threadCount = 20;
+    Long productId = productRepository.save(Product.withStock(initialStock)).getId();
     ExecutorService executor = Executors.newFixedThreadPool(threadCount);
     CountDownLatch ready = new CountDownLatch(threadCount);
     CountDownLatch start = new CountDownLatch(1);
@@ -58,7 +59,7 @@ void 동시에_재고를_차감해도_초과_판매되지_않는다() throws Exc
 }
 ```
 
-시작 시점을 맞춰서 모든 스레드가 같은 재고에 동시에 달려들게 만든 테스트다. 초기 재고는 `initialStock`이라고 가정한다. 예외가 났는지만 보지 말고, 성공 개수와 실패 개수와 최종 재고가 서로 맞는지 같이 확인한다.
+시작 시점을 맞춰서 모든 스레드가 같은 재고에 동시에 달려들게 만든 테스트다. 재고가 `initialStock`인 상품을 먼저 저장해 두고 시작한다. 예외가 났는지만 보지 말고, 성공 개수와 실패 개수와 최종 재고가 서로 맞는지 같이 확인한다.
 
 ## 무엇을 검증하나
 

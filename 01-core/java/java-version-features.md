@@ -1,12 +1,12 @@
 ---
 title: Java 버전별 핵심 변화
-description: Java 8부터 21, 25까지 실무 코드를 바꾼 기능과 버전을 올릴 때 볼 것
+description: Java 8부터 21까지 실무 코드를 바꾼 기능과 버전을 올릴 때 막히는 곳
 tags: [concept, java]
 ---
 
 # Java 버전별 핵심 변화
 
-Java 8부터 21(그리고 25)까지, 실무 코드를 실제로 바꾼 기능만 골라 모았다. 기능 목록을 외우기보다, 각 기능 덕분에 어떤 코드가 더 안전하고 읽기 쉬워졌는지로 본다.
+Java 8부터 21까지, 실무 코드를 실제로 바꾼 기능만 골라 모았다. 최신 LTS인 25는 어느 버전으로 갈지 정할 때만 다룬다. 기능 목록을 외우기보다, 각 기능 덕분에 어떤 코드가 더 안전하고 읽기 쉬워졌는지로 본다.
 
 이 정리가 필요한 때는 팀에서 Java 버전을 올리면서 새 기능 중 무엇을 쓸지 정할 때, 오래된 코드를 새 기능으로 고치면서 얻는 것과 위험을 따져 볼 때다. 특히 Java 21의 virtual thread는 요청을 스레드에 어떻게 나눠 맡길지부터 바꾸기 때문에, 서버 구조를 정할 때도 영향을 준다.
 
@@ -116,6 +116,11 @@ spring:
       enabled: true
 ```
 
+## 버전을 올릴 때 막히는 곳
+
+- Java 17부터 JDK 내부 API가 강하게 캡슐화됐다(JEP 403). 오래된 라이브러리가 reflection으로 JDK 내부 클래스에 접근하면 `InaccessibleObjectException`이 난다. `--add-opens`로 임시로 열 수는 있지만, 라이브러리를 새 버전으로 올리는 게 먼저다.
+- Spring Boot 3은 Java 17 이상이 필요하고 Jakarta EE 9+ 기준이라, `javax.*` 패키지가 `jakarta.*`로 바뀐다. Java 버전과 Spring Boot 버전을 같이 올리면 import 변경과 라이브러리 호환성 확인이 한꺼번에 생긴다.
+
 ## 어느 버전으로 가나
 
 | 상황 | 권장 |
@@ -192,6 +197,7 @@ spring:
 - [JDK Release Notes (OpenJDK projects)](https://openjdk.org/projects/jdk/)
 - [JEP 444: Virtual Threads](https://openjdk.org/jeps/444)
 - [JEP 491: Synchronize Virtual Threads without Pinning](https://openjdk.org/jeps/491)
+- [JEP 403: Strongly Encapsulate JDK Internals](https://openjdk.org/jeps/403)
 
 ## 관련 문서
 

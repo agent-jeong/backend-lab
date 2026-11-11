@@ -35,7 +35,7 @@ public boolean matches(String rawPassword, User user) {
 
 | 상황 | 선택 | 이유 |
 |---|---|---|
-| 일반 비밀번호 저장 | bcrypt, scrypt, Argon2 | brute force 비용을 높인다 |
+| 일반 비밀번호 저장 | Argon2id, 쓸 수 없으면 scrypt, 레거시 환경이면 bcrypt | brute force 비용을 높인다. OWASP가 권하는 순서다. bcrypt는 입력을 72바이트까지만 본다 |
 | 단순 SHA 계열 해시 | 사용하지 않음 | 너무 빨라 대입 공격에 약하다 |
 | 사용자별 salt | 필수 | 같은 비밀번호도 다른 해시가 되게 한다 |
 | 비용 계수 | 운영 부하 기준으로 조정 | 보안과 로그인 성능 사이에서 정해야 한다 |

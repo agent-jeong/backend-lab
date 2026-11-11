@@ -55,9 +55,12 @@ System.out.println(names.getClass() == numbers.getClass()); // true
 그래서 아래 코드는 쓸 수 없다.
 
 ```java
-if (value instanceof List<String>) { // 컴파일 불가
+Object value = loadValue();
+if (value instanceof List<String>) { // 컴파일 에러: 실행 중에 List<String>인지 검사할 수 없다
 }
 ```
+
+Java 16부터는 `Collection<String> value`처럼 정적 타입만 보고도 안전하다고 판단되는 경우에 한해 `instanceof List<String>`을 허용한다. `Object`에서 제네릭 타입을 가려내는 일은 여전히 못 한다.
 
 실행 중에 제네릭 타입을 알아야 하는 도구에는 타입 정보를 따로 넘겨 준다.
 

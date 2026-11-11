@@ -81,8 +81,8 @@ public void transfer(long fromAccountId, long toAccountId, long amount) {
     long firstId = Math.min(fromAccountId, toAccountId);
     long secondId = Math.max(fromAccountId, toAccountId);
 
-    Account first = accountRepository.findByIdForUpdate(firstId);
-    Account second = accountRepository.findByIdForUpdate(secondId);
+    Account first = accountRepository.findByIdForUpdate(firstId).orElseThrow();
+    Account second = accountRepository.findByIdForUpdate(secondId).orElseThrow();
 
     Account from = first.getId() == fromAccountId ? first : second;
     Account to = first.getId() == fromAccountId ? second : first;

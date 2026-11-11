@@ -125,7 +125,7 @@ public class OrderService {
 }
 ```
 
-동시 요청이 같은 필드를 함께 고치니 값이 섞인다. 상태가 필요하면 메서드 지역 변수, ThreadLocal, request 스코프 Bean 중 하나에 둔다.
+동시 요청이 같은 필드를 함께 고치니 값이 섞인다. 요청마다 다른 값이면 메서드 지역 변수, ThreadLocal, request 스코프 Bean 중 하나에 둔다. 이 예시처럼 모든 요청이 정말 공유하는 카운터라면 `AtomicLong`을 쓰거나 DB, Redis에 둔다.
 
 ## prototype을 singleton에 주입하면
 

@@ -95,7 +95,7 @@ Deployment는 Pod 개수 유지와 버전 교체를 맡을 뿐, 잘못 잡은 pr
 - Pod가 `Running`이면 요청을 받을 준비가 됐다고 생각하면, 아직 뜨는 중인 Pod로 요청이 들어간다. 준비 여부는 readiness probe가 판단하고, readiness probe가 없으면 이 판단 자체가 없다([[readiness-and-liveness-probe]]).
 - Service의 `port`와 Pod의 `targetPort`를 헷갈리면, 정상 Pod가 있어도 트래픽이 닿지 않는다.
 - Deployment label과 Service selector가 다르면, endpoint가 비어 트래픽이 어디로도 가지 않는다.
-- readiness probe 없이 롤링 배포가 안전하다고 보면, 배포 중 가용 Pod가 모자란다. 롤링 배포가 안전한지는 replica 수, readiness probe, update strategy가 함께 정하고, 하나라도 빠지면 틈이 생긴다.
+- readiness probe 없이 롤링 배포가 안전하다고 보면, container가 뜨자마자 Ready로 잡혀 아직 초기화 중인 새 Pod로 트래픽이 가고, 옛 Pod는 그만큼 일찍 내려간다. 롤링 배포가 안전한지는 replica 수, readiness probe, update strategy가 함께 정하고, 하나라도 빠지면 틈이 생긴다.
 - Ingress 문제를 애플리케이션 로그에서 찾으면 아무것도 안 나온다. host나 path가 틀리면 요청이 애플리케이션까지 오지도 않는다.
 
 ## 운영에서 볼 것

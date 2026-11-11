@@ -8,7 +8,7 @@ tags: [concept, java]
 
 JVM은 `javac`가 만든 바이트코드를 읽어 들여(class loading), 메모리를 나눠 주고, 실행하고, 다 쓴 객체를 치우는(GC) 가상 머신이다. 메모리 영역마다 터지는 에러가 다르다. 그래서 어느 영역에 무엇이 담기는지 알면 에러 메시지만 보고도 어디부터 볼지 정할 수 있다.
 
-`OutOfMemoryError: Java heap space`가 나면 heap 크기와 객체가 얼마나 오래 살아남는지를 본다. `StackOverflowError`면 재귀 깊이와 스택 크기를, `OutOfMemoryError: Metaspace`면 클래스가 어떻게 로딩되는지를 본다. 누수가 의심되면 heap dump를 열어 봐야 한다. `-Xmx`, `-Xms`, `-XX:MetaspaceSize` 같은 옵션도 각 영역이 무엇인지 알아야 제대로 잡는다.
+`OutOfMemoryError: Java heap space`가 나면 heap 크기와 객체가 얼마나 오래 살아남는지를 본다. `StackOverflowError`면 재귀 깊이와 스택 크기를, `OutOfMemoryError: Metaspace`면 클래스가 어떻게 로딩되는지를 본다. 누수가 의심되면 heap dump를 열어 봐야 한다. `-Xmx`, `-Xms`, `-XX:MaxMetaspaceSize` 같은 옵션도 각 영역이 무엇인지 알아야 제대로 잡는다.
 
 ## Runtime Data Area
 
@@ -77,7 +77,8 @@ Java 8부터 PermGen이 Metaspace로 바뀌었다. Metaspace는 Native Memory를
 | 클래스 로더가 해제되지 않는다 | Metaspace 누수 |
 
 ```bash
-# Metaspace 크기 설정
+# MetaspaceSize: 클래스 메타데이터 GC를 처음 일으키는 기준선 (미리 잡아 두는 크기가 아니다)
+# MaxMetaspaceSize: 상한 (기본은 무제한)
 java -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=256m -jar app.jar
 ```
 
@@ -140,7 +141,7 @@ JVM은 처음에는 바이트코드를 인터프리터로 한 줄씩 실행하�
 > `Java heap space`는 heap이 모자란 것이고, `Metaspace`는 클래스 메타데이터를 둘 공간이 모자란 것이고, `unable to create new native thread`는 OS가 허용하는 스레드 수를 넘은 것입니다.
 
 > [!question]- PermGen은 왜 Metaspace로 바뀌었나?
-> PermGen은 크기가 고정이라 `OutOfMemoryError`가 자주 났습니다. Metaspace는 Native Memory를 써서 필요한 만큼 늘어나기 때문에 다루기가 더 편합니다.
+> PermGen은 상한(`-XX:MaxPermSize`)을 미리 정해 둬야 해서, 그 값을 넘으면 `OutOfMemoryError`가 났습니다. Metaspace는 Native Memory를 써서 필요한 만큼 늘어나기 때문에 다루기가 더 편합니다.
 
 > [!question]- 컨테이너에서는 JVM 메모리를 어떻게 잡나?
 > `-Xmx`를 컨테이너 메모리 한도의 70~80%로 잡습니다. heap 말고도 Metaspace, Stack, Direct Buffer 같은 곳에 메모리가 더 필요하기 때문입니다.

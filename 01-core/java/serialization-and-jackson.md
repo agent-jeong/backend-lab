@@ -17,9 +17,7 @@ Spring Boot API 서버는 요청과 응답이 거의 다 JSON이다. Jackson이 
 - enum 대소문자가 안 맞아 역직렬화가 실패한다.
 
 > [!note] 기준 버전
-> 이 글의 클래스 이름과 설정은 Spring Boot 3.x(Jackson 2) 기준이다. Spring Boot 4부터는 Jackson 3이 기본이고, 패키지가 `tools.jackson`으로, 자동 구성되는 bean이 `ObjectMapper`에서 `JsonMapper`로 바뀐다. 동작 원리와 어노테이션 사용법은 같다.
-
-> **버전 기준**: 이 노트의 클래스 이름과 기본값은 Spring Boot 3 + Jackson 2 기준이다. Spring Boot 4부터는 Jackson 3가 기본이다. 패키지가 `com.fasterxml.jackson`에서 `tools.jackson`으로 바뀌고, 자동 설정 빈은 `ObjectMapper` 대신 `JsonMapper`, 컨버터는 `JacksonJsonHttpMessageConverter`다. Jackson 2 지원(`spring-boot-jackson2` 모듈)은 이전을 돕는 용도로만 남아 있고 deprecated다. 일부 기본값도 달라졌으므로, 이전할 때 날짜·enum 직렬화 결과를 테스트로 확인한다. Jackson 2 시절 기본값에 가깝게 맞추려면 `spring.jackson.use-jackson2-defaults=true`를 쓴다.
+> 이 글의 클래스 이름과 기본값은 Spring Boot 3.x(Jackson 2) 기준이다. Spring Boot 4부터는 Jackson 3이 기본이다. 패키지가 `com.fasterxml.jackson`에서 `tools.jackson`으로 바뀌고, 자동 설정 빈은 `ObjectMapper` 대신 `JsonMapper`, 컨버터는 `JacksonJsonHttpMessageConverter`다. Jackson 2 지원(`spring-boot-jackson2` 모듈)은 이전을 돕는 용도로만 남아 있고 deprecated다. 동작 원리와 어노테이션 사용법은 같지만 일부 기본값이 달라졌으므로, 이전할 때 날짜·enum 직렬화 결과를 테스트로 확인한다. Jackson 2 시절 기본값에 가깝게 맞추려면 `spring.jackson.use-jackson2-defaults=true`를 쓴다.
 
 ## Jackson은 어떻게 동작하나
 
@@ -58,7 +56,7 @@ public class UserRequest {
 }
 ```
 
-기본 생성자가 없으면 역직렬화가 실패한다. 다만 record는 Jackson이 canonical constructor를 알아서 찾아 쓴다.
+기본 생성자가 없으면 Jackson은 생성자 파라미터 이름을 알아야 객체를 만들 수 있다. Spring Boot는 `ParameterNamesModule`을 등록하지만, 파라미터 이름이 class 파일에 남도록 `-parameters`로 컴파일하지 않았다면 역직렬화가 실패한다. 확실히 하려면 생성자에 `@JsonCreator`를 붙인다. record는 Jackson이 canonical constructor를 알아서 찾아 쓴다.
 
 ## 자주 쓰는 어노테이션
 
@@ -80,7 +78,7 @@ public class UserRequest {
 ```java
 // 문제: 직접 만든 ObjectMapper에서는 배열로 나온다
 private LocalDateTime createdAt;
-// → [2024, 1, 15, 10, 30, 0]
+// → [2024, 1, 15, 10, 30] (초가 0이면 초 자리를 생략한다)
 
 // 해결 1: 필드 단위
 @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -253,7 +251,7 @@ public record ExternalApiResponse(String userName, String emailAddress) {
 
 - Entity를 그대로 응답으로 반환하면, 순환 참조와 민감 정보 노출이 한꺼번에 생긴다.
 - `ObjectMapper`를 직접 만들어 Boot 기본 설정을 덮어쓰면, `LocalDateTime`이 배열로 나가 프론트엔드가 기대하는 포맷과 어긋난다.
-- 기본 생성자가 없으면, 역직렬화가 실패하는데 원인을 찾기 어렵다.
+- 기본 생성자도 `@JsonCreator`도 없는데 파라미터 이름까지 남지 않으면, 역직렬화가 실패하는데 원인을 찾기 어렵다.
 - getter가 없으면, 직렬화할 때 그 필드가 아무 말 없이 빠진다.
 - enum 대소문자가 맞지 않으면, `HttpMessageNotReadableException`이 난다.
 - `@JsonIgnore`를 getter에만 붙이면 직렬화만 막힐 거라고 생각하면 틀린다. Jackson은 그 property 전체를 무시해서 역직렬화에서도 빠진다. 한 방향만 막으려면 `@JsonProperty(access = ...)`를 쓴다.

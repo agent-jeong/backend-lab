@@ -71,7 +71,7 @@ b = null;    // b 참조 카운트: 1 (a.next가 여전히 참조)
 | Mark-and-Compact | 단편화 해결 | 이동 비용 |
 | Copying (세대별) | Young Gen에서 빠름 | 메모리 2배 필요 |
 
-JVM은 이 방식들을 섞어 쓴다. Young Gen은 Copying, Old Gen은 Mark-Compact 계열이다.
+JVM은 이 방식들을 섞어 쓴다. Young Gen은 Copying이다. Old Gen은 GC마다 다르다. Parallel GC는 Mark-Compact를 쓰고, G1은 Mixed GC에서 Old region도 다른 region으로 복사해 치우며, Full GC로 떨어지면 Mark-Compact를 쓴다.
 
 ## 세대별 구조
 
@@ -129,7 +129,7 @@ java \
   -XX:+UseG1GC \
   -XX:MaxGCPauseMillis=200 \       # STW 목표 시간 (기본 200ms)
   -XX:G1HeapRegionSize=4m \        # region 크기
-  -XX:InitiatingHeapOccupancyPercent=45 \  # Old 사용률이 이 값을 넘으면 Mixed GC 시작
+  -XX:InitiatingHeapOccupancyPercent=45 \  # Old 사용률이 이 값을 넘으면 concurrent marking 시작 (Adaptive IHOP가 기본이라 초깃값으로만 쓰인다)
   -jar app.jar
 ```
 

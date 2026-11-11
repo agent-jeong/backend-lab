@@ -54,7 +54,7 @@ tags: [concept, batch]
 
 ## 내 사례
 
-- [[inherited-access-system-incidents|이어받은 출입 시스템의 장애 추적]]: 한 건 오류가 배치 전체를 멈춘 사례
+- [[inherited-access-system-incidents|이어받은 시스템의 장애 추적]]: 한 건 오류가 배치 전체를 멈춘 사례
 
 ## 참고
 

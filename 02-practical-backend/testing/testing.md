@@ -33,7 +33,7 @@ comments: false
 
 ## 내 사례
 
-- [[inherited-access-system-incidents|이어받은 출입 시스템의 장애 추적]]: 재현 테스트를 먼저 쓰고 변이로 테스트가 실제로 잡는지 확인
+- [[inherited-access-system-incidents|이어받은 시스템의 장애 추적]]: 재현 테스트를 먼저 쓰고 변이로 테스트가 실제로 잡는지 확인
 
 ## 관련 문서
 

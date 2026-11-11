@@ -93,9 +93,15 @@ Map<Long, User> userMap = users.stream()
     .collect(Collectors.toMap(User::getId, user -> user));
 
 List<OrderResponse> responses = orders.stream()
-    .map(order -> OrderResponse.of(order, userMap.get(order.getUserId())))
+    .map(order -> {
+        User user = Optional.ofNullable(userMap.get(order.getUserId()))
+            .orElseThrow(); // 원래 코드처럼 사용자가 없으면 예외
+        return OrderResponse.of(order, user);
+    })
     .toList();
 ```
+
+`Map.get()`은 key가 없으면 null을 돌려준다. 원래 코드의 `orElseThrow()`처럼 없을 때 어떻게 할지를 그대로 남긴다.
 
 JPA N+1을 줄이고 나서 메모리에서 데이터를 조립할 때 자주 쓰는 방식이다. 반대로 데이터가 적고 한 번만 훑는다면 `List` 그대로 두는 편이 읽기 쉽다.
 

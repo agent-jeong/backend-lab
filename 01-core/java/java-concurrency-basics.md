@@ -4,7 +4,7 @@ description: 스레드를 직접 만들지 않고 ExecutorService, Future, Compl
 tags: [concept, java]
 ---
 
-# Java 동시성 기초 (스레드, synchronized, volatile)
+# Java 동시성 기초 (ExecutorService, Future, CompletableFuture)
 
 Java에서 여러 작업을 동시에 돌리는 방법은 `Thread`, `ExecutorService`, `Future`, `CompletableFuture`가 있다. 각각 작업을 어떻게 띄우고 결과를 어떻게 받는지가 다르니 알고 골라야 한다. thread pool은 빠르게 하려고 쓰기 전에, 동시에 도는 작업 수를 묶어 두어 서버가 무너지지 않게 하려고 쓴다.
 

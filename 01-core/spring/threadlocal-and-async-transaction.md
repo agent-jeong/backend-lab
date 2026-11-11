@@ -8,7 +8,7 @@ tags: [concept, spring]
 
 Spring의 트랜잭션, SecurityContext, MDC는 모두 ThreadLocal에 들어 있다. 그래서 `@Async`나 `CompletableFuture`로 스레드가 바뀌면 이 값들이 따라가지 않는다. 스레드 풀에서 스레드를 다시 쓰면 앞 요청의 값이 그대로 남아 있기도 한다.
 
-증상은 제각각으로 보인다. `@Async` 메서드의 DB 저장이 커밋되지 않거나 별도 트랜잭션으로 돈다. `SecurityContextHolder.getContext()`가 비어 있고, 로그의 traceId가 비동기 구간에서 사라진다. `CompletableFuture.supplyAsync()` 안에서는 호출자의 DB 커넥션을 같이 쓰지 못해 커넥션을 하나씩 더 잡고, 커넥션 풀이 생각보다 빨리 바닥난다. 가장 위험한 건 앞 요청 사용자의 정보가 다음 요청에서 보이는 보안 사고다. 이 증상들은 모두 값이 지금 도는 스레드에 묶여 있어서 생긴다.
+증상은 제각각으로 보인다. `@Async` 메서드의 DB 저장이 호출자 트랜잭션과 따로 커밋돼서, 호출자가 롤백해도 남는다. `SecurityContextHolder.getContext()`가 비어 있고, 로그의 traceId가 비동기 구간에서 사라진다. `CompletableFuture.supplyAsync()` 안에서는 호출자의 DB 커넥션을 같이 쓰지 못해 커넥션을 하나씩 더 잡고, 커넥션 풀이 생각보다 빨리 바닥난다. 가장 위험한 건 앞 요청 사용자의 정보가 다음 요청에서 보이는 보안 사고다. 이 증상들은 모두 값이 지금 도는 스레드에 묶여 있어서 생긴다.
 
 ## ThreadLocal 동작
 
@@ -68,7 +68,7 @@ public class NotificationService {
         // → 호출자의 트랜잭션에 참여 불가
         // → 호출자의 SecurityContext 접근 불가
         // → MDC의 traceId도 없음
-        logRepository.save(new NotificationLog(request)); // 별도 트랜잭션 필요
+        logRepository.save(new NotificationLog(request)); // 호출자 트랜잭션과 따로 커밋됨
     }
 }
 ```
@@ -150,7 +150,7 @@ public class MdcTaskDecorator implements TaskDecorator {
                 }
                 runnable.run();
             } finally {
-                MDC.clear(); // 반드시 정리
+                MDC.clear(); // 정리하지 않으면 다음 작업에 값이 남는다
             }
         };
     }
@@ -181,6 +181,10 @@ public class UserContext {
     public static Long get() {
         return currentUserId.get();
     }
+
+    public static void clear() {
+        currentUserId.remove();
+    }
 }
 
 // Interceptor에서 set만 하고 remove를 안 함
@@ -198,7 +202,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 ### 고친 코드
 
 ```java
-// ✅ 안전: afterCompletion에서 반드시 정리
+// ✅ 안전: afterCompletion에서 정리 (preHandle이 true를 돌려줬다면 핸들러가 예외를 던져도 불린다)
 public class AuthInterceptor implements HandlerInterceptor {
 
     @Override
@@ -210,7 +214,7 @@ public class AuthInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
                                  Object handler, Exception ex) {
-        UserContext.remove(); // 반드시 정리
+        UserContext.clear(); // 요청이 끝나면 비운다
     }
 }
 ```
@@ -220,7 +224,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 | 방식 | 정리 위치 | 비고 |
 |---|---|---|
 | Filter | `finally` 블록에서 `remove()` | doFilter 감싸기 |
-| Interceptor | `afterCompletion()`에서 `remove()` | 예외 시에도 호출됨 |
+| Interceptor | `afterCompletion()`에서 `remove()` | `preHandle`이 true를 돌려준 뒤라면 예외가 나도 호출됨. `preHandle`에서 값을 넣고 예외가 나면 남으니 Filter의 `finally`가 더 확실하다 |
 | TaskDecorator | 비동기 작업의 `finally`에서 `clear()` | 위 예제 참고 |
 | try-with-resources 패턴 | `AutoCloseable` 구현 | 범위가 명확한 경우 |
 
@@ -252,7 +256,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 > Interceptor에서 로그인한 사용자 ID를 ThreadLocal에 넣고 지우지 않았다고 해 보죠. 그 스레드가 다음에 인증 안 된 요청을 받으면, 그 요청이 앞 사용자의 ID로 처리될 수 있습니다.
 
 > [!question]- CompletableFuture에서 MDC traceId를 유지하려면?
-> TaskDecorator를 씁니다. 작업을 넘기기 전에 호출 스레드의 MDC를 복사해 두고, 비동기 스레드에서 그 값을 넣은 뒤 실행하고, finally에서 지웁니다.
+> TaskDecorator를 단 `ThreadPoolTaskExecutor`를 `supplyAsync(task, executor)`의 두 번째 인자로 넘깁니다. executor 없이 부르면 `ForkJoinPool.commonPool`에서 돌아서 TaskDecorator가 적용되지 않습니다. 데코레이터는 작업을 넘기기 전에 호출 스레드의 MDC를 복사해 두고, 비동기 스레드에서 그 값을 넣은 뒤 실행하고, finally에서 지웁니다.
 
 ## 점검 퀴즈
 
@@ -292,7 +296,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 ## 내 사례
 
 - [[webhook-once-without-loss|웹훅을 잃지 않고 한 번만 처리하기]]: 커밋 후 전용 스레드풀에서 발급
-- [[inherited-access-system-incidents|이어받은 출입 시스템의 장애 추적]]: `parallelStream` 안에서 풀린 트랜잭션
+- [[inherited-access-system-incidents|이어받은 시스템의 장애 추적]]: `parallelStream` 안에서 풀린 트랜잭션
 
 ## 참고
 

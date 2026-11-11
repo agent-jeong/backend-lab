@@ -73,7 +73,7 @@ tags: [concept, observability]
 
 ## 내 사례
 
-- [[inherited-access-system-incidents|이어받은 출입 시스템의 장애 추적]]: 9일치 로그 대조로 원인 좁히기
+- [[inherited-access-system-incidents|이어받은 시스템의 장애 추적]]: 여러 날의 로그 대조로 원인 좁히기
 
 ## 참고
 

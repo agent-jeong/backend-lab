@@ -37,7 +37,7 @@ comments: false
 
 - [[point-balance-and-idempotent-batch|포인트 잔액 계산과 멱등 지급 배치]]: 멱등 지급 배치와 스케줄러 데드락
 - [[file-storage-migration|첨부파일 18만 건 이관]]: 중복 실행 차단, 끊겨도 이어 가는 대량 작업
-- [[inherited-access-system-incidents|이어받은 출입 시스템의 장애 추적]]: 배치 시작 시각 충돌, 한 건이 전체를 멈추는 배치
+- [[inherited-access-system-incidents|이어받은 시스템의 장애 추적]]: 배치 시작 시각 충돌, 한 건이 전체를 멈추는 배치
 
 ## 관련 문서
 
