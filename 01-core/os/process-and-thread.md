@@ -109,12 +109,14 @@ kill -3 <PID>
 ```
 "http-nio-8080-exec-5" #35 daemon prio=5 os_prio=0 tid=0x00007f
    java.lang.Thread.State: TIMED_WAITING (parking)
-    at sun.misc.Unsafe.park(Native Method)
+    at jdk.internal.misc.Unsafe.park(Native Method)
     at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java)
     at java.util.concurrent.SynchronousQueue.poll(SynchronousQueue.java)
     at com.zaxxer.hikari.util.ConcurrentBag.borrow(ConcurrentBag.java)
     at com.zaxxer.hikari.pool.HikariPool.getConnection(HikariPool.java)
 ```
+
+맨 윗줄은 Java 9부터 `jdk.internal.misc.Unsafe.park`이고, Java 8에서는 `sun.misc.Unsafe.park`로 찍힌다. `LockSupport`가 부르는 `Unsafe` 클래스가 바뀌었기 때문이다.
 
 | 스레드 상태 | 의미 | 해석 |
 |---|---|---|
@@ -166,6 +168,7 @@ Java 웹 서버(Tomcat)는 프로세스 하나 안에서 여러 스레드로 요
 
 - [pthreads(7)](https://man7.org/linux/man-pages/man7/pthreads.7.html)
 - [JEP 444: Virtual Threads](https://openjdk.org/jeps/444)
+- [OpenJDK 17 소스: LockSupport.java](https://github.com/openjdk/jdk17u/blob/master/src/java.base/share/classes/java/util/concurrent/locks/LockSupport.java): `jdk.internal.misc.Unsafe`를 쓴다
 
 ## 관련 문서
 

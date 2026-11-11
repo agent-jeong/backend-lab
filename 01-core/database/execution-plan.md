@@ -94,6 +94,8 @@ type: ref | key: idx_status_created | rows: 20 | Extra: Using where; Backward in
 
 이제 인덱스 하나로 조건 거르기와 정렬을 다 한다. `Backward index scan`은 인덱스를 거꾸로 읽었다는 뜻이고, DESC 정렬에도 인덱스를 쓰고 있다는 얘기다.
 
+여기 `rows: 20`도 추정치다. `LIMIT`이 `rows`에 반영되는지는 실행 계획마다 달라서, 같은 쿼리라도 조건에 맞는 전체 행 수가 찍힐 때가 있다. 실제로 몇 행을 읽고 멈췄는지는 아래 `EXPLAIN ANALYZE`로 본다.
+
 ## EXPLAIN ANALYZE (MySQL 8.0.18+)
 
 ```sql
@@ -139,6 +141,7 @@ EXPLAIN ANALYZE SELECT * FROM orders WHERE user_id = 1;
 
 - [MySQL 8.4: EXPLAIN Output Format](https://dev.mysql.com/doc/refman/8.4/en/explain-output.html)
 - [MySQL 8.4: Index Hints](https://dev.mysql.com/doc/refman/8.4/en/index-hints.html)
+- [MySQL Bug #50168: The value of 'rows' in EXPLAIN output is not accurate for LIMIT](https://bugs.mysql.com/bug.php?id=50168)
 
 ## 관련 문서
 

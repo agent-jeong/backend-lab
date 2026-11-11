@@ -205,6 +205,7 @@ JPQL을 쓰지 않고도 fetch join처럼 가져온다. 간단할 때는 편하�
 
 - [Hibernate ORM 6.6 User Guide: Fetching](https://docs.hibernate.org/orm/6.6/userguide/html_single/Hibernate_User_Guide.html#fetching)
 - [Spring Data JPA: Entity Graphs](https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html)
+- [Hibernate ORM 7.0 Javadoc: MultipleBagFetchException](https://docs.hibernate.org/orm/7.0/javadocs/org/hibernate/loader/MultipleBagFetchException.html): bag 여러 개를 동시에 fetch하려 할 때 던진다
 
 ## 관련 문서
 

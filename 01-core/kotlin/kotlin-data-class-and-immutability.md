@@ -33,7 +33,7 @@ data class Order(
 )
 ```
 
-- class와 method가 기본으로 final이라 JPA가 proxy를 만들 수 없다.
+- class와 method가 기본으로 final이라, all-open이 적용되지 않으면 JPA가 proxy를 만들 수 없다(Kotlin 2.3.20부터는 `plugin.jpa`가 Entity를 연다).
 - `equals/hashCode`가 생성자의 모든 프로퍼티를 비교하도록 만들어진다.
 - 양방향 연관관계가 `toString`에 들어가면 순환 참조가 생길 수 있다.
 - `toString`, `equals`, `hashCode`가 지연 로딩 필드를 건드려 의도하지 않은 조회가 나갈 수 있다.

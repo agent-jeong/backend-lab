@@ -25,11 +25,12 @@ tags: [concept, concurrency]
 @Modifying(clearAutomatically = true) // bulk update는 영속성 컨텍스트를 건너뛰므로, 끝나면 비워서 다음 조회가 DB를 다시 읽게 한다
 @Query("""
     update Order o
-       set o.status = 'PAID'
+       set o.status = com.example.order.OrderStatus.PAID
      where o.id = :orderId
-       and o.status = 'PAYMENT_PENDING'
+       and o.status = com.example.order.OrderStatus.PAYMENT_PENDING
 """)
 int markPaid(Long orderId);
+// enum은 'PAID' 같은 문자열이 아니라 정규화된 enum 리터럴로 비교한다. Hibernate 6은 문자열 비교를 하위 호환으로 남겨 뒀을 뿐이다
 
 @Transactional
 public void completePayment(Long orderId) {
@@ -96,6 +97,7 @@ public void completePayment(Long orderId) {
 2026년 11월에 확인한 공식 문서다.
 
 - [MySQL 8.4: Locks Set by Different SQL Statements in InnoDB](https://dev.mysql.com/doc/refman/8.4/en/innodb-locks-set.html)
+- [Java EE Tutorial: Literals (JPQL)](https://docs.oracle.com/cd/E19798-01/821-1841/bnbuv/index.html): enum 리터럴은 정규화된 클래스 이름으로 쓴다
 - [MySQL 8.4: INSERT ... ON DUPLICATE KEY UPDATE](https://dev.mysql.com/doc/refman/8.4/en/insert-on-duplicate.html)
 
 ## 관련 문서

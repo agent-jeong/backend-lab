@@ -67,7 +67,7 @@ java -Xss512k -jar app.jar
 
 ## Method Area (Metaspace)
 
-클래스 메타데이터와 런타임 상수 풀이 들어간다. Java 8부터 static 변수의 참조는 Heap에 있는 `java.lang.Class` 객체에 저장된다.
+클래스 메타데이터와 런타임 상수 풀이 들어간다. HotSpot에서는 Java 7부터 static 변수가 Heap에 있는 `java.lang.Class` 객체에 저장된다. PermGen을 없애기 전 준비 작업으로 먼저 옮겼다(JDK-7017732).
 
 Java 8부터 PermGen이 Metaspace로 바뀌었다. Metaspace는 Native Memory를 쓰기 때문에 heap과 따로 잡힌다.
 
@@ -189,6 +189,7 @@ JVM은 처음에는 바이트코드를 인터프리터로 한 줄씩 실행하�
 2026년 11월에 확인한 공식 문서다.
 
 - [JVMS 21: Run-Time Data Areas](https://docs.oracle.com/javase/specs/jvms/se21/html/jvms-2.html#jvms-2.5)
+- [hotspot-dev: 7017732 move static fields into Class to prepare for perm gen removal](https://mail.openjdk.org/pipermail/hotspot-dev/2011-March/003933.html): 2011년 3월 JDK 7 개발 중 반영된 변경의 리뷰
 
 ## 관련 문서
 

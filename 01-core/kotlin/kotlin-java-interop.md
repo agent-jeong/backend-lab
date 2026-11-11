@@ -84,9 +84,9 @@ plugins {
 | 플러그인 | 하는 일 | 하지 않는 일 |
 |---|---|---|
 | `plugin.spring` | `@Component`, `@Transactional`, `@Async` 등이 붙은 클래스를 `open`으로 만든다 | `@Entity`는 열지 않는다 |
-| `plugin.jpa` | `@Entity`, `@Embeddable`, `@MappedSuperclass`에 no-arg 생성자를 만든다 | `open` 처리는 하지 않는다 |
+| `plugin.jpa` | `@Entity`, `@Embeddable`, `@MappedSuperclass`에 no-arg 생성자를 만든다. Kotlin 2.3.20부터는 이 클래스들을 `open`으로도 만든다 | Kotlin 2.3.20 전에는 `open` 처리를 하지 않는다 |
 
-그래서 두 플러그인만 켜 두면 Entity는 final로 남는다. Hibernate가 지연 로딩 프록시를 만들지 못하니 `@ManyToOne(fetch = LAZY)`가 사실상 즉시 로딩처럼 동작할 수 있다. Entity에는 `allOpen`을 따로 건다.
+`plugin.jpa`가 Entity를 여는지는 Kotlin 버전에 달렸다. Kotlin 2.3.20부터는 `plugin.jpa`가 JPA 프리셋을 켠 all-open 플러그인까지 같이 적용해서 따로 설정할 게 없다. 그 전 버전에서는 no-arg만 적용돼서, 두 플러그인만 켜 두면 Entity가 final로 남는다. 그러면 Hibernate가 지연 로딩 프록시를 만들지 못해 `@ManyToOne(fetch = LAZY)`가 즉시 로딩처럼 돈다. Kotlin 2.3.20 전이라면 Entity에 `allOpen`을 따로 건다.
 
 ```kotlin
 allOpen {
@@ -96,7 +96,7 @@ allOpen {
 }
 ```
 
-Entity를 `data class`로 만들었을 때 생기는 문제는 플러그인으로 풀리지 않는다. 자세한 내용은 [[kotlin-data-class-and-immutability]]에 있다.
+Entity를 `data class`로 만들면, 플러그인을 켜도 data class가 모든 프로퍼티로 만드는 `equals`·`hashCode`·`toString`은 그대로 남는다. 그래서 Kotlin 문서도 Entity는 일반 class로 만들라고 한다. 자세한 내용은 [[kotlin-data-class-and-immutability]]에 있다.
 
 ## 상황별로 할 일
 
@@ -113,14 +113,14 @@ Entity를 `data class`로 만들었을 때 생기는 문제는 플러그인으�
 - Java API가 돌려준 값을 non-null로 믿고 쓰면, platform type이라 컴파일은 되고 실행 중에 NPE가 난다. Java를 부르는 자리마다 platform type 경고와 null 처리를 본다.
 - default parameter만 믿고 overload를 만들지 않으면, Java에서 부르는 쪽이 인자를 전부 넘겨야 한다.
 - Java checked exception을 Kotlin이 강제하지 않는다고 그냥 두면, 실패가 아무 처리 없이 그대로 위로 올라간다.
-- `kotlin("plugin.spring")` 없이 쓰면 Spring Bean class가 final로 남아, Spring AOP 대상 Bean은 기동할 때 CGLIB 오류가 난다. `kotlin("plugin.jpa")`는 Entity에 no-arg 생성자만 만들어 주고 class를 열지는 않는다. Entity를 지연 로딩 프록시로 쓰려면 `allOpen`에 `jakarta.persistence.Entity` 같은 어노테이션을 따로 등록한다.
+- `kotlin("plugin.spring")` 없이 쓰면 Spring Bean class가 final로 남아, Spring AOP 대상 Bean은 기동할 때 CGLIB 오류가 난다. `kotlin("plugin.jpa")`는 Kotlin 2.3.20 전에는 Entity에 no-arg 생성자만 만들고 class를 열지 않는다. 그 버전에서 Entity를 지연 로딩 프록시로 쓰려면 `allOpen`에 `jakarta.persistence.Entity` 같은 어노테이션을 따로 등록한다. 2.3.20부터는 `plugin.jpa`가 Entity도 연다.
 - Java DTO와 Kotlin DTO의 nullability annotation이 어긋나면, 같은 필드가 한쪽에서는 필수, 다른 쪽에서는 선택이 된다.
 
 ## 한 번에 설명하기
 
 > Kotlin은 Java와 잘 섞이지만, 서로 넘나드는 자리에서는 Kotlin의 null 안전성이 약해집니다. Java가 돌려주는 값은 null이 올지 모르는 platform type이라 Kotlin에서도 NPE가 날 수 있습니다. 그래서 저는 Java API를 부르는 자리에서 null을 직접 막습니다.
 >
-> Spring과 JPA에서는 Kotlin class가 기본 final이고 no-arg 생성자가 없어서 plugin.spring과 plugin.jpa를 켜고, Entity에는 allOpen을 따로 겁니다.
+> Spring과 JPA에서는 Kotlin class가 기본 final이고 no-arg 생성자가 없어서 plugin.spring과 plugin.jpa를 켭니다. Kotlin 2.3.20 전 버전이라면 plugin.jpa가 Entity를 열지 않으니 allOpen을 따로 겁니다.
 
 ## 꼬리 질문
 
@@ -174,6 +174,8 @@ Entity를 `data class`로 만들었을 때 생기는 문제는 플러그인으�
 
 - [Kotlin: Calling Java from Kotlin](https://kotlinlang.org/docs/java-interop.html)
 - [Kotlin: All-open compiler plugin](https://kotlinlang.org/docs/all-open-plugin.html)
+- [Kotlin: Kotlin-jpa compiler plugin](https://kotlinlang.org/docs/kotlin-jpa-plugin.html): Entity는 data class가 아닌 일반 class로
+- [What's new in Kotlin 2.3.20: Improved JPA support](https://kotlinlang.org/docs/whatsnew2320.html): `plugin.jpa`가 all-open을 같이 적용
 
 ## 관련 문서
 
