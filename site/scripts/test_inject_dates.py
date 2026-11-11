@@ -65,5 +65,107 @@ class FolderIndexDatesTest(unittest.TestCase):
         self.assertNotIn("modified:", self._index("05-ai-workflows"))
 
 
+class WikilinkTitleTest(unittest.TestCase):
+    TITLES = {"why-idempotency": "멱등성이 왜 필요한가", "ci-cd": "CI/CD 기본"}
+
+    def _titled(self, body: str) -> str:
+        return inject_dates.title_wikilinks(body, self.TITLES)
+
+    # 별칭 구분자는 늘 "\|" 로 쓴다. Quartz 가 어디서든 받아 주고, 표 안에서도 칸을 가르지 않는다.
+    def test_bare_link_gets_note_title_as_alias(self):
+        self.assertEqual(self._titled("[[why-idempotency]]를 보라"), "[[why-idempotency\\|멱등성이 왜 필요한가]]를 보라")
+
+    def test_table_row_without_leading_pipe_is_not_split(self):
+        self.assertEqual(self._titled("a | [[why-idempotency]] | c"), "a | [[why-idempotency\\|멱등성이 왜 필요한가]] | c")
+
+    def test_link_after_inner_shorter_fence_stays_in_code(self):
+        body = "````\n```\n[[why-idempotency]]\n````"
+        self.assertEqual(self._titled(body), body)
+
+    def test_tilde_fence_is_not_closed_by_backticks(self):
+        body = "~~~\n```\n[[why-idempotency]]\n~~~"
+        self.assertEqual(self._titled(body), body)
+
+    def test_one_line_code_span_does_not_open_fence(self):
+        body = "```js x```\n[[why-idempotency]]"
+        self.assertEqual(self._titled(body), "```js x```\n[[why-idempotency\\|멱등성이 왜 필요한가]]")
+
+    def test_link_in_double_backtick_code_is_kept(self):
+        self.assertEqual(self._titled("``x [[why-idempotency]] ``"), "``x [[why-idempotency]] ``")
+
+    def test_frontmatter_is_kept(self):
+        body = "---\nrelated: [[why-idempotency]]\n---\n[[why-idempotency]]"
+        self.assertEqual(self._titled(body), "---\nrelated: [[why-idempotency]]\n---\n[[why-idempotency\\|멱등성이 왜 필요한가]]")
+
+    def test_path_link_gets_title_of_its_last_segment(self):
+        self.assertEqual(self._titled("[[02-x/why-idempotency]]"), "[[02-x/why-idempotency\\|멱등성이 왜 필요한가]]")
+
+    def test_slug_alias_is_replaced_with_title(self):
+        self.assertEqual(self._titled("[[02-x/why-idempotency|why-idempotency]]"), "[[02-x/why-idempotency\\|멱등성이 왜 필요한가]]")
+
+    def test_old_slug_alias_is_replaced_with_title(self):
+        self.assertEqual(self._titled("[[why-idempotency|old-name]]"), "[[why-idempotency\\|멱등성이 왜 필요한가]]")
+
+    def test_escaped_slug_alias_in_table_is_replaced(self):
+        self.assertEqual(self._titled("| [[why-idempotency\\|why-idempotency]] |"), "| [[why-idempotency\\|멱등성이 왜 필요한가]] |")
+
+    def test_readable_alias_is_kept_even_in_english(self):
+        self.assertEqual(self._titled("[[why-idempotency|Idempotency]]"), "[[why-idempotency|Idempotency]]")
+
+    def test_link_with_alias_is_kept(self):
+        self.assertEqual(self._titled("[[why-idempotency|여기]]"), "[[why-idempotency|여기]]")
+
+    def test_unknown_link_is_kept(self):
+        self.assertEqual(self._titled("[[no-such-note]]"), "[[no-such-note]]")
+
+    def test_embed_is_kept(self):
+        self.assertEqual(self._titled("![[why-idempotency]]"), "![[why-idempotency]]")
+
+    def test_slash_in_title_becomes_middle_dot(self):
+        self.assertEqual(self._titled("[[ci-cd]]"), "[[ci-cd\\|CI·CD 기본]]")
+
+    def test_link_in_table_row_escapes_pipe(self):
+        self.assertEqual(self._titled("| [[why-idempotency]] | 설명 |"), "| [[why-idempotency\\|멱등성이 왜 필요한가]] | 설명 |")
+
+    def test_link_in_fenced_code_is_kept(self):
+        body = "```\n[[why-idempotency]]\n```\n[[why-idempotency]]"
+        self.assertEqual(self._titled(body), "```\n[[why-idempotency]]\n```\n[[why-idempotency\\|멱등성이 왜 필요한가]]")
+
+    def test_link_in_inline_code_is_kept(self):
+        self.assertEqual(self._titled("`[[why-idempotency]]`"), "`[[why-idempotency]]`")
+
+
+class TitleIndexTest(unittest.TestCase):
+    def test_reads_title_by_file_stem_and_strips_quotes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            note = Path(tmp) / "02-practical-backend" / "idempotency" / "why-idempotency.md"
+            note.parent.mkdir(parents=True)
+            note.write_text('---\ntitle: "멱등성이 왜 필요한가"\n---\n본문\n', encoding="utf-8")
+
+            self.assertEqual(inject_dates.title_index(Path(tmp)), {"why-idempotency": "멱등성이 왜 필요한가"})
+
+    def _index_of(self, text: str) -> dict:
+        with tempfile.TemporaryDirectory() as tmp:
+            (Path(tmp) / "note.md").write_text(text, encoding="utf-8")
+            return inject_dates.title_index(Path(tmp))
+
+    def test_title_line_in_body_is_not_the_title(self):
+        self.assertEqual(self._index_of("---\ntags: [a]\n---\ntitle: 본문 줄\n"), {})
+
+    def test_empty_title_does_not_take_next_line(self):
+        self.assertEqual(self._index_of("---\ntitle:\ntags: [a]\n---\n"), {})
+
+    def test_title_with_comment_or_inner_quote_is_left_out(self):
+        self.assertEqual(self._index_of("---\ntitle: 'It''s' # c\n---\n"), {})
+
+    def test_duplicate_stem_is_left_out(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            for folder in ["a", "b"]:
+                (Path(tmp) / folder).mkdir()
+                (Path(tmp) / folder / "same.md").write_text(f"---\ntitle: {folder}\n---\n", encoding="utf-8")
+
+            self.assertEqual(inject_dates.title_index(Path(tmp)), {})
+
+
 if __name__ == "__main__":
     unittest.main()

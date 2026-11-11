@@ -36,3 +36,9 @@ _private/
 public/
 node_modules/
 __pycache__/
+
+# Playwright MCP screenshots and logs
+.playwright-mcp/
+
+# Local agent review logs
+.ecc/

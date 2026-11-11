@@ -9,7 +9,9 @@ history itself. This script, run on the copy only:
 - drops the body's first `# 제목` when it repeats the frontmatter title,
   because the page template already prints the title;
 - writes an `index.md` for each folder so breadcrumbs and folder pages
-  show a readable name instead of the folder slug.
+  show a readable name instead of the folder slug;
+- gives bare `[[slug]]` links the target note's title as alias, so links
+  read as titles instead of file names.
 """
 import re
 import subprocess
@@ -63,6 +65,104 @@ def drop_duplicate_h1(path: Path) -> bool:
         return False
     path.write_text(text[: m.end()] + body[h1.end():], encoding="utf-8")
     return True
+
+
+# [[target]] 또는 [[target|alias]] (표 안에서는 "\|"). 임베드(![[...]])와 제목 링크(#)는 건드리지 않는다.
+BARE_WIKILINK = re.compile(r"(?<!!)\[\[([^\[\]|#\\]+)(?:\\?\|([^\[\]|#\\]+))?\]\]")
+# 별칭이 파일 이름 모양이면 사람이 읽을 이름이 아니라고 보고 제목으로 바꾼다.
+SLUG_ALIAS = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
+INLINE_CODE = re.compile(r"(`+).+?\1")
+FRONTMATTER = re.compile(r"\A---\n(.*?)\n---[ \t]*(?:\n|\Z)", re.S)
+TITLE_LINE = re.compile(r"^title:[ \t]*(\S.*?)[ \t]*$", re.M)
+FENCE = re.compile(r"^[ \t]*(`{3,}|~{3,})(.*)$")
+UNSAFE_TITLE = re.compile(r"[\[\]|#\\\"']")
+
+
+def _read_title(text: str) -> str:
+    """The frontmatter title, or "" when there is none or it would not survive as a link alias."""
+    block = FRONTMATTER.match(text)
+    found = TITLE_LINE.search(block.group(1)) if block else None
+    if not found:
+        return ""
+    title = found.group(1)
+    if len(title) >= 2 and title[0] == title[-1] and title[0] in "\"'":
+        title = title[1:-1]
+    return "" if UNSAFE_TITLE.search(title) else title
+
+
+def title_index(content: Path) -> dict:
+    """Map each note's file stem to its frontmatter title. Stems used twice are left out."""
+    titles, seen = {}, set()
+    for md in content.rglob("*.md"):
+        stem = md.stem
+        if stem in seen:
+            titles.pop(stem, None)
+            continue
+        seen.add(stem)
+        title = _read_title(md.read_text(encoding="utf-8"))
+        if title:
+            titles[stem] = title
+    return titles
+
+
+def _title_line(line: str, titles: dict) -> str:
+    def replace(m: re.Match) -> str:
+        target, alias = m.group(1).strip(), m.group(2)
+        if alias is not None and not SLUG_ALIAS.fullmatch(alias.strip()):
+            return m.group(0)
+        title = titles.get(target.split("/")[-1])
+        if not title:
+            return m.group(0)
+        # "\|" 는 Quartz 가 어디서든 별칭 구분자로 받고, 표 안에서도 칸을 가르지 않는다.
+        # 별칭의 "/" 는 블로그에서 잘린다.
+        return f"[[{target}\\|{title.replace('/', '·')}]]"
+
+    out, last = [], 0
+    for code in INLINE_CODE.finditer(line):
+        out += [BARE_WIKILINK.sub(replace, line[last:code.start()]), code.group(0)]
+        last = code.end()
+    out.append(BARE_WIKILINK.sub(replace, line[last:]))
+    return "".join(out)
+
+
+def _fence_marker(line: str):
+    """(char, length, info string) of a fence line, or None. A line like ```js x``` is a code span, not a fence."""
+    m = FENCE.match(line)
+    if not m or (m.group(1)[0] == "`" and "`" in m.group(2)):
+        return None
+    return m.group(1)[0], len(m.group(1)), m.group(2).strip()
+
+
+def title_wikilinks(text: str, titles: dict) -> str:
+    """Give bare [[slug]] links the target note's title, so readers see a title instead of a slug.
+
+    Frontmatter, fenced code and inline code are left as they are.
+    """
+    block = FRONTMATTER.match(text)
+    head, body = (text[: block.end()], text[block.end():]) if block else ("", text)
+    lines, fence = [], None
+    for line in body.split("\n"):
+        marker = _fence_marker(line)
+        if fence is None and marker:
+            fence = marker[:2]
+        elif fence and marker and marker[0] == fence[0] and marker[1] >= fence[1] and not marker[2]:
+            fence = None
+        elif fence is None:
+            line = _title_line(line, titles)
+        lines.append(line)
+    return head + "\n".join(lines)
+
+
+def title_links_in(content: Path) -> int:
+    titles = title_index(content)
+    count = 0
+    for md in content.rglob("*.md"):
+        text = md.read_text(encoding="utf-8")
+        titled = title_wikilinks(text, titles)
+        if titled != text:
+            md.write_text(titled, encoding="utf-8")
+            count += 1
+    return count
 
 
 HUB_NOTES = {"batch": "batch-processing.md"}
@@ -137,7 +237,8 @@ def main() -> int:
         changed += inject(md, created, modified)
     dropped = sum(drop_duplicate_h1(md) for md in content.rglob("*.md"))
     folders = write_folder_indexes(content, root)
-    print(f"prepare-notes: dates {changed}, duplicate titles {dropped}, folder indexes {folders}")
+    linked = title_links_in(content)
+    print(f"prepare-notes: dates {changed}, duplicate titles {dropped}, folder indexes {folders}, titled links {linked} files")
     return 0
 
 
